@@ -1,1 +1,1 @@
-# shirogane-oly-knights
+# shirogane-holy-knights
