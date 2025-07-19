@@ -23,8 +23,13 @@
 | IaC            | Terraform / CloudFormation         | AWSリソース環境をコードで管理                          |
 | CI/CD          | Amplify Console / GitHub Actions  | ビルド・テスト・デプロイの自動化                       |
 
-## 4. リポジトリ構成（ルート直下ディレクトリ案）
+## 4. リポジトリ構成（ルート直下ディレクトリ）
 - `backend/`：Kotlin（Ktor）Lambdaバックエンドコード  
+  - `src/main/kotlin/com/shirogane/holy/knights/`
+    - `adapter/`：外部インターフェース層（controllerとgatewayを含む）
+    - `application/`：アプリケーション層（ユースケース、DTO、ポート）
+    - `domain/`：ドメイン層（モデル、リポジトリインターフェース、サービス）
+    - `infrastructure/`：インフラストラクチャ層（設定、データベース、Lambda関連）
 - `frontend/`：Next.jsフロントエンドコード  
 - `infrastructure/`：TerraformまたはCloudFormationでのIaCコード  
 - `ci-cd/`：AmplifyやGitHub ActionsなどCI/CD設定ファイル  
@@ -36,6 +41,7 @@
 - **OpenAPI仕様採用**：API仕様・ドキュメントを一元管理し、開発効率・保守性向上。  
 - **PostgreSQL接続**：標準JDBCドライバ利用予定。  
 - **RDS Proxy**：後回しにし、運用状況をみて段階的導入予定。
+- **ヘキサゴナルアーキテクチャ採用**：アプリケーション、ドメイン、インフラの分離による保守性・テスト容易性の向上。
 
 ## 6. 開発・デプロイ体制
 - **IaC導入**によりAWS環境（RDS、Lambda、API Gatewayなど認証以外）をコードで構築・管理。  
