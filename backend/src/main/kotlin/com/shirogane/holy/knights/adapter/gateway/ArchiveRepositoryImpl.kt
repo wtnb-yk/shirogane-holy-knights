@@ -1,4 +1,4 @@
-package com.shirogane.holy.knights.adapter.persistence
+package com.shirogane.holy.knights.adapter.out.persistence
 
 import com.shirogane.holy.knights.domain.model.Archive
 import com.shirogane.holy.knights.domain.model.ArchiveId
