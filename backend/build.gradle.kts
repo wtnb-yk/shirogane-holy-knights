@@ -14,12 +14,13 @@ version = "0.1.0"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 val ktorVersion = "2.3.8"
-val logbackVersion = "1.4.14"
+val logbackVersion = "1.4.11"
 val postgresqlVersion = "42.7.2"
-val hikariCPVersion = "5.1.0"
+val hikariCPVersion = "4.0.3"
 val kotlinxCoroutinesVersion = "1.7.3"
 val kotlinxSerializationVersion = "1.6.2"
 val kotestVersion = "5.8.0"
@@ -36,13 +37,12 @@ dependencies {
     implementation("io.ktor:ktor-server-openapi:$ktorVersion")
     
     // AWS Lambda
-    implementation("io.ktor:ktor-server-lambda:$ktorVersion")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
     
     // Database
     implementation("org.postgresql:postgresql:$postgresqlVersion")
-    implementation("com.zaxxer:hikaricp:$hikariCPVersion")
+    implementation("com.zaxxer:HikariCP:4.0.3")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -60,7 +60,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.shirogane.holy.knights.ApplicationKt")
+    mainClass.set("com.shirogane.holy.knights.Application")
 }
 
 tasks.withType<KotlinCompile> {
