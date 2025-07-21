@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.infrastructure.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.cors.CorsConfiguration
@@ -7,29 +8,30 @@ import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.reactive.config.WebFluxConfigurer
 
-/**
- * WebFlux設定
- * CORS設定やReactiveルーティング設定を行う
- */
 @Configuration
 class WebConfig : WebFluxConfigurer {
 
-    /**
-     * CORS設定
-     */
+    @Value("\${spring.webflux.cors.allowed-origins:http://localhost:3000}")
+    private lateinit var allowedOrigins: String
+    
+    @Value("\${spring.webflux.cors.allowed-methods:GET,POST,PUT,DELETE,OPTIONS}")
+    private lateinit var allowedMethods: String
+    
+    @Value("\${spring.webflux.cors.allowed-headers:Content-Type,Authorization}")
+    private lateinit var allowedHeaders: String
+    
+    @Value("\${spring.webflux.cors.max-age:3600}")
+    private var maxAge: Long = 3600
+
     @Bean
     fun corsFilter(): CorsWebFilter {
         val config = CorsConfiguration()
         
-        // 開発環境用のCORS設定
-        config.addAllowedOriginPattern("*")
-        config.addAllowedMethod("*")
-        config.addAllowedHeader("*")
-        config.addExposedHeader("*")
-        
-        // '*'を使用する場合はfalseにする必要がある
-        config.allowCredentials = false
-        config.maxAge = 3600L
+        // application.ymlからの設定を使用
+        config.allowedOrigins = allowedOrigins.split(",")
+        config.allowedMethods = allowedMethods.split(",")
+        config.allowedHeaders = allowedHeaders.split(",")
+        config.maxAge = maxAge
         
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)

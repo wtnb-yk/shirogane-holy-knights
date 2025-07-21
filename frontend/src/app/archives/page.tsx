@@ -58,9 +58,6 @@ export default function ArchivesList() {
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">配信アーカイブ一覧</h2>
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
-          Lambda API 使用中
-        </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

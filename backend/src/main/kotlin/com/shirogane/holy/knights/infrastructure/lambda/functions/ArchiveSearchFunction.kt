@@ -8,23 +8,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.function.Function
 
-/**
- * アーカイブを検索するLambda関数
- *
- * AWS Lambda環境で実行され、"archiveSearch"という名前で呼び出せる関数です。
- * アーカイブの検索条件をリクエストとして受け取り、検索結果を返します。
- */
+// アーカイブを検索するLambda関数
 @Component("archiveSearch")
 class ArchiveSearchFunction(private val archiveUseCase: ArchiveUseCasePort) : Function<ArchiveSearchRequest, ArchiveSearchResultDto> {
 
     private val logger = LoggerFactory.getLogger(ArchiveSearchFunction::class.java)
 
-    /**
-     * アーカイブ検索リクエストを処理し、検索結果を返します
-     *
-     * @param request 検索条件を含むリクエスト
-     * @return 検索結果DTO
-     */
+    // アーカイブ検索リクエストを処理し、検索結果を返す
     override fun apply(request: ArchiveSearchRequest): ArchiveSearchResultDto {
         logger.info("アーカイブ検索リクエスト受信: $request")
         
@@ -37,13 +27,11 @@ class ArchiveSearchFunction(private val archiveUseCase: ArchiveUseCasePort) : Fu
             pageSize = request.pageSize ?: 20
         )
         
-        // コルーチン関数を呼び出すためにrunBlockingを使用
-        return runBlocking {
+                return runBlocking {
             try {
                 archiveUseCase.searchArchives(searchParams)
             } catch (e: Exception) {
                 logger.error("アーカイブ検索中にエラーが発生しました", e)
-                // エラー時は空の結果を返す
                 ArchiveSearchResultDto(
                     items = emptyList(),
                     totalCount = 0,
@@ -56,9 +44,7 @@ class ArchiveSearchFunction(private val archiveUseCase: ArchiveUseCasePort) : Fu
     }
 }
 
-/**
- * アーカイブ検索リクエストのデータクラス
- */
+// アーカイブ検索リクエストのデータクラス
 data class ArchiveSearchRequest(
     val query: String? = null,
     val tags: List<String>? = null,
