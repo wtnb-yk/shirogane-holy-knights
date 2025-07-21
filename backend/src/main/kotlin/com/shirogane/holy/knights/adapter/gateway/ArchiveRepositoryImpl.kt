@@ -32,7 +32,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
     override fun findAll(limit: Int, offset: Int): List<Archive> {
         
             val sql = """
-                SELECT a.id, a.title, a.published_at,
+                SELECT a.id, a.title, a.published_at, a.channel_id,
                        v.url, v.duration, v.thumbnail_url,
                        c.description, c.is_members_only
                 FROM archives a
@@ -59,7 +59,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
     override fun findById(id: ArchiveId): Archive? {
         
             val sql = """
-                SELECT a.id, a.title, a.published_at,
+                SELECT a.id, a.title, a.published_at, a.channel_id,
                        v.url, v.duration, v.thumbnail_url,
                        c.description, c.is_members_only
                 FROM archives a
@@ -145,7 +145,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
             val tagNames = currentTags.map { it.name }
             
             val sql = """
-                SELECT a.id, a.title, a.published_at,
+                SELECT a.id, a.title, a.published_at, a.channel_id,
                        v.url, v.duration, v.thumbnail_url,
                        c.description, c.is_members_only,
                        COUNT(DISTINCT t.name) AS match_count
@@ -155,7 +155,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
                 JOIN archive_tags at ON a.id = at.archive_id
                 JOIN tags t ON at.tag_id = t.id
                 WHERE t.name IN (:tagNames) AND a.id != :archiveId
-                GROUP BY a.id, a.title, a.published_at,
+                GROUP BY a.id, a.title, a.published_at, a.channel_id,
                          v.url, v.duration, v.thumbnail_url,
                          c.description, c.is_members_only
                 ORDER BY match_count DESC, a.published_at DESC
@@ -200,6 +200,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
                 id = ArchiveId(id),
                 title = rs.getString("title"),
                 publishedAt = rs.getTimestamp("published_at").toInstant(),
+                channelId = ChannelId(rs.getString("channel_id")),
                 videoDetails = videoDetails,
                 contentDetails = contentDetails,
                 tags = getArchiveTags(id)
@@ -242,7 +243,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
             "SELECT COUNT(*) FROM archives a"
         } else {
             """
-            SELECT a.id, a.title, a.published_at,
+            SELECT a.id, a.title, a.published_at, a.channel_id,
                    v.url, v.duration, v.thumbnail_url,
                    c.description, c.is_members_only
             FROM archives a
