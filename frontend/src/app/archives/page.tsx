@@ -22,7 +22,8 @@ export default function ArchivesList() {
       try {
         setLoading(true);
         const response = await axios.get('/api/v1/archives');
-        setArchives(response.data.content);
+        console.log('API response:', response.data);
+        setArchives(response.data.items);
         setLoading(false);
       } catch (err) {
         setError('アーカイブの取得に失敗しました。');
