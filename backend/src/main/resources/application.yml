@@ -26,6 +26,12 @@ spring:
       write-dates-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
+  webflux:
+    cors:
+      allowed-origins: ${FRONTEND_URL:http://localhost:3000}
+      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+      allowed-headers: Content-Type,Authorization
+      max-age: 3600
 
 # アクチュエーターの設定
 management:
@@ -37,11 +43,6 @@ management:
     health:
       show-details: when_authorized
     
-# CORS設定
-cors:
-  allowed-origins: ${FRONTEND_URL:http://localhost:3000}
-  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-  allowed-headers: Content-Type,Authorization
   
 # ロギング設定
 logging:

@@ -43,10 +43,8 @@ dependencies {
     // Flyway for DB migrations
     implementation("org.flywaydb:flyway-core")
     
-    // Spring Cloud
+    // Spring Cloud Function - AWS Lambda統合
     implementation("org.springframework.cloud:spring-cloud-function-web")
-    
-    // AWS Lambda用の依存関係
     implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
     implementation("org.springframework.cloud:spring-cloud-starter-function-web")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
@@ -65,7 +63,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinxCoroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$kotlinxCoroutinesVersion")
     
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")

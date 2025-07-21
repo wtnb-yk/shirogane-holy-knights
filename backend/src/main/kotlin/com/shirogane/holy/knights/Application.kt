@@ -5,15 +5,9 @@ import org.springframework.boot.runApplication
 import org.springframework.cloud.function.context.FunctionCatalog
 import org.springframework.cloud.function.context.config.ContextFunctionCatalogInitializer
 
-/**
- * Spring Bootアプリケーション起動クラス
- */
 @SpringBootApplication
 class Application {
     companion object {
-        /**
-         * アプリケーション起動（メインエントリーポイント）
-         */
         @JvmStatic
         fun main(args: Array<String>) {
             runApplication<Application>(*args) {
