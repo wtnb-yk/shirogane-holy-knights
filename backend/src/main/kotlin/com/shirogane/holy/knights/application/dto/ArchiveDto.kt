@@ -1,6 +1,6 @@
 package com.shirogane.holy.knights.application.dto
 
-import com.shirogane.holy.knights.domain.model.Archive
+import com.shirogane.holy.knights.domain.model.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
 import java.time.format.DateTimeFormatter
@@ -13,12 +13,13 @@ import java.time.format.DateTimeFormatter
 data class ArchiveDto(
     val id: String,
     val title: String,
-    val url: String,
+    val url: String?,
     val publishedAt: String, // ISO 8601形式の日時文字列
     val description: String? = null,
     val tags: List<String> = emptyList(),
     val duration: String? = null, // HH:MM:SS形式の動画長
-    val thumbnailUrl: String? = null
+    val thumbnailUrl: String? = null,
+    val isMembersOnly: Boolean = false
 ) {
     companion object {
         /**
@@ -28,12 +29,13 @@ data class ArchiveDto(
             return ArchiveDto(
                 id = archive.id.value,
                 title = archive.title,
-                url = archive.url,
+                url = archive.videoDetails?.url,
                 publishedAt = archive.publishedAt.toString(),
-                description = archive.description,
+                description = archive.contentDetails?.description,
                 tags = archive.tags.map { it.name },
-                duration = archive.duration?.value,
-                thumbnailUrl = archive.thumbnailUrl
+                duration = archive.videoDetails?.duration?.value,
+                thumbnailUrl = archive.videoDetails?.thumbnailUrl,
+                isMembersOnly = archive.contentDetails?.isMembersOnly ?: false
             )
         }
     }
