@@ -1,0 +1,73 @@
+# メンバー限定動画取得ツール 使用方法
+
+## 概要
+このスクリプトは、Seleniumを使用してブラウザを自動化し、YouTubeにログインしてメンバー限定動画の情報を取得するものです。YouTube Data APIでは取得できないメンバー限定動画の情報をスクレイピングで取得します。
+
+## セットアップ
+1. 必要なライブラリをインストール：
+   ```
+   python3 -m pip install selenium pandas webdriver-manager
+   ```
+
+2. ChromeDriverが自動的にインストールされない場合は、手動でインストールしてください：
+   - ChromeDriverを https://chromedriver.chromium.org/downloads からダウンロード
+   - パスを通すか、スクリプト内でパスを指定する
+
+3. YouTube（Google）アカウント情報を環境変数に設定：
+   ```bash
+   # ログイン情報を環境変数に設定
+   export YOUTUBE_EMAIL='あなたのGoogleアカウントメールアドレス'
+   export YOUTUBE_PASSWORD='あなたのパスワード'
+   ```
+
+## 実行方法
+
+```bash
+# 環境変数設定後、スクリプトを実行
+python3 members_only_fetcher.py
+```
+
+または、スクリプト内に直接認証情報を設定して実行することもできます（非推奨）：
+```python
+YOUTUBE_EMAIL = 'あなたのGoogleアカウントメールアドレス'
+YOUTUBE_PASSWORD = 'あなたのパスワード'
+```
+
+## セキュリティ上の注意
+- パスワードを環境変数に設定する際は、履歴に残らないよう注意してください
+- 認証情報をスクリプト内に直接記述することは避け、環境変数を使用することを強く推奨します
+- このスクリプトはローカル環境での実行を想定しています
+
+## 出力ファイル
+スクリプトを実行すると、`work/result/members_only_{実行日時}_{ユニークID}/` ディレクトリに以下のCSVファイルが生成されます：
+
+1. `members_videos_raw.csv` - 取得した生データ（参照用）
+
+2. `members_archives.csv` - アーカイブ基本情報
+   - id: 動画ID
+   - title: 動画タイトル
+   - published_at: 公開日時
+   - channel_id: チャンネルID
+
+3. `members_video_details.csv` - 動画詳細情報
+   - archive_id: 動画ID
+   - url: 動画URL
+   - duration: 動画の長さ (HH:MM:SS形式)
+   - thumbnail_url: サムネイルURL
+
+4. `members_content_details.csv` - コンテンツ詳細情報
+   - archive_id: 動画ID
+   - description: 説明文
+   - is_members_only: メンバーシップ限定かどうか（常にTrue）
+
+## 注意事項
+- YouTubeのUI変更によりセレクタが機能しなくなる場合があります
+- ログインに二段階認証が設定されている場合、手動での入力が必要になることがあります
+- 大量のリクエストを送信すると、YouTubeがアクセスを制限する可能性があります
+- ヘッドレスモード（画面表示なし）では動作しない場合があります
+- メンバーシップに加入しているアカウントでのみ動作します
+
+## トラブルシューティング
+- ログインできない場合: ユーザー名とパスワードを確認
+- 要素が見つからないエラー: CSSセレクタが変更された可能性あり
+- タイムアウトエラー: インターネット接続を確認またはタイムアウト時間を延長
