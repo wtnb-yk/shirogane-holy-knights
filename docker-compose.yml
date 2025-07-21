@@ -21,7 +21,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # バックエンドサービス
+  # バックエンドサービス (Lambda モード)
   backend:
     build:
       context: ./backend
@@ -33,38 +33,45 @@ services:
       JDBC_DATABASE_URL: jdbc:postgresql://postgres:5432/shirogane_db
       JDBC_DATABASE_USERNAME: postgres
       JDBC_DATABASE_PASSWORD: postgres
-      FRONTEND_URL: http://frontend:3000
+      FRONTEND_URL: http://localhost:3001 # ブラウザからのアクセスURLに変更
+      SPRING_PROFILES_ACTIVE: lambda-local
     ports:
-      - "8080:8080"
+      - "8080:8080" # ホスト側からアクセス可能に
     networks:
       - shirogane-network
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8080/actuator/health"]
+      test: curl -f http://localhost:8080/actuator/health || exit 1
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
+      start_period: 40s
 
   # フロントエンドサービス
   frontend:
-    image: node:18-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: shirogane-frontend
     volumes:
       - ./frontend:/app
-      # キャッシュをマウントに含めないようにする
       - /app/node_modules
       - /app/.next
-    working_dir: /app
-    command: sh -c "npm install && npm run dev"
     ports:
       - "3001:3000"
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://backend:8080
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
     depends_on:
       backend:
         condition: service_healthy
     networks:
       - shirogane-network
+    healthcheck:
+      test: curl -f http://localhost:3000 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 # ボリューム定義
 volumes:

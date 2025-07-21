@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Image from 'next/image';
+import { LambdaClient } from '@/api/lambdaClient';
+import { ArchiveDto } from '@/api/types';
 
 interface Archive {
   id: string;
@@ -22,9 +23,18 @@ export default function ArchivesList() {
     const fetchArchives = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('/api/v1/archives');
-        console.log('API response:', response.data);
-        setArchives(response.data.items);
+        
+        // Lambda関数を使用してアーカイブを取得
+        console.log('Lambda関数を使用してアーカイブを取得します...');
+        
+        // アーカイブ検索関数を呼び出し
+        const searchResult = await LambdaClient.callArchiveSearchFunction({
+          page: 1,
+          pageSize: 20
+        });
+        
+        console.log('Lambda API response:', searchResult);
+        setArchives(searchResult.items);
         setLoading(false);
       } catch (err) {
         setError('アーカイブの取得に失敗しました。');
@@ -46,7 +56,12 @@ export default function ArchivesList() {
 
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <h2 className="text-2xl font-bold mb-6">配信アーカイブ一覧</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">配信アーカイブ一覧</h2>
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
+          Lambda API 使用中
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {archives.map((archive) => (

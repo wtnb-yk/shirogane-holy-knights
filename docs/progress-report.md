@@ -139,9 +139,13 @@ backend/src/main/kotlin/com/shirogane/holy/knights
    - 検索機能など全機能の確認
    - データベースによるデータ共有テスト
 
-2. **AWS Lambda用設定の整備とローカルテスト**
-   - Spring Cloud FunctionでのLambda統合
-   - ローカル環境での動作検証
+2. ✅ **AWS Lambda用設定の整備とローカルテスト**
+   - ✅ Spring Cloud FunctionでのLambda統合
+   - ✅ ローカル環境での動作検証
+   - ✅ Lambda関数のデプロイガイドの作成
+   - ✅ フロントエンドからのLambda関数呼び出し実装（REST API→Lambda移行完了）
+   - ✅ 統合テスト環境の構築
+   - ✅ Lambda-フロントエンド連携ドキュメント作成
 
 3. **単体テストとAPIテストの追加**
    - ドメインモデルのテスト

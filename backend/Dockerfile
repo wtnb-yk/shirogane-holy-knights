@@ -19,15 +19,13 @@ COPY src ./src
 # アプリケーションをビルド
 RUN ./gradlew build -x processAot --no-daemon
 
-# ヘルスチェック
-HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 \
-  CMD wget -q -O /dev/null http://localhost:8080/health || exit 1
 
 # 環境変数
 ENV JDBC_DATABASE_URL=jdbc:postgresql://postgres:5432/shirogane_db
 ENV JDBC_DATABASE_USERNAME=postgres
 ENV JDBC_DATABASE_PASSWORD=postgres
-ENV FRONTEND_URL=http://localhost:3000
+ENV FRONTEND_URL=http://localhost:3001
+ENV SPRING_PROFILES_ACTIVE=lambda-local
 
 # メインクラスを直接実行する
 # 起動コマンド
