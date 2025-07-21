@@ -5,17 +5,8 @@ import Image from 'next/image';
 import { LambdaClient } from '@/api/lambdaClient';
 import { ArchiveDto } from '@/api/types';
 
-interface Archive {
-  id: string;
-  title: string;
-  url: string;
-  publishedAt: string;
-  thumbnailUrl: string | null;
-  tags: string[];
-}
-
 export default function ArchivesList() {
-  const [archives, setArchives] = useState<Archive[]>([]);
+  const [archives, setArchives] = useState<ArchiveDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,16 +15,11 @@ export default function ArchivesList() {
       try {
         setLoading(true);
         
-        // Lambda関数を使用してアーカイブを取得
-        console.log('Lambda関数を使用してアーカイブを取得します...');
-        
         // アーカイブ検索関数を呼び出し
         const searchResult = await LambdaClient.callArchiveSearchFunction({
           page: 1,
           pageSize: 20
         });
-        
-        console.log('Lambda API response:', searchResult);
         setArchives(searchResult.items);
         setLoading(false);
       } catch (err) {
