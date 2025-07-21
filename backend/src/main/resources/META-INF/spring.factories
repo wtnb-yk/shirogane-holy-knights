@@ -1,0 +1,1 @@
+org.springframework.cloud.function.scan.FunctionRegistrar=com.shirogane.holy.knights.infrastructure.lambda.functions

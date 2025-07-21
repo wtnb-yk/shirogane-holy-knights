@@ -1,0 +1,35 @@
+spring:
+  profiles: lambda-local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shirogane_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.shirogane.holy.knights: DEBUG
+    org.springframework.cloud.function: DEBUG
+
+# Spring Cloud Function設定
+spring.cloud.function:
+  definition: archiveSearch
+  scan:
+    packages: com.shirogane.holy.knights.infrastructure.lambda.functions
+  web:
+    export:
+      enabled: true
+      auto-registration: true
+      
+# CORS設定
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:3001,*
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: Content-Type,Authorization,Content-Length,X-Requested-With,Accept,*

@@ -46,11 +46,11 @@ dependencies {
     // Spring Cloud
     implementation("org.springframework.cloud:spring-cloud-function-web")
     
-    // 以下はLambda用の設定（必要に応じて後で有効化）
-    // implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
-    // implementation("org.springframework.cloud:spring-cloud-starter-function-web")
-    // implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
-    // implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
+    // AWS Lambda用の依存関係
+    implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
+    implementation("org.springframework.cloud:spring-cloud-starter-function-web")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
+    implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
     
     // Database
     implementation("org.postgresql:postgresql:$postgresqlVersion")
