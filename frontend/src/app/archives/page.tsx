@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface Archive {
   id: string;
@@ -51,11 +52,14 @@ export default function ArchivesList() {
         {archives.map((archive) => (
           <div key={archive.id} className="border rounded-lg overflow-hidden shadow-lg">
             {archive.thumbnailUrl && (
-              <img 
-                src={archive.thumbnailUrl} 
-                alt={archive.title} 
-                className="w-full h-48 object-cover"
-              />
+              <div className="relative w-full h-48">
+                <Image 
+                  src={archive.thumbnailUrl} 
+                  alt={archive.title} 
+                  fill
+                  className="object-cover"
+                />
+              </div>
             )}
             <div className="p-4">
               <h3 className="text-lg font-semibold mb-2">{archive.title}</h3>
