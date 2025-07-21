@@ -134,10 +134,10 @@ backend/src/main/kotlin/com/shirogane/holy/knights
 
 ### 短期計画（優先度高）
 
-1. **Docker Composeでのフルスタック環境の最終確認**
-   - フロントエンドとバックエンドの統合テスト
-   - 検索機能など全機能の確認
-   - データベースによるデータ共有テスト
+1. **インフラストラクチャ実装**
+   - AWSリソースのIaC実装（Terraform/CloudFormation）
+   - CI/CDパイプラインの構築
+   - デプロイ自動化
 
 2. ✅ **AWS Lambda用設定の整備とローカルテスト**
    - ✅ Spring Cloud FunctionでのLambda統合
@@ -147,7 +147,12 @@ backend/src/main/kotlin/com/shirogane/holy/knights
    - ✅ 統合テスト環境の構築
    - ✅ Lambda-フロントエンド連携ドキュメント作成
 
-3. **単体テストとAPIテストの追加**
+3. **Docker Composeでのフルスタック環境の最終確認**
+   - フロントエンドとバックエンドの統合テスト
+   - 検索機能など全機能の確認
+   - データベースによるデータ共有テスト
+
+4. **単体テストとAPIテストの追加**
    - ドメインモデルのテスト
    - ユースケースのテスト
    - コントローラーのテスト
@@ -159,11 +164,6 @@ backend/src/main/kotlin/com/shirogane/holy/knights
    - 検索機能 UIの拡張とフィルター実装
    - レスポンシブデザインの改善
    - コンポーネントテストの追加
-
-2. **インフラストラクチャ実装**
-   - AWSリソースのIaC実装（Terraform/CloudFormation）
-   - CI/CDパイプラインの構築
-   - デプロイ自動化
 
 ### 長期計画
 1. **認証機能の導入**
