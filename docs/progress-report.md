@@ -46,10 +46,8 @@
 ```
 backend/src/main/kotlin/com/shirogane/holy/knights
 ├── adapter
-│   ├── in
-│   │   └── controller      # HTTPリクエストハンドラー
-│   └── out
-│       └── persistence     # リポジトリ実装
+│   ├── controller      # HTTPリクエストハンドラー
+│   └── persistence     # リポジトリ実装
 ├── application
 │   ├── dto                 # データ転送オブジェクト
 │   ├── port
