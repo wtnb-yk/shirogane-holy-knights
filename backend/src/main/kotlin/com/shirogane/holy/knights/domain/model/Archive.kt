@@ -9,12 +9,27 @@ import java.time.Instant
 data class Archive(
     val id: ArchiveId,
     val title: String,
-    val url: String,
     val publishedAt: Instant,
-    val description: String? = null,
-    val tags: List<Tag> = emptyList(),
+    val videoDetails: VideoDetails? = null,
+    val contentDetails: ContentDetails? = null,
+    val tags: List<Tag> = emptyList()
+)
+
+/**
+ * 動画詳細情報値オブジェクト
+ */
+data class VideoDetails(
+    val url: String,
     val duration: Duration? = null,
     val thumbnailUrl: String? = null
+)
+
+/**
+ * コンテンツ詳細情報値オブジェクト
+ */
+data class ContentDetails(
+    val description: String? = null,
+    val isMembersOnly: Boolean = false
 )
 
 /**

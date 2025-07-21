@@ -1,9 +1,6 @@
 package com.shirogane.holy.knights.adapter.gateway
 
-import com.shirogane.holy.knights.domain.model.Archive
-import com.shirogane.holy.knights.domain.model.ArchiveId
-import com.shirogane.holy.knights.domain.model.Duration
-import com.shirogane.holy.knights.domain.model.Tag
+import com.shirogane.holy.knights.domain.model.*
 import com.shirogane.holy.knights.domain.repository.ArchiveRepository
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
@@ -35,9 +32,13 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
     override fun findAll(limit: Int, offset: Int): List<Archive> {
         
             val sql = """
-                SELECT id, title, url, published_at, description, duration, thumbnail_url
-                FROM archives
-                ORDER BY published_at DESC
+                SELECT a.id, a.title, a.published_at,
+                       v.url, v.duration, v.thumbnail_url,
+                       c.description, c.is_members_only
+                FROM archives a
+                LEFT JOIN video_details v ON a.id = v.archive_id
+                LEFT JOIN content_details c ON a.id = c.archive_id
+                ORDER BY a.published_at DESC
                 LIMIT ? OFFSET ?
             """.trimIndent()
             
@@ -58,9 +59,13 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
     override fun findById(id: ArchiveId): Archive? {
         
             val sql = """
-                SELECT id, title, url, published_at, description, duration, thumbnail_url
-                FROM archives
-                WHERE id = ?
+                SELECT a.id, a.title, a.published_at,
+                       v.url, v.duration, v.thumbnail_url,
+                       c.description, c.is_members_only
+                FROM archives a
+                LEFT JOIN video_details v ON a.id = v.archive_id
+                LEFT JOIN content_details c ON a.id = c.archive_id
+                WHERE a.id = ?
             """.trimIndent()
             
             try {
@@ -140,14 +145,19 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
             val tagNames = currentTags.map { it.name }
             
             val sql = """
-                SELECT a.id, a.title, a.url, a.published_at, a.description, 
-                       a.duration, a.thumbnail_url, COUNT(DISTINCT t.name) AS match_count
+                SELECT a.id, a.title, a.published_at,
+                       v.url, v.duration, v.thumbnail_url,
+                       c.description, c.is_members_only,
+                       COUNT(DISTINCT t.name) AS match_count
                 FROM archives a
+                LEFT JOIN video_details v ON a.id = v.archive_id
+                LEFT JOIN content_details c ON a.id = c.archive_id
                 JOIN archive_tags at ON a.id = at.archive_id
                 JOIN tags t ON at.tag_id = t.id
                 WHERE t.name IN (:tagNames) AND a.id != :archiveId
-                GROUP BY a.id, a.title, a.url, a.published_at, a.description, 
-                         a.duration, a.thumbnail_url
+                GROUP BY a.id, a.title, a.published_at,
+                         v.url, v.duration, v.thumbnail_url,
+                         c.description, c.is_members_only
                 ORDER BY match_count DESC, a.published_at DESC
                 LIMIT :limit
             """.trimIndent()
@@ -167,15 +177,32 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
         return RowMapper { rs, _ ->
             val id = rs.getString("id")
             
+            // VideoDetailsの構築
+            val url = rs.getString("url")
+            val videoDetails = if (url != null) {
+                VideoDetails(
+                    url = url,
+                    duration = rs.getString("duration")?.let { Duration(it) },
+                    thumbnailUrl = rs.getString("thumbnail_url")
+                )
+            } else null
+            
+            // ContentDetailsの構築
+            val description = rs.getString("description")
+            val contentDetails = if (description != null) {
+                ContentDetails(
+                    description = description,
+                    isMembersOnly = rs.getBoolean("is_members_only")
+                )
+            } else null
+            
             Archive(
                 id = ArchiveId(id),
                 title = rs.getString("title"),
-                url = rs.getString("url"),
                 publishedAt = rs.getTimestamp("published_at").toInstant(),
-                description = rs.getString("description"),
-                tags = getArchiveTags(id),
-                duration = rs.getString("duration")?.let { Duration(it) },
-                thumbnailUrl = rs.getString("thumbnail_url")
+                videoDetails = videoDetails,
+                contentDetails = contentDetails,
+                tags = getArchiveTags(id)
             )
         }
     }
@@ -212,27 +239,34 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
         
         // ベースクエリ
         val baseSelect = if (isCountQuery) {
-            "SELECT COUNT(*) FROM archives"
+            "SELECT COUNT(*) FROM archives a"
         } else {
-            "SELECT id, title, url, published_at, description, duration, thumbnail_url FROM archives"
+            """
+            SELECT a.id, a.title, a.published_at,
+                   v.url, v.duration, v.thumbnail_url,
+                   c.description, c.is_members_only
+            FROM archives a
+            LEFT JOIN video_details v ON a.id = v.archive_id
+            LEFT JOIN content_details c ON a.id = c.archive_id
+            """
         }
         
         // タイトル・説明の部分一致検索
         query?.let { q ->
             if (q.isNotBlank()) {
-                whereConditions.add("(title ILIKE :query OR description ILIKE :query)")
+                whereConditions.add("(a.title ILIKE :query OR c.description ILIKE :query)")
                 params["query"] = "%$q%"
             }
         }
         
         // 日付範囲検索
         startDate?.let { date ->
-            whereConditions.add("published_at >= :startDate")
+            whereConditions.add("a.published_at >= :startDate")
             params["startDate"] = Timestamp.from(date)
         }
         
         endDate?.let { date ->
-            whereConditions.add("published_at <= :endDate")
+            whereConditions.add("a.published_at <= :endDate")
             params["endDate"] = Timestamp.from(date)
         }
         
