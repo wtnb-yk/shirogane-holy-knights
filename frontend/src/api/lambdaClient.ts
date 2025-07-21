@@ -28,6 +28,7 @@ export class LambdaClient {
     params: ArchiveSearchParams
   ): Promise<ArchiveSearchResult> {
     try {
+      // Spring Cloud Functionのエンドポイント
       const response = await fetch(`${API_CONFIG.baseUrl}/archiveSearch`, {
         method: 'POST',
         headers: {

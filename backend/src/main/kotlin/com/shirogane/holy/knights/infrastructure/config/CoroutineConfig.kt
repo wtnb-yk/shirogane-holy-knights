@@ -3,15 +3,14 @@ package com.shirogane.holy.knights.infrastructure.config
 import kotlinx.coroutines.Dispatchers
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.reactive.config.WebFluxConfigurer
 
 /**
  * コルーチン設定
- * Spring MVCでのコルーチン対応の設定を行う
+ * Spring WebFluxでのコルーチン対応の設定を行う
  */
 @Configuration
-class CoroutineConfig : WebMvcConfigurer {
+class CoroutineConfig : WebFluxConfigurer {
     
     /**
      * コルーチンディスパッチャーの初期化を確実に行う
@@ -22,12 +21,5 @@ class CoroutineConfig : WebMvcConfigurer {
         // これによりSpring環境でのコルーチンコンテキスト問題を回避
         val dispatcher = Dispatchers.IO
         return "Dispatchers initialized"
-    }
-    
-    /**
-     * 非同期サポートの設定
-     */
-    override fun configureAsyncSupport(configurer: AsyncSupportConfigurer) {
-        configurer.setDefaultTimeout(30_000) // 30秒
     }
 }
