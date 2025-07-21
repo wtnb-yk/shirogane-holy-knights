@@ -15,20 +15,20 @@ interface ArchiveRepository {
      * @param offset オフセット
      * @return アーカイブのリスト
      */
-    suspend fun findAll(limit: Int, offset: Int): List<Archive>
+    fun findAll(limit: Int, offset: Int): List<Archive>
     
     /**
      * 総件数を取得
      * @return アーカイブの総数
      */
-    suspend fun count(): Int
+    fun count(): Int
     
     /**
      * IDによるアーカイブ取得
      * @param id アーカイブID
      * @return アーカイブ情報（存在しない場合はnull）
      */
-    suspend fun findById(id: ArchiveId): Archive?
+    fun findById(id: ArchiveId): Archive?
     
     /**
      * 検索条件による検索
@@ -40,7 +40,7 @@ interface ArchiveRepository {
      * @param offset オフセット
      * @return 検索条件に合致するアーカイブのリスト
      */
-    suspend fun search(
+    fun search(
         query: String? = null,
         tags: List<String>? = null,
         startDate: Instant? = null,
@@ -57,7 +57,7 @@ interface ArchiveRepository {
      * @param endDate 終了日時
      * @return 検索条件に合致するアーカイブの総数
      */
-    suspend fun countBySearchCriteria(
+    fun countBySearchCriteria(
         query: String? = null,
         tags: List<String>? = null,
         startDate: Instant? = null,
@@ -70,5 +70,5 @@ interface ArchiveRepository {
      * @param limit 取得上限数
      * @return 関連するアーカイブのリスト
      */
-    suspend fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive>
+    fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive>
 }

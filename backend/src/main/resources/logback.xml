@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- コンソール出力設定 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Spring Web関連のより詳細なログ -->
+    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="com.shirogane.holy.knights" level="DEBUG"/>
+    
+    <!-- Kotlinコルーチンのデバッグログ -->
+    <logger name="kotlinx.coroutines" level="DEBUG"/>
+
+    <!-- ルートロガー -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

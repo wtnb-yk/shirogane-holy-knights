@@ -15,6 +15,11 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - shirogane-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # バックエンドサービス
   backend:
@@ -22,14 +27,42 @@ services:
       context: ./backend
     container_name: shirogane-backend
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       JDBC_DATABASE_URL: jdbc:postgresql://postgres:5432/shirogane_db
       JDBC_DATABASE_USERNAME: postgres
       JDBC_DATABASE_PASSWORD: postgres
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: http://frontend:3000
     ports:
       - "8080:8080"
+    networks:
+      - shirogane-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # フロントエンドサービス
+  frontend:
+    image: node:18-alpine
+    container_name: shirogane-frontend
+    volumes:
+      - ./frontend:/app
+      # キャッシュをマウントに含めないようにする
+      - /app/node_modules
+      - /app/.next
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:8080
+    depends_on:
+      backend:
+        condition: service_healthy
     networks:
       - shirogane-network
 

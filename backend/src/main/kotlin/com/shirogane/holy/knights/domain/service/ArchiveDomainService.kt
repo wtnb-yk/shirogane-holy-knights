@@ -3,6 +3,7 @@ package com.shirogane.holy.knights.domain.service
 import com.shirogane.holy.knights.domain.model.Archive
 import com.shirogane.holy.knights.domain.model.ArchiveId
 import com.shirogane.holy.knights.domain.repository.ArchiveRepository
+import org.springframework.stereotype.Service
 import java.time.Instant
 
 /**
@@ -10,6 +11,7 @@ import java.time.Instant
  * 複数のエンティティを跨いだビジネスロジックや
  * 1つのエンティティに閉じることが不自然な操作を担当
  */
+@Service
 class ArchiveDomainService(private val archiveRepository: ArchiveRepository) {
     
     /**
@@ -20,7 +22,7 @@ class ArchiveDomainService(private val archiveRepository: ArchiveRepository) {
      * @param limit 取得上限
      * @return 関連アーカイブのリスト
      */
-    suspend fun findRelatedArchives(archiveId: ArchiveId, limit: Int): List<Archive> {
+    fun findRelatedArchives(archiveId: ArchiveId, limit: Int): List<Archive> {
         val archive = archiveRepository.findById(archiveId) ?: return emptyList()
         
         // タグが無い場合は関連アーカイブも取得できない
@@ -47,7 +49,7 @@ class ArchiveDomainService(private val archiveRepository: ArchiveRepository) {
      * @param limit 取得上限
      * @return 人気アーカイブのリスト
      */
-    suspend fun findPopularArchives(startDate: Instant, endDate: Instant, limit: Int): List<Archive> {
+    fun findPopularArchives(startDate: Instant, endDate: Instant, limit: Int): List<Archive> {
         // 視聴回数や「いいね」などの指標でソートする予定
         // 現状では日付の新しい順に返す
         return archiveRepository.search(

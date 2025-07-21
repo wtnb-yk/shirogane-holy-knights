@@ -1,12 +1,10 @@
-package com.shirogane.holy.knights.adapter.out.persistence
+package com.shirogane.holy.knights.adapter.gateway
 
 import com.shirogane.holy.knights.domain.model.Archive
 import com.shirogane.holy.knights.domain.model.ArchiveId
 import com.shirogane.holy.knights.domain.model.Duration
 import com.shirogane.holy.knights.domain.model.Tag
 import com.shirogane.holy.knights.domain.repository.ArchiveRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
@@ -20,6 +18,13 @@ import java.util.*
  * アーカイブリポジトリの実装
  * Spring JdbcTemplateを使用してデータベースアクセスを実装
  */
+import org.springframework.stereotype.Repository
+
+/**
+ * アーカイブリポジトリの実装
+ * Spring JdbcTemplateを使用してデータベースアクセスを実装
+ */
+@Repository
 class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRepository {
     
     private val namedJdbcTemplate = NamedParameterJdbcTemplate(jdbcTemplate)
@@ -27,8 +32,8 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
     /**
      * 全アーカイブを取得
      */
-    override suspend fun findAll(limit: Int, offset: Int): List<Archive> {
-        return withContext(Dispatchers.IO) {
+    override fun findAll(limit: Int, offset: Int): List<Archive> {
+        
             val sql = """
                 SELECT id, title, url, published_at, description, duration, thumbnail_url
                 FROM archives
@@ -36,24 +41,22 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
                 LIMIT ? OFFSET ?
             """.trimIndent()
             
-            jdbcTemplate.query(sql, arrayOf(limit, offset), archiveRowMapper())
-        }
+            return jdbcTemplate.query(sql, arrayOf(limit, offset), archiveRowMapper())
     }
     
     /**
      * 総件数を取得
      */
-    override suspend fun count(): Int {
-        return withContext(Dispatchers.IO) {
-            jdbcTemplate.queryForObject("SELECT COUNT(*) FROM archives", Int::class.java) ?: 0
-        }
+    override fun count(): Int {
+        
+            return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM archives", Int::class.java) ?: 0
     }
     
     /**
      * IDによるアーカイブ取得
      */
-    override suspend fun findById(id: ArchiveId): Archive? {
-        return withContext(Dispatchers.IO) {
+    override fun findById(id: ArchiveId): Archive? {
+        
             val sql = """
                 SELECT id, title, url, published_at, description, duration, thumbnail_url
                 FROM archives
@@ -61,17 +64,16 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
             """.trimIndent()
             
             try {
-                jdbcTemplate.queryForObject(sql, arrayOf(id.value), archiveRowMapper())
+                return jdbcTemplate.queryForObject(sql, arrayOf(id.value), archiveRowMapper())
             } catch (e: Exception) {
-                null
+                return null
             }
-        }
     }
     
     /**
      * 検索条件による検索
      */
-    override suspend fun search(
+    override fun search(
         query: String?,
         tags: List<String>?,
         startDate: Instant?,
@@ -79,7 +81,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
         limit: Int,
         offset: Int
     ): List<Archive> {
-        return withContext(Dispatchers.IO) {
+        
             // 検索クエリの構築
             val (sqlQuery, params) = buildSearchQuery(
                 query = query,
@@ -97,20 +99,19 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
             
             val paramMap = MapSqlParameterSource(params).addValue("limit", limit).addValue("offset", offset)
             
-            namedJdbcTemplate.query(finalSql, paramMap, archiveRowMapper())
-        }
+            return namedJdbcTemplate.query(finalSql, paramMap, archiveRowMapper())
     }
     
     /**
      * 検索条件による総件数取得
      */
-    override suspend fun countBySearchCriteria(
+    override fun countBySearchCriteria(
         query: String?,
         tags: List<String>?,
         startDate: Instant?,
         endDate: Instant?
     ): Int {
-        return withContext(Dispatchers.IO) {
+        
             // 検索クエリの構築（COUNT用）
             val (sqlQuery, params) = buildSearchQuery(
                 query = query,
@@ -120,22 +121,20 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
                 isCountQuery = true
             )
             
-            namedJdbcTemplate.queryForObject(sqlQuery, params, Int::class.java) ?: 0
-        }
+            return namedJdbcTemplate.queryForObject(sqlQuery, params, Int::class.java) ?: 0
     }
     
     /**
      * 関連アーカイブ取得
      */
-    override suspend fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive> {
-        return withContext(Dispatchers.IO) {
-            // IDから現在のアーカイブのタグを取得
-            val currentTags = getArchiveTags(id.value)
-            
-            if (currentTags.isEmpty()) {
-                // タグがない場合は最新のアーカイブを返す
-                return@withContext findAll(limit, 0)
-            }
+    override fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive> {
+        // IDから現在のアーカイブのタグを取得
+        val currentTags = getArchiveTags(id.value)
+        
+        if (currentTags.isEmpty()) {
+            // タグがない場合は最新のアーカイブを返す
+            return findAll(limit, 0)
+        }
             
             // タグの名前リストを作成
             val tagNames = currentTags.map { it.name }
@@ -158,8 +157,7 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
                 .addValue("archiveId", id.value)
                 .addValue("limit", limit)
             
-            namedJdbcTemplate.query(sql, params, archiveRowMapper())
-        }
+        return namedJdbcTemplate.query(sql, params, archiveRowMapper())
     }
     
     /**

@@ -15,7 +15,7 @@ interface ArchiveUseCasePort {
      * @param pageSize 1ページあたりの件数
      * @return アーカイブ検索結果DTO
      */
-    suspend fun getAllArchives(page: Int = 1, pageSize: Int = 20): ArchiveSearchResultDto
+    fun getAllArchives(page: Int = 1, pageSize: Int = 20): ArchiveSearchResultDto
     
     /**
      * IDによるアーカイブ詳細取得

@@ -1,4 +1,4 @@
-package com.shirogane.holy.knights.adapter.`in`.controller
+package com.shirogane.holy.knights.adapter.controller
 
 import com.shirogane.holy.knights.application.dto.ArchiveDto
 import com.shirogane.holy.knights.application.dto.ArchiveSearchParamsDto
@@ -23,16 +23,18 @@ class ArchiveRestController(private val archiveUseCase: ArchiveUseCasePort) {
      * アーカイブ一覧を取得
      */
     @GetMapping
-    suspend fun getAllArchives(
+    fun getAllArchives(
         @RequestParam(defaultValue = "1") page: Int,
         @RequestParam(defaultValue = "20") pageSize: Int
-    ): ResponseEntity<ArchiveSearchResultDto> {
+    ): ResponseEntity<Any> {
         return try {
             val result = archiveUseCase.getAllArchives(page, pageSize)
             ResponseEntity.ok(result)
         } catch (e: Exception) {
             logger.error("アーカイブ一覧取得エラー", e)
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("error" to "アーカイブ一覧の取得中にエラーが発生しました"))
         }
     }
     
