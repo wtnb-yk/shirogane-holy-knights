@@ -4,13 +4,8 @@ import { ArchiveSearchParams, ArchiveSearchResult, ApiError } from './types';
  * Lambda関数のエンドポイント設定
  */
 const API_CONFIG = {
-  // ブラウザからアクセス可能なURL（Docker環境ではlocalhost:8080を使用）
-  // Docker内部では backend:8080 だが、ブラウザからは localhost:8080 でアクセス
-  baseUrl: typeof window !== 'undefined' 
-    ? window.location.hostname === 'localhost' 
-      ? 'http://localhost:8080' 
-      : process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'
-    : process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080',
+  // 環境変数から取得するか、デフォルトとしてlocalhostを使用
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080',
 };
 
 /**
