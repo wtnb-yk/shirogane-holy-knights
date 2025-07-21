@@ -10,6 +10,7 @@ data class Archive(
     val id: ArchiveId,
     val title: String,
     val publishedAt: Instant,
+    val channelId: ChannelId,
     val videoDetails: VideoDetails? = null,
     val contentDetails: ContentDetails? = null,
     val tags: List<Tag> = emptyList()
@@ -37,6 +38,14 @@ data class ContentDetails(
  */
 @JvmInline
 value class ArchiveId(val value: String) {
+    override fun toString(): String = value
+}
+
+/**
+ * チャンネルID値オブジェクト
+ */
+@JvmInline
+value class ChannelId(val value: String) {
     override fun toString(): String = value
 }
 

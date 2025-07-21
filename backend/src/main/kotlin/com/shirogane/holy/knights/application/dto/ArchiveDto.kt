@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter
 data class ArchiveDto(
     val id: String,
     val title: String,
+    val channelId: String,
     val url: String?,
     val publishedAt: String, // ISO 8601形式の日時文字列
     val description: String? = null,
@@ -29,6 +30,7 @@ data class ArchiveDto(
             return ArchiveDto(
                 id = archive.id.value,
                 title = archive.title,
+                channelId = archive.channelId.value,
                 url = archive.videoDetails?.url,
                 publishedAt = archive.publishedAt.toString(),
                 description = archive.contentDetails?.description,
