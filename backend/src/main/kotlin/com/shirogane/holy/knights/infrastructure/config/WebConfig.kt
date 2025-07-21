@@ -1,31 +1,24 @@
 package com.shirogane.holy.knights.infrastructure.config
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.filter.CorsFilter
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication
-import org.springframework.context.annotation.Profile
+import org.springframework.web.cors.reactive.CorsWebFilter
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
+import org.springframework.web.reactive.config.WebFluxConfigurer
 
 /**
- * Web設定
- * CORS設定やWebMVC設定を行う
- * 
- * MVCタイプのアプリケーションでのみ有効
+ * WebFlux設定
+ * CORS設定やReactiveルーティング設定を行う
  */
 @Configuration
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-class WebConfig : WebMvcConfigurer {
+class WebConfig : WebFluxConfigurer {
 
     /**
      * CORS設定
      */
     @Bean
-    fun corsFilter(): CorsFilter {
-        val source = UrlBasedCorsConfigurationSource()
+    fun corsFilter(): CorsWebFilter {
         val config = CorsConfiguration()
         
         // 開発環境用のCORS設定
@@ -38,7 +31,9 @@ class WebConfig : WebMvcConfigurer {
         config.allowCredentials = false
         config.maxAge = 3600L
         
+        val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
-        return CorsFilter(source)
+        
+        return CorsWebFilter(source)
     }
 }

@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: shirogane-holy-knights-api
+  main:
+    web-application-type: reactive
   datasource:
     url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/shirogane_db}
     username: ${JDBC_DATABASE_USERNAME:postgres}
@@ -48,8 +50,20 @@ logging:
     com.shirogane.holy.knights: INFO
     org.springframework.web: INFO
     
-# AWS Lambda関連設定は現在無効化中
-# aws:
-#   lambda:
-#     function:
-#       handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker
+# Spring Cloud Function設定
+spring.cloud.function:
+  definition: archiveSearch
+  scan:
+    packages: com.shirogane.holy.knights.infrastructure.lambda.functions
+  web:
+    export:
+      enabled: true
+      auto-registration: true
+      path-pattern: /**
+  url-handler-enabled: true
+
+# AWS Lambda関連設定
+aws:
+  lambda:
+    function:
+      handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker

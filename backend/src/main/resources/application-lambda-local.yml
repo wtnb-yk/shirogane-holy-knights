@@ -1,7 +1,9 @@
 spring:
-  profiles: lambda-local
+  config:
+    activate:
+      on-profile: lambda-local
   datasource:
-    url: jdbc:postgresql://localhost:5432/shirogane_db
+    url: jdbc:postgresql://postgres:5432/shirogane_db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -17,6 +19,8 @@ logging:
     root: INFO
     com.shirogane.holy.knights: DEBUG
     org.springframework.cloud.function: DEBUG
+    org.springframework.cloud.function.web.mvc: TRACE
+    org.springframework.web.servlet.handler: TRACE
 
 # Spring Cloud Function設定
 spring.cloud.function:
@@ -27,6 +31,8 @@ spring.cloud.function:
     export:
       enabled: true
       auto-registration: true
+      path-pattern: /**
+  url-handler-enabled: true
       
 # CORS設定
 cors:
