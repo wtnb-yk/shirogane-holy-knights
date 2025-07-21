@@ -20,7 +20,10 @@
 
 import os
 import csv
+import time
+import datetime
 import pandas as pd
+import uuid
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -179,12 +182,31 @@ def convert_duration_to_hhmmss(duration_str):
     # 時:分:秒 の形式で返す
     return f"{h:02d}:{m:02d}:{s:02d}"
 
-def save_to_csv(data, output_file):
+def create_output_directory():
+    """出力ディレクトリを作成"""
+    # メインのresultディレクトリを作成
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    result_dir = os.path.join(base_dir, "result")
+    
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+    
+    # 現在日時とUUIDを使用して固有のディレクトリ名を作成
+    now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    unique_id = str(uuid.uuid4())[:8]
+    output_dir = os.path.join(result_dir, f"{now}_{unique_id}")
+    
+    os.makedirs(output_dir)
+    print(f"出力ディレクトリを作成しました: {output_dir}")
+    
+    return output_dir
+
+def save_to_csv(data, output_file, output_dir):
     """データをCSVファイルに保存"""
     df = pd.DataFrame(data)
     
     # 出力ファイルパスを作成
-    output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), output_file)
+    output_path = os.path.join(output_dir, output_file)
     
     # CSVに保存
     df.to_csv(output_path, index=False, encoding='utf-8')
@@ -199,6 +221,9 @@ def main():
         return
 
     try:
+        # 出力ディレクトリを作成
+        output_dir = create_output_directory()
+        
         # YouTube Data API サービスを初期化
         youtube = get_youtube_service()
         
@@ -218,13 +243,17 @@ def main():
         archives, video_details, content_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
         
         # CSVファイルに保存
-        save_to_csv([channel_info], 'channels.csv')
-        save_to_csv([channel_details], 'channel_details.csv')
-        save_to_csv(archives, 'archives.csv')
-        save_to_csv(video_details, 'video_details.csv')
-        save_to_csv(content_details, 'content_details.csv')
+        save_to_csv([channel_info], 'channels.csv', output_dir)
+        save_to_csv([channel_details], 'channel_details.csv', output_dir)
+        save_to_csv(archives, 'archives.csv', output_dir)
+        save_to_csv(video_details, 'video_details.csv', output_dir)
+        save_to_csv(content_details, 'content_details.csv', output_dir)
         
-        print(f"処理完了: 合計 {len(archives)} 件の動画情報をCSV形式で保存しました")
+        # 出力ディレクトリと結果のサマリを表示
+        print(f"\n=== 処理完了 ===")
+        print(f"出力ディレクトリ: {output_dir}")
+        print(f"取得したチャンネル: {channel_info['title']}")
+        print(f"取得した動画数: {len(archives)} 件")
         
     except HttpError as e:
         print(f"HTTPエラーが発生しました: {e.resp.status} {e.content}")
