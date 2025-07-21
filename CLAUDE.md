@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-# 団員ポータル開発構成・設計まとめ（Kotlinバックエンド版・認証後回し版）
+# 団員ポータル開発構成・設計まとめ（Kotlin/Spring Bootバックエンド版・認証後回し版）
 
 ## 1. アプリ名・目的
 - **アプリ名**：団員ポータル  
@@ -17,14 +17,14 @@
 |----------------|-----------------------------------|------------------------------------------------------|
 | フロントエンド  | Next.js（App Router）               | Reactベースの最新ルーティング構成を使用              |
 | ホスティング    | AWS Amplify Console               | Next.jsアプリのビルド・デプロイ・ホスティング          |
-| バックエンドAPI | AWS Lambda + API Gateway           | Kotlin（Ktor）でREST API。GraalVMネイティブコンパイルで高速起動化 |
+| バックエンドAPI | AWS Lambda + API Gateway           | Kotlin（Spring Boot）でREST API。GraalVMネイティブコンパイルで高速起動化 |
 | データベース    | Amazon RDS（PostgreSQL）           | フルリレーショナルDBで柔軟な検索・拡張が可能          |
 | 認証            | Amazon Cognito（Amplify Auth）     | 認証機能は後から段階的に導入                            |
 | IaC            | Terraform / CloudFormation         | AWSリソース環境をコードで管理                          |
 | CI/CD          | Amplify Console / GitHub Actions  | ビルド・テスト・デプロイの自動化                       |
 
 ## 4. リポジトリ構成（ルート直下ディレクトリ）
-- `backend/`：Kotlin（Ktor）Lambdaバックエンドコード  
+- `backend/`：Kotlin（Spring Boot）バックエンドコード  
   - `src/main/kotlin/com/shirogane/holy/knights/`
     - `adapter/`：外部インターフェース層（controllerとgatewayを含む）
     - `application/`：アプリケーション層（ユースケース、DTO、ポート）
@@ -36,11 +36,12 @@
 - `docs/`：設計・仕様・ドキュメント関連ファイル
 
 ## 5. バックエンド設計ポイント
-- **Ktor採用**：軽量でLambda向きのKotlinフレームワーク。  
+- **Spring Boot採用**：安定したエコシステムと豊富なライブラリを持つフレームワーク。
 - **GraalVMネイティブコンパイル**：コールドスタート時間の短縮。  
-- **OpenAPI仕様採用**：API仕様・ドキュメントを一元管理し、開発効率・保守性向上。  
-- **PostgreSQL接続**：標準JDBCドライバ利用予定。  
-- **RDS Proxy**：後回しにし、運用状況をみて段階的導入予定。
+- **Spring Web MVC**：REST APIの実装に最適なコントローラーモデル。
+- **Spring Data JDBC**：データアクセスの簡素化。
+- **PostgreSQL接続**：標準JDBCドライバ利用。  
+- **Spring Cloud Function**：AWS Lambdaサポートの予定。
 - **ヘキサゴナルアーキテクチャ採用**：アプリケーション、ドメイン、インフラの分離による保守性・テスト容易性の向上。
 
 ## 6. 開発・デプロイ体制
@@ -52,7 +53,7 @@
 
 1. **環境構築と基盤整備**  
    - IaCでAWSリソース構築（認証無し）。  
-   - Ktor＋GraalVM環境セットアップ。  
+   - Spring Boot＋GraalVM環境セットアップ。  
 
 2. **APIのプロトタイプ実装**  
    - 最小限の検索・配信一覧APIを軽量OpenAPI定義で設計し、試験的に実装。  

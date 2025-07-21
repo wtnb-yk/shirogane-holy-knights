@@ -63,4 +63,12 @@ interface ArchiveRepository {
         startDate: Instant? = null,
         endDate: Instant? = null
     ): Int
+    
+    /**
+     * 関連アーカイブ取得
+     * @param id アーカイブID
+     * @param limit 取得上限数
+     * @return 関連するアーカイブのリスト
+     */
+    suspend fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive>
 }
