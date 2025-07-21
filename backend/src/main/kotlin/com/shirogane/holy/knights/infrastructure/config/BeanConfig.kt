@@ -1,6 +1,6 @@
 package com.shirogane.holy.knights.infrastructure.config
 
-import com.shirogane.holy.knights.adapter.out.persistence.ArchiveRepositoryImpl
+import com.shirogane.holy.knights.adapter.gateway.ArchiveRepositoryImpl
 import com.shirogane.holy.knights.application.port.`in`.ArchiveUseCasePort
 import com.shirogane.holy.knights.application.usecase.ArchiveUseCaseImpl
 import com.shirogane.holy.knights.domain.repository.ArchiveRepository
@@ -38,8 +38,9 @@ class BeanConfig {
     @Bean
     fun archiveUseCase(
         archiveRepository: ArchiveRepository,
-        archiveDomainService: ArchiveDomainService
+        archiveDomainService: ArchiveDomainService,
+        coroutineScope: kotlinx.coroutines.CoroutineScope
     ): ArchiveUseCasePort {
-        return ArchiveUseCaseImpl(archiveRepository, archiveDomainService)
+        return ArchiveUseCaseImpl(archiveRepository, archiveDomainService, coroutineScope)
     }
 }

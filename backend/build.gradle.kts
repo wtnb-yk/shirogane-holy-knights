@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.serialization") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
     id("org.springframework.boot") version "3.2.5"
     id("io.spring.dependency-management") version "1.1.4"
     application
@@ -39,6 +40,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     
+    // Flyway for DB migrations
+    implementation("org.flywaydb:flyway-core")
+    
     // Spring Cloud
     implementation("org.springframework.cloud:spring-cloud-function-web")
     
@@ -59,6 +63,9 @@ dependencies {
     
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinxCoroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$kotlinxCoroutinesVersion")
     
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -74,6 +81,14 @@ dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
     }
+}
+
+allOpen {
+    annotation("org.springframework.stereotype.Service")
+    annotation("org.springframework.stereotype.Component")
+    annotation("org.springframework.stereotype.Repository")
+    annotation("org.springframework.stereotype.Controller")
+    annotation("org.springframework.web.bind.annotation.RestController")
 }
 
 tasks.withType<KotlinCompile> {
