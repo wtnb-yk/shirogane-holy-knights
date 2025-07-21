@@ -17,7 +17,7 @@ RUN chmod +x ./gradlew
 COPY src ./src
 
 # アプリケーションをビルド
-RUN ./gradlew build --no-daemon
+RUN ./gradlew build -x processAot --no-daemon
 
 # ヘルスチェック
 HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 \
@@ -31,7 +31,7 @@ ENV FRONTEND_URL=http://localhost:3000
 
 # メインクラスを直接実行する
 # 起動コマンド
-ENTRYPOINT ["java", "-cp", "/app/build/libs/shirogane-holy-knights-all.jar", "com.shirogane.holy.knights.Application"]
+ENTRYPOINT ["java", "-jar", "/app/build/libs/shirogane-holy-knights-0.1.0.jar"]
 
 # コンテナがリッスンするポート
 EXPOSE 8080

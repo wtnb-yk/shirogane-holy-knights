@@ -71,21 +71,31 @@ backend/src/main/kotlin/com/shirogane/holy/knights
 - `docs/backend-architecture.md` - バックエンドアーキテクチャの詳細説明
 - `docs/refactoring-progress.md` - リファクタリング作業の記録
 
+## 完了した移行作業
+
+### Spring Boot への移行
+1. **プロジェクト構造の再構成**
+   - Spring Boot プロジェクト構造への変更
+   - build.gradle.kts の更新（Spring Boot 依存関係の追加）
+   - アプリケーション起動クラスの作成
+   - 基本設定ファイル（application.yml）の作成
+
+2. **インフラストラクチャ層の移行**
+   - データベース接続設定の Spring Boot 方式への変更
+   - 依存性注入の Spring 方式への変更
+   - CORS設定の移行
+
+3. **アダプタ層の移行**
+   - コントローラー（入力アダプタ）の Spring MVC への変換
+   - リポジトリ（出力アダプタ）の Spring JDBC への変換
+
+4. **動作確認とクリーンアップ**
+   - Dockerでの動作確認
+   - 不要になったファイルの削除
+
 ## 残作業と今後の計画
 
 ### 短期計画
-1. **Spring Boot への移行**
-   - Ktor から Spring Boot へのフレームワーク移行
-   - 既存機能の移植
-   - 依存性注入の Spring 方式への変更
-   - レイヤー構造の維持とコード整理
-   - AWS Lambda との統合再設定
-
-2. **バックエンドの動作確認**
-   - ローカル環境での起動テスト
-   - エンドポイントのテスト
-   - データベース接続確認
-   - エラーハンドリングの検証
 
 3. **単体テストとAPIテストの追加**
    - ドメインモデルのテスト
@@ -167,16 +177,19 @@ backend/src/main/kotlin/com/shirogane/holy/knights
 - AWS Lambda デプロイパッケージの更新
 - GraalVM ネイティブコンパイル設定の更新
 
-### 技術選定
-- **Spring Boot**: 最新の安定バージョン（3.2.x以降）
-- **Spring Web MVC**: RESTコントローラー用
-- **Spring Data JDBC/JPA**: データアクセス層
-- **Spring Cloud Function**: AWS Lambda 統合
-- **Spring Boot Actuator**: ヘルスチェック、監視
-- **Spring Security**: 将来の認証機能用（初期段階では無効化）
+### 実装フレームワークと技術
+- **Spring Boot**: バージョン 3.2.5 を導入完了
+- **Spring Web MVC**: RESTコントローラー実装完了
+- **Spring JDBC**: データアクセス層を実装
+- **Spring Boot Actuator**: ヘルスチェックエンドポイント実装完了
 
-### 課題と対策
-- **コールドスタート**: Spring Boot の起動時間対策（GraalVMネイティブコンパイル、最小依存関係）
-- **互換性**: Ktor と Spring Boot の API 違いによる互換性維持の工夫
+### アーキテクチャの維持
+- **ヘキサゴナルアーキテクチャ**: アーキテクチャ構造は変更なく維持
+- **ドメイン層**: 変更無し（フレームワーク非依存を維持）
+- **アプリケーション層**: 最小限の調整のみ
+
+### 今後の課題
+- **AWS Lambda 統合**: Spring Cloud Function による AWS Lambda 統合の実装
+- **テストコードの追加**: Spring Boot Test を活用したテストコードの実装
+- **GraalVMネイティブコンパイル設定の再構築**
 - **学習コスト**: 開発チームへの Spring Boot トレーニングと知識共有
-- **テスト戦略**: 段階的移行に合わせたテスト戦略の見直し
