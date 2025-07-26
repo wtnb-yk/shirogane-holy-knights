@@ -20,7 +20,7 @@ export default function ArchivesList() {
           page: 1,
           pageSize: 20
         });
-        setArchives(searchResult.items);
+        setArchives(searchResult.items || []);
         setLoading(false);
       } catch (err) {
         setError('アーカイブの取得に失敗しました。');
@@ -65,7 +65,7 @@ export default function ArchivesList() {
                 {new Date(archive.publishedAt).toLocaleDateString('ja-JP')}
               </p>
               <div className="mb-4">
-                {archive.tags.map((tag) => (
+                {archive.tags?.map((tag) => (
                   <span key={tag} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                     #{tag}
                   </span>
