@@ -201,17 +201,56 @@ def create_output_directory():
     
     return output_dir
 
-def save_to_csv(data, output_file, output_dir):
-    """データをCSVファイルに保存"""
+def save_to_csv(data, output_file, output_dir, chunk_size=500):
+    """データをCSVファイルに保存（大きなファイルは分割）"""
     df = pd.DataFrame(data)
     
-    # 出力ファイルパスを作成
-    output_path = os.path.join(output_dir, output_file)
+    # データが空の場合
+    if len(df) == 0:
+        output_path = os.path.join(output_dir, output_file)
+        df.to_csv(output_path, index=False, encoding='utf-8')
+        print(f"データを {output_path} に保存しました")
+        return [output_path]
     
-    # CSVに保存
-    df.to_csv(output_path, index=False, encoding='utf-8')
-    print(f"データを {output_path} に保存しました")
-    return output_path
+    # データが500行以下の場合は通常の保存
+    if len(df) <= chunk_size:
+        output_path = os.path.join(output_dir, output_file)
+        df.to_csv(output_path, index=False, encoding='utf-8')
+        print(f"データを {output_path} に保存しました")
+        return [output_path]
+    
+    # 500行を超える場合は分割保存
+    output_paths = []
+    file_base, file_ext = os.path.splitext(output_file)
+    
+    for i, start in enumerate(range(0, len(df), chunk_size)):
+        end = min(start + chunk_size, len(df))
+        chunk_df = df.iloc[start:end]
+        
+        # 分割ファイル名を作成（例: archives_001.csv, archives_002.csv）
+        chunk_filename = f"{file_base}_{i+1:03d}{file_ext}"
+        chunk_path = os.path.join(output_dir, chunk_filename)
+        
+        # チャンクを保存
+        chunk_df.to_csv(chunk_path, index=False, encoding='utf-8')
+        print(f"データを {chunk_path} に保存しました（{start+1}〜{end}行目）")
+        output_paths.append(chunk_path)
+    
+    # 分割情報ファイルを作成
+    info_filename = f"{file_base}_info.txt"
+    info_path = os.path.join(output_dir, info_filename)
+    with open(info_path, 'w', encoding='utf-8') as f:
+        f.write(f"ファイル名: {output_file}\n")
+        f.write(f"総行数: {len(df)}\n")
+        f.write(f"分割数: {len(output_paths)}\n")
+        f.write(f"チャンクサイズ: {chunk_size}\n")
+        f.write(f"\n分割ファイル一覧:\n")
+        for path in output_paths:
+            f.write(f"  - {os.path.basename(path)}\n")
+    
+    print(f"分割情報を {info_path} に保存しました")
+    
+    return output_paths
 
 def main():
     """メイン処理"""
