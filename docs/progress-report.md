@@ -93,6 +93,18 @@ backend/src/main/kotlin/com/shirogane/holy/knights
 
 ## 追加実装作業
 
+### インフラストラクチャのコード化（IaC）
+1. **Terraform実装完了**
+   - モジュール化されたTerraform構成を実装
+   - 環境別（dev/prod）の設定ファイル構造
+   - 以下のAWSリソースをコード化：
+     - ネットワーク（VPC、サブネット、NAT Gateway、セキュリティグループ）
+     - RDS PostgreSQL（パラメータグループ、サブネットグループ含む）
+     - Lambda関数（IAMロール、CloudWatch Logs含む）
+     - API Gateway（ステージ、ログ設定含む）
+     - Amplify（ビルド設定、環境変数含む）
+   - セキュリティ対策（.gitignore更新、README作成）
+
 ### 開発環境整備
 
 1. **ローカル開発環境の整備**
@@ -134,8 +146,13 @@ backend/src/main/kotlin/com/shirogane/holy/knights
 
 ### 短期計画（優先度高）
 
-1. **インフラストラクチャ実装**
-   - AWSリソースのIaC実装（Terraform/CloudFormation）
+1. ✅ **インフラストラクチャ実装**
+   - ✅ AWSリソースのIaC実装（Terraform）
+     - ✅ ネットワーク（VPC、サブネット、セキュリティグループ）
+     - ✅ データベース（RDS PostgreSQL）
+     - ✅ Lambda関数とIAMロール
+     - ✅ API Gateway
+     - ✅ Amplifyフロントエンド
    - CI/CDパイプラインの構築
    - デプロイ自動化
 

@@ -1,0 +1,69 @@
+variable "environment" {
+  description = "Environment name"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "Subnet IDs for Lambda VPC configuration"
+  type        = list(string)
+}
+
+variable "security_group_ids" {
+  description = "Security group IDs for Lambda"
+  type        = list(string)
+}
+
+variable "lambda_jar_path" {
+  description = "Path to Lambda JAR file"
+  type        = string
+}
+
+variable "memory_size" {
+  description = "Lambda memory size in MB"
+  type        = number
+  default     = 512
+}
+
+variable "timeout" {
+  description = "Lambda timeout in seconds"
+  type        = number
+  default     = 30
+}
+
+variable "log_retention_days" {
+  description = "CloudWatch log retention in days"
+  type        = number
+  default     = 7
+}
+
+variable "db_host" {
+  description = "Database host endpoint"
+  type        = string
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+}
+
+variable "db_username" {
+  description = "Database username"
+  type        = string
+}
+
+variable "db_password" {
+  description = "Database password"
+  type        = string
+  sensitive   = true
+}
+
+variable "api_gateway_execution_arn" {
+  description = "API Gateway execution ARN"
+  type        = string
+  default     = ""
+}
