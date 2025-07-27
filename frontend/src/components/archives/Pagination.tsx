@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -39,20 +38,18 @@ export const Pagination = ({ currentPage, totalPages, hasMore, onPageChange }: P
 
     for (let i = startPage; i <= endPage; i++) {
       pages.push(
-        <motion.button
+        <button
           key={i}
           onClick={() => onPageChange(i)}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
             i === currentPage
               ? "bg-sage-300 text-white shadow-lg shadow-sage-300/30"
-              : "bg-white border border-sage-200 hover:bg-sage-100 text-sage-300"
+              : "bg-white border border-sage-200 hover:bg-sage-100 text-sage-300 hover:scale-110 hover:-translate-y-0.5"
           )}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
         >
           {i}
-        </motion.button>
+        </button>
       );
     }
     
@@ -75,12 +72,7 @@ export const Pagination = ({ currentPage, totalPages, hasMore, onPageChange }: P
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
-      className="flex items-center justify-center mt-12 gap-2"
-    >
+    <div className="flex items-center justify-center mt-12 gap-2">
       <button
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}
@@ -110,6 +102,6 @@ export const Pagination = ({ currentPage, totalPages, hasMore, onPageChange }: P
       >
         <ChevronRight className="w-5 h-5" />
       </button>
-    </motion.div>
+    </div>
   );
 };

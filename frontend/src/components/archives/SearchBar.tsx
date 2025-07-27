@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
 
 interface SearchBarProps {
@@ -18,12 +17,7 @@ export const SearchBar = ({
   disabled = false 
 }: SearchBarProps) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="mb-8 flex flex-wrap gap-4"
-    >
+    <div className="mb-8 flex flex-wrap gap-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
       <div className="flex-1 min-w-[300px] relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage-300 w-5 h-5" />
         <input
@@ -43,6 +37,6 @@ export const SearchBar = ({
         <Filter className="w-5 h-5 text-sage-300" />
         <span className="text-sage-300">フィルター</span>
       </button>
-    </motion.div>
+    </div>
   );
 };
