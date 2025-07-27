@@ -126,13 +126,6 @@ com.shirogane.holy.knights
 
 ## API エンドポイント
 
-現在実装されているAPIエンドポイントは以下のとおりです：
-
-- **GET /api/v1/archives**: アーカイブ一覧を取得
-- **GET /api/v1/archives/{id}**: 特定IDのアーカイブ詳細を取得
-- **GET /api/v1/archives/search**: 検索条件でアーカイブを検索
-- **GET /api/v1/archives/{id}/related**: 関連アーカイブを取得
-- **GET /health**: ヘルスチェック
 
 ## 今後の拡張予定
 

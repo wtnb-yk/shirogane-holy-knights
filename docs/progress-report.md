@@ -43,27 +43,6 @@
 
 ## 現在のディレクトリ構造
 
-```
-backend/src/main/kotlin/com/shirogane/holy/knights
-├── adapter
-│   ├── controller      # HTTPリクエストハンドラー
-│   └── persistence     # リポジトリ実装
-├── application
-│   ├── dto                 # データ転送オブジェクト
-│   ├── port
-│   │   ├── in              # 入力ポート（ユースケースインターフェース）
-│   │   └── out             # 出力ポート（リポジトリポートなど）
-│   └── usecase             # ユースケース実装
-├── domain
-│   ├── model               # エンティティと値オブジェクト
-│   ├── repository          # リポジトリインターフェース
-│   └── service             # ドメインサービス
-├── infrastructure
-│   ├── config              # アプリケーション設定と依存性注入
-│   ├── database            # データベース接続
-│   └── lambda              # AWS Lambda統合
-└── Application.kt          # アプリケーションエントリーポイント
-```
 
 ## 設計ドキュメント
 - `docs/backend-architecture.md` - バックエンドアーキテクチャの詳細説明
