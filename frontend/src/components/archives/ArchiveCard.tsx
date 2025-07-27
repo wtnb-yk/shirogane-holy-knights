@@ -2,8 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 import { Calendar, Tag, ExternalLink } from 'lucide-react';
 import { ArchiveDto } from '@/api/types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -14,36 +12,25 @@ interface ArchiveCardProps {
   index: number;
 }
 
-export const ArchiveCard = ({ archive, index }: ArchiveCardProps) => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  });
-
+export const ArchiveCard = React.memo(({ archive, index }: ArchiveCardProps) => {
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-      className="h-full"
+    <div 
+      className="h-full group opacity-0 animate-fade-in" 
+      style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
     >
-      <Card className="group h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-sage-200/40 bg-white border border-sage-200">
+      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border border-sage-200 hover:scale-[1.02] hover:-translate-y-1">
         {archive.thumbnailUrl && (
-          <div className="relative w-full h-48 overflow-hidden">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-              className="w-full h-full"
-            >
-              <Image 
-                src={archive.thumbnailUrl} 
-                alt={archive.title} 
-                fill
-                className="object-cover"
-              />
-            </motion.div>
+          <div className="relative w-full h-48 overflow-hidden bg-sage-100">
+            <Image 
+              src={archive.thumbnailUrl} 
+              alt={archive.title} 
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
         )}
@@ -74,19 +61,17 @@ export const ArchiveCard = ({ archive, index }: ArchiveCardProps) => {
           </div>
         </CardContent>
         <CardFooter className="p-5 pt-0">
-          <motion.a
+          <a
             href={archive.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sage-300 hover:text-gray-800 font-medium transition-colors duration-200"
-            whileHover={{ x: 5 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            className="inline-flex items-center gap-2 text-sage-300 hover:text-gray-800 font-medium transition-all duration-300 hover:translate-x-2"
           >
             YouTubeで視聴
             <ExternalLink className="w-4 h-4" />
-          </motion.a>
+          </a>
         </CardFooter>
       </Card>
-    </motion.div>
+    </div>
   );
-};
+});

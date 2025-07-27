@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { LambdaClient } from '@/api/lambdaClient';
 import { ArchiveDto } from '@/api/types';
 
@@ -55,9 +55,9 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
     fetchArchives();
   }, [currentPage, pageSize]);
 
-  const totalPages = Math.ceil(totalCount / pageSize);
+  const totalPages = useMemo(() => Math.ceil(totalCount / pageSize), [totalCount, pageSize]);
 
-  return {
+  return useMemo(() => ({
     archives,
     loading,
     error,
@@ -66,5 +66,5 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
     hasMore,
     totalPages,
     setCurrentPage,
-  };
+  }), [archives, loading, error, currentPage, totalCount, hasMore, totalPages, setCurrentPage]);
 };

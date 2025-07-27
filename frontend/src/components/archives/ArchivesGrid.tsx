@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { ArchiveDto } from '@/api/types';
 import { ArchiveCard } from './ArchiveCard';
 import { SkeletonCard } from './SkeletonCard';
@@ -25,27 +24,19 @@ export const ArchivesGrid = ({ archives, loading, error }: ArchivesGridProps) =>
 
   if (error) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-center py-20"
-      >
+      <div className="text-center py-20">
         <div className="text-6xl mb-4">😢</div>
         <p className="text-xl text-red-500">{error}</p>
-      </motion.div>
+      </div>
     );
   }
 
   if (archives.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-center py-20"
-      >
+      <div className="text-center py-20">
         <div className="text-6xl mb-4">🔍</div>
         <p className="text-xl text-gray-600">アーカイブが見つかりませんでした。</p>
-      </motion.div>
+      </div>
     );
   }
 
