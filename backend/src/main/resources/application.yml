@@ -20,7 +20,7 @@ spring:
       fail-on-unknown-properties: false
   webflux:
     cors:
-      allowed-origins: ${FRONTEND_URL:http://localhost:3000}
+      allowed-origins: ${FRONTEND_URL:http://localhost:*}
       allowed-methods: GET,POST,PUT,DELETE,OPTIONS
       allowed-headers: Content-Type,Authorization
       max-age: 3600
