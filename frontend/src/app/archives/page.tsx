@@ -9,6 +9,10 @@ export default function ArchivesList() {
   const [archives, setArchives] = useState<ArchiveDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const pageSize = 20;
 
   useEffect(() => {
     const fetchArchives = async () => {
@@ -17,10 +21,12 @@ export default function ArchivesList() {
         
         // アーカイブ検索関数を呼び出し
         const searchResult = await LambdaClient.callArchiveSearchFunction({
-          page: 1,
-          pageSize: 20
+          page: currentPage,
+          pageSize: pageSize
         });
         setArchives(searchResult.items || []);
+        setTotalCount(searchResult.totalCount);
+        setHasMore(searchResult.hasMore);
         setLoading(false);
       } catch (err) {
         setError('アーカイブの取得に失敗しました。');
@@ -30,7 +36,7 @@ export default function ArchivesList() {
     };
 
     fetchArchives();
-  }, []);
+  }, [currentPage]);
 
   if (loading) {
     return <div className="text-center py-10">読み込み中...</div>;
@@ -87,6 +93,59 @@ export default function ArchivesList() {
       {archives.length === 0 && (
         <div className="text-center py-10">
           アーカイブが見つかりませんでした。
+        </div>
+      )}
+
+      {/* ページネーション */}
+      {totalCount > pageSize && (
+        <div className="flex items-center justify-center space-x-2 mt-8">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            前
+          </button>
+          
+          {/* ページ番号 */}
+          {(() => {
+            const totalPages = Math.ceil(totalCount / pageSize);
+            const pages = [];
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+              pages.push(
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`px-3 py-2 text-sm font-medium border ${
+                    i === currentPage
+                      ? 'text-blue-600 bg-blue-50 border-blue-500'
+                      : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  {i}
+                </button>
+              );
+            }
+            return pages;
+          })()}
+          
+          <button
+            onClick={() => setCurrentPage(prev => prev + 1)}
+            disabled={!hasMore}
+            className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            次
+          </button>
+        </div>
+      )}
+
+      {/* ページ情報表示 */}
+      {totalCount > 0 && (
+        <div className="text-center text-sm text-gray-600 mt-4">
+          {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, totalCount)} / {totalCount} 件
         </div>
       )}
     </div>
