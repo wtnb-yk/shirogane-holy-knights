@@ -1,8 +1,10 @@
 # Amplify App
 resource "aws_amplify_app" "main" {
-  name         = "${var.project_name}-${var.environment}"
-  repository   = var.github_repository
-  access_token = var.github_access_token
+  name = "${var.project_name}-${var.environment}"
+
+  # GitHub連携は一旦無効にして手動デプロイに対応
+  # repository   = var.github_repository
+  # access_token = var.github_access_token
 
   build_spec = var.build_spec
 
@@ -23,15 +25,15 @@ resource "aws_amplify_app" "main" {
   }
 }
 
-# Amplify Branch
+# Amplify Branch (手動デプロイ用)
 resource "aws_amplify_branch" "main" {
   app_id      = aws_amplify_app.main.id
-  branch_name = var.github_branch
+  branch_name = "main"
 
   framework = "Next.js - SSR"
   stage     = var.environment == "prod" ? "PRODUCTION" : "DEVELOPMENT"
 
-  enable_auto_build = var.enable_auto_build
+  enable_auto_build = false
 }
 
 # Amplify Domain Association (optional)

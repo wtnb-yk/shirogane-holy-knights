@@ -144,36 +144,131 @@ backend/src/main/kotlin/com/shirogane/holy/knights
 
 ## 残作業と今後の計画
 
-### 短期計画（優先度高）
+### 2025年7月26日までの実装完了
 
-1. ✅ **インフラストラクチャ実装**
-   - ✅ AWSリソースのIaC実装（Terraform）
+1. **✅ Terraform State管理リソースの作成**
+   - S3バケット (`shirogane-holy-knights-terraform-state`) 作成完了
+   - DynamoDBテーブル (`shirogane-holy-knights-terraform-locks`) 作成完了
+   - Terraformバックエンド設定完了
+
+2. **✅ AWS IAMロール設定**
+   - GitHub Actions用のOIDCプロバイダー設定完了
+   - `GitHubActionsDeployRole` (arn:aws:iam::975069893654:role/GitHubActionsDeployRole) 作成完了
+   - GitHub ActionsからのAWSリソースアクセス権限設定完了
+
+3. **✅ Terraformによるインフラ構築テスト**
+   - モジュール化されたTerraform構成実装完了
      - ✅ ネットワーク（VPC、サブネット、セキュリティグループ）
-     - ✅ データベース（RDS PostgreSQL）
+     - ✅ データベース（RDS PostgreSQL - 既存インスタンスをimport）
      - ✅ Lambda関数とIAMロール
-     - ✅ API Gateway
-     - ✅ Amplifyフロントエンド
-   - CI/CDパイプラインの構築
-   - デプロイ自動化
+     - ⚠️ API Gateway（作成済みだがステージ設定に問題）
+     - ❌ Amplifyフロントエンド（作成失敗）
+   - dev環境へのリソース部分デプロイ完了
 
-2. ✅ **AWS Lambda用設定の整備とローカルテスト**
-   - ✅ Spring Cloud FunctionでのLambda統合
-   - ✅ ローカル環境での動作検証
-   - ✅ Lambda関数のデプロイガイドの作成
-   - ✅ フロントエンドからのLambda関数呼び出し実装（REST API→Lambda移行完了）
-   - ✅ 統合テスト環境の構築
-   - ✅ Lambda-フロントエンド連携ドキュメント作成
+4. **✅ バックエンドビルドとデプロイテスト**
+   - GraalVMネイティブイメージビルド成功
+   - Lambda関数 (`shirogane-holy-knights-dev-api`) へのJARファイルデプロイ成功
+   - Java17ランタイムでの動作確認完了
+   - Spring Cloud Function統合の課題特定
 
-3. **Docker Composeでのフルスタック環境の最終確認**
-   - フロントエンドとバックエンドの統合テスト
-   - 検索機能など全機能の確認
-   - データベースによるデータ共有テスト
+5. **✅ GitHub Actionsワークフローテスト**
+   - 5つのワークフローファイルの設定確認完了
+     - backend-build.yml
+     - terraform-deploy.yml
+     - lambda-deploy.yml
+     - frontend-test.yml
+     - deploy-pipeline.yml
+   - 必要なSecrets特定: `AWS_DEPLOY_ROLE_ARN`
+   - IAMロールARN確認完了
 
-4. **単体テストとAPIテストの追加**
+## 現在のdev環境の状態（2025年7月26日時点）
+
+### ✅ デプロイ完了
+- VPC、サブネット、セキュリティグループ
+- RDS PostgreSQL データベース (`shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com`)
+- Lambda関数 (`shirogane-holy-knights-dev-api`)
+- API Gateway (`iz6iumz75l`) - 基本リソース作成済み
+
+### ❌ 未完了/問題発生
+- API Gateway のステージ設定（エンドポイント未取得可能）
+- Amplify アプリ（作成されていない）
+- フロントエンドデプロイ
+- データベースマイグレーション未実行
+- Spring Cloud Function統合問題
+
+### 必要なGitHub Secrets設定
+- `AWS_DEPLOY_ROLE_ARN`: `arn:aws:iam::975069893654:role/GitHubActionsDeployRole`
+
+## 最新進捗アップデート（2025年7月27日）
+
+### ✅ インフラ構築完了
+1. **Terraform完全実装完了**
+   - 全AWSリソース（VPC、RDS、Lambda、API Gateway、Amplify）構築済み
+   - モジュール化構成で環境分離実現
+   - dev環境完全稼働中
+
+2. **構築済みリソース**
+   - **API Gateway**: `https://iz6iumz75l.execute-api.ap-northeast-1.amazonaws.com/dev`
+   - **Amplify**: `https://main.d3tuiikdacsjk0.amplifyapp.com`
+   - **Lambda**: `shirogane-holy-knights-dev-api`
+   - **RDS**: `shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com`
+
+### ❌ 重大な問題（未解決）
+
+#### 1. Lambda実行時エラー
+- **問題**: `ClassNotFoundException` - KotlinクラスがLambdaランタイムで見つからない
+- **状況**: JARファイルは正しくアップロードされているが、Java17ランタイムでクラスを読み込めない
+- **試行済み**: Spring Cloud Function、カスタムハンドラー、依存関係の確認
+- **現在のエラー**: `com.shirogane.holy.knights.infrastructure.lambda.SimpleApiHandler`クラスが見つからない
+
+#### 2. API機能停止
+- **影響**: API Gatewayへのリクエストが全て500エラー
+- **原因**: Lambda関数の実行失敗
+- **緊急度**: 🔥 最高（プロジェクト進行を完全に阻害）
+
+## 次の作業項目（優先度順）
+
+### 🚨 緊急対応（本日中）
+
+1. **Lambda実行問題の根本解決**
+   - **選択肢A**: プレーンJavaハンドラーへの完全切り替え
+   - **選択肢B**: GraalVMネイティブイメージの採用
+   - **選択肢C**: Fat JARの構造問題の特定・修正
+
+2. **ヘルスチェックAPIの実装**
+   - 最小限のJavaハンドラーで動作確認
+   - データベース接続テスト
+   - API Gateway疎通確認
+
+### 短期計画（今週中）
+
+3. **データベース初期化**
+   - Flyway マイグレーション実行
+   - サンプルデータ投入
+   - 接続テスト
+
+4. **基本API機能の復旧**
+   - アーカイブ検索API
+   - 一覧取得API
+   - Spring Boot機能の段階的復旧
+
+5. **フロントエンド連携**
+   - Next.jsアプリの実装
+   - API呼び出し機能
+   - 基本UI作成
+
+### 中期計画
+
+1. **単体テストとAPIテストの追加**
    - ドメインモデルのテスト
    - ユースケースのテスト
    - コントローラーのテスト
    - エンドツーエンドAPIテスト
+
+2. **CI/CDパイプライン完成**
+   - GitHub Actions Secrets設定
+   - 自動デプロイテスト
+   - 本番環境準備
 
 ### 中期計画
 1. **フロントエンド機能拡充**
@@ -192,66 +287,3 @@ backend/src/main/kotlin/com/shirogane/holy/knights
    - Spring Cache を活用したキャッシュ機能の追加
    - RDS Proxyの導入検討
    - 検索機能の高速化（ElasticSearch/OpenSearch検討）
-
-## Spring Boot への移行計画
-
-### 移行の目的と利点
-- **エコシステムの拡充**: Spring Boot の豊富なライブラリとツールを活用
-- **認証機能の強化**: Spring Security による堅牢な認証・認可機能の実装
-- **開発効率の向上**: 自動設定、スターター依存関係による設定簡略化
-- **運用監視の向上**: Spring Actuator によるヘルスチェックと監視機能
-- **AWSサービス連携の強化**: Spring Cloud AWS による統合の改善
-- **開発者エクスペリエンスの向上**: 広く採用されているフレームワークへの標準化
-
-### 移行の基本方針
-1. **アーキテクチャ構造の維持**: ヘキサゴナルアーキテクチャ（ポート・アンド・アダプター）パターンを維持
-2. **段階的移行**: 一気に変更せず、コンポーネントごとに段階的に移行
-3. **テスト重視**: 各移行ステップでのテスト自動化と検証
-4. **並行稼働**: 必要に応じて一時的に両フレームワークの並行稼働を検討
-
-### 移行手順
-
-#### 第1段階: プロジェクト構造の再構成
-- Spring Boot プロジェクト構造への変更
-- build.gradle.kts の更新（Spring Boot 依存関係の追加）
-- アプリケーション起動クラスの作成
-- 基本設定ファイル（application.yml）の作成
-
-#### 第2段階: インフラストラクチャ層の移行
-- データベース接続設定の Spring Boot 方式への変更
-- AWS Lambda ハンドラーの Spring Cloud Function 対応
-- 依存性注入の Spring 方式への変更
-
-#### 第3段階: アダプタ層の移行
-- コントローラー（入力アダプタ）の Spring MVC への変換
-- リポジトリ（出力アダプタ）の Spring Data JPA または JDBC への変換
-
-#### 第4段階: アプリケーション層とドメイン層の調整
-- ドメイン層はほぼ変更なし（フレームワーク非依存を維持）
-- アプリケーション層は最小限の調整（依存性注入の方法など）
-
-#### 第5段階: テストとデバッグ
-- ユニットテストの Spring Boot Test への移行
-- API テストの実施
-- エンドツーエンドテストの実施
-
-#### 第6段階: デプロイ方法の調整
-- AWS Lambda デプロイパッケージの更新
-- GraalVM ネイティブコンパイル設定の更新
-
-### 実装フレームワークと技術
-- **Spring Boot**: バージョン 3.2.5 を導入完了
-- **Spring Web MVC**: RESTコントローラー実装完了
-- **Spring JDBC**: データアクセス層を実装
-- **Spring Boot Actuator**: ヘルスチェックエンドポイント実装完了
-
-### アーキテクチャの維持
-- **ヘキサゴナルアーキテクチャ**: アーキテクチャ構造は変更なく維持
-- **ドメイン層**: 変更無し（フレームワーク非依存を維持）
-- **アプリケーション層**: 最小限の調整のみ
-
-### 今後の課題
-- **AWS Lambda 統合**: Spring Cloud Function による AWS Lambda 統合の実装
-- **テストコードの追加**: Spring Boot Test を活用したテストコードの実装
-- **GraalVMネイティブコンパイル設定の再構築**
-- **学習コスト**: 開発チームへの Spring Boot トレーニングと知識共有

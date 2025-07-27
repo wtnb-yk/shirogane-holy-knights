@@ -1,0 +1,155 @@
+name: Terraform Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+      terraform_action:
+        description: 'Terraform action to perform'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'infrastructure/terraform/**'
+      - '.github/workflows/terraform-deploy.yml'
+
+env:
+  TERRAFORM_VERSION: '1.6.0'
+
+jobs:
+  terraform:
+    name: 'Terraform ${{ github.event.inputs.terraform_action || "plan" }}'
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    
+    env:
+      ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+      TF_ACTION: ${{ github.event.inputs.terraform_action || 'plan' }}
+    
+    defaults:
+      run:
+        working-directory: infrastructure/terraform/environments/${{ github.event.inputs.environment || 'dev' }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+        aws-region: ap-northeast-1
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+    - name: Terraform Format Check
+      id: fmt
+      run: terraform fmt -check -recursive ..
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      run: |
+        terraform init \
+          -backend-config="bucket=shirogane-holy-knights-terraform-state" \
+          -backend-config="key=env/${{ env.ENVIRONMENT }}/terraform.tfstate" \
+          -backend-config="region=ap-northeast-1" \
+          -backend-config="dynamodb_table=shirogane-holy-knights-terraform-locks"
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Build Lambda JAR
+      if: env.TF_ACTION != 'destroy'
+      run: |
+        cd ${{ github.workspace }}/backend
+        chmod +x gradlew
+        ./gradlew shadowJar
+
+    - name: Terraform Plan
+      id: plan
+      if: env.TF_ACTION == 'plan' || env.TF_ACTION == 'apply'
+      run: |
+        terraform plan -no-color -out=tfplan \
+          -var="github_repository=${{ github.repository }}" \
+          -var="github_access_token=${{ secrets.GITHUB_TOKEN }}"
+      continue-on-error: true
+
+    - name: Update Pull Request
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        script: |
+          const output = `#### Terraform Format and Style 🖌 \`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️ \`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖 \`${{ steps.validate.outcome }}\`
+          #### Terraform Plan 📖 \`${{ steps.plan.outcome }}\`
+          
+          <details><summary>Show Plan</summary>
+          
+          \`\`\`\n
+          ${process.env.PLAN}
+          \`\`\`
+          
+          </details>
+          
+          *Environment: \`${{ env.ENVIRONMENT }}\`*
+          *Action: \`${{ env.TF_ACTION }}\`*
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    - name: Terraform Apply
+      if: env.TF_ACTION == 'apply' && github.event_name == 'workflow_dispatch'
+      run: |
+        terraform apply -auto-approve tfplan
+
+    - name: Terraform Destroy
+      if: env.TF_ACTION == 'destroy' && github.event_name == 'workflow_dispatch'
+      run: |
+        terraform destroy -auto-approve \
+          -var="github_repository=${{ github.repository }}" \
+          -var="github_access_token=${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Generate deployment summary
+      if: always()
+      run: |
+        echo "# Terraform Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment:** ${{ env.ENVIRONMENT }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Action:** ${{ env.TF_ACTION }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Format Check:** ${{ steps.fmt.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Initialization:** ${{ steps.init.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Validation:** ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Plan:** ${{ steps.plan.outcome }}" >> $GITHUB_STEP_SUMMARY

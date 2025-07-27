@@ -59,20 +59,25 @@ resource "aws_lambda_function" "api" {
   filename         = var.lambda_jar_path
   function_name    = "${var.project_name}-${var.environment}-api"
   role            = aws_iam_role.lambda_execution.arn
-  handler         = "com.shirogane.holy.knights.infrastructure.lambda.ApiGatewayLambdaHandler"
+  handler         = "com.shirogane.holy.knights.infrastructure.lambda.SimpleApiHandler::handleRequest"
   source_code_hash = filebase64sha256(var.lambda_jar_path)
 
-  runtime     = "provided.al2"
+  runtime     = "java17"
   memory_size = var.memory_size
   timeout     = var.timeout
 
   environment {
     variables = {
       SPRING_PROFILES_ACTIVE = "lambda"
+      SPRING_CLOUD_FUNCTION_DEFINITION = "archiveSearch"
+      MAIN_CLASS = "com.shirogane.holy.knights.Application"
       DB_HOST               = var.db_host
       DB_NAME               = var.db_name
       DB_USERNAME           = var.db_username
       DB_PASSWORD           = var.db_password
+      JDBC_DATABASE_URL     = "jdbc:postgresql://${var.db_host}/${var.db_name}"
+      JDBC_DATABASE_USERNAME = var.db_username
+      JDBC_DATABASE_PASSWORD = var.db_password
     }
   }
 
@@ -89,7 +94,6 @@ resource "aws_lambda_function" "api" {
 
 # Lambda Permission for API Gateway
 resource "aws_lambda_permission" "api_gateway" {
-  count         = var.api_gateway_execution_arn != "" ? 1 : 0
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
