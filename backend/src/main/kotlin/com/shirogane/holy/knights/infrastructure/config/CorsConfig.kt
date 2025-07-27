@@ -3,9 +3,8 @@ package com.shirogane.holy.knights.infrastructure.config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.reactive.CorsWebFilter
+import org.springframework.web.cors.reactive.CorsConfigurationSource
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.reactive.config.CorsRegistry
 import org.springframework.web.reactive.config.EnableWebFlux
@@ -59,7 +58,7 @@ class CorsConfig : WebFluxConfigurer {
      * CORSフィルター（共通）
      */
     @Bean
-    fun corsFilter(): CorsWebFilter {
+    fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
         val isLambdaLocal = isLambdaLocalProfile()
         
@@ -87,7 +86,7 @@ class CorsConfig : WebFluxConfigurer {
         
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
-        return CorsWebFilter(source)
+        return source
     }
     
     /**
