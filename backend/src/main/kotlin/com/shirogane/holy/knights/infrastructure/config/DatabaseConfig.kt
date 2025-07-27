@@ -1,52 +1,51 @@
 package com.shirogane.holy.knights.infrastructure.config
 
+import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
+import io.r2dbc.postgresql.PostgresqlConnectionFactory
+import io.r2dbc.spi.ConnectionFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.jdbc.core.JdbcTemplate
-import javax.sql.DataSource
+import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 
 /**
  * データベース接続設定
- * Spring Boot方式によるデータソース設定
+ * Spring Data R2DBC方式によるリアクティブデータソース設定
  */
 @Configuration
-class DatabaseConfig {
+@EnableR2dbcRepositories
+class DatabaseConfig : AbstractR2dbcConfiguration() {
 
-    @Value("\${spring.datasource.url}")
-    private lateinit var jdbcUrl: String
+    @Value("\${R2DBC_DATABASE_HOST:localhost}")
+    private lateinit var host: String
 
-    @Value("\${spring.datasource.username}")
+    @Value("\${R2DBC_DATABASE_PORT:5432}")
+    private var port: Int = 5432
+
+    @Value("\${R2DBC_DATABASE_NAME:shirogane_db}")
+    private lateinit var database: String
+
+    @Value("\${R2DBC_DATABASE_USERNAME:postgres}")
     private lateinit var username: String
 
-    @Value("\${spring.datasource.password}")
+    @Value("\${R2DBC_DATABASE_PASSWORD:postgres}")
     private lateinit var password: String
 
-    @Value("\${spring.datasource.driver-class-name}")
-    private lateinit var driverClassName: String
-
     /**
-     * データソースの構成
-     * HikariCPはSpring Boot経由で自動的に構成されるため、
-     * 特別な設定が必要な場合のみカスタマイズする
+     * R2DBC接続ファクトリの構成
+     * リアクティブなデータベース接続を提供
      */
     @Bean
-    fun dataSource(): DataSource {
-        return DataSourceBuilder.create()
-            .url(jdbcUrl)
-            .username(username)
-            .password(password)
-            .driverClassName(driverClassName)
-            .build()
-    }
-
-    /**
-     * JdbcTemplateを提供
-     * データベースとの対話を簡略化する
-     */
-    @Bean
-    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
-        return JdbcTemplate(dataSource)
+    override fun connectionFactory(): ConnectionFactory {
+        return PostgresqlConnectionFactory(
+            PostgresqlConnectionConfiguration.builder()
+                .host(host)
+                .port(port)
+                .database(database)
+                .username(username)
+                .password(password)
+                .build()
+        )
     }
 }

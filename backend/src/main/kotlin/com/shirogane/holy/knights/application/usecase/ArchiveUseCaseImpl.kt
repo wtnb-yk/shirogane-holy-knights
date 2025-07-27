@@ -6,104 +6,127 @@ import com.shirogane.holy.knights.application.dto.ArchiveSearchResultDto
 import com.shirogane.holy.knights.application.port.`in`.ArchiveUseCasePort
 import com.shirogane.holy.knights.domain.model.ArchiveId
 import com.shirogane.holy.knights.domain.repository.ArchiveRepository
-import com.shirogane.holy.knights.domain.service.ArchiveDomainService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.Instant
 
-/**
- * アーカイブユースケース実装
- * アプリケーション層のビジネスロジック
- * コントローラーからの入力を受け取り、ドメイン層の操作を調整し、結果をDTOに変換して返す
- */
 @Service
 class ArchiveUseCaseImpl(
-    private val archiveRepository: ArchiveRepository,
-    private val archiveDomainService: ArchiveDomainService,
-    private val coroutineScope: kotlinx.coroutines.CoroutineScope
+    private val archiveRepository: ArchiveRepository
 ) : ArchiveUseCasePort {
-    /**
-     * アーカイブ一覧を取得
-     * @param page ページ番号（1始まり）
-     * @param pageSize 1ページあたりの件数
-     * @return アーカイブ検索結果DTO
-     */
-    override fun getAllArchives(page: Int, pageSize: Int): ArchiveSearchResultDto {
-        // コルーチンなしで実装する
-        // これによりSpring環境でのコルーチンコンテキスト問題を回避
-        val offset = (page - 1) * pageSize
-        val archives = archiveRepository.findAll(pageSize, offset)
-        val totalCount = archiveRepository.count()
-        
-        return ArchiveSearchResultDto(
-            items = archives.map { ArchiveDto.fromDomain(it) },
-            totalCount = totalCount,
-            page = page,
-            pageSize = pageSize,
-            hasMore = (offset + archives.size) < totalCount
-        )
-    }
 
-    /**
-     * IDによるアーカイブ詳細取得
-     * @param id アーカイブID
-     * @return アーカイブDTO（存在しない場合はnull）
-     */
-    override suspend fun getArchiveById(id: String): ArchiveDto? {
-        val context = coroutineScope.coroutineContext + Dispatchers.IO
-        return withContext(context) {
-            val archiveId = ArchiveId(id)
-            val archive = archiveRepository.findById(archiveId) ?: return@withContext null
-            ArchiveDto.fromDomain(archive)
+    private val logger = LoggerFactory.getLogger(ArchiveUseCaseImpl::class.java)
+
+    override fun getAllArchives(page: Int, pageSize: Int): ArchiveSearchResultDto {
+        logger.info("アーカイブ一覧取得: page=$page, pageSize=$pageSize")
+        
+        return try {
+            val offset = (page - 1) * pageSize
+            val archives = archiveRepository.findAll(pageSize, offset)
+            val totalCount = archiveRepository.count()
+            
+            val hasMore = (page * pageSize) < totalCount
+            
+            ArchiveSearchResultDto(
+                items = archives.map { convertToDto(it) },
+                totalCount = totalCount,
+                page = page,
+                pageSize = pageSize,
+                hasMore = hasMore
+            )
+        } catch (e: Exception) {
+            logger.error("アーカイブ一覧取得エラー", e)
+            ArchiveSearchResultDto(
+                items = emptyList(),
+                totalCount = 0,
+                page = page,
+                pageSize = pageSize,
+                hasMore = false
+            )
         }
     }
 
-    /**
-     * アーカイブ検索
-     * @param searchParams 検索条件
-     * @return アーカイブ検索結果DTO
-     */
-    override suspend fun searchArchives(searchParams: ArchiveSearchParamsDto): ArchiveSearchResultDto {
-        val context = coroutineScope.coroutineContext + Dispatchers.IO
-        return withContext(context) {
+    override suspend fun searchArchives(params: ArchiveSearchParamsDto): ArchiveSearchResultDto {
+        logger.info("アーカイブ検索実行: $params")
+        
+        return try {
+            val offset = (params.page - 1) * params.pageSize
+            val startDate = params.startDate?.let { Instant.parse(it) }
+            val endDate = params.endDate?.let { Instant.parse(it) }
+            
             val archives = archiveRepository.search(
-                query = searchParams.query,
-                tags = searchParams.tags,
-                startDate = searchParams.getStartDateAsInstant(),
-                endDate = searchParams.getEndDateAsInstant(),
-                limit = searchParams.pageSize,
-                offset = searchParams.getOffset()
+                query = params.query,
+                tags = params.tags,
+                startDate = startDate,
+                endDate = endDate,
+                limit = params.pageSize,
+                offset = offset
             )
             
             val totalCount = archiveRepository.countBySearchCriteria(
-                query = searchParams.query,
-                tags = searchParams.tags,
-                startDate = searchParams.getStartDateAsInstant(),
-                endDate = searchParams.getEndDateAsInstant()
+                query = params.query,
+                tags = params.tags,
+                startDate = startDate,
+                endDate = endDate
             )
             
+            val hasMore = (params.page * params.pageSize) < totalCount
+            
             ArchiveSearchResultDto(
-                items = archives.map { ArchiveDto.fromDomain(it) },
+                items = archives.map { convertToDto(it) },
                 totalCount = totalCount,
-                page = searchParams.page,
-                pageSize = searchParams.pageSize,
-                hasMore = (searchParams.getOffset() + archives.size) < totalCount
+                page = params.page,
+                pageSize = params.pageSize,
+                hasMore = hasMore
+            )
+        } catch (e: Exception) {
+            logger.error("アーカイブ検索エラー", e)
+            ArchiveSearchResultDto(
+                items = emptyList(),
+                totalCount = 0,
+                page = params.page,
+                pageSize = params.pageSize,
+                hasMore = false
             )
         }
     }
-    
-    /**
-     * 関連アーカイブ取得
-     * @param id アーカイブID
-     * @param limit 取得上限
-     * @return アーカイブDTOのリスト
-     */
-    override suspend fun getRelatedArchives(id: String, limit: Int): List<ArchiveDto> {
-        val context = coroutineScope.coroutineContext + Dispatchers.IO
-        return withContext(context) {
-            val archiveId = ArchiveId(id)
-            val relatedArchives = archiveDomainService.findRelatedArchives(archiveId, limit)
-            relatedArchives.map { ArchiveDto.fromDomain(it) }
+
+    override suspend fun getArchiveById(id: String): ArchiveDto? {
+        logger.info("アーカイブ詳細取得: id=$id")
+        
+        return try {
+            val archive = archiveRepository.findById(ArchiveId(id))
+            archive?.let { convertToDto(it) }
+        } catch (e: Exception) {
+            logger.error("アーカイブ詳細取得エラー: id=$id", e)
+            null
         }
+    }
+
+    override suspend fun getRelatedArchives(id: String, limit: Int): List<ArchiveDto> {
+        logger.info("関連アーカイブ取得: id=$id, limit=$limit")
+        
+        return try {
+            val archives = archiveRepository.getRelatedArchives(ArchiveId(id), limit)
+            archives.map { convertToDto(it) }
+        } catch (e: Exception) {
+            logger.error("関連アーカイブ取得エラー: id=$id", e)
+            emptyList()
+        }
+    }
+
+    private fun convertToDto(archive: com.shirogane.holy.knights.domain.model.Archive): ArchiveDto {
+        return ArchiveDto(
+            id = archive.id.value,
+            title = archive.title,
+            description = archive.contentDetails?.description,
+            publishedAt = archive.publishedAt.toString(),
+            duration = archive.videoDetails?.duration?.value,
+            thumbnailUrl = archive.videoDetails?.thumbnailUrl,
+            url = archive.videoDetails?.url ?: "",
+            tags = archive.tags.map { it.name },
+            channelId = archive.channelId.value,
+            isMembersOnly = archive.contentDetails?.isMembersOnly ?: false
+        )
     }
 }
