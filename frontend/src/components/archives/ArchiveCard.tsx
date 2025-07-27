@@ -47,14 +47,14 @@ const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
               <Badge
                 key={tag}
                 variant="secondary"
-                className="bg-sage-100 text-sage-300 hover:bg-sage-200 transition-colors duration-200 border-sage-200"
+                className="bg-sage-100/50 text-gray-700 hover:bg-sage-100/70 transition-colors duration-200 border-sage-200/50"
               >
                 <Tag className="w-3 h-3 mr-1" />
                 {tag}
               </Badge>
             ))}
             {archive.tags && archive.tags.length > 3 && (
-              <Badge variant="outline" className="text-xs border-sage-200 text-sage-300">
+              <Badge variant="outline" className="text-xs border-sage-200/50 text-gray-600">
                 +{archive.tags.length - 3}
               </Badge>
             )}
