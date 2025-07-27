@@ -76,7 +76,7 @@ variable "db_password" {
 variable "lambda_jar_path" {
   description = "Path to Lambda JAR file"
   type        = string
-  default     = "../../../backend/build/libs/shirogane-holy-knights-0.1.0-all.jar"
+  default     = "../../../backend/build/libs/shirogane-holy-knights-0.1.0-springboot-lambda.jar"
 }
 
 # Amplify

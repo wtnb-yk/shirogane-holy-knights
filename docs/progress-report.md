@@ -213,32 +213,46 @@ backend/src/main/kotlin/com/shirogane/holy/knights
    - **Lambda**: `shirogane-holy-knights-dev-api`
    - **RDS**: `shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com`
 
-### ❌ 重大な問題（未解決）
+### 🔄 Lambda統合の進捗と課題
 
-#### 1. Lambda実行時エラー
-- **問題**: `ClassNotFoundException` - KotlinクラスがLambdaランタイムで見つからない
-- **状況**: JARファイルは正しくアップロードされているが、Java17ランタイムでクラスを読み込めない
-- **試行済み**: Spring Cloud Function、カスタムハンドラー、依存関係の確認
-- **現在のエラー**: `com.shirogane.holy.knights.infrastructure.lambda.SimpleApiHandler`クラスが見つからない
+#### 1. HealthLambdaHandler成功
+- **状況**: 軽量なLambdaハンドラーの実装・デプロイ完了
+- **機能**: `/api/health`と`/api/archives`でモックレスポンス返却
+- **テスト結果**: API Gateway経由でのアクセス成功
+- **課題**: テスト用レスポンスのみで実際のデータベースアクセスなし
 
-#### 2. API機能停止
-- **影響**: API Gatewayへのリクエストが全て500エラー
-- **原因**: Lambda関数の実行失敗
-- **緊急度**: 🔥 最高（プロジェクト進行を完全に阻害）
+#### 2. SpringBootLambdaHandler統合進行中
+- **進捗**: Spring Boot統合Lambda実装完了、JAR生成成功
+- **R2DBC設定問題**: `Cannot determine a BindMarkersFactory for PostgreSQL`エラー発生
+- **原因**: Spring Cloud Function環境でのDatabaseClient.builderアプローチの非互換性
+- **現在の状況**: Lambda関数は正常起動するが、データベース接続時にエラー
+- **環境変数**: R2DBC_DATABASE_*が正常設定されていることを確認
+
+#### 3. 技術的課題の詳細
+- **Spring Cloud Function制約**: 従来のDatabaseClient構築方法がLambda環境で機能しない
+- **Bean競合問題**: DatabaseClient、R2dbcEntityTemplateのBean重複を回避済み
+- **設定無効化**: R2DBC自動設定を無効にして手動設定に変更済み
+- **Handler更新**: SpringBootLambdaHandlerを使用するよう設定変更済み
+
+#### 4. API機能の現状
+- **テスト環境**: `curl "https://iz6iumz75l.execute-api.ap-northeast-1.amazonaws.com/dev/api/archives"`
+- **HealthHandler**: `{"message":"Archives API is working","archives":[],"timestamp":1753618176231}`
+- **SpringBootHandler**: `{"message": "Internal server error"}` (R2DBC設定エラー)
 
 ## 次の作業項目（優先度順）
 
-### 🚨 緊急対応（本日中）
+### 🚨 緊急対応（進行中）
 
-1. **Lambda実行問題の根本解決**
-   - **選択肢A**: プレーンJavaハンドラーへの完全切り替え
-   - **選択肢B**: GraalVMネイティブイメージの採用
-   - **選択肢C**: Fat JARの構造問題の特定・修正
+1. **Spring Boot R2DBC設定の修正**
+   - **現在の問題**: `Cannot determine a BindMarkersFactory for PostgreSQL`
+   - **対策案A**: ConnectionFactoryのみ提供し、Spring Boot自動設定に依存
+   - **対策案B**: Bean設定方法の見直し（現在手動Bean作成で競合発生）
+   - **対策案C**: Spring Cloud Function対応のR2DBC設定方式の調査
 
-2. **ヘルスチェックAPIの実装**
-   - 最小限のJavaハンドラーで動作確認
-   - データベース接続テスト
-   - API Gateway疎通確認
+2. **実データAPIの完成**
+   - `/api/archives`でテストレスポンスではなく実際のデータベースデータ取得
+   - ArchiveRepositoryImpl経由での実データ取得確認
+   - アーカイブデータが空でない場合の動作確認
 
 ### 短期計画（今週中）
 

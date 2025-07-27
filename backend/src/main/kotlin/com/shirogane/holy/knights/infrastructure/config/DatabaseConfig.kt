@@ -6,16 +6,20 @@ import io.r2dbc.spi.ConnectionFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration
+import org.springframework.context.annotation.Primary
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
+import org.springframework.r2dbc.core.DatabaseClient
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
+import org.springframework.data.r2dbc.dialect.PostgresDialect
 
 /**
  * データベース接続設定
  * Spring Data R2DBC方式によるリアクティブデータソース設定
+ * Bean競合を回避するため独立した設定
  */
 @Configuration
 @EnableR2dbcRepositories
-class DatabaseConfig : AbstractR2dbcConfiguration() {
+class DatabaseConfig {
 
     @Value("\${R2DBC_DATABASE_HOST:localhost}")
     private lateinit var host: String
@@ -37,7 +41,8 @@ class DatabaseConfig : AbstractR2dbcConfiguration() {
      * リアクティブなデータベース接続を提供
      */
     @Bean
-    override fun connectionFactory(): ConnectionFactory {
+    @Primary
+    fun postgresConnectionFactory(): ConnectionFactory {
         return PostgresqlConnectionFactory(
             PostgresqlConnectionConfiguration.builder()
                 .host(host)
@@ -47,5 +52,28 @@ class DatabaseConfig : AbstractR2dbcConfiguration() {
                 .password(password)
                 .build()
         )
+    }
+
+    /**
+     * DatabaseClient Bean
+     * PostgreSQL方言を明示的に設定
+     */
+    @Bean
+    @Primary
+    fun postgresqlDatabaseClient(): DatabaseClient {
+        return DatabaseClient.builder()
+            .connectionFactory(postgresConnectionFactory())
+            .namedParameters(true)
+            .build()
+    }
+
+    /**
+     * R2dbcEntityTemplate Bean
+     * PostgreSQL方言を明示的に設定
+     */
+    @Bean
+    @Primary
+    fun postgresqlR2dbcEntityTemplate(): R2dbcEntityTemplate {
+        return R2dbcEntityTemplate(postgresqlDatabaseClient(), PostgresDialect.INSTANCE)
     }
 }

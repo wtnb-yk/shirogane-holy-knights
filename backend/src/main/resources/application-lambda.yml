@@ -2,36 +2,23 @@ spring:
   config:
     activate:
       on-profile: lambda
-  datasource:
-    url: jdbc:postgresql://${DB_HOST}/${DB_NAME}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 20000
-      maximum-pool-size: 3
-      minimum-idle: 1
-      idle-timeout: 30000
-      max-lifetime: 1800000
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
+      - org.springframework.boot.autoconfigure.r2dbc.R2dbcDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.r2dbc.R2dbcRepositoriesAutoConfiguration
   main:
-    web-application-type: none
+    web-application-type: reactive
   flyway:
-    enabled: true
-    baseline-on-migrate: true
-    locations: classpath:db/migration
-    validate-on-migrate: true
+    enabled: false
 
 # Lambda関数設定
 spring.cloud.function:
-  definition: apiHandler
-  scan:
-    packages: com.shirogane.holy.knights.infrastructure.lambda.functions
   web:
     export:
       enabled: true
       auto-registration: true
       path-pattern: /**
-  url-handler-enabled: true
 
 # ロギング設定
 logging:
@@ -39,5 +26,5 @@ logging:
     root: INFO
     com.shirogane.holy.knights: DEBUG
     org.springframework.cloud.function: DEBUG
-    org.springframework.jdbc: INFO
-    com.zaxxer.hikari: INFO
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql: DEBUG

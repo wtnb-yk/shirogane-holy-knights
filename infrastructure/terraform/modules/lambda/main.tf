@@ -59,7 +59,7 @@ resource "aws_lambda_function" "api" {
   filename         = var.lambda_jar_path
   function_name    = "${var.project_name}-${var.environment}-api"
   role            = aws_iam_role.lambda_execution.arn
-  handler         = "com.shirogane.holy.knights.infrastructure.lambda.SimpleApiHandler::handleRequest"
+  handler         = "com.shirogane.holy.knights.infrastructure.lambda.SpringBootLambdaHandler"
   source_code_hash = filebase64sha256(var.lambda_jar_path)
 
   runtime     = "java17"
