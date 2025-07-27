@@ -48,10 +48,15 @@ module "lambda" {
   security_group_ids = [module.network.lambda_security_group_id]
   
   lambda_jar_path = var.lambda_jar_path
-  db_host         = module.database.db_endpoint
+  db_host         = replace(module.database.db_endpoint, ":5432", "")
+  db_port         = "5432"
   db_name         = var.db_name
   db_username     = var.db_username
   db_password     = var.db_password
+  
+  # Lambda performance settings for Spring Boot + R2DBC
+  memory_size = 1024
+  timeout     = 60
   
   api_gateway_execution_arn = module.api_gateway.api_execution_arn
 }

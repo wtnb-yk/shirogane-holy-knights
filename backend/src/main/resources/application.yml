@@ -58,3 +58,38 @@ aws:
   lambda:
     function:
       handler: org.springframework.cloud.function.adapter.aws.FunctionInvoker
+
+---
+# Lambda環境専用設定
+spring:
+  config:
+    activate:
+      on-profile: lambda
+  main:
+    web-application-type: reactive
+  r2dbc:
+    url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane_db}
+    username: ${DATABASE_USERNAME:postgres}  
+    password: ${DATABASE_PASSWORD:postgres}
+    pool:
+      initial-size: 1
+      max-size: 3
+      max-idle-time: 10s
+      max-acquire-time: 30s
+      max-create-connection-time: 30s
+      validation-query: SELECT 1
+  flyway:
+    enabled: false
+
+# R2DBC自動設定を明示的に有効化
+spring.autoconfigure:
+  exclude: []
+
+# Lambda専用のロギング設定
+logging:
+  level:
+    root: INFO
+    com.shirogane.holy.knights: DEBUG
+    org.springframework.cloud.function: DEBUG
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql: DEBUG

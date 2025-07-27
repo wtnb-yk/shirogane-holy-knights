@@ -72,6 +72,7 @@ resource "aws_lambda_function" "api" {
       SPRING_CLOUD_FUNCTION_DEFINITION = "archiveSearch"
       MAIN_CLASS = "com.shirogane.holy.knights.Application"
       DATABASE_HOST     = var.db_host
+      DATABASE_PORT     = var.db_port
       DATABASE_NAME     = var.db_name
       DATABASE_USERNAME = var.db_username
       DATABASE_PASSWORD = var.db_password
