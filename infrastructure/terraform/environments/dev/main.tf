@@ -20,6 +20,7 @@ module "network" {
   azs            = var.availability_zones
   public_subnets = var.public_subnet_cidrs
   private_subnets = var.private_subnet_cidrs
+  enable_nat_gateway = var.enable_nat_gateway
 }
 
 # データベース

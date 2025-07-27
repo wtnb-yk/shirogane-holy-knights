@@ -41,6 +41,12 @@ variable "private_subnet_cidrs" {
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
 }
 
+variable "enable_nat_gateway" {
+  description = "Enable NAT Gateway for private subnets"
+  type        = bool
+  default     = true
+}
+
 # Database
 variable "db_instance_class" {
   description = "RDS instance class"
@@ -70,13 +76,14 @@ variable "db_password" {
 variable "lambda_jar_path" {
   description = "Path to Lambda JAR file"
   type        = string
-  default     = "../../../backend/build/libs/backend-all.jar"
+  default     = "../../../backend/build/libs/shirogane-holy-knights-0.1.0-all.jar"
 }
 
 # Amplify
 variable "github_repository" {
   description = "GitHub repository URL"
   type        = string
+  default     = ""
 }
 
 variable "github_branch" {
@@ -89,4 +96,5 @@ variable "github_access_token" {
   description = "GitHub personal access token"
   type        = string
   sensitive   = true
+  default     = ""
 }

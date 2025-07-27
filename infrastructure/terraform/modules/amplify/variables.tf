@@ -11,6 +11,7 @@ variable "project_name" {
 variable "github_repository" {
   description = "GitHub repository URL"
   type        = string
+  default     = ""
 }
 
 variable "github_branch" {
@@ -23,6 +24,7 @@ variable "github_access_token" {
   description = "GitHub personal access token"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 variable "build_spec" {

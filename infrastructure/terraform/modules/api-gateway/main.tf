@@ -93,6 +93,37 @@ resource "aws_api_gateway_stage" "main" {
       responseLength = "$context.responseLength"
     })
   }
+
+  depends_on = [aws_api_gateway_account.main]
+}
+
+# IAM Role for API Gateway CloudWatch Logs
+resource "aws_iam_role" "api_gateway_cloudwatch" {
+  name = "${var.project_name}-${var.environment}-api-gateway-cloudwatch"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "apigateway.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# IAM Policy Attachment for API Gateway CloudWatch Logs
+resource "aws_iam_role_policy_attachment" "api_gateway_cloudwatch" {
+  role       = aws_iam_role.api_gateway_cloudwatch.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+}
+
+# API Gateway Account Settings
+resource "aws_api_gateway_account" "main" {
+  cloudwatch_role_arn = aws_iam_role.api_gateway_cloudwatch.arn
 }
 
 # CloudWatch Log Group for API Gateway
@@ -107,8 +138,10 @@ resource "aws_api_gateway_method_settings" "main" {
   stage_name  = aws_api_gateway_stage.main.stage_name
   method_path = "*/*"
 
-  settings = {
+  settings {
     metrics_enabled = true
     logging_level   = "INFO"
   }
+
+  depends_on = [aws_api_gateway_account.main]
 }
