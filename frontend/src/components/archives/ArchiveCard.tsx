@@ -12,7 +12,7 @@ interface ArchiveCardProps {
   index: number;
 }
 
-export const ArchiveCard = React.memo(({ archive, index }: ArchiveCardProps) => {
+const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
   return (
     <div 
       className="h-full group opacity-0 animate-fade-in" 
@@ -74,4 +74,8 @@ export const ArchiveCard = React.memo(({ archive, index }: ArchiveCardProps) => 
       </Card>
     </div>
   );
-});
+};
+
+ArchiveCardComponent.displayName = 'ArchiveCard';
+
+export const ArchiveCard = React.memo(ArchiveCardComponent);

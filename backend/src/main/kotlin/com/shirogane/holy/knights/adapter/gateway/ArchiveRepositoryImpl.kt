@@ -240,7 +240,10 @@ class ArchiveRepositoryImpl(private val jdbcTemplate: JdbcTemplate) : ArchiveRep
         
         // ベースクエリ
         val baseSelect = if (isCountQuery) {
-            "SELECT COUNT(*) FROM archives a"
+            """
+            SELECT COUNT(*) FROM archives a
+            LEFT JOIN content_details c ON a.id = c.archive_id
+            """
         } else {
             """
             SELECT a.id, a.title, a.published_at, a.channel_id,
