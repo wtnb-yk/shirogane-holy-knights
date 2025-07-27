@@ -54,9 +54,25 @@ const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
               </Badge>
             ))}
             {archive.tags && archive.tags.length > 3 && (
-              <Badge variant="outline" className="text-xs border-sage-200/50 text-gray-600">
-                +{archive.tags.length - 3}
-              </Badge>
+              <div className="relative group/tooltip">
+                <Badge variant="outline" className="text-xs border-sage-200/50 text-gray-600">
+                  +{archive.tags.length - 3}
+                </Badge>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs">
+                  <div className="flex flex-wrap gap-1">
+                    {archive.tags.slice(3).map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="bg-sage-100/50 text-gray-700 text-xs border-sage-200/50"
+                      >
+                        <Tag className="w-2.5 h-2.5 mr-1" />
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </CardContent>
