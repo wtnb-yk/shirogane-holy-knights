@@ -107,7 +107,7 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
         // 利用可能なタグを収集（元のデータから）
         const allTags = new Set<string>();
         (searchResult.items || []).forEach(item => {
-          item.tags.forEach(tag => allTags.add(tag));
+          item.tags?.forEach(tag => allTags.add(tag));
         });
         setAvailableTags(Array.from(allTags).sort());
         

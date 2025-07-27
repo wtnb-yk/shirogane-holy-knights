@@ -4,12 +4,14 @@
 export interface ArchiveDto {
   id: string;
   title: string;
+  channelId: string;
   url: string;
   publishedAt: string;
   description?: string;
   tags: string[];
   duration?: string;
   thumbnailUrl?: string;
+  isMembersOnly?: boolean;
 }
 
 /**

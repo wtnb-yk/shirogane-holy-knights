@@ -25,7 +25,6 @@ export const ArchivesGrid = ({ archives, loading, error }: ArchivesGridProps) =>
   if (error) {
     return (
       <div className="text-center py-20">
-        <div className="text-6xl mb-4">😢</div>
         <p className="text-xl text-red-500">{error}</p>
       </div>
     );

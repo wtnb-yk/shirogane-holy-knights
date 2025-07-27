@@ -14,7 +14,7 @@ data class ArchiveDto(
     val id: String,
     val title: String,
     val channelId: String,
-    val url: String?,
+    val url: String,
     val publishedAt: String, // ISO 8601形式の日時文字列
     val description: String? = null,
     val tags: List<String> = emptyList(),
@@ -31,7 +31,7 @@ data class ArchiveDto(
                 id = archive.id.value,
                 title = archive.title,
                 channelId = archive.channelId.value,
-                url = archive.videoDetails?.url,
+                url = archive.videoDetails?.url ?: "https://www.youtube.com/watch?v=${archive.id.value}",
                 publishedAt = archive.publishedAt.toString(),
                 description = archive.contentDetails?.description,
                 tags = archive.tags.map { it.name },
