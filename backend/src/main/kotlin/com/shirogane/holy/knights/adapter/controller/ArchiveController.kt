@@ -15,7 +15,6 @@ import reactor.core.publisher.Mono
  */
 @RestController
 @RequestMapping("/api/archives")
-@CrossOrigin(origins = ["*"])
 class ArchiveController(private val archiveUseCase: ArchiveUseCasePort) {
 
     private val logger = LoggerFactory.getLogger(ArchiveController::class.java)
