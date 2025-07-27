@@ -1,94 +1,134 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { LambdaClient } from '@/api/lambdaClient';
-import { ArchiveDto } from '@/api/types';
+import React, { useState } from 'react';
+import { useArchives } from '@/hooks/useArchives';
+import { SearchBar } from '@/components/archives/SearchBar';
+import { FilterBar } from '@/components/archives/FilterBar';
+import { ArchivesGrid } from '@/components/archives/ArchivesGrid';
+import { Pagination } from '@/components/archives/Pagination';
 
 export default function ArchivesList() {
-  const [archives, setArchives] = useState<ArchiveDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchArchives = async () => {
-      try {
-        setLoading(true);
-        
-        // アーカイブ検索関数を呼び出し
-        const searchResult = await LambdaClient.callArchiveSearchFunction({
-          page: 1,
-          pageSize: 20
-        });
-        setArchives(searchResult.items || []);
-        setLoading(false);
-      } catch (err) {
-        setError('アーカイブの取得に失敗しました。');
-        setLoading(false);
-        console.error('Error fetching archives:', err);
-      }
-    };
-
-    fetchArchives();
-  }, []);
-
-  if (loading) {
-    return <div className="text-center py-10">読み込み中...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-10 text-red-500">{error}</div>;
-  }
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  
+  const {
+    archives,
+    loading,
+    error,
+    currentPage,
+    totalCount,
+    hasMore,
+    totalPages,
+    setCurrentPage,
+    searchQuery,
+    handleSearch,
+    clearSearch,
+    filters,
+    setFilters,
+    availableTags,
+    clearAllFilters
+  } = useArchives({ pageSize: 20 });
 
   return (
-    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">配信アーカイブ一覧</h2>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {archives.map((archive) => (
-          <div key={archive.id} className="border rounded-lg overflow-hidden shadow-lg">
-            {archive.thumbnailUrl && (
-              <div className="relative w-full h-48">
-                <Image 
-                  src={archive.thumbnailUrl} 
-                  alt={archive.title} 
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{archive.title}</h3>
-              <p className="text-sm text-gray-600 mb-2">
-                {new Date(archive.publishedAt).toLocaleDateString('ja-JP')}
-              </p>
-              <div className="mb-4">
-                {archive.tags?.map((tag) => (
-                  <span key={tag} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                    #{tag}
+    <div className="min-h-screen bg-gradient-to-br from-sage-100/30 to-sage-200/50">
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 opacity-0 animate-slide-up">
+          <h1 className="text-4xl font-bold mb-2 text-gray-800">
+            配信アーカイブ
+          </h1>
+          <p className="text-sage-300">過去の配信を振り返ろう</p>
+        </div>
+
+        <SearchBar 
+          searchValue={searchQuery}
+          onSearch={handleSearch}
+          onClearSearch={clearSearch}
+          onFilterClick={() => setShowFilterModal(true)}
+        />
+
+        {(searchQuery || filters.selectedTags.length > 0 || filters.startDate || filters.endDate || filters.duration) && (
+          <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border border-sage-200">
+            <div className="flex items-center justify-between">
+              <div className="text-sage-300">
+                {searchQuery && (
+                  <span>
+                    「<span className="font-medium text-gray-800">{searchQuery}</span>」
                   </span>
-                ))}
+                )}
+                {(filters.selectedTags.length > 0 || filters.startDate || filters.endDate || filters.duration) && (
+                  <span className={searchQuery ? 'ml-2' : ''}>
+                    {searchQuery ? 'とフィルター' : 'フィルター'}による検索結果
+                  </span>
+                )}
+                {totalCount > 0 && <span className="ml-2">({totalCount}件)</span>}
               </div>
-              <a 
-                href={archive.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:text-blue-700"
+              <button
+                onClick={clearAllFilters}
+                className="text-sm text-sage-300 hover:text-gray-600 transition-colors"
               >
-                YouTubeで視聴する →
-              </a>
+                すべてクリア
+              </button>
             </div>
           </div>
-        ))}
+        )}
+
+        <ArchivesGrid archives={archives} loading={loading} error={error} />
+
+        {totalCount > 20 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            hasMore={hasMore}
+            onPageChange={setCurrentPage}
+          />
+        )}
+
+        {totalCount > 0 && !loading && (
+          <div className="text-center text-sm text-sage-300 mt-6 opacity-0 animate-fade-in" style={{ animationDelay: '600ms' }}>
+            {((currentPage - 1) * 20) + 1} - {Math.min(currentPage * 20, totalCount)} / {totalCount} 件
+          </div>
+        )}
+
+        {/* フィルターモーダル */}
+        {showFilterModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold text-gray-800">フィルター設定</h2>
+                  <button
+                    onClick={() => setShowFilterModal(false)}
+                    className="text-sage-300 hover:text-gray-600 transition-colors text-2xl"
+                  >
+                    ×
+                  </button>
+                </div>
+                <FilterBar
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  availableTags={availableTags}
+                />
+                <div className="flex gap-3 mt-6 pt-4 border-t border-sage-200">
+                  <button
+                    onClick={() => setShowFilterModal(false)}
+                    className="flex-1 px-4 py-2 bg-sage-300 text-white rounded-md hover:bg-sage-300/80 transition-colors"
+                  >
+                    適用
+                  </button>
+                  <button
+                    onClick={() => {
+                      clearAllFilters();
+                      setShowFilterModal(false);
+                    }}
+                    className="px-4 py-2 border border-sage-200 text-sage-300 rounded-md hover:bg-sage-100 transition-colors"
+                  >
+                    リセット
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      
-      {archives.length === 0 && (
-        <div className="text-center py-10">
-          アーカイブが見つかりませんでした。
-        </div>
-      )}
     </div>
   );
 }
