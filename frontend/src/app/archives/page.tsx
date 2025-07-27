@@ -15,7 +15,10 @@ export default function ArchivesList() {
     totalCount,
     hasMore,
     totalPages,
-    setCurrentPage
+    setCurrentPage,
+    searchQuery,
+    handleSearch,
+    clearSearch
   } = useArchives({ pageSize: 20 });
 
   return (
@@ -28,7 +31,20 @@ export default function ArchivesList() {
           <p className="text-sage-300">過去の配信を振り返ろう</p>
         </div>
 
-        <SearchBar disabled />
+        <SearchBar 
+          searchValue={searchQuery}
+          onSearch={handleSearch}
+          onClearSearch={clearSearch}
+        />
+
+        {searchQuery && (
+          <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border border-sage-200">
+            <p className="text-sage-300">
+              「<span className="font-medium text-gray-800">{searchQuery}</span>」の検索結果
+              {totalCount > 0 && <span className="ml-2">({totalCount}件)</span>}
+            </p>
+          </div>
+        )}
 
         <ArchivesGrid archives={archives} loading={loading} error={error} />
 

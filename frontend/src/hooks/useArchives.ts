@@ -13,6 +13,10 @@ interface UseArchivesResult {
   hasMore: boolean;
   totalPages: number;
   setCurrentPage: (page: number) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  handleSearch: (query: string) => void;
+  clearSearch: () => void;
 }
 
 interface UseArchivesOptions {
@@ -29,6 +33,7 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchArchives = async () => {
@@ -38,7 +43,8 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
         
         const searchResult = await LambdaClient.callArchiveSearchFunction({
           page: currentPage,
-          pageSize: pageSize
+          pageSize: pageSize,
+          query: searchQuery || undefined
         });
         
         setArchives(searchResult.items || []);
@@ -53,9 +59,19 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
     };
 
     fetchArchives();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, searchQuery]);
 
   const totalPages = useMemo(() => Math.ceil(totalCount / pageSize), [totalCount, pageSize]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1); // 検索時は1ページ目に戻る
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setCurrentPage(1);
+  };
 
   return useMemo(() => ({
     archives,
@@ -66,5 +82,9 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
     hasMore,
     totalPages,
     setCurrentPage,
-  }), [archives, loading, error, currentPage, totalCount, hasMore, totalPages, setCurrentPage]);
+    searchQuery,
+    setSearchQuery,
+    handleSearch,
+    clearSearch,
+  }), [archives, loading, error, currentPage, totalCount, hasMore, totalPages, setCurrentPage, searchQuery]);
 };
