@@ -21,19 +21,19 @@ import org.springframework.data.r2dbc.dialect.PostgresDialect
 @EnableR2dbcRepositories
 class DatabaseConfig {
 
-    @Value("\${R2DBC_DATABASE_HOST:localhost}")
+    @Value("\${DATABASE_HOST:localhost}")
     private lateinit var host: String
 
-    @Value("\${R2DBC_DATABASE_PORT:5432}")
+    @Value("\${DATABASE_PORT:5432}")
     private var port: Int = 5432
 
-    @Value("\${R2DBC_DATABASE_NAME:shirogane_db}")
+    @Value("\${DATABASE_NAME:shirogane_db}")
     private lateinit var database: String
 
-    @Value("\${R2DBC_DATABASE_USERNAME:postgres}")
+    @Value("\${DATABASE_USERNAME:postgres}")
     private lateinit var username: String
 
-    @Value("\${R2DBC_DATABASE_PASSWORD:postgres}")
+    @Value("\${DATABASE_PASSWORD:postgres}")
     private lateinit var password: String
 
     /**

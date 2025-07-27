@@ -71,13 +71,10 @@ resource "aws_lambda_function" "api" {
       SPRING_PROFILES_ACTIVE = "lambda"
       SPRING_CLOUD_FUNCTION_DEFINITION = "archiveSearch"
       MAIN_CLASS = "com.shirogane.holy.knights.Application"
-      DB_HOST               = var.db_host
-      DB_NAME               = var.db_name
-      DB_USERNAME           = var.db_username
-      DB_PASSWORD           = var.db_password
-      JDBC_DATABASE_URL     = "jdbc:postgresql://${var.db_host}/${var.db_name}"
-      JDBC_DATABASE_USERNAME = var.db_username
-      JDBC_DATABASE_PASSWORD = var.db_password
+      DATABASE_HOST     = var.db_host
+      DATABASE_NAME     = var.db_name
+      DATABASE_USERNAME = var.db_username
+      DATABASE_PASSWORD = var.db_password
     }
   }
 

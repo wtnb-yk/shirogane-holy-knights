@@ -28,9 +28,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      JDBC_DATABASE_URL: jdbc:postgresql://postgres:5432/shirogane_db
-      JDBC_DATABASE_USERNAME: postgres
-      JDBC_DATABASE_PASSWORD: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: shirogane_db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
       FRONTEND_URL: http://localhost:3001 # ブラウザからのアクセスURLに変更
       SPRING_PROFILES_ACTIVE: lambda-local
     ports:
