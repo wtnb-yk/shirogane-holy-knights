@@ -84,7 +84,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}/backend
         chmod +x gradlew
-        ./gradlew shadowJar
+        ./gradlew springCloudFunctionLambdaJar
 
     - name: Terraform Plan
       id: plan

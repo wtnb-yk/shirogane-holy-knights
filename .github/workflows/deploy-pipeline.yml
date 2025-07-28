@@ -33,18 +33,18 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build shadow JAR
+    - name: Build Lambda JAR
       run: |
         cd backend
         chmod +x gradlew
-        ./gradlew shadowJar
+        ./gradlew springCloudFunctionLambdaJar
 
     - name: Upload JAR artifact
       id: artifact
       uses: actions/upload-artifact@v3
       with:
         name: backend-jar-${{ github.sha }}
-        path: backend/build/libs/*-all.jar
+        path: backend/build/libs/*-aws-lambda.jar
         retention-days: 1
 
   frontend-build:
@@ -133,7 +133,7 @@ jobs:
     - name: Deploy to Lambda
       run: |
         FUNCTION_NAME="shirogane-holy-knights-${{ env.ENVIRONMENT }}-api"
-        JAR_FILE=$(find backend/build/libs -name "*-all.jar" | head -1)
+        JAR_FILE=$(find backend/build/libs -name "*-aws-lambda.jar" | head -1)
         
         aws lambda update-function-code \
           --function-name $FUNCTION_NAME \

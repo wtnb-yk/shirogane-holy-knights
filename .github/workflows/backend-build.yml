@@ -51,14 +51,14 @@ jobs:
     - name: Build application
       run: ./gradlew build
 
-    - name: Build shadow JAR
-      run: ./gradlew shadowJar
+    - name: Build Lambda JAR
+      run: ./gradlew springCloudFunctionLambdaJar
 
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v3
       with:
         name: backend-jar
-        path: backend/build/libs/*-all.jar
+        path: backend/build/libs/*-aws-lambda.jar
         retention-days: 7
 
     - name: Generate test report
