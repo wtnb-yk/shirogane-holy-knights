@@ -175,3 +175,40 @@
    - パフォーマンスと体験のバランス重視
    - 過度なアニメーションは避ける
    - ユーザビリティを損なわない範囲で最適化
+
+## 12. Lambda R2DBC統合 - 重要な学習事項
+
+### 解決済み技術課題
+1. **Spring Cloud Function AWS Lambda 統合**
+   - **問題**: FunctionInvokerクラスのClassNotFoundExceptionエラー
+   - **根本原因**: JAR の MANIFEST.MF 設定が不適切
+   - **解決策**: 専用のshadowJarタスクで適切なMANIFEST設定
+   ```kotlin
+   // build.gradle.kts
+   val springCloudFunctionLambdaJar by tasks.creating(ShadowJar::class) {
+       manifest {
+           attributes(
+               "Main-Class" to "org.springframework.cloud.function.adapter.aws.FunctionInvoker",
+               "Start-Class" to "com.shirogane.holy.knights.Application"
+           )
+       }
+   }
+   ```
+
+2. **R2DBC設定の確立**
+   - ConnectionFactory + PostgresDialect 明示指定で解決
+   - R2dbcConfigクラスでBean統合管理
+
+### 開発プロセスの教訓
+1. **過去の試行履歴を必ず参照してから提案する**
+2. **デプロイ完了を必ず確認してからテスト実行**
+3. **エラーの根本原因を体系的に分析（表面的な対処療法を避ける）**
+4. **実行前に必ず手順を説明して確認を得る**
+5. **解決宣言前に必ず動作確認を行う**
+6. **"実行して修正して"の繰り返しを避ける**
+
+### Lambda環境での正常動作確認済み
+- `/health` エンドポイント: ✅ 正常応答
+- `/archiveSearch` エンドポイント: ✅ 正常応答
+- Spring Boot + R2DBC + PostgreSQL: ✅ 正常動作
+- Spring Cloud Function統合: ✅ 正常動作

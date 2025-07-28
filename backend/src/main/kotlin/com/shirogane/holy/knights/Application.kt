@@ -2,8 +2,14 @@ package com.shirogane.holy.knights
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.WebApplicationType
+import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
+@ComponentScan(basePackages = [
+    "com.shirogane.holy.knights.adapter",
+    "com.shirogane.holy.knights.application", 
+    "com.shirogane.holy.knights.infrastructure"
+])
 class Application {
     companion object {
         @JvmStatic

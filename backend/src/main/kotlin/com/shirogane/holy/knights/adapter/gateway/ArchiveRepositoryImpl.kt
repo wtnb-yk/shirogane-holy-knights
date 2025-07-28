@@ -9,10 +9,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.relational.core.query.Criteria
 import org.springframework.data.relational.core.query.Query
-import org.springframework.stereotype.Repository
 import java.time.Instant
 
-@Repository
 class ArchiveRepositoryImpl(
     private val template: R2dbcEntityTemplate
 ) : ArchiveRepository {

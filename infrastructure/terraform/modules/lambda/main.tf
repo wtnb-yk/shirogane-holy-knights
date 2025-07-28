@@ -59,7 +59,7 @@ resource "aws_lambda_function" "api" {
   filename         = var.lambda_jar_path
   function_name    = "${var.project_name}-${var.environment}-api"
   role            = aws_iam_role.lambda_execution.arn
-  handler         = "com.shirogane.holy.knights.infrastructure.lambda.SpringBootLambdaHandler"
+  handler         = "org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest"
   source_code_hash = filebase64sha256(var.lambda_jar_path)
 
   runtime     = "java17"
@@ -69,7 +69,7 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       SPRING_PROFILES_ACTIVE = "lambda"
-      SPRING_CLOUD_FUNCTION_DEFINITION = "archiveSearch"
+      SPRING_CLOUD_FUNCTION_DEFINITION = "apiGatewayFunction"
       MAIN_CLASS = "com.shirogane.holy.knights.Application"
       DATABASE_HOST     = var.db_host
       DATABASE_PORT     = var.db_port

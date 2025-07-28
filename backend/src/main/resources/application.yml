@@ -12,6 +12,8 @@ spring:
     password: ${DATABASE_PASSWORD:postgres}
   flyway:
     enabled: false
+  autoconfigure:
+    exclude: []
   jackson:
     serialization:
       indent-output: true
@@ -46,7 +48,7 @@ logging:
     
 # Spring Cloud Function設定
 spring.cloud.function:
-  definition: ""
+  definition: "apiGatewayFunction"
   scan:
     packages: "com.shirogane.holy.knights"
   web:
@@ -81,9 +83,6 @@ spring:
   flyway:
     enabled: false
 
-# R2DBC自動設定を明示的に有効化
-spring.autoconfigure:
-  exclude: []
 
 # Lambda専用のロギング設定
 logging:

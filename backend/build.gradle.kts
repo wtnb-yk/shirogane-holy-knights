@@ -40,11 +40,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     
-    // Flyway for DB migrations (temporarily disabled for WebFlux)
-    // implementation("org.flywaydb:flyway-core")
     
     // Spring Cloud Function - AWS Lambda統合
     implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
+    implementation("org.springframework.cloud:spring-cloud-function-web")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
     
@@ -127,15 +126,18 @@ val healthLambdaJar by tasks.creating(com.github.jengelman.gradle.plugins.shadow
     exclude("META-INF/*.RSA")
 }
 
-// Spring Boot統合Lambda用JARタスク
-val springBootLambdaJar by tasks.creating(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class) {
-    archiveClassifier.set("springboot-lambda")
+// Spring Cloud Function AWS Lambda用JARタスク
+val springCloudFunctionLambdaJar by tasks.creating(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class) {
+    archiveClassifier.set("aws-lambda")
     from(sourceSets.main.get().output)
     
     configurations = listOf(project.configurations.runtimeClasspath.get())
     
     manifest {
-        attributes("Main-Class" to "com.shirogane.holy.knights.Application")
+        attributes(
+            "Main-Class" to "org.springframework.cloud.function.adapter.aws.FunctionInvoker",
+            "Start-Class" to "com.shirogane.holy.knights.Application"
+        )
     }
     
     mergeServiceFiles()

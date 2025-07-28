@@ -7,10 +7,8 @@ import com.shirogane.holy.knights.application.port.`in`.ArchiveUseCasePort
 import com.shirogane.holy.knights.domain.model.ArchiveId
 import com.shirogane.holy.knights.domain.repository.ArchiveRepository
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
 import java.time.Instant
 
-@Service
 class ArchiveUseCaseImpl(
     private val archiveRepository: ArchiveRepository
 ) : ArchiveUseCasePort {
