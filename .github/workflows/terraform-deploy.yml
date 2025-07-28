@@ -89,8 +89,10 @@ jobs:
     - name: Terraform Plan
       id: plan
       if: env.TF_ACTION == 'plan' || env.TF_ACTION == 'apply'
+      env:
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
       run: |
-        terraform plan -no-color -out=tfplan \
+        terraform plan -no-color -out=tfplan -input=false \
           -var="github_repository=${{ github.repository }}" \
           -var="github_access_token=${{ secrets.GITHUB_TOKEN }}"
       continue-on-error: true
