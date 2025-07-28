@@ -90,7 +90,7 @@ jobs:
       id: plan
       if: env.TF_ACTION == 'plan' || env.TF_ACTION == 'apply'
       env:
-        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        TF_VAR_db_password: ${{ env.ENVIRONMENT == 'prod' && secrets.DB_PASSWORD_PROD || secrets.DB_PASSWORD_DEV }}
       run: |
         terraform plan -no-color -out=tfplan -input=false \
           -var="github_repository=${{ github.repository }}" \
@@ -134,11 +134,15 @@ jobs:
 
     - name: Terraform Apply
       if: env.TF_ACTION == 'apply' && github.event_name == 'workflow_dispatch'
+      env:
+        TF_VAR_db_password: ${{ env.ENVIRONMENT == 'prod' && secrets.DB_PASSWORD_PROD || secrets.DB_PASSWORD_DEV }}
       run: |
         terraform apply -auto-approve tfplan
 
     - name: Terraform Destroy
       if: env.TF_ACTION == 'destroy' && github.event_name == 'workflow_dispatch'
+      env:
+        TF_VAR_db_password: ${{ env.ENVIRONMENT == 'prod' && secrets.DB_PASSWORD_PROD || secrets.DB_PASSWORD_DEV }}
       run: |
         terraform destroy -auto-approve \
           -var="github_repository=${{ github.repository }}" \
