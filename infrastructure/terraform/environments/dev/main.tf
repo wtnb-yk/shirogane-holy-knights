@@ -10,6 +10,20 @@ provider "aws" {
   }
 }
 
+# ACM certificate for API Gateway custom domain requires us-east-1
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+
+  default_tags {
+    tags = {
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
 # ネットワーク
 module "network" {
   source = "../../modules/network"
@@ -69,6 +83,14 @@ module "api_gateway" {
   project_name     = var.project_name
   lambda_function_name = module.lambda.function_name
   lambda_invoke_arn    = module.lambda.invoke_arn
+  
+  # Custom domain settings for dev environment
+  custom_domain_name = "api.dev.noe-room.com"
+  hosted_zone_id     = "Z04900993DUUUVXCT5E57"
+
+  providers = {
+    aws.us_east_1 = aws.us_east_1
+  }
 }
 
 # Amplify
@@ -84,6 +106,6 @@ module "amplify" {
   build_spec = file("${path.module}/amplify-buildspec.yml")
   
   environment_variables = {
-    NEXT_PUBLIC_API_ENDPOINT = module.api_gateway.api_endpoint
+    NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
   }
 }

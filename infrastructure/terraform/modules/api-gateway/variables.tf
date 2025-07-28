@@ -23,3 +23,15 @@ variable "log_retention_days" {
   type        = number
   default     = 7
 }
+
+variable "custom_domain_name" {
+  description = "Custom domain name for API Gateway"
+  type        = string
+  default     = ""
+}
+
+variable "hosted_zone_id" {
+  description = "Route 53 hosted zone ID for the domain"
+  type        = string
+  default     = ""
+}

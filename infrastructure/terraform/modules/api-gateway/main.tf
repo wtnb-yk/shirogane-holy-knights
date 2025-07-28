@@ -145,3 +145,91 @@ resource "aws_api_gateway_method_settings" "main" {
 
   depends_on = [aws_api_gateway_account.main]
 }
+
+# ACM Certificate for API Gateway Custom Domain (us-east-1 required)
+resource "aws_acm_certificate" "api_domain" {
+  count = var.custom_domain_name != "" ? 1 : 0
+  
+  provider          = aws.us_east_1
+  domain_name       = var.custom_domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-api-cert"
+    Environment = var.environment
+  }
+}
+
+# ACM Certificate Validation
+resource "aws_acm_certificate_validation" "api_domain" {
+  count = var.custom_domain_name != "" ? 1 : 0
+  
+  provider        = aws.us_east_1
+  certificate_arn = aws_acm_certificate.api_domain[0].arn
+  validation_record_fqdns = [
+    for record in aws_route53_record.cert_validation : record.fqdn
+  ]
+
+  timeouts {
+    create = "5m"
+  }
+}
+
+# Route53 record for certificate validation
+resource "aws_route53_record" "cert_validation" {
+  for_each = var.custom_domain_name != "" ? {
+    for dvo in aws_acm_certificate.api_domain[0].domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  } : {}
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = var.hosted_zone_id
+}
+
+# API Gateway Custom Domain Name
+resource "aws_api_gateway_domain_name" "main" {
+  count = var.custom_domain_name != "" ? 1 : 0
+
+  certificate_arn = aws_acm_certificate_validation.api_domain[0].certificate_arn
+  domain_name     = var.custom_domain_name
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-api-domain"
+    Environment = var.environment
+  }
+}
+
+# API Gateway Base Path Mapping
+resource "aws_api_gateway_base_path_mapping" "main" {
+  count = var.custom_domain_name != "" ? 1 : 0
+
+  api_id      = aws_api_gateway_rest_api.main.id
+  stage_name  = aws_api_gateway_stage.main.stage_name
+  domain_name = aws_api_gateway_domain_name.main[0].domain_name
+}
+
+# Route53 A record for custom domain
+resource "aws_route53_record" "api_domain" {
+  count = var.custom_domain_name != "" ? 1 : 0
+
+  zone_id = var.hosted_zone_id
+  name    = var.custom_domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_api_gateway_domain_name.main[0].cloudfront_domain_name
+    zone_id                = aws_api_gateway_domain_name.main[0].cloudfront_zone_id
+    evaluate_target_health = false
+  }
+}
