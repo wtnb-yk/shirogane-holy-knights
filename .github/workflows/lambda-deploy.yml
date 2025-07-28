@@ -11,11 +11,10 @@ on:
         options:
           - dev
           - prod
-  push:
-    branches: [ main ]
-    paths:
-      - 'backend/**'
-      - '.github/workflows/lambda-deploy.yml'
+
+concurrency:
+  group: lambda-deploy-${{ github.event.inputs.environment || 'dev' }}
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
