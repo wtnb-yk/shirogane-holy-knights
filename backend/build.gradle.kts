@@ -42,6 +42,7 @@ dependencies {
     
     
     // Spring Cloud Function - AWS Lambda統合
+    implementation("org.springframework.cloud:spring-cloud-function-context")
     implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
     implementation("org.springframework.cloud:spring-cloud-function-web")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
@@ -109,22 +110,6 @@ tasks.withType<Test> {
     }
 }
 
-// Lambda用シンプルJARタスク
-val healthLambdaJar by tasks.creating(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class) {
-    archiveClassifier.set("health-lambda")
-    from(sourceSets.main.get().output)
-    
-    configurations = listOf(project.configurations.runtimeClasspath.get())
-    
-    manifest {
-        attributes("Main-Class" to "com.shirogane.holy.knights.infrastructure.lambda.HealthLambdaHandler")
-    }
-    
-    mergeServiceFiles()
-    exclude("META-INF/*.SF")
-    exclude("META-INF/*.DSA") 
-    exclude("META-INF/*.RSA")
-}
 
 // Spring Cloud Function AWS Lambda用JARタスク
 val springCloudFunctionLambdaJar by tasks.creating(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class) {

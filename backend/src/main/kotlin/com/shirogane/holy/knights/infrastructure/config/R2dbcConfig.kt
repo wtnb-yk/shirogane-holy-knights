@@ -32,15 +32,11 @@ class R2dbcConfig {
     @Bean
     @Primary
     fun connectionFactory(): ConnectionFactory {
-        logger.info("ConnectionFactory作成開始")
-        
         val host = System.getenv("DATABASE_HOST") ?: "localhost"
         val port = System.getenv("DATABASE_PORT")?.toIntOrNull() ?: 5432
         val database = System.getenv("DATABASE_NAME") ?: "shirogane_db"
         val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
         val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
-        
-        logger.info("データベース接続情報: $host:$port/$database")
         
         val configuration = PostgresqlConnectionConfiguration.builder()
             .host(host)
@@ -50,52 +46,31 @@ class R2dbcConfig {
             .password(password)
             .build()
         
-        val connectionFactory = PostgresqlConnectionFactory(configuration)
-        logger.info("ConnectionFactory作成完了")
-        
-        return connectionFactory
+        return PostgresqlConnectionFactory(configuration)
     }
     
     @Bean
     fun r2dbcEntityTemplate(connectionFactory: ConnectionFactory): R2dbcEntityTemplate {
-        logger.info("R2dbcEntityTemplate作成開始（PostgresDialect明示指定）")
         val databaseClient = DatabaseClient.builder()
             .connectionFactory(connectionFactory)
             .bindMarkers(PostgresDialect.INSTANCE.bindMarkersFactory)
             .build()
-        val template = R2dbcEntityTemplate(databaseClient, PostgresDialect.INSTANCE)
-        logger.info("R2dbcEntityTemplate作成完了")
-        return template
+        return R2dbcEntityTemplate(databaseClient, PostgresDialect.INSTANCE)
     }
     
     @Bean
     fun archiveRepositoryImpl(template: R2dbcEntityTemplate): ArchiveRepository {
-        logger.info("ArchiveRepositoryImpl Bean 作成開始")
-        val repository = ArchiveRepositoryImpl(template)
-        logger.info("=== ArchiveRepositoryImpl Bean 作成完了 ===")
-        return repository
+        return ArchiveRepositoryImpl(template)
     }
     
     @Bean 
     fun archiveUseCaseImpl(repository: ArchiveRepository): ArchiveUseCasePort {
-        logger.info("ArchiveUseCaseImpl Bean 作成開始")
-        val useCase = ArchiveUseCaseImpl(repository)
-        logger.info("=== ArchiveUseCaseImpl Bean 作成完了 ===")
-        return useCase
+        return ArchiveUseCaseImpl(repository)
     }
     
     @Bean
     fun apiGatewayFunction(useCase: ArchiveUseCasePort, mapper: ObjectMapper): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-        logger.info("ApiGatewayFunction Bean 作成開始")
-        val function = ApiGatewayFunction(useCase, mapper)
-        logger.info("=== ApiGatewayFunction Bean 作成完了 ===")
-        return function
+        return ApiGatewayFunction(useCase, mapper)
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    fun objectMapper(): ObjectMapper {
-        logger.info("ObjectMapper Bean 作成")
-        return ObjectMapper().registerKotlinModule()
-    }
 }
