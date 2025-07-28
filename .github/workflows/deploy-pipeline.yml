@@ -168,7 +168,7 @@ jobs:
     - name: Trigger Amplify deployment
       run: |
         APP_ID=$(aws amplify list-apps --query "apps[?name=='shirogane-holy-knights-${{ env.ENVIRONMENT }}'].appId" --output text)
-        BRANCH_NAME="${{ env.ENVIRONMENT == 'prod' ? 'main' : 'develop' }}"
+        BRANCH_NAME="${{ env.ENVIRONMENT == 'prod' && 'main' || 'develop' }}"
         
         if [ -n "$APP_ID" ]; then
           aws amplify start-job \
