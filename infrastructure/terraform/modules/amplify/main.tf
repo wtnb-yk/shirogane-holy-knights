@@ -17,7 +17,7 @@ resource "aws_amplify_app" "main" {
   # SSRアプリケーション用のログ有効化
   enable_auto_branch_creation = false
   enable_basic_auth = false
-  enable_branch_auto_build = true
+  enable_branch_auto_build = false
   enable_branch_auto_deletion = false
 
   # Next.js SSR routing - let server handle all requests
@@ -36,7 +36,7 @@ resource "aws_amplify_branch" "main" {
   framework = "Next.js - SSR"
   stage     = var.environment == "prod" ? "PRODUCTION" : "DEVELOPMENT"
 
-  enable_auto_build = true
+  enable_auto_build = false
 }
 
 # Amplify Domain Association (optional)
