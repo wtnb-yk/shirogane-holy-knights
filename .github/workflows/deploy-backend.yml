@@ -1,5 +1,7 @@
 name: Deploy Backend
 
+run-name: Deploy Backend (${{ github.event.inputs.environment }})
+
 on:
   workflow_dispatch:
     inputs:
