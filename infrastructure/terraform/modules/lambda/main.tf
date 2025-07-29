@@ -76,6 +76,7 @@ resource "aws_lambda_function" "api" {
       DATABASE_NAME     = var.db_name
       DATABASE_USERNAME = var.db_username
       DATABASE_PASSWORD = var.db_password
+      CORS_ALLOWED_ORIGINS = var.cors_allowed_origins
     }
   }
 

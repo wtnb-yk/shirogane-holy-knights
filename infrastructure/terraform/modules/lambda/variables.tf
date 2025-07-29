@@ -73,3 +73,9 @@ variable "api_gateway_execution_arn" {
   type        = string
   default     = ""
 }
+
+variable "cors_allowed_origins" {
+  description = "CORS allowed origins for this environment"
+  type        = string
+  default     = "*"
+}

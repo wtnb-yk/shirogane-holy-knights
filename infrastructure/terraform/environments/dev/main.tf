@@ -72,6 +72,9 @@ module "lambda" {
   memory_size = 1024
   timeout     = 60
   
+  # CORS設定（dev環境専用Origin設定）
+  cors_allowed_origins = "https://dev.noe-room.com,https://main.d3tuiikdacsjk0.amplifyapp.com"
+  
   api_gateway_execution_arn = module.api_gateway.api_execution_arn
 }
 
