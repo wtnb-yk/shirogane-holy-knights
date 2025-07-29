@@ -113,5 +113,6 @@ module "amplify" {
   environment_variables = {
     NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
     PORT = "3000"
+    AMPLIFY_MONOREPO_APP_ROOT = "frontend"
   }
 }
