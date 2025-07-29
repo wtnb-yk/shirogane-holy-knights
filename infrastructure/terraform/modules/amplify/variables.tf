@@ -27,10 +27,7 @@ variable "github_access_token" {
   default     = ""
 }
 
-variable "build_spec" {
-  description = "Build specification for Amplify"
-  type        = string
-}
+# Removed build_spec variable - using amplify.yml in frontend directory
 
 variable "environment_variables" {
   description = "Environment variables for the Amplify app"

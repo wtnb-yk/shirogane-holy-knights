@@ -93,6 +93,12 @@ module "api_gateway" {
   }
 }
 
+# SSM Parameter for GitHub token
+data "aws_ssm_parameter" "github_token" {
+  name            = "/shirogane-holy-knights/dev/github-token"
+  with_decryption = true
+}
+
 # Amplify
 module "amplify" {
   source = "../../modules/amplify"
@@ -101,11 +107,11 @@ module "amplify" {
   project_name        = var.project_name
   github_repository   = var.github_repository
   github_branch       = var.github_branch
-  github_access_token = var.github_access_token
+  github_access_token = data.aws_ssm_parameter.github_token.value
   
-  build_spec = file("${path.module}/amplify-buildspec.yml")
   
   environment_variables = {
     NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
+    PORT = "3000"
   }
 }

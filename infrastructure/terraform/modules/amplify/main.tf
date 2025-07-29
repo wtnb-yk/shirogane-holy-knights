@@ -1,31 +1,34 @@
 # Amplify App
 resource "aws_amplify_app" "main" {
   name = "${var.project_name}-${var.environment}"
+  
+  # Next.js 14+ SSR requires WEB_COMPUTE platform
+  platform = "WEB_COMPUTE"
 
-  # GitHub連携は一旦無効にして手動デプロイに対応
-  # repository   = var.github_repository
-  # access_token = var.github_access_token
+  # GitHub連携
+  repository   = var.github_repository
+  access_token = var.github_access_token
 
-  build_spec = var.build_spec
+  # Let Amplify use the amplify.yml file in the frontend directory
 
   # Environment variables
   environment_variables = var.environment_variables
 
-  # Custom rules for routing
+  # SSRアプリケーション用のログ有効化
+  enable_auto_branch_creation = false
+  enable_basic_auth = false
+  enable_branch_auto_build = true
+  enable_branch_auto_deletion = false
+
+  # Next.js SSR routing - let server handle all requests
   custom_rule {
     source = "/<*>"
-    status = "404"
-    target = "/index.html"
-  }
-
-  custom_rule {
-    source = "</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf|map|json)$)([^.]+$)/>"
     status = "200"
-    target = "/index.html"
+    target = "/<*>"
   }
 }
 
-# Amplify Branch (手動デプロイ用)
+# Amplify Branch
 resource "aws_amplify_branch" "main" {
   app_id      = aws_amplify_app.main.id
   branch_name = "main"
@@ -33,7 +36,7 @@ resource "aws_amplify_branch" "main" {
   framework = "Next.js - SSR"
   stage     = var.environment == "prod" ? "PRODUCTION" : "DEVELOPMENT"
 
-  enable_auto_build = false
+  enable_auto_build = true
 }
 
 # Amplify Domain Association (optional)
