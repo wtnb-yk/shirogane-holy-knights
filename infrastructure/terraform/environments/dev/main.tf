@@ -115,4 +115,6 @@ module "amplify" {
     PORT = "3000"
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
   }
+  
+  custom_domain = "noe-room.com"
 }
