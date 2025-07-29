@@ -1,0 +1,147 @@
+name: Deploy Frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          # - prod  # 将来のprod環境対応時にコメントアウト解除
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Get Amplify App ID
+        id: get_app_id
+        run: |
+          APP_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}"
+          
+          echo "Looking for Amplify app: $APP_NAME"
+          
+          # Amplifyアプリの検索
+          APP_ID=$(aws amplify list-apps \
+            --query "apps[?name=='$APP_NAME'].appId" \
+            --output text)
+          
+          if [ -z "$APP_ID" ] || [ "$APP_ID" = "None" ]; then
+            echo "❌ Amplify app '$APP_NAME' not found"
+            echo "Please create the infrastructure using Terraform first"
+            exit 1
+          fi
+          
+          echo "Found Amplify app ID: $APP_ID"
+          echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
+
+      - name: Trigger Amplify Build
+        id: trigger_build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          BRANCH_NAME="main"
+          
+          echo "Triggering build for App ID: $APP_ID, Branch: $BRANCH_NAME"
+          
+          # ビルドの開始
+          JOB_ID=$(aws amplify start-job \
+            --app-id "$APP_ID" \
+            --branch-name "$BRANCH_NAME" \
+            --job-type RELEASE \
+            --query 'jobSummary.jobId' \
+            --output text)
+          
+          echo "Build job started with ID: $JOB_ID"
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+
+      - name: Monitor Build Progress
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          JOB_ID="${{ steps.trigger_build.outputs.job_id }}"
+          
+          echo "Monitoring build progress..."
+          
+          # ビルド監視（最大10分）
+          for i in {1..60}; do
+            STATUS=$(aws amplify get-job \
+              --app-id "$APP_ID" \
+              --branch-name "main" \
+              --job-id "$JOB_ID" \
+              --query 'job.summary.status' \
+              --output text)
+            
+            echo "Build status: $STATUS (check $i/60)"
+            
+            case $STATUS in
+              "SUCCEED")
+                echo "✅ Build completed successfully"
+                break
+                ;;
+              "FAILED")
+                echo "❌ Build failed"
+                # ビルドログの取得
+                aws amplify get-job \
+                  --app-id "$APP_ID" \
+                  --branch-name "main" \
+                  --job-id "$JOB_ID" \
+                  --query 'job.steps[*].{stepName:stepName,status:status,logUrl:logUrl}' \
+                  --output table
+                exit 1
+                ;;
+              "CANCELLED")
+                echo "❌ Build was cancelled"
+                exit 1
+                ;;
+              "RUNNING"|"PENDING")
+                if [ $i -eq 60 ]; then
+                  echo "❌ Build timeout after 10 minutes"
+                  exit 1
+                fi
+                sleep 10
+                ;;
+            esac
+          done
+
+      - name: Get Deployment URL
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          
+          # デプロイ先URLの取得
+          DOMAIN=$(aws amplify get-app \
+            --app-id "$APP_ID" \
+            --query 'app.defaultDomain' \
+            --output text)
+          
+          echo "🚀 Frontend deployed successfully!"
+          echo "Environment: ${{ github.event.inputs.environment }}"
+          echo "URL: https://$DOMAIN"
+          
+          # カスタムドメインの確認
+          CUSTOM_DOMAINS=$(aws amplify list-domain-associations \
+            --app-id "$APP_ID" \
+            --query 'domainAssociations[*].domainName' \
+            --output text)
+          
+          if [ -n "$CUSTOM_DOMAINS" ] && [ "$CUSTOM_DOMAINS" != "None" ]; then
+            echo "Custom domains:"
+            for domain in $CUSTOM_DOMAINS; do
+              echo "  - https://$domain"
+            done
+          fi
