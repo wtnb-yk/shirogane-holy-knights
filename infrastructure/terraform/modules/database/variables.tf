@@ -54,14 +54,28 @@ variable "db_name" {
 }
 
 variable "db_username" {
-  description = "Database master username"
+  description = "Database master username (used when use_secrets_manager is false)"
   type        = string
+  default     = "postgres"
 }
 
 variable "db_password" {
-  description = "Database master password"
+  description = "Database master password (used when use_secrets_manager is false)"
   type        = string
   sensitive   = true
+  default     = ""
+}
+
+variable "use_secrets_manager" {
+  description = "Whether to use AWS Secrets Manager for database credentials"
+  type        = bool
+  default     = false
+}
+
+variable "db_secret_arn" {
+  description = "ARN of the Secrets Manager secret containing database credentials"
+  type        = string
+  default     = ""
 }
 
 variable "backup_retention_period" {

@@ -67,9 +67,10 @@ variable "db_username" {
 }
 
 variable "db_password" {
-  description = "Database password"
+  description = "Database password (not used when Secrets Manager is enabled)"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
 # Lambda

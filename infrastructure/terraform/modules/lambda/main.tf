@@ -16,6 +16,18 @@ resource "aws_iam_role" "lambda_execution" {
   })
 }
 
+# Get RDS credentials from Secrets Manager
+data "aws_secretsmanager_secret_version" "db_credentials" {
+  count     = var.use_secrets_manager ? 1 : 0
+  secret_id = var.db_secret_arn
+}
+
+locals {
+  db_credentials = var.use_secrets_manager ? jsondecode(data.aws_secretsmanager_secret_version.db_credentials[0].secret_string) : {}
+  db_username    = var.use_secrets_manager ? try(local.db_credentials.username, var.db_username) : var.db_username
+  db_password    = var.use_secrets_manager ? try(local.db_credentials.password, var.db_password) : var.db_password
+}
+
 # IAM Policy for Lambda
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "${var.project_name}-${var.environment}-lambda-policy"
@@ -74,8 +86,8 @@ resource "aws_lambda_function" "api" {
       DATABASE_HOST     = var.db_host
       DATABASE_PORT     = var.db_port
       DATABASE_NAME     = var.db_name
-      DATABASE_USERNAME = var.db_username
-      DATABASE_PASSWORD = var.db_password
+      DATABASE_USERNAME = local.db_username
+      DATABASE_PASSWORD = local.db_password
       CORS_ALLOWED_ORIGINS = var.cors_allowed_origins
     }
   }
@@ -89,6 +101,13 @@ resource "aws_lambda_function" "api" {
     aws_iam_role_policy.lambda_policy,
     aws_cloudwatch_log_group.lambda
   ]
+}
+
+# Attach the IAM policy from secrets module if using Secrets Manager
+resource "aws_iam_role_policy_attachment" "secrets_access" {
+  count      = var.use_secrets_manager ? 1 : 0
+  role       = aws_iam_role.lambda_execution.name
+  policy_arn = var.secrets_access_policy_arn
 }
 
 # Lambda Permission for API Gateway

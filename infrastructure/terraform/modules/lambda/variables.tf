@@ -63,9 +63,28 @@ variable "db_username" {
 }
 
 variable "db_password" {
-  description = "Database password"
+  description = "Database password (used when use_secrets_manager is false)"
   type        = string
   sensitive   = true
+  default     = ""
+}
+
+variable "use_secrets_manager" {
+  description = "Whether to use AWS Secrets Manager for database credentials"
+  type        = bool
+  default     = false
+}
+
+variable "db_secret_arn" {
+  description = "ARN of the Secrets Manager secret containing database credentials"
+  type        = string
+  default     = ""
+}
+
+variable "secrets_access_policy_arn" {
+  description = "ARN of the IAM policy for accessing Secrets Manager"
+  type        = string
+  default     = ""
 }
 
 variable "api_gateway_execution_arn" {

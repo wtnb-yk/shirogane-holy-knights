@@ -18,3 +18,14 @@ output "lambda_function_name" {
   description = "Lambda function name"
   value       = module.lambda.function_name
 }
+
+output "secrets_manager_name" {
+  description = "Secrets Manager secret name"
+  value       = module.secrets.secret_name
+}
+
+output "secrets_manager_arn" {
+  description = "Secrets Manager secret ARN"
+  value       = module.secrets.secret_arn
+  sensitive   = true
+}

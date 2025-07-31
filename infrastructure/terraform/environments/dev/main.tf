@@ -24,6 +24,14 @@ provider "aws" {
   }
 }
 
+# Secrets Manager
+module "secrets" {
+  source = "../../modules/secrets"
+
+  environment  = var.environment
+  project_name = var.project_name
+}
+
 # ネットワーク
 module "network" {
   source = "../../modules/network"
@@ -46,10 +54,12 @@ module "database" {
   subnet_ids             = module.network.private_subnet_ids
   vpc_security_group_ids = [module.network.database_security_group_id]
   
-  db_instance_class = var.db_instance_class
-  db_name           = var.db_name
-  db_username       = var.db_username
-  db_password       = var.db_password
+  db_instance_class    = var.db_instance_class
+  db_name              = var.db_name
+  db_username          = var.db_username
+  db_password          = var.db_password
+  use_secrets_manager  = true
+  db_secret_arn        = module.secrets.secret_arn
 }
 
 # Lambda
@@ -67,6 +77,11 @@ module "lambda" {
   db_name         = var.db_name
   db_username     = var.db_username
   db_password     = var.db_password
+  
+  # Secrets Manager設定
+  use_secrets_manager       = true
+  db_secret_arn            = module.secrets.secret_arn
+  secrets_access_policy_arn = module.secrets.secrets_access_policy_arn
   
   # Lambda performance settings for Spring Boot + R2DBC
   memory_size = 1024
