@@ -33,3 +33,15 @@ variable "enable_nat_gateway" {
   type        = bool
   default     = true
 }
+
+variable "allowed_db_client_cidrs" {
+  description = "CIDR blocks allowed to access database from external clients"
+  type        = list(string)
+  default     = null
+}
+
+variable "bastion_security_group_id" {
+  description = "Security group ID of the bastion host"
+  type        = string
+  default     = null
+}

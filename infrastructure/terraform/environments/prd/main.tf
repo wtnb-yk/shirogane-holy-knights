@@ -62,6 +62,10 @@ module "database" {
   use_secrets_manager  = true
   db_secret_arn        = module.secrets.secret_arn
   publicly_accessible  = var.db_publicly_accessible
+  
+  # Productionでは強化されたバックアップ設定
+  backup_retention_period = var.backup_retention_period
+  skip_final_snapshot     = false
 }
 
 # Lambda
@@ -85,12 +89,12 @@ module "lambda" {
   db_secret_arn            = module.secrets.secret_arn
   secrets_access_policy_arn = module.secrets.secrets_access_policy_arn
   
-  # Lambda performance settings for Spring Boot + R2DBC
-  memory_size = 1024
-  timeout     = 60
+  # Lambda performance settings for Production
+  memory_size = var.lambda_memory_size
+  timeout     = var.lambda_timeout
   
-  # CORS設定（dev環境専用Origin設定）
-  cors_allowed_origins = "https://dev.noe-room.com,https://main.d3tuiikdacsjk0.amplifyapp.com"
+  # CORS設定（prd環境専用Origin設定）
+  cors_allowed_origins = var.cors_allowed_origins
   
   api_gateway_execution_arn = module.api_gateway.api_execution_arn
 }
@@ -104,9 +108,9 @@ module "api_gateway" {
   lambda_function_name = module.lambda.function_name
   lambda_invoke_arn    = module.lambda.invoke_arn
   
-  # Custom domain settings for dev environment
-  custom_domain_name = "api.dev.noe-room.com"
-  hosted_zone_id     = "Z04900993DUUUVXCT5E57"
+  # Custom domain settings for production environment
+  custom_domain_name = var.api_custom_domain_name
+  hosted_zone_id     = var.hosted_zone_id
 
   providers = {
     aws.us_east_1 = aws.us_east_1
@@ -115,7 +119,7 @@ module "api_gateway" {
 
 # SSM Parameter for GitHub token
 data "aws_ssm_parameter" "github_token" {
-  name            = "/shirogane-holy-knights/dev/github-token"
+  name            = "/shirogane-holy-knights/prd/github-token"
   with_decryption = true
 }
 
@@ -129,36 +133,11 @@ module "amplify" {
   github_branch       = var.github_branch
   github_access_token = data.aws_ssm_parameter.github_token.value
   
-  
   environment_variables = {
     NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
     PORT = "3000"
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
   }
   
-  custom_domain = "noe-room.com"
-}
-
-# Bastion Host
-module "bastion" {
-  source = "../../modules/bastion"
-
-  environment  = var.environment
-  project_name = var.project_name
-  aws_region   = var.aws_region
-  vpc_id       = module.network.vpc_id
-  subnet_id    = module.network.private_subnet_ids[0]  # Use first private subnet
-  vpc_endpoint_subnet_ids = module.network.private_subnet_ids
-  db_endpoint  = replace(module.database.db_endpoint, ":5432", "")
-}
-
-# Additional security group rule for bastion -> database access
-resource "aws_security_group_rule" "bastion_to_database" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = module.bastion.security_group_id
-  security_group_id        = module.network.database_security_group_id
-  description              = "Database access from bastion host"
+  custom_domain = var.amplify_custom_domain
 }

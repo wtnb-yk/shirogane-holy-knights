@@ -107,3 +107,9 @@ variable "apply_immediately" {
   type        = bool
   default     = false
 }
+
+variable "publicly_accessible" {
+  description = "Whether the DB instance is publicly accessible"
+  type        = bool
+  default     = false
+}

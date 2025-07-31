@@ -26,6 +26,10 @@ resource "aws_subnet" "public" {
   availability_zone       = var.azs[count.index]
   map_public_ip_on_launch = true
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = {
     Name = "${var.project_name}-${var.environment}-public-subnet-${count.index + 1}"
     Type = "public"
@@ -38,6 +42,10 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnets[count.index]
   availability_zone = var.azs[count.index]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = {
     Name = "${var.project_name}-${var.environment}-private-subnet-${count.index + 1}"
@@ -135,11 +143,36 @@ resource "aws_security_group" "database" {
   name_prefix = "${var.project_name}-${var.environment}-db-"
   vpc_id      = aws_vpc.main.id
 
+  # Lambda からのアクセス
   ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.lambda.id]
+  }
+
+  # DBクライアントからのアクセス（特定IPアドレスのみ）
+  dynamic "ingress" {
+    for_each = var.allowed_db_client_cidrs != null ? var.allowed_db_client_cidrs : []
+    content {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+      description = "DB client access from ${ingress.value}"
+    }
+  }
+
+  # 踏み台EC2からのアクセス
+  dynamic "ingress" {
+    for_each = var.bastion_security_group_id != null ? [1] : []
+    content {
+      from_port       = 5432
+      to_port         = 5432
+      protocol        = "tcp"
+      security_groups = [var.bastion_security_group_id]
+      description     = "DB access from bastion host"
+    }
   }
 
   egress {

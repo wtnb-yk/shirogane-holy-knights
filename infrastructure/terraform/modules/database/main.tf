@@ -77,6 +77,9 @@ resource "aws_db_instance" "main" {
 
   apply_immediately = var.apply_immediately
 
+  # パブリックアクセス設定（DBクライアントからの接続用）
+  publicly_accessible = var.publicly_accessible
+
   tags = {
     Name = "${var.project_name}-${var.environment}-db"
   }

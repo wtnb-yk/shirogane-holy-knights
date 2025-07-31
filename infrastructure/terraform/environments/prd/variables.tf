@@ -1,7 +1,7 @@
 variable "environment" {
   description = "Environment name"
   type        = string
-  default     = "dev"
+  default     = "prd"
 }
 
 variable "project_name" {
@@ -20,7 +20,7 @@ variable "aws_region" {
 variable "vpc_cidr" {
   description = "CIDR block for VPC"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "10.1.0.0/16"  # dev環境と異なるCIDRを使用
 }
 
 variable "availability_zones" {
@@ -32,13 +32,13 @@ variable "availability_zones" {
 variable "public_subnet_cidrs" {
   description = "CIDR blocks for public subnets"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+  default     = ["10.1.1.0/24", "10.1.2.0/24"]
 }
 
 variable "private_subnet_cidrs" {
   description = "CIDR blocks for private subnets"
   type        = list(string)
-  default     = ["10.0.11.0/24", "10.0.13.0/24"]
+  default     = ["10.1.11.0/24", "10.1.12.0/24"]
 }
 
 variable "enable_nat_gateway" {
@@ -47,18 +47,18 @@ variable "enable_nat_gateway" {
   default     = true
 }
 
-# DBクライアント接続用IP制限設定
+# DBクライアント接続用IP制限設定（本番環境用）
 variable "allowed_db_client_cidrs" {
-  description = "CIDR blocks allowed to access database from external clients"
+  description = "CIDR blocks allowed to access database from external clients (production should be more restrictive)"
   type        = list(string)
-  default     = ["60.87.155.152/32"]  # 現在のパブリックIPアドレス
+  default     = []  # 本番環境では明示的に設定が必要
 }
 
 # Database
 variable "db_instance_class" {
   description = "RDS instance class"
   type        = string
-  default     = "db.t3.micro"
+  default     = "db.t3.small"  # 本番環境ではdev環境より大きなインスタンス
 }
 
 variable "db_name" {
@@ -83,7 +83,13 @@ variable "db_password" {
 variable "db_publicly_accessible" {
   description = "Whether the DB instance is publicly accessible (for DB client connections)"
   type        = bool
-  default     = true
+  default     = false  # 本番環境ではセキュリティ重視でfalse
+}
+
+variable "backup_retention_period" {
+  description = "Backup retention period in days (production should have longer retention)"
+  type        = number
+  default     = 30  # 本番環境では長期保持
 }
 
 # Lambda
@@ -91,6 +97,37 @@ variable "lambda_jar_path" {
   description = "Path to Lambda JAR file"
   type        = string
   default     = "../../../backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+}
+
+variable "lambda_memory_size" {
+  description = "Lambda memory size in MB"
+  type        = number
+  default     = 2048  # 本番環境では大きなメモリを割り当て
+}
+
+variable "lambda_timeout" {
+  description = "Lambda timeout in seconds"
+  type        = number
+  default     = 60
+}
+
+variable "cors_allowed_origins" {
+  description = "CORS allowed origins for API Gateway"
+  type        = string
+  default     = "https://noe-room.com"  # 本番ドメインのみ
+}
+
+# API Gateway
+variable "api_custom_domain_name" {
+  description = "Custom domain name for API Gateway"
+  type        = string
+  default     = "api.noe-room.com"
+}
+
+variable "hosted_zone_id" {
+  description = "Route53 hosted zone ID for custom domain"
+  type        = string
+  default     = "Z04900993DUUUVXCT5E57"
 }
 
 # Amplify
@@ -111,4 +148,10 @@ variable "github_access_token" {
   type        = string
   sensitive   = true
   default     = ""
+}
+
+variable "amplify_custom_domain" {
+  description = "Custom domain for Amplify"
+  type        = string
+  default     = "noe-room.com"
 }
