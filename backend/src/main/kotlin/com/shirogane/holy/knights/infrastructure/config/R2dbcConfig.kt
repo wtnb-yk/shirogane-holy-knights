@@ -34,7 +34,7 @@ class R2dbcConfig {
     fun connectionFactory(): ConnectionFactory {
         val host = System.getenv("DATABASE_HOST") ?: "localhost"
         val port = System.getenv("DATABASE_PORT")?.toIntOrNull() ?: 5432
-        val database = System.getenv("DATABASE_NAME") ?: "shirogane_db"
+        val database = System.getenv("DATABASE_NAME") ?: "shirogane"
         val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
         val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
         

@@ -13,7 +13,7 @@
 
 **根本原因**: RDSデータベース接続エラー
 ```
-PostgresqlAuthenticationFailure: no pg_hba.conf entry for host "10.0.12.198", user "postgres", database "shirogane_portal", no encryption
+PostgresqlAuthenticationFailure: no pg_hba.conf entry for host "10.0.12.198", user "postgres", database "shirogane", no encryption
 ```
 
 **詳細分析**:

@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: lambda-local
   datasource:
-    url: jdbc:postgresql://postgres:5432/shirogane_db
+    url: jdbc:postgresql://postgres:5432/shirogane
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
