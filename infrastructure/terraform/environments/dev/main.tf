@@ -62,6 +62,7 @@ module "database" {
   use_secrets_manager  = true
   db_secret_arn        = module.secrets.secret_arn
   publicly_accessible  = var.db_publicly_accessible
+  skip_final_snapshot  = true
 }
 
 # Lambda
@@ -137,6 +138,7 @@ module "amplify" {
   }
   
   custom_domain = "noe-room.com"
+  hosted_zone_id = "Z04900993DUUUVXCT5E57"
 }
 
 # Bastion Host

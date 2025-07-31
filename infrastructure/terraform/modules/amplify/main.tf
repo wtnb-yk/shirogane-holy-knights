@@ -58,3 +58,17 @@ resource "aws_amplify_webhook" "main" {
   branch_name = aws_amplify_branch.main.branch_name
   description = "Webhook for manual deployments"
 }
+
+# Route53 record for custom domain (if hosted zone ID is provided)
+resource "aws_route53_record" "amplify_domain" {
+  count = var.custom_domain != "" && var.hosted_zone_id != "" ? 1 : 0
+
+  zone_id = var.hosted_zone_id
+  name    = var.environment == "prod" ? var.custom_domain : "${var.environment}.${var.custom_domain}"
+  type    = "CNAME"
+  ttl     = 300
+
+  records = [split(" ", [for s in aws_amplify_domain_association.main[0].sub_domain : s.dns_record][0])[2]]
+
+  depends_on = [aws_amplify_domain_association.main]
+}
