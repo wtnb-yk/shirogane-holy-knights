@@ -52,6 +52,9 @@ dependencies {
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
     implementation("org.postgresql:postgresql:$postgresqlVersion")
     
+    // R2DBC Migration
+    implementation("name.nkonev.r2dbc-migrate:r2dbc-migrate-spring-boot-starter:2.8.0")
+    
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     

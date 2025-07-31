@@ -10,8 +10,6 @@ spring:
     url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
-  flyway:
-    enabled: false
   autoconfigure:
     exclude: []
   jackson:
@@ -80,8 +78,6 @@ spring:
       max-acquire-time: 30s
       max-create-connection-time: 30s
       validation-query: SELECT 1
-  flyway:
-    enabled: false
 
 
 # Lambda専用のロギング設定

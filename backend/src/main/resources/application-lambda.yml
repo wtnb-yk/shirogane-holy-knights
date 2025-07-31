@@ -15,8 +15,6 @@ spring:
       max-acquire-time: 30s
       max-create-connection-time: 30s
       validation-query: SELECT 1
-  flyway:
-    enabled: false
 
 # Lambda関数設定
 spring.cloud.function:

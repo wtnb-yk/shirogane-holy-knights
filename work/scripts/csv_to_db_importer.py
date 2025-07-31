@@ -86,62 +86,52 @@ def read_csv_files(directory):
     
     return csv_files
 
-def import_channels(conn, df):
-    """チャンネル情報をインポート"""
-    if df is None or df.empty:
+def import_channels(conn, channels_df, channel_details_df=None):
+    """チャンネル情報をインポート（基本情報と詳細情報を統合）"""
+    if channels_df is None or channels_df.empty:
         print("チャンネルデータがありません")
         return
     
     cursor = conn.cursor()
     
-    # データを準備
-    data = [(row['id'], row['title']) for _, row in df.iterrows()]
+    # channel_detailsがある場合は結合してデータを準備
+    if channel_details_df is not None and not channel_details_df.empty:
+        # channels_dfのidとchannel_details_dfのchannel_idで結合
+        merged_df = pd.merge(channels_df, channel_details_df, 
+                           left_on='id', right_on='channel_id', how='left')
+        
+        data = [
+            (
+                row['id'],
+                row['title'],
+                row.get('handle', None),
+                row.get('description', ''),
+                int(row.get('subscriber_count', 0)) if pd.notna(row.get('subscriber_count')) else 0,
+                row.get('icon_url', '')
+            ) 
+            for _, row in merged_df.iterrows()
+        ]
+    else:
+        # channel_detailsがない場合は基本情報のみ
+        data = [
+            (
+                row['id'],
+                row['title'],
+                None,  # handle
+                '',    # description
+                0,     # subscriber_count
+                ''     # icon_url
+            ) 
+            for _, row in channels_df.iterrows()
+        ]
     
     # UPSERT クエリ（既存データがあれば更新）
     query = """
-        INSERT INTO channels (id, title) 
-        VALUES (%s, %s)
+        INSERT INTO channels (id, title, handle, description, subscriber_count, icon_url) 
+        VALUES (%s, %s, %s, %s, %s, %s)
         ON CONFLICT (id) 
-        DO UPDATE SET title = EXCLUDED.title
-    """
-    
-    try:
-        execute_batch(cursor, query, data)
-        conn.commit()
-        print(f"channels: {len(data)}件のデータをインポートしました")
-    except Exception as e:
-        conn.rollback()
-        print(f"channelsインポートエラー: {str(e)}")
-        raise
-    finally:
-        cursor.close()
-
-def import_channel_details(conn, df):
-    """チャンネル詳細情報をインポート"""
-    if df is None or df.empty:
-        print("チャンネル詳細データがありません")
-        return
-    
-    cursor = conn.cursor()
-    
-    # データを準備
-    data = [
-        (
-            row['channel_id'],
-            row.get('handle', None),
-            row.get('description', ''),
-            int(row.get('subscriber_count', 0)) if pd.notna(row.get('subscriber_count')) else 0,
-            row.get('icon_url', '')
-        ) 
-        for _, row in df.iterrows()
-    ]
-    
-    # UPSERT クエリ
-    query = """
-        INSERT INTO channel_details (channel_id, handle, description, subscriber_count, icon_url) 
-        VALUES (%s, %s, %s, %s, %s)
-        ON CONFLICT (channel_id) 
         DO UPDATE SET 
+            title = EXCLUDED.title,
             handle = EXCLUDED.handle,
             description = EXCLUDED.description,
             subscriber_count = EXCLUDED.subscriber_count,
@@ -151,10 +141,10 @@ def import_channel_details(conn, df):
     try:
         execute_batch(cursor, query, data)
         conn.commit()
-        print(f"channel_details: {len(data)}件のデータをインポートしました")
+        print(f"channels: {len(data)}件のデータをインポートしました")
     except Exception as e:
         conn.rollback()
-        print(f"channel_detailsインポートエラー: {str(e)}")
+        print(f"channelsインポートエラー: {str(e)}")
         raise
     finally:
         cursor.close()
@@ -289,7 +279,7 @@ def verify_import(conn):
     """インポート結果を検証"""
     cursor = conn.cursor()
     
-    tables = ['channels', 'channel_details', 'archives', 'video_details', 'content_details']
+    tables = ['channels', 'archives', 'video_details', 'content_details']
     
     print("\n=== インポート結果の検証 ===")
     for table in tables:
@@ -328,13 +318,11 @@ def main():
         # インポート順序が重要（外部キー制約のため）
         print("\n=== データインポート開始 ===")
         
-        # 1. チャンネル情報
-        if 'channels' in csv_files:
-            import_channels(conn, csv_files['channels'])
-        
-        # 2. チャンネル詳細
-        if 'channel_details' in csv_files:
-            import_channel_details(conn, csv_files['channel_details'])
+        # 1. チャンネル情報（基本情報と詳細情報を統合）
+        channels_df = csv_files.get('channels')
+        channel_details_df = csv_files.get('channel_details')
+        if channels_df is not None:
+            import_channels(conn, channels_df, channel_details_df)
         
         # 3. アーカイブ基本情報
         if 'archives' in csv_files:
