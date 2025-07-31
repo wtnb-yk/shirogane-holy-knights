@@ -1,2 +1,10 @@
 .idea/
 /work/result/
+
+# 環境設定ファイル（秘密情報を含む）
+.env*
+work/config/.env*
+*.local
+.env.local
+.env.dev
+.env.prod
