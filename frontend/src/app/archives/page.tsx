@@ -45,7 +45,7 @@ export default function ArchivesList() {
           onFilterClick={() => setShowFilterModal(true)}
         />
 
-        {(searchQuery || filters.selectedTags.length > 0 || filters.startDate || filters.endDate || filters.duration) && (
+        {(searchQuery || filters.selectedTags.length > 0 || filters.startDate || filters.endDate) && (
           <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border border-sage-200">
             <div className="flex items-center justify-between">
               <div className="text-sage-300">
@@ -54,7 +54,7 @@ export default function ArchivesList() {
                     「<span className="font-medium text-gray-800">{searchQuery}</span>」
                   </span>
                 )}
-                {(filters.selectedTags.length > 0 || filters.startDate || filters.endDate || filters.duration) && (
+                {(filters.selectedTags.length > 0 || filters.startDate || filters.endDate) && (
                   <span className={searchQuery ? 'ml-2' : ''}>
                     {searchQuery ? 'とフィルター' : 'フィルター'}による検索結果
                   </span>
