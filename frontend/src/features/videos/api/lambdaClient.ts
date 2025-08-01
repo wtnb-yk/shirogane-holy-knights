@@ -1,4 +1,4 @@
-import { ArchiveSearchParams, ArchiveSearchResult, ApiError } from '../types/types';
+import { VideoSearchParams, VideoSearchResult, ApiError } from '../types/types';
 
 /**
  * Lambda関数のエンドポイント設定
@@ -15,16 +15,16 @@ const API_CONFIG = {
 export class LambdaClient {
 
   /**
-   * アーカイブ検索Lambda関数を呼び出す
+   * 動画検索Lambda関数を呼び出す
    * @param params 検索パラメータ
    * @returns 検索結果
    */
-  static async callArchiveSearchFunction(
-    params: ArchiveSearchParams
-  ): Promise<ArchiveSearchResult> {
+  static async callVideoSearchFunction(
+    params: VideoSearchParams
+  ): Promise<VideoSearchResult> {
     try {
       // Spring Cloud Functionのエンドポイント
-      const response = await fetch(`${API_CONFIG.baseUrl}/archiveSearch`, {
+      const response = await fetch(`${API_CONFIG.baseUrl}/videoSearch`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,14 +35,14 @@ export class LambdaClient {
       if (!response.ok) {
         const errorData = await response.json();
         throw {
-          error: errorData.error || 'アーカイブ検索中にエラーが発生しました',
+          error: errorData.error || '動画検索中にエラーが発生しました',
           statusCode: response.status,
         } as ApiError;
       }
 
       return response.json();
     } catch (error) {
-      console.error('アーカイブ検索関数呼び出しエラー:', error);
+      console.error('動画検索関数呼び出しエラー:', error);
       throw error;
     }
   }

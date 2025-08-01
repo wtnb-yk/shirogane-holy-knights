@@ -14,10 +14,10 @@ export default function Home() {
 
         <div className="mt-6 flex gap-4 justify-center">
           <a
-            href="/archives"
+            href="/videos"
             className="px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
           >
-            アーカイブ一覧を見る
+            動画一覧を見る
           </a>
         </div>
       </main>

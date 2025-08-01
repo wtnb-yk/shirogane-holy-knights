@@ -7,7 +7,7 @@
 出力内容:
 1. channels.csv - チャンネル情報
 2. channel_details.csv - チャンネル詳細情報
-3. archives.csv - アーカイブ基本情報
+3. videos.csv - 動画基本情報
 4. video_details.csv - 動画詳細情報
 5. content_details.csv - コンテンツ詳細情報
 
@@ -116,7 +116,7 @@ def get_all_video_ids(youtube, channel_id):
 
 def get_videos_details(youtube, video_ids, channel_id):
     """動画IDリストから詳細情報を取得"""
-    archives = []
+    videos = []
     video_details = []
     content_details = []
     
@@ -135,18 +135,18 @@ def get_videos_details(youtube, video_ids, channel_id):
         for video in response['items']:
             video_id = video['id']
             
-            # アーカイブ基本情報
-            archive = {
+            # 動画基本情報
+            video = {
                 'id': video_id,
                 'title': video['snippet']['title'],
                 'published_at': video['snippet']['publishedAt'],
                 'channel_id': channel_id
             }
-            archives.append(archive)
+            videos.append(video)
             
             # 動画詳細情報
             video_detail = {
-                'archive_id': video_id,
+                'video_id': video_id,
                 'url': f"https://www.youtube.com/watch?v={video_id}",
                 'duration': convert_duration_to_hhmmss(video['contentDetails'].get('duration', '')),
                 'thumbnail_url': video['snippet']['thumbnails'].get('high', {}).get('url', '')
@@ -156,14 +156,14 @@ def get_videos_details(youtube, video_ids, channel_id):
             # コンテンツ詳細情報
             is_members_only = 'memberOnly' in video['contentDetails'] and video['contentDetails']['memberOnly'] == True
             content_detail = {
-                'archive_id': video_id,
+                'video_id': video_id,
                 'description': video['snippet']['description'],
                 'is_members_only': is_members_only
             }
             content_details.append(content_detail)
             
-    print(f"{len(archives)} 件の動画情報を取得しました")
-    return archives, video_details, content_details
+    print(f"{len(videos)} 件の動画情報を取得しました")
+    return videos, video_details, content_details
 
 def convert_duration_to_hhmmss(duration_str):
     """ISO 8601 形式の期間を HH:MM:SS 形式に変換"""
@@ -227,7 +227,7 @@ def save_to_csv(data, output_file, output_dir, chunk_size=500):
         end = min(start + chunk_size, len(df))
         chunk_df = df.iloc[start:end]
         
-        # 分割ファイル名を作成（例: archives_001.csv, archives_002.csv）
+        # 分割ファイル名を作成（例: videos_001.csv, videos_002.csv）
         chunk_filename = f"{file_base}_{i+1:03d}{file_ext}"
         chunk_path = os.path.join(output_dir, chunk_filename)
         
@@ -279,12 +279,12 @@ def main():
             return
             
         # 各動画の詳細情報を取得
-        archives, video_details, content_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
+        videos, video_details, content_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
         
         # CSVファイルに保存
         save_to_csv([channel_info], 'channels.csv', output_dir)
         save_to_csv([channel_details], 'channel_details.csv', output_dir)
-        save_to_csv(archives, 'archives.csv', output_dir)
+        save_to_csv(videos, 'videos.csv', output_dir)
         save_to_csv(video_details, 'video_details.csv', output_dir)
         save_to_csv(content_details, 'content_details.csv', output_dir)
         
@@ -292,7 +292,7 @@ def main():
         print(f"\n=== 処理完了 ===")
         print(f"出力ディレクトリ: {output_dir}")
         print(f"取得したチャンネル: {channel_info['title']}")
-        print(f"取得した動画数: {len(archives)} 件")
+        print(f"取得した動画数: {len(videos)} 件")
         
     except HttpError as e:
         print(f"HTTPエラーが発生しました: {e.resp.status} {e.content}")

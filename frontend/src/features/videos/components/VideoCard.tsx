@@ -3,27 +3,27 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar, Tag, ExternalLink } from 'lucide-react';
-import { ArchiveDto } from '../types/types';
+import { VideoDto } from '../types/types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-interface ArchiveCardProps {
-  archive: ArchiveDto;
+interface VideoCardProps {
+  video: VideoDto;
   index: number;
 }
 
-const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
+const VideoCardComponent = ({ video, index }: VideoCardProps) => {
   return (
     <div 
       className="h-full group opacity-0 animate-fade-in" 
       style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
     >
       <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border border-sage-200 hover:scale-[1.02] hover:-translate-y-1">
-        {archive.thumbnailUrl && (
+        {video.thumbnailUrl && (
           <div className="relative w-full h-48 overflow-hidden bg-sage-100">
             <Image 
-              src={archive.thumbnailUrl} 
-              alt={archive.title} 
+              src={video.thumbnailUrl} 
+              alt={video.title} 
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
@@ -36,14 +36,14 @@ const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
         )}
         <CardContent className="p-5">
           <h3 className="text-lg font-bold mb-3 line-clamp-2 text-gray-800 group-hover:text-sage-300 transition-colors duration-200">
-            {archive.title}
+            {video.title}
           </h3>
           <div className="flex items-center gap-2 text-sm text-sage-300 mb-3">
             <Calendar className="w-4 h-4" />
-            <span>{new Date(archive.publishedAt).toLocaleDateString('ja-JP')}</span>
+            <span>{new Date(video.publishedAt).toLocaleDateString('ja-JP')}</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {archive.tags?.slice(0, 3).map((tag) => (
+            {video.tags?.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"
@@ -53,14 +53,14 @@ const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
                 {tag}
               </Badge>
             ))}
-            {archive.tags && archive.tags.length > 3 && (
+            {video.tags && video.tags.length > 3 && (
               <div className="relative group/tooltip">
                 <Badge variant="outline" className="text-xs border-sage-200/50 text-gray-600">
-                  +{archive.tags.length - 3}
+                  +{video.tags.length - 3}
                 </Badge>
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs">
                   <div className="flex flex-wrap gap-1">
-                    {archive.tags.slice(3).map((tag) => (
+                    {video.tags.slice(3).map((tag) => (
                       <Badge
                         key={tag}
                         variant="secondary"
@@ -78,7 +78,7 @@ const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
         </CardContent>
         <CardFooter className="p-5 pt-0">
           <a
-            href={archive.url}
+            href={video.url}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sage-300 hover:text-gray-800 font-medium transition-all duration-300 hover:translate-x-2"
@@ -92,6 +92,6 @@ const ArchiveCardComponent = ({ archive, index }: ArchiveCardProps) => {
   );
 };
 
-ArchiveCardComponent.displayName = 'ArchiveCard';
+VideoCardComponent.displayName = 'VideoCard';
 
-export const ArchiveCard = React.memo(ArchiveCardComponent);
+export const VideoCard = React.memo(VideoCardComponent);

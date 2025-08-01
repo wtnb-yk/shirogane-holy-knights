@@ -1,7 +1,7 @@
 package com.shirogane.holy.knights.adapter.gateway
 
 import com.shirogane.holy.knights.domain.model.*
-import com.shirogane.holy.knights.domain.repository.ArchiveRepository
+import com.shirogane.holy.knights.domain.repository.VideoRepository
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.runBlocking
@@ -11,56 +11,56 @@ import org.springframework.data.relational.core.query.Criteria
 import org.springframework.data.relational.core.query.Query
 import java.time.Instant
 
-class ArchiveRepositoryImpl(
+class VideoRepositoryImpl(
     private val template: R2dbcEntityTemplate
-) : ArchiveRepository {
+) : VideoRepository {
 
-    private val logger = LoggerFactory.getLogger(ArchiveRepositoryImpl::class.java)
+    private val logger = LoggerFactory.getLogger(VideoRepositoryImpl::class.java)
 
-    override fun findAll(limit: Int, offset: Int): List<Archive> {
-        logger.info("アーカイブ一覧取得: limit=$limit, offset=$offset")
+    override fun findAll(limit: Int, offset: Int): List<Video> {
+        logger.info("動画一覧取得: limit=$limit, offset=$offset")
         return runBlocking {
             try {
-                val archives = template.select(ArchiveEntity::class.java)
+                val videos = template.select(VideoEntity::class.java)
                     .matching(Query.empty().offset(offset.toLong()).limit(limit))
                     .all()
                     .collectList()
                     .awaitSingle()
                 
-                archives.map { runBlocking { buildArchive(it) } }
+                videos.map { runBlocking { buildVideo(it) } }
             } catch (e: Exception) {
-                logger.error("アーカイブ一覧取得エラー", e)
+                logger.error("動画一覧取得エラー", e)
                 emptyList()
             }
         }
     }
 
     override fun count(): Int {
-        logger.info("アーカイブ総数取得")
+        logger.info("動画総数取得")
         return runBlocking {
             try {
-                template.count(Query.empty(), ArchiveEntity::class.java)
+                template.count(Query.empty(), VideoEntity::class.java)
                     .awaitSingle()
                     .toInt()
             } catch (e: Exception) {
-                logger.error("アーカイブ総数取得エラー", e)
+                logger.error("動画総数取得エラー", e)
                 0
             }
         }
     }
 
-    override fun findById(id: ArchiveId): Archive? {
-        logger.info("アーカイブ取得: id=$id")
+    override fun findById(id: VideoId): Video? {
+        logger.info("動画取得: id=$id")
         return runBlocking {
             try {
-                val archive = template.select(ArchiveEntity::class.java)
+                val video = template.select(VideoEntity::class.java)
                     .matching(Query.query(Criteria.where("id").`is`(id.value)))
                     .one()
                     .awaitSingleOrNull()
                 
-                archive?.let { buildArchive(it) }
+                video?.let { buildVideo(it) }
             } catch (e: Exception) {
-                logger.error("アーカイブ取得エラー: id=$id", e)
+                logger.error("動画取得エラー: id=$id", e)
                 null
             }
         }
@@ -73,8 +73,8 @@ class ArchiveRepositoryImpl(
         endDate: Instant?,
         limit: Int,
         offset: Int
-    ): List<Archive> {
-        logger.info("アーカイブ検索: query=$query, tags=$tags")
+    ): List<Video> {
+        logger.info("動画検索: query=$query, tags=$tags")
         return runBlocking {
             try {
                 var criteria = Criteria.empty()
@@ -109,15 +109,15 @@ class ArchiveRepositoryImpl(
                     Query.query(criteria)
                 }.offset(offset.toLong()).limit(limit)
                 
-                val archives = template.select(ArchiveEntity::class.java)
+                val videos = template.select(VideoEntity::class.java)
                     .matching(searchQuery)
                     .all()
                     .collectList()
                     .awaitSingle()
                 
-                archives.map { runBlocking { buildArchive(it) } }
+                videos.map { runBlocking { buildVideo(it) } }
             } catch (e: Exception) {
-                logger.error("アーカイブ検索エラー", e)
+                logger.error("動画検索エラー", e)
                 emptyList()
             }
         }
@@ -161,7 +161,7 @@ class ArchiveRepositoryImpl(
                     Query.query(criteria)
                 }
                 
-                template.count(countQuery, ArchiveEntity::class.java)
+                template.count(countQuery, VideoEntity::class.java)
                     .awaitSingle()
                     .toInt()
             } catch (e: Exception) {
@@ -171,29 +171,29 @@ class ArchiveRepositoryImpl(
         }
     }
 
-    override fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive> {
-        logger.info("関連アーカイブ取得: id=$id, limit=$limit")
+    override fun getRelatedVideos(id: VideoId, limit: Int): List<Video> {
+        logger.info("関連動画取得: id=$id, limit=$limit")
         return runBlocking {
             try {
-                // 簡易実装：同じチャンネルの最新アーカイブを取得
-                val targetArchive = findById(id)
-                if (targetArchive != null) {
-                    template.select(ArchiveEntity::class.java)
+                // 簡易実装：同じチャンネルの最新動画を取得
+                val targetVideo = findById(id)
+                if (targetVideo != null) {
+                    template.select(VideoEntity::class.java)
                         .matching(
                             Query.query(
-                                Criteria.where("channel_id").`is`(targetArchive.channelId.value)
+                                Criteria.where("channel_id").`is`(targetVideo.channelId.value)
                                     .and(Criteria.where("id").not(id.value))
                             ).limit(limit)
                         )
                         .all()
-                        .map { runBlocking { buildArchive(it) } }
+                        .map { runBlocking { buildVideo(it) } }
                         .collectList()
                         .awaitSingle()
                 } else {
                     emptyList()
                 }
             } catch (e: Exception) {
-                logger.error("関連アーカイブ取得エラー: id=$id", e)
+                logger.error("関連動画取得エラー: id=$id", e)
                 emptyList()
             }
         }
@@ -202,21 +202,21 @@ class ArchiveRepositoryImpl(
     /**
      * データベースエンティティからドメインモデルを構築するヘルパー関数
      */
-    private suspend fun buildArchive(archiveEntity: ArchiveEntity): Archive {
+    private suspend fun buildVideo(videoEntity: VideoEntity): Video {
         // 関連データを並行取得
         val videoDetailsDeferred = template.select(VideoDetailsEntity::class.java)
-            .matching(Query.query(Criteria.where("archive_id").`is`(archiveEntity.id)))
+            .matching(Query.query(Criteria.where("video_id").`is`(videoEntity.id)))
             .one()
             .awaitSingleOrNull()
 
         val contentDetailsDeferred = template.select(ContentDetailsEntity::class.java)
-            .matching(Query.query(Criteria.where("archive_id").`is`(archiveEntity.id)))
+            .matching(Query.query(Criteria.where("video_id").`is`(videoEntity.id)))
             .one()
             .awaitSingleOrNull()
 
-        // タグ取得（archive_tags経由でjoin）
-        val tagIds = template.select(ArchiveTagEntity::class.java)
-            .matching(Query.query(Criteria.where("archive_id").`is`(archiveEntity.id)))
+        // タグ取得（video_tags経由でjoin）
+        val tagIds = template.select(VideoTagEntity::class.java)
+            .matching(Query.query(Criteria.where("video_id").`is`(videoEntity.id)))
             .all()
             .collectList()
             .awaitSingle()
@@ -232,13 +232,13 @@ class ArchiveRepositoryImpl(
         }
 
         // ドメインオブジェクトを構築
-        return Archive(
-            id = ArchiveId(archiveEntity.id),
-            title = archiveEntity.title,
-            publishedAt = archiveEntity.publishedAt,
-            channelId = ChannelId(archiveEntity.channelId),
+        return Video(
+            id = VideoId(videoEntity.id),
+            title = videoEntity.title,
+            publishedAt = videoEntity.publishedAt,
+            channelId = ChannelId(videoEntity.channelId),
             videoDetails = videoDetailsDeferred?.let { 
-                VideoDetails(
+                VideoDetailsVO(
                     url = it.url,
                     duration = it.duration?.let { d -> Duration(d) },
                     thumbnailUrl = it.thumbnailUrl
@@ -258,8 +258,8 @@ class ArchiveRepositoryImpl(
 /**
  * データベーステーブルマッピング用エンティティ
  */
-@org.springframework.data.relational.core.mapping.Table("archives")
-data class ArchiveEntity(
+@org.springframework.data.relational.core.mapping.Table("videos")
+data class VideoEntity(
     @org.springframework.data.annotation.Id
     val id: String,
     val title: String,
@@ -270,7 +270,7 @@ data class ArchiveEntity(
 @org.springframework.data.relational.core.mapping.Table("video_details")
 data class VideoDetailsEntity(
     @org.springframework.data.annotation.Id
-    val archiveId: String,
+    val videoId: String,
     val url: String,
     val duration: String?,
     val thumbnailUrl: String?
@@ -279,16 +279,16 @@ data class VideoDetailsEntity(
 @org.springframework.data.relational.core.mapping.Table("content_details")
 data class ContentDetailsEntity(
     @org.springframework.data.annotation.Id
-    val archiveId: String,
+    val videoId: String,
     val description: String?,
     val isMembersOnly: Boolean = false
 )
 
-@org.springframework.data.relational.core.mapping.Table("archive_tags")
-data class ArchiveTagEntity(
+@org.springframework.data.relational.core.mapping.Table("video_tags")
+data class VideoTagEntity(
     @org.springframework.data.annotation.Id
     val id: Long? = null,
-    val archiveId: String,
+    val videoId: String,
     val tagId: Long
 )
 

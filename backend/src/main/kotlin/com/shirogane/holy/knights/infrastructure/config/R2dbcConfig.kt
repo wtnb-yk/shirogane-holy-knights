@@ -4,10 +4,10 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.shirogane.holy.knights.adapter.gateway.ArchiveRepositoryImpl
-import com.shirogane.holy.knights.application.port.`in`.ArchiveUseCasePort
-import com.shirogane.holy.knights.application.usecase.ArchiveUseCaseImpl
-import com.shirogane.holy.knights.domain.repository.ArchiveRepository
+import com.shirogane.holy.knights.adapter.gateway.VideoRepositoryImpl
+import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
+import com.shirogane.holy.knights.application.usecase.VideoUseCaseImpl
+import com.shirogane.holy.knights.domain.repository.VideoRepository
 import com.shirogane.holy.knights.infrastructure.lambda.ApiGatewayFunction
 import java.util.function.Function
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
@@ -59,17 +59,17 @@ class R2dbcConfig {
     }
     
     @Bean
-    fun archiveRepositoryImpl(template: R2dbcEntityTemplate): ArchiveRepository {
-        return ArchiveRepositoryImpl(template)
+    fun videoRepositoryImpl(template: R2dbcEntityTemplate): VideoRepository {
+        return VideoRepositoryImpl(template)
     }
     
     @Bean 
-    fun archiveUseCaseImpl(repository: ArchiveRepository): ArchiveUseCasePort {
-        return ArchiveUseCaseImpl(repository)
+    fun videoUseCaseImpl(repository: VideoRepository): VideoUseCasePort {
+        return VideoUseCaseImpl(repository)
     }
     
     @Bean
-    fun apiGatewayFunction(useCase: ArchiveUseCasePort, mapper: ObjectMapper): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+    fun apiGatewayFunction(useCase: VideoUseCasePort, mapper: ObjectMapper): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
         return ApiGatewayFunction(useCase, mapper)
     }
 

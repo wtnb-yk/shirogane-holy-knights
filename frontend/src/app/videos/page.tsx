@@ -1,17 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useArchives } from '@/features/archives/hooks/useArchives';
-import { SearchBar } from '@/features/archives/components/SearchBar';
-import { FilterBar } from '@/features/archives/components/FilterBar';
-import { ArchivesGrid } from '@/features/archives/components/ArchivesGrid';
-import { Pagination } from '@/features/archives/components/Pagination';
+import { useVideos } from '@/features/videos/hooks/useVideos';
+import { SearchBar } from '@/features/videos/components/SearchBar';
+import { FilterBar } from '@/features/videos/components/FilterBar';
+import { VideosGrid } from '@/features/videos/components/VideosGrid';
+import { Pagination } from '@/features/videos/components/Pagination';
 
-export default function ArchivesList() {
+export default function VideosList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   
   const {
-    archives,
+    videos,
     loading,
     error,
     currentPage,
@@ -26,7 +26,7 @@ export default function ArchivesList() {
     setFilters,
     availableTags,
     clearAllFilters
-  } = useArchives({ pageSize: 20 });
+  } = useVideos({ pageSize: 20 });
 
   return (
     <div className="min-h-screen bg-white">
@@ -70,7 +70,7 @@ export default function ArchivesList() {
           </div>
         )}
 
-        <ArchivesGrid archives={archives} loading={loading} error={error} />
+        <VideosGrid videos={videos} loading={loading} error={error} />
 
         {totalCount > 20 && (
           <Pagination

@@ -189,14 +189,14 @@
    ```
    frontend/src/
    ├── components/
-   │   └── archives/
-   │       ├── ArchiveCard.tsx
+   │   └── videos/
+   │       ├── VideoCard.tsx
    │       ├── SkeletonCard.tsx
    │       ├── SearchBar.tsx
    │       ├── Pagination.tsx
-   │       └── ArchivesGrid.tsx
+   │       └── VideosGrid.tsx
    └── hooks/
-       └── useArchives.ts
+       └── useVideos.ts
    ```
 
 3. **実装指針**
@@ -237,6 +237,6 @@
 
 ### Lambda環境での正常動作確認済み
 - `/health` エンドポイント: ✅ 正常応答
-- `/archiveSearch` エンドポイント: ✅ 正常応答
+- `/videoSearch` エンドポイント: ✅ 正常応答
 - Spring Boot + R2DBC + PostgreSQL: ✅ 正常動作
 - Spring Cloud Function統合: ✅ 正常動作

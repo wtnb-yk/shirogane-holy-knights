@@ -26,7 +26,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/archives" className="text-sm text-brand-charcoal/80 hover:text-brand-charcoal transition-colors">
+                <Link href="/videos" className="text-sm text-brand-charcoal/80 hover:text-brand-charcoal transition-colors">
                   配信・動画
                 </Link>
               </li>

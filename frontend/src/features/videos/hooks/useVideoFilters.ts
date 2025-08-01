@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { FilterOptions } from '../components/FilterBar';
 
-interface UseArchiveFiltersResult {
+interface UseVideoFiltersResult {
   filters: FilterOptions;
   setFilters: (filters: FilterOptions, onPageReset?: () => void) => void;
   clearFilters: (onPageReset?: () => void) => void;
@@ -11,9 +11,9 @@ interface UseArchiveFiltersResult {
 }
 
 /**
- * アーカイブフィルター機能を管理するhook
+ * 動画フィルター機能を管理するhook
  */
-export const useArchiveFilters = (): UseArchiveFiltersResult => {
+export const useVideoFilters = (): UseVideoFiltersResult => {
   const [filters, setFiltersState] = useState<FilterOptions>({
     selectedTags: [],
     startDate: undefined,

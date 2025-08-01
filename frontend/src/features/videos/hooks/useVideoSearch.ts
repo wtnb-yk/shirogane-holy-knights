@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-interface UseArchiveSearchResult {
+interface UseVideoSearchResult {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   handleSearch: (query: string, onPageReset?: () => void) => void;
@@ -10,9 +10,9 @@ interface UseArchiveSearchResult {
 }
 
 /**
- * アーカイブ検索機能を管理するhook
+ * 動画検索機能を管理するhook
  */
-export const useArchiveSearch = (): UseArchiveSearchResult => {
+export const useVideoSearch = (): UseVideoSearchResult => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (query: string, onPageReset?: () => void) => {

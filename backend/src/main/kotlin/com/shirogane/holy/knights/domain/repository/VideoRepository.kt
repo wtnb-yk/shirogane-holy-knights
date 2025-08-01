@@ -1,34 +1,34 @@
 package com.shirogane.holy.knights.domain.repository
 
-import com.shirogane.holy.knights.domain.model.Archive
-import com.shirogane.holy.knights.domain.model.ArchiveId
+import com.shirogane.holy.knights.domain.model.Video
+import com.shirogane.holy.knights.domain.model.VideoId
 import java.time.Instant
 
 /**
- * アーカイブリポジトリインターフェース
+ * 動画リポジトリインターフェース
  * リポジトリパターンに従い、永続化の詳細を抽象化
  */
-interface ArchiveRepository {
+interface VideoRepository {
     /**
-     * 全アーカイブを取得
+     * 全動画を取得
      * @param limit 取得上限数
      * @param offset オフセット
-     * @return アーカイブのリスト
+     * @return 動画のリスト
      */
-    fun findAll(limit: Int, offset: Int): List<Archive>
+    fun findAll(limit: Int, offset: Int): List<Video>
     
     /**
      * 総件数を取得
-     * @return アーカイブの総数
+     * @return 動画の総数
      */
     fun count(): Int
     
     /**
-     * IDによるアーカイブ取得
-     * @param id アーカイブID
-     * @return アーカイブ情報（存在しない場合はnull）
+     * IDによる動画取得
+     * @param id 動画ID
+     * @return 動画情報（存在しない場合はnull）
      */
-    fun findById(id: ArchiveId): Archive?
+    fun findById(id: VideoId): Video?
     
     /**
      * 検索条件による検索
@@ -38,7 +38,7 @@ interface ArchiveRepository {
      * @param endDate 終了日時
      * @param limit 取得上限数
      * @param offset オフセット
-     * @return 検索条件に合致するアーカイブのリスト
+     * @return 検索条件に合致する動画のリスト
      */
     fun search(
         query: String? = null,
@@ -47,7 +47,7 @@ interface ArchiveRepository {
         endDate: Instant? = null,
         limit: Int,
         offset: Int
-    ): List<Archive>
+    ): List<Video>
     
     /**
      * 検索条件による総件数取得
@@ -55,7 +55,7 @@ interface ArchiveRepository {
      * @param tags タグによるフィルタリング
      * @param startDate 開始日時
      * @param endDate 終了日時
-     * @return 検索条件に合致するアーカイブの総数
+     * @return 検索条件に合致する動画の総数
      */
     fun countBySearchCriteria(
         query: String? = null,
@@ -65,10 +65,10 @@ interface ArchiveRepository {
     ): Int
     
     /**
-     * 関連アーカイブ取得
-     * @param id アーカイブID
+     * 関連動画取得
+     * @param id 動画ID
      * @param limit 取得上限数
-     * @return 関連するアーカイブのリスト
+     * @return 関連する動画のリスト
      */
-    fun getRelatedArchives(id: ArchiveId, limit: Int): List<Archive>
+    fun getRelatedVideos(id: VideoId, limit: Int): List<Video>
 }

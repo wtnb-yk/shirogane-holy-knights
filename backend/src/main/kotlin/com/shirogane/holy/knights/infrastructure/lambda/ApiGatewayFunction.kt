@@ -3,8 +3,8 @@ package com.shirogane.holy.knights.infrastructure.lambda
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.shirogane.holy.knights.application.dto.ArchiveSearchParamsDto
-import com.shirogane.holy.knights.application.port.`in`.ArchiveUseCasePort
+import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
+import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -14,7 +14,7 @@ import java.util.function.Function
  * AWS Lambda + API Gateway用のFunction実装
  */
 class ApiGatewayFunction(
-    private val archiveUseCase: ArchiveUseCasePort,
+    private val videoUseCase: VideoUseCasePort,
     private val objectMapper: ObjectMapper
 ) : Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -34,7 +34,7 @@ class ApiGatewayFunction(
         return try {
             val response = when {
                 request.path == "/health" && request.httpMethod == "GET" -> handleHealth()
-                request.path == "/archiveSearch" && request.httpMethod == "POST" -> handleArchiveSearch(request)
+                request.path == "/videoSearch" && request.httpMethod == "POST" -> handleVideoSearch(request)
                 else -> {
                     logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
                     APIGatewayProxyResponseEvent()
@@ -68,19 +68,19 @@ class ApiGatewayFunction(
             .withBody(objectMapper.writeValueAsString(response))
     }
 
-    private fun handleArchiveSearch(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        logger.info("Archive search requested")
+    private fun handleVideoSearch(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+        logger.info("Video search requested")
         
         val params = if (request.body != null) {
-            objectMapper.readValue(request.body, ArchiveSearchParamsDto::class.java)
+            objectMapper.readValue(request.body, VideoSearchParamsDto::class.java)
         } else {
-            ArchiveSearchParamsDto() // デフォルト値
+            VideoSearchParamsDto() // デフォルト値
         }
         
-        logger.info("Archive search params: $params")
+        logger.info("Video search params: $params")
         
-        val result = runBlocking { archiveUseCase.searchArchives(params) }
-        logger.info("Archive search returning ${result.items.size} items")
+        val result = runBlocking { videoUseCase.searchVideos(params) }
+        logger.info("Video search returning ${result.items.size} items")
         
         return APIGatewayProxyResponseEvent()
             .withStatusCode(200)

@@ -3,15 +3,15 @@ package com.shirogane.holy.knights.domain.model
 import java.time.Instant
 
 /**
- * 配信アーカイブドメインモデル
+ * 配信・動画ドメインモデル
  * ドメイン層の中心的なエンティティ
  */
-data class Archive(
-    val id: ArchiveId,
+data class Video(
+    val id: VideoId,
     val title: String,
     val publishedAt: Instant,
     val channelId: ChannelId,
-    val videoDetails: VideoDetails? = null,
+    val videoDetails: VideoDetailsVO? = null,
     val contentDetails: ContentDetails? = null,
     val tags: List<Tag> = emptyList()
 )
@@ -19,7 +19,7 @@ data class Archive(
 /**
  * 動画詳細情報値オブジェクト
  */
-data class VideoDetails(
+data class VideoDetailsVO(
     val url: String,
     val duration: Duration? = null,
     val thumbnailUrl: String? = null
@@ -34,10 +34,10 @@ data class ContentDetails(
 )
 
 /**
- * アーカイブID値オブジェクト
+ * 動画ID値オブジェクト
  */
 @JvmInline
-value class ArchiveId(val value: String) {
+value class VideoId(val value: String) {
     override fun toString(): String = value
 }
 

@@ -94,7 +94,7 @@ ENV_FILE=../config/.env.local python3 csv_to_db_importer.py ../result/YYYYMMDD_H
 CSVファイルは以下の5種類が生成されます：
 - `channels.csv` - チャンネル基本情報
 - `channel_details.csv` - チャンネル詳細情報
-- `archives.csv` - 動画基本情報
+- `videos.csv` - 動画基本情報
 - `video_details.csv` - 動画詳細情報（URL、時間、サムネイル）
 - `content_details.csv` - コンテンツ詳細情報（説明文）
 
@@ -105,7 +105,7 @@ CSVファイルは以下の5種類が生成されます：
 以下のテーブルにデータがインポートされます：
 - `channels`
 - `channel_details`
-- `archives`
+- `videos`
 - `video_details`
 - `content_details`
 

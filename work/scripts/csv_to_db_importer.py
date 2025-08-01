@@ -61,7 +61,7 @@ def read_csv_files(directory):
     file_patterns = {
         'channels': 'channels.csv',
         'channel_details': 'channel_details.csv',
-        'archives': 'archives*.csv',  # 分割ファイル対応
+        'videos': 'videos*.csv',  # 分割ファイル対応
         'video_details': 'video_details*.csv',
         'content_details': 'content_details*.csv'
     }
@@ -149,10 +149,10 @@ def import_channels(conn, channels_df, channel_details_df=None):
     finally:
         cursor.close()
 
-def import_archives(conn, df):
-    """アーカイブ基本情報をインポート"""
+def import_videos(conn, df):
+    """動画基本情報をインポート"""
     if df is None or df.empty:
-        print("アーカイブデータがありません")
+        print("動画データがありません")
         return
     
     cursor = conn.cursor()
@@ -170,12 +170,12 @@ def import_archives(conn, df):
                 row['channel_id']
             ))
         except Exception as e:
-            print(f"アーカイブID {row['id']} の日付変換エラー: {str(e)}")
+            print(f"動画ID {row['id']} の日付変換エラー: {str(e)}")
             continue
     
     # UPSERT クエリ
     query = """
-        INSERT INTO archives (id, title, published_at, channel_id) 
+        INSERT INTO videos (id, title, published_at, channel_id) 
         VALUES (%s, %s, %s, %s)
         ON CONFLICT (id) 
         DO UPDATE SET 
@@ -187,10 +187,10 @@ def import_archives(conn, df):
     try:
         execute_batch(cursor, query, data)
         conn.commit()
-        print(f"archives: {len(data)}件のデータをインポートしました")
+        print(f"videos: {len(data)}件のデータをインポートしました")
     except Exception as e:
         conn.rollback()
-        print(f"archivesインポートエラー: {str(e)}")
+        print(f"videosインポートエラー: {str(e)}")
         raise
     finally:
         cursor.close()
@@ -206,7 +206,7 @@ def import_video_details(conn, df):
     # データを準備
     data = [
         (
-            row['archive_id'],
+            row['video_id'],
             row['url'],
             row.get('duration', None),
             row.get('thumbnail_url', '')
@@ -216,9 +216,9 @@ def import_video_details(conn, df):
     
     # UPSERT クエリ
     query = """
-        INSERT INTO video_details (archive_id, url, duration, thumbnail_url) 
+        INSERT INTO video_details (video_id, url, duration, thumbnail_url) 
         VALUES (%s, %s, %s, %s)
-        ON CONFLICT (archive_id) 
+        ON CONFLICT (video_id) 
         DO UPDATE SET 
             url = EXCLUDED.url,
             duration = EXCLUDED.duration,
@@ -247,7 +247,7 @@ def import_content_details(conn, df):
     # データを準備
     data = [
         (
-            row['archive_id'],
+            row['video_id'],
             row.get('description', ''),
             False  # is_members_onlyは常にFalse
         ) 
@@ -256,9 +256,9 @@ def import_content_details(conn, df):
     
     # UPSERT クエリ
     query = """
-        INSERT INTO content_details (archive_id, description, is_members_only) 
+        INSERT INTO content_details (video_id, description, is_members_only) 
         VALUES (%s, %s, %s)
-        ON CONFLICT (archive_id) 
+        ON CONFLICT (video_id) 
         DO UPDATE SET 
             description = EXCLUDED.description,
             is_members_only = EXCLUDED.is_members_only
@@ -279,7 +279,7 @@ def verify_import(conn):
     """インポート結果を検証"""
     cursor = conn.cursor()
     
-    tables = ['channels', 'archives', 'video_details', 'content_details']
+    tables = ['channels', 'videos', 'video_details', 'content_details']
     
     print("\n=== インポート結果の検証 ===")
     for table in tables:
@@ -324,9 +324,9 @@ def main():
         if channels_df is not None:
             import_channels(conn, channels_df, channel_details_df)
         
-        # 3. アーカイブ基本情報
-        if 'archives' in csv_files:
-            import_archives(conn, csv_files['archives'])
+        # 3. 動画基本情報
+        if 'videos' in csv_files:
+            import_videos(conn, csv_files['videos'])
         
         # 4. 動画詳細
         if 'video_details' in csv_files:

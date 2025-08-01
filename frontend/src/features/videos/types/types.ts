@@ -1,7 +1,7 @@
 /**
- * アーカイブDTOの型定義
+ * 動画DTOの型定義
  */
-export interface ArchiveDto {
+export interface VideoDto {
   id: string;
   title: string;
   channelId: string;
@@ -15,9 +15,9 @@ export interface ArchiveDto {
 }
 
 /**
- * アーカイブ検索パラメータの型定義
+ * 動画検索パラメータの型定義
  */
-export interface ArchiveSearchParams {
+export interface VideoSearchParams {
   query?: string;
   tags?: string[];
   startDate?: string;
@@ -27,10 +27,10 @@ export interface ArchiveSearchParams {
 }
 
 /**
- * アーカイブ検索結果の型定義
+ * 動画検索結果の型定義
  */
-export interface ArchiveSearchResult {
-  items: ArchiveDto[];
+export interface VideoSearchResult {
+  items: VideoDto[];
   totalCount: number;
   page: number;
   pageSize: number;

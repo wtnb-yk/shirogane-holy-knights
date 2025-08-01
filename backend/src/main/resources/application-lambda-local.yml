@@ -29,7 +29,7 @@ logging:
 
 # Spring Cloud Function設定
 spring.cloud.function:
-  definition: archiveSearch
+  definition: videoSearch
   scan:
     packages: com.shirogane.holy.knights.infrastructure.lambda.functions
   web:
