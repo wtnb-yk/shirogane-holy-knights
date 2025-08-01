@@ -33,9 +33,8 @@ export default function ArchivesList() {
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 opacity-0 animate-slide-up">
           <h1 className="text-4xl font-bold mb-2 text-gray-800">
-            配信アーカイブ
+            配信・動画
           </h1>
-          <p className="text-sage-300">過去の配信を振り返ろう</p>
         </div>
 
         <SearchBar 
