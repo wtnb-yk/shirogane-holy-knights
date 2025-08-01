@@ -44,6 +44,12 @@ variable "private_subnet_cidrs" {
 variable "enable_nat_gateway" {
   description = "Enable NAT Gateway for private subnets"
   type        = bool
+  default     = false
+}
+
+variable "enable_nat_instance" {
+  description = "Enable NAT Instance for private subnets"
+  type        = bool
   default     = true
 }
 

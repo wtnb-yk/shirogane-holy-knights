@@ -22,3 +22,8 @@ output "database_security_group_id" {
   description = "Security group ID for database"
   value       = aws_security_group.database.id
 }
+
+output "nat_instance_ids" {
+  description = "List of NAT instance IDs"
+  value       = var.enable_nat_instance ? module.nat_instance[0].nat_instance_ids : []
+}

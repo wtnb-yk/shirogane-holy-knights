@@ -43,6 +43,8 @@ module "network" {
   public_subnets = var.public_subnet_cidrs
   private_subnets = var.private_subnet_cidrs
   enable_nat_gateway = var.enable_nat_gateway
+  enable_nat_instance = var.enable_nat_instance
+  region = var.aws_region
   allowed_db_client_cidrs = var.allowed_db_client_cidrs
 }
 

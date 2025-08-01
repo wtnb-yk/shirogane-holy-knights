@@ -76,6 +76,20 @@ resource "aws_nat_gateway" "main" {
   depends_on = [aws_internet_gateway.main]
 }
 
+# NAT Instance module
+module "nat_instance" {
+  count  = var.enable_nat_instance ? 1 : 0
+  source = "../nat-instance"
+
+  environment           = var.environment
+  project_name          = var.project_name
+  vpc_id               = aws_vpc.main.id
+  public_subnet_ids    = aws_subnet.public[*].id
+  private_subnet_cidrs = var.private_subnets
+  instance_type        = var.nat_instance_type
+  region               = var.region
+}
+
 # Public Route Table
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
@@ -100,6 +114,14 @@ resource "aws_route_table" "private" {
     content {
       cidr_block     = "0.0.0.0/0"
       nat_gateway_id = aws_nat_gateway.main[count.index].id
+    }
+  }
+
+  dynamic "route" {
+    for_each = var.enable_nat_instance ? [1] : []
+    content {
+      cidr_block           = "0.0.0.0/0"
+      network_interface_id = module.nat_instance[0].nat_instance_network_interface_ids[count.index]
     }
   }
 
