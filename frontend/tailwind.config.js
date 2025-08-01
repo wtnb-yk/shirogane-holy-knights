@@ -4,6 +4,7 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/features/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -54,6 +55,11 @@ module.exports = {
         },
         'custom-bg': '#f8f9fa',
         'custom-card': '#ffffff',
+        // ブランドカラー
+        'brand': {
+          'dark': '#324353',     // ヘッダー背景などのダークカラー
+          'accent': '#F6C794',   // アクセントライン・ハイライトカラー
+        },
       },
     },
   },

@@ -29,7 +29,7 @@ export default function ArchivesList() {
   } = useArchives({ pageSize: 20 });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-100/30 to-sage-200/50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 opacity-0 animate-slide-up">
           <h1 className="text-4xl font-bold mb-2 text-gray-800">
