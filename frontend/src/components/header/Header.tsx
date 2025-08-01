@@ -7,7 +7,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-brand-navy shadow-sm animate-fade-in relative">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-navy shadow-sm animate-fade-in">
       <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
