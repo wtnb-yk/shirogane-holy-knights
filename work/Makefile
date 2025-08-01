@@ -39,12 +39,12 @@ import-prd:
 
 # データベース接続（Bastion経由）
 db-connect:
-	../scripts/db.sh
+	./scripts/db.sh
 
 db-status:
-	../scripts/db.sh status
+	./scripts/db.sh status
 
 db-disconnect:
-	../scripts/db.sh stop
+	./scripts/db.sh stop
 
 .PHONY: setup-dev setup-prd run-local run-dev run-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-connect db-status db-disconnect
