@@ -1,7 +1,11 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { LambdaClient } from '../api/lambdaClient';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import { usePagination } from './usePagination';
+import { useArchiveSearch } from './useArchiveSearch';
+import { useArchiveFilters } from './useArchiveFilters';
+import { useAvailableTags } from './useAvailableTags';
+import { useArchiveQuery } from './useArchiveQuery';
 import { ArchiveDto } from '../types/types';
 import { FilterOptions } from '../components/FilterBar';
 
@@ -29,88 +33,57 @@ interface UseArchivesOptions {
   initialPage?: number;
 }
 
+/**
+ * アーカイブ機能の統合hook
+ * 各機能を分離したhooksを組み合わせて使用
+ */
 export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult => {
   const { pageSize = 20, initialPage = 1 } = options;
   
-  const [archives, setArchives] = useState<ArchiveDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  // 検索機能
+  const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useArchiveSearch();
+  
+  // フィルター機能
+  const { filters, setFilters, clearFilters } = useArchiveFilters();
+  
+  // ページネーション機能を先に初期化
   const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState<FilterOptions>({
-    selectedTags: [],
-    startDate: undefined,
-    endDate: undefined,
-  });
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
-
+  const { currentPage, totalPages, setCurrentPage, resetToFirstPage } = usePagination(
+    { pageSize, initialPage },
+    totalCount
+  );
+  
+  // API呼び出し（currentPageを使用）
+  const { archives, loading, error, totalCount: newTotalCount, hasMore } = useArchiveQuery(
+    { pageSize },
+    { currentPage, searchQuery, filters }
+  );
+  
+  // totalCountの更新
   useEffect(() => {
-    const fetchArchives = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // すべてのフィルター条件をバックエンドに送信してフィルタリング済みデータを取得
-        const searchResult = await LambdaClient.callArchiveSearchFunction({
-          page: currentPage,
-          pageSize: pageSize,
-          query: searchQuery || undefined,
-          tags: filters.selectedTags.length > 0 ? filters.selectedTags : undefined,
-          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
-          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
-        });
-        
-        setArchives(searchResult.items || []);
-        setTotalCount(searchResult.totalCount);
-        setHasMore(searchResult.hasMore);
-        
-        // 利用可能なタグを収集（元のデータから）
-        const allTags = new Set<string>();
-        (searchResult.items || []).forEach(item => {
-          item.tags?.forEach(tag => allTags.add(tag));
-        });
-        setAvailableTags(Array.from(allTags).sort());
-        
-      } catch (err) {
-        setError('アーカイブの取得に失敗しました。');
-        console.error('Error fetching archives:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setTotalCount(newTotalCount);
+  }, [newTotalCount]);
+  
+  // 利用可能なタグ抽出
+  const { availableTags } = useAvailableTags(archives);
 
-    fetchArchives();
-  }, [currentPage, pageSize, searchQuery, filters]);
+  // ページリセット機能付きのハンドラー（useCallbackで安定化）
+  const handleSearchWithReset = useCallback((query: string) => {
+    handleSearch(query, resetToFirstPage);
+  }, [handleSearch, resetToFirstPage]);
 
+  const clearSearchWithReset = useCallback(() => {
+    clearSearch(resetToFirstPage);
+  }, [clearSearch, resetToFirstPage]);
 
-  const totalPages = useMemo(() => Math.ceil(totalCount / pageSize), [totalCount, pageSize]);
+  const setFiltersWithReset = useCallback((newFilters: FilterOptions) => {
+    setFilters(newFilters, resetToFirstPage);
+  }, [setFilters, resetToFirstPage]);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
-
-  const clearSearch = () => {
-    setSearchQuery('');
-    setCurrentPage(1);
-  };
-
-  const handleFiltersChange = (newFilters: FilterOptions) => {
-    setFilters(newFilters);
-    setCurrentPage(1);
-  };
-
-  const clearAllFilters = () => {
-    setFilters({
-      selectedTags: [],
-      startDate: undefined,
-      endDate: undefined,
-    });
-    setSearchQuery('');
-    setCurrentPage(1);
-  };
+  const clearAllFilters = useCallback(() => {
+    clearFilters(resetToFirstPage);
+    clearSearch(resetToFirstPage);
+  }, [clearFilters, clearSearch, resetToFirstPage]);
 
   return useMemo(() => ({
     archives,
@@ -123,11 +96,28 @@ export const useArchives = (options: UseArchivesOptions = {}): UseArchivesResult
     setCurrentPage,
     searchQuery,
     setSearchQuery,
-    handleSearch,
-    clearSearch,
+    handleSearch: handleSearchWithReset,
+    clearSearch: clearSearchWithReset,
     filters,
-    setFilters: handleFiltersChange,
+    setFilters: setFiltersWithReset,
     availableTags,
     clearAllFilters,
-  }), [archives, loading, error, currentPage, totalCount, hasMore, totalPages, setCurrentPage, searchQuery, filters, availableTags]);
+  }), [
+    archives,
+    loading,
+    error,
+    currentPage,
+    totalCount,
+    hasMore,
+    totalPages,
+    setCurrentPage,
+    searchQuery,
+    setSearchQuery,
+    filters,
+    availableTags,
+    handleSearchWithReset,
+    clearSearchWithReset,
+    setFiltersWithReset,
+    clearAllFilters,
+  ]);
 };
