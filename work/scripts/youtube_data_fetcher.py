@@ -136,25 +136,26 @@ def get_videos_details(youtube, video_ids, channel_id):
             video_id = video['id']
             
             # 動画基本情報
-            video = {
+            video_data = {
                 'id': video_id,
                 'title': video['snippet']['title'],
                 'published_at': video['snippet']['publishedAt'],
                 'channel_id': channel_id
             }
-            videos.append(video)
+            videos.append(video_data)
             
             # 動画詳細情報
             video_detail = {
                 'video_id': video_id,
                 'url': f"https://www.youtube.com/watch?v={video_id}",
-                'duration': convert_duration_to_hhmmss(video['contentDetails'].get('duration', '')),
+                'duration': convert_duration_to_hhmmss(video.get('contentDetails', {}).get('duration', '')),
                 'thumbnail_url': video['snippet']['thumbnails'].get('high', {}).get('url', '')
             }
             video_details.append(video_detail)
             
             # コンテンツ詳細情報
-            is_members_only = 'memberOnly' in video['contentDetails'] and video['contentDetails']['memberOnly'] == True
+            video_content_details = video.get('contentDetails', {})
+            is_members_only = 'memberOnly' in video_content_details and video_content_details['memberOnly'] == True
             content_detail = {
                 'video_id': video_id,
                 'description': video['snippet']['description'],

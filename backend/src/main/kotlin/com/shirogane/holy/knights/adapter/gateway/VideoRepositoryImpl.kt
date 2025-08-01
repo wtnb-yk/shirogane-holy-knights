@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.relational.core.query.Criteria
 import org.springframework.data.relational.core.query.Query
+import org.springframework.data.domain.Sort
 import java.time.Instant
 
 class VideoRepositoryImpl(
@@ -22,7 +23,7 @@ class VideoRepositoryImpl(
         return runBlocking {
             try {
                 val videos = template.select(VideoEntity::class.java)
-                    .matching(Query.empty().offset(offset.toLong()).limit(limit))
+                    .matching(Query.empty().offset(offset.toLong()).limit(limit).sort(Sort.by(Sort.Direction.DESC, "publishedAt")))
                     .all()
                     .collectList()
                     .awaitSingle()
@@ -107,7 +108,7 @@ class VideoRepositoryImpl(
                     Query.empty()
                 } else {
                     Query.query(criteria)
-                }.offset(offset.toLong()).limit(limit)
+                }.offset(offset.toLong()).limit(limit).sort(Sort.by(Sort.Direction.DESC, "publishedAt"))
                 
                 val videos = template.select(VideoEntity::class.java)
                     .matching(searchQuery)
