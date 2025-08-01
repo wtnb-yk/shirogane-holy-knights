@@ -47,10 +47,10 @@ Unit=auto-shutdown.service
 WantedBy=timers.target
 EOF
 
-# Enable and start the auto-shutdown timer
+# Enable and start the auto-shutdown timer (disabled for debugging)
 systemctl daemon-reload
-systemctl enable auto-shutdown.timer
-systemctl start auto-shutdown.timer
+# systemctl enable auto-shutdown.timer
+# systemctl start auto-shutdown.timer
 
 # Create a welcome script with connection info
 cat > /opt/db_connect.sh << EOF
@@ -61,7 +61,7 @@ echo "Database: shirogane"
 echo "Port: 5432"
 echo ""
 echo "To connect to the database:"
-echo "psql -h ${db_endpoint} -p 5432 -U danninn -d shirogane"
+echo "psql -h ${db_endpoint} -p 5432 -U shirogane_developer -d shirogane"
 echo ""
 echo "To get database password from Secrets Manager:"
 echo "aws secretsmanager get-secret-value --secret-id /shirogane-holy-knights/dev/rds/credentials --query SecretString --output text | jq -r .password"

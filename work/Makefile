@@ -37,4 +37,14 @@ import-dev:
 import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
 
-.PHONY: setup-dev setup-prd run-local run-dev run-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd
+# データベース接続（Bastion経由）
+db-connect:
+	../scripts/db.sh
+
+db-status:
+	../scripts/db.sh status
+
+db-disconnect:
+	../scripts/db.sh stop
+
+.PHONY: setup-dev setup-prd run-local run-dev run-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-connect db-status db-disconnect
