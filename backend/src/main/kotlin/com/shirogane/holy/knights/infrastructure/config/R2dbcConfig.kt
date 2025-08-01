@@ -44,6 +44,7 @@ class R2dbcConfig {
             .database(database)
             .username(username)
             .password(password)
+            .enableSsl()
             .build()
         
         return PostgresqlConnectionFactory(configuration)

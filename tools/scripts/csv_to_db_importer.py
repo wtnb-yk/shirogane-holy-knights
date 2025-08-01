@@ -36,8 +36,13 @@ else:
         print("警告: 環境設定ファイルが見つかりません")
 
 # データベース接続設定
+db_host = os.getenv('DB_HOST', 'localhost')
+# localhostの場合は127.0.0.1に変換（IPv6接続エラー回避）
+if db_host == 'localhost':
+    db_host = '127.0.0.1'
+
 DB_CONFIG = {
-    'host': os.getenv('DB_HOST', 'localhost'),
+    'host': db_host,
     'port': os.getenv('DB_PORT', '5432'),
     'database': os.getenv('DB_NAME', 'shirogane'),
     'user': os.getenv('DB_USER', 'postgres'),
@@ -46,11 +51,29 @@ DB_CONFIG = {
 
 def get_db_connection():
     """データベース接続を取得"""
+    print(f"データベース接続情報:")
+    print(f"  Host: {DB_CONFIG['host']}")
+    print(f"  Port: {DB_CONFIG['port']}")
+    print(f"  Database: {DB_CONFIG['database']}")
+    print(f"  User: {DB_CONFIG['user']}")
+    print(f"  Password: {'*' * len(DB_CONFIG['password'])}")
+    
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        print("接続を開始します...")
+        conn = psycopg2.connect(
+            host=DB_CONFIG['host'],
+            port=DB_CONFIG['port'],
+            database=DB_CONFIG['database'],
+            user=DB_CONFIG['user'],
+            password=DB_CONFIG['password'],
+            connect_timeout=10
+        )
+        print("接続成功！")
         return conn
     except Exception as e:
         print(f"データベース接続エラー: {str(e)}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 def read_csv_files(directory):

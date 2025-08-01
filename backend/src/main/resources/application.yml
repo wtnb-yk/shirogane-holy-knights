@@ -26,6 +26,12 @@ spring:
       allow-credentials: true
       max-age: 3600
 
+# R2DBC Migration設定
+r2dbc:
+  migrate:
+    enabled: true
+    resources-path: classpath:db/migration
+
 # アクチュエーターの設定
 management:
   endpoints:
@@ -88,3 +94,10 @@ logging:
     org.springframework.cloud.function: DEBUG
     org.springframework.r2dbc: DEBUG
     io.r2dbc.postgresql: DEBUG
+    name.nkonev.r2dbc.migrate: DEBUG
+
+# Lambda環境でもR2DBC Migration設定
+r2dbc:
+  migrate:
+    enabled: true
+    resources-path: classpath:db/migration
