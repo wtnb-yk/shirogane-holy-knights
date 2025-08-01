@@ -4,6 +4,9 @@ import './globals.css';
 export const metadata: Metadata = {
   title: '白銀ノエルファン - 団員ポータル',
   description: '白銀ノエルさんのファン（団員）向けポータルサイト',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
