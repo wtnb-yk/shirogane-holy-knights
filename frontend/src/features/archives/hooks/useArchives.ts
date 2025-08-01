@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { LambdaClient } from '@/api/lambdaClient';
-import { ArchiveDto } from '@/api/types';
-import { FilterOptions } from '@/components/archives/FilterBar';
+import { LambdaClient } from '../api/lambdaClient';
+import { ArchiveDto } from '../types/types';
+import { FilterOptions } from '../components/FilterBar';
 
 interface UseArchivesResult {
   archives: ArchiveDto[];

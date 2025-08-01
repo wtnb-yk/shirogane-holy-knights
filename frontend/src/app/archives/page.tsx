@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useArchives } from '@/hooks/useArchives';
-import { SearchBar } from '@/components/archives/SearchBar';
-import { FilterBar } from '@/components/archives/FilterBar';
-import { ArchivesGrid } from '@/components/archives/ArchivesGrid';
-import { Pagination } from '@/components/archives/Pagination';
+import { useArchives } from '@/features/archives/hooks/useArchives';
+import { SearchBar } from '@/features/archives/components/SearchBar';
+import { FilterBar } from '@/features/archives/components/FilterBar';
+import { ArchivesGrid } from '@/features/archives/components/ArchivesGrid';
+import { Pagination } from '@/features/archives/components/Pagination';
 
 export default function ArchivesList() {
   const [showFilterModal, setShowFilterModal] = useState(false);

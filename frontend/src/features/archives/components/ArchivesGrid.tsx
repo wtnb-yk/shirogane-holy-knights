@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArchiveDto } from '@/api/types';
+import { ArchiveDto } from '../types/types';
 import { ArchiveCard } from './ArchiveCard';
 import { SkeletonCard } from './SkeletonCard';
 

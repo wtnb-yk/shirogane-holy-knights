@@ -1,4 +1,4 @@
-import { ArchiveSearchParams, ArchiveSearchResult, ApiError } from './types';
+import { ArchiveSearchParams, ArchiveSearchResult, ApiError } from '../types/types';
 
 /**
  * Lambda関数のエンドポイント設定
