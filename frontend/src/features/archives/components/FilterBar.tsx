@@ -8,7 +8,6 @@ export interface FilterOptions {
   selectedTags: string[];
   startDate?: string;
   endDate?: string;
-  duration?: 'short' | 'medium' | 'long';
 }
 
 interface FilterBarProps {
@@ -18,11 +17,6 @@ interface FilterBarProps {
   className?: string;
 }
 
-const DURATION_OPTIONS = [
-  { value: 'short', label: '短編 (30分以下)', emoji: '⚡' },
-  { value: 'medium', label: '中編 (30分-2時間)', emoji: '🎯' },
-  { value: 'long', label: '長編 (2時間以上)', emoji: '🔥' },
-] as const;
 
 export function FilterBar({ 
   filters, 
@@ -45,21 +39,17 @@ export function FilterBar({
     onFiltersChange({ ...filters, [field]: value || undefined });
   };
 
-  const handleDurationChange = (duration: 'short' | 'medium' | 'long' | undefined) => {
-    onFiltersChange({ ...filters, duration });
-  };
 
   const clearAllFilters = () => {
     onFiltersChange({
       selectedTags: [],
       startDate: undefined,
       endDate: undefined,
-      duration: undefined,
     });
   };
 
   const hasActiveFilters = filters.selectedTags.length > 0 || 
-    filters.startDate || filters.endDate || filters.duration;
+    filters.startDate || filters.endDate;
 
   return (
     <div className={`${className}`}>
@@ -117,29 +107,6 @@ export function FilterBar({
             </div>
           </div>
 
-          {/* 再生時間フィルター */}
-          <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">再生時間</h4>
-            <div className="flex gap-2">
-              {DURATION_OPTIONS.map((option) => (
-                <Badge
-                  key={option.value}
-                  variant={filters.duration === option.value ? "default" : "outline"}
-                  className={`cursor-pointer transition-all duration-200 ${
-                    filters.duration === option.value
-                      ? 'bg-sage-300 text-white hover:bg-sage-300/80'
-                      : 'border-sage-200 text-sage-300 hover:border-sage-300 hover:text-gray-600'
-                  }`}
-                  onClick={() => handleDurationChange(
-                    filters.duration === option.value ? undefined : option.value
-                  )}
-                >
-                  <span className="mr-1">{option.emoji}</span>
-                  {option.label}
-                </Badge>
-              ))}
-            </div>
-          </div>
         </div>
     </div>
   );

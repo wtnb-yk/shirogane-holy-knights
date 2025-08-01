@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar, Tag, ExternalLink } from 'lucide-react';
-import { ArchiveDto } from '@/api/types';
+import { ArchiveDto } from '../types/types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 

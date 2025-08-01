@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useArchives } from '@/hooks/useArchives';
-import { SearchBar } from '@/components/archives/SearchBar';
-import { FilterBar } from '@/components/archives/FilterBar';
-import { ArchivesGrid } from '@/components/archives/ArchivesGrid';
-import { Pagination } from '@/components/archives/Pagination';
+import { useArchives } from '@/features/archives/hooks/useArchives';
+import { SearchBar } from '@/features/archives/components/SearchBar';
+import { FilterBar } from '@/features/archives/components/FilterBar';
+import { ArchivesGrid } from '@/features/archives/components/ArchivesGrid';
+import { Pagination } from '@/features/archives/components/Pagination';
 
 export default function ArchivesList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -29,13 +29,12 @@ export default function ArchivesList() {
   } = useArchives({ pageSize: 20 });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-100/30 to-sage-200/50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 opacity-0 animate-slide-up">
           <h1 className="text-4xl font-bold mb-2 text-gray-800">
-            配信アーカイブ
+            配信・動画
           </h1>
-          <p className="text-sage-300">過去の配信を振り返ろう</p>
         </div>
 
         <SearchBar 
@@ -45,7 +44,7 @@ export default function ArchivesList() {
           onFilterClick={() => setShowFilterModal(true)}
         />
 
-        {(searchQuery || filters.selectedTags.length > 0 || filters.startDate || filters.endDate || filters.duration) && (
+        {(searchQuery || filters.selectedTags.length > 0 || filters.startDate || filters.endDate) && (
           <div className="mb-6 p-4 bg-white rounded-lg shadow-sm border border-sage-200">
             <div className="flex items-center justify-between">
               <div className="text-sage-300">
@@ -54,7 +53,7 @@ export default function ArchivesList() {
                     「<span className="font-medium text-gray-800">{searchQuery}</span>」
                   </span>
                 )}
-                {(filters.selectedTags.length > 0 || filters.startDate || filters.endDate || filters.duration) && (
+                {(filters.selectedTags.length > 0 || filters.startDate || filters.endDate) && (
                   <span className={searchQuery ? 'ml-2' : ''}>
                     {searchQuery ? 'とフィルター' : 'フィルター'}による検索結果
                   </span>

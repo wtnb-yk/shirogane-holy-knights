@@ -1,9 +1,12 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from 'tailwindcss'
+import tailwindcssAnimate from 'tailwindcss-animate'
+
+const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/features/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -54,8 +57,17 @@ module.exports = {
         },
         'custom-bg': '#f8f9fa',
         'custom-card': '#ffffff',
+        // ブランドカラー
+        'brand': {
+          'navy': '#324353',      // ヘッダー背景
+          'gold': '#F6C794',      // アクセントライン
+          'cream': '#F9F7F4',     // フッター背景
+          'charcoal': '#374553',  // テキスト色
+        },
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 }
+
+export default config
