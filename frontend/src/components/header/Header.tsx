@@ -7,7 +7,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-brand-dark shadow-sm animate-fade-in relative">
+    <header className="bg-brand-navy shadow-sm animate-fade-in relative">
       <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -23,7 +23,7 @@ export function Header() {
               href="/" 
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 ${
                 pathname === '/' 
-                  ? 'text-brand-dark bg-white shadow-sm' 
+                  ? 'text-brand-navy bg-white shadow-sm' 
                   : 'text-gray-300 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -33,7 +33,7 @@ export function Header() {
               href="/archives" 
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 ${
                 pathname === '/archives' 
-                  ? 'text-brand-dark bg-white shadow-sm' 
+                  ? 'text-brand-navy bg-white shadow-sm' 
                   : 'text-gray-300 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -42,7 +42,7 @@ export function Header() {
           </nav>
         </div>
       </div>
-      <div className="absolute bottom-2 left-0 right-0 h-[2px] bg-brand-accent"></div>
+      <div className="absolute bottom-2 left-0 right-0 h-[2px] bg-brand-gold"></div>
     </header>
   );
 }
