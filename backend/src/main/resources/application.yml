@@ -55,7 +55,7 @@ logging:
     
 # Spring Cloud Function設定
 spring.cloud.function:
-  definition: "ApiGatewayFunction"
+  definition: "apiGatewayFunction"
   scan:
     packages: "com.shirogane.holy.knights"
   web:
