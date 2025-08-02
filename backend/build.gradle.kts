@@ -129,12 +129,6 @@ val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradl
     }
     
     mergeServiceFiles()
-    
-    // Spring Boot 2.7以降のAutoConfiguration.importsファイルをマージ
-    transform(com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer::class.java) {
-        resource = "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
-    }
-    
     exclude("META-INF/*.SF")
     exclude("META-INF/*.DSA") 
     exclude("META-INF/*.RSA")
