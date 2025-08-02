@@ -1,20 +1,13 @@
 package com.shirogane.holy.knights.infrastructure.config
 
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.shirogane.holy.knights.adapter.gateway.VideoRepositoryImpl
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
 import com.shirogane.holy.knights.application.usecase.VideoUseCaseImpl
 import com.shirogane.holy.knights.domain.repository.VideoRepository
-import com.shirogane.holy.knights.infrastructure.lambda.ApiGatewayFunction
-import java.util.function.Function
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.spi.ConnectionFactory
 import org.slf4j.LoggerFactory
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -68,9 +61,5 @@ class R2dbcConfig {
         return VideoUseCaseImpl(repository)
     }
     
-    @Bean
-    fun apiGatewayFunction(useCase: VideoUseCasePort, mapper: ObjectMapper): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-        return ApiGatewayFunction(useCase, mapper)
-    }
 
 }

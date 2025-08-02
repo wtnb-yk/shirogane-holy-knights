@@ -29,8 +29,10 @@ spring:
 # R2DBC Migration設定
 r2dbc:
   migrate:
-    enabled: true
-    resources-path: classpath:db/migration
+    enable: true
+    resources-paths: 
+      - classpath:db/migration
+    wait-for-database: true
 
 # アクチュエーターの設定
 management:
@@ -49,12 +51,13 @@ logging:
     root: INFO
     com.shirogane.holy.knights: INFO
     org.springframework.web: INFO
+    name.nkonev.r2dbc.migrate: DEBUG
     
 # Spring Cloud Function設定
 spring.cloud.function:
-  definition: "apiGatewayFunction"
+  definition: "videoSearch"
   scan:
-    packages: "com.shirogane.holy.knights"
+    packages: "com.shirogane.holy.knights.infrastructure.lambda.functions"
   web:
     export:
       enabled: true
@@ -99,5 +102,7 @@ logging:
 # Lambda環境でもR2DBC Migration設定
 r2dbc:
   migrate:
-    enabled: true
-    resources-path: classpath:db/migration
+    enable: true
+    resources-paths: 
+      - classpath:db/migration
+    wait-for-database: true
