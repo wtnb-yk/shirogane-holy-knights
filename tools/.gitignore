@@ -9,6 +9,8 @@ config/.env.prd
 result/
 scripts/result/
 
+scripts/.db-session
+
 # Python関連
 __pycache__/
 *.py[cod]
