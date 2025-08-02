@@ -31,7 +31,7 @@ r2dbc:
   migrate:
     enable: true
     resources-paths: 
-      - classpath:db/migration
+      - classpath:db/migration/*.sql
     wait-for-database: true
 
 # アクチュエーターの設定
@@ -104,5 +104,5 @@ r2dbc:
   migrate:
     enable: true
     resources-paths: 
-      - classpath:db/migration
+      - classpath:db/migration/*.sql
     wait-for-database: true
