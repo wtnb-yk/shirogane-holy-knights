@@ -1,7 +1,12 @@
 package com.shirogane.holy.knights.infrastructure.config
 
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
+import com.shirogane.holy.knights.infrastructure.lambda.ApiGatewayFunction
+import java.util.function.Function
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.cloud.function.context.config.ContextFunctionCatalogAutoConfiguration
@@ -22,5 +27,10 @@ class FunctionConfig {
     @ConditionalOnMissingBean
     fun objectMapper(): ObjectMapper {
         return ObjectMapper().registerKotlinModule()
+    }
+    
+    @Bean
+    fun apiGatewayFunction(useCase: VideoUseCasePort, mapper: ObjectMapper): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+        return ApiGatewayFunction(useCase, mapper)
     }
 }
