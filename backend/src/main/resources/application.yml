@@ -7,7 +7,7 @@ spring:
   main:
     web-application-type: reactive
   r2dbc:
-    url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}?sslmode=require
+    url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}?sslmode=disable
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
   autoconfigure:
@@ -58,9 +58,6 @@ spring.cloud.function:
   definition: "apiGatewayFunction"
   scan:
     packages: "com.shirogane.holy.knights"
-  web:
-    export:
-      enabled: true
   context:
     active-profiles: lambda
 

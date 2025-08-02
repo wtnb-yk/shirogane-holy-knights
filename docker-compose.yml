@@ -34,7 +34,6 @@ services:
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: postgres
       FRONTEND_URL: http://localhost:3001 # ブラウザからのアクセスURLに変更
-      SPRING_PROFILES_ACTIVE: lambda-local
     ports:
       - "8080:8080" # ホスト側からアクセス可能に
     networks:
