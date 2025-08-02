@@ -4,8 +4,6 @@ import com.shirogane.holy.knights.adapter.gateway.VideoRepositoryImpl
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
 import com.shirogane.holy.knights.application.usecase.VideoUseCaseImpl
 import com.shirogane.holy.knights.domain.repository.VideoRepository
-import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
-import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.spi.ConnectionFactory
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -21,33 +19,6 @@ import org.springframework.r2dbc.core.DatabaseClient
 class R2dbcConfig {
     
     private val logger = LoggerFactory.getLogger(R2dbcConfig::class.java)
-    
-    @Bean
-    @Primary
-    fun connectionFactory(): ConnectionFactory {
-        val host = System.getenv("DATABASE_HOST") ?: "localhost"
-        val port = System.getenv("DATABASE_PORT")?.toIntOrNull() ?: 5432
-        val database = System.getenv("DATABASE_NAME") ?: "shirogane"
-        val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
-        val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
-        
-        val isLambda = System.getenv("SPRING_PROFILES_ACTIVE")?.contains("lambda") ?: false
-        
-        val builder = PostgresqlConnectionConfiguration.builder()
-            .host(host)
-            .port(port)
-            .database(database)
-            .username(username)
-            .password(password)
-        
-        val configuration = if (isLambda) {
-            builder.enableSsl().build()
-        } else {
-            builder.build()
-        }
-        
-        return PostgresqlConnectionFactory(configuration)
-    }
     
     @Bean
     fun r2dbcEntityTemplate(connectionFactory: ConnectionFactory): R2dbcEntityTemplate {
