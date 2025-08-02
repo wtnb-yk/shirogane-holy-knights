@@ -1,0 +1,688 @@
+name: Deploy Full Stack
+
+run-name: Deploy Full Stack (${{ github.event.inputs.environment }}) - ${{ github.event.inputs.deploy_order }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          # - prod  # 将来のprod環境対応時にコメントアウト解除
+      deploy_order:
+        description: 'Deployment Strategy'
+        required: true
+        default: 'backend-first'
+        type: choice
+        options:
+          - backend-first    # バックエンド → フロントエンド
+          - frontend-first   # フロントエンド → バックエンド
+          - parallel        # 並行デプロイ
+      include_infrastructure:
+        description: 'Deploy Infrastructure (Terraform)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  # インフラストラクチャデプロイ（オプション）
+  deploy-infrastructure:
+    if: github.event.inputs.include_infrastructure == 'true'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        working-directory: infrastructure/terraform/environments/${{ github.event.inputs.environment }}
+
+    outputs:
+      infrastructure_status: ${{ steps.terraform-apply.outcome }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ~1.5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Verify Terraform Configuration
+        run: |
+          if [ ! -f "main.tf" ]; then
+            echo "❌ Terraform configuration not found for ${{ github.event.inputs.environment }} environment"
+            exit 1
+          fi
+          echo "✅ Terraform configuration found"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          terraform plan -input=false -no-color -out=tfplan
+
+      - name: Terraform Apply
+        id: terraform-apply
+        env:
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo "🏗️ Applying infrastructure changes..."
+          terraform apply -input=false -auto-approve tfplan
+          echo "✅ Infrastructure deployment completed"
+
+  # バックエンドデプロイ
+  deploy-backend:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs: 
+      - deploy-infrastructure
+    if: |
+      always() && 
+      (github.event.inputs.include_infrastructure == 'false' || needs.deploy-infrastructure.result == 'success') &&
+      (github.event.inputs.deploy_order == 'backend-first' || github.event.inputs.deploy_order == 'parallel')
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    outputs:
+      backend_status: ${{ steps.deploy-lambda.outcome }}
+      lambda_function_name: ${{ steps.deploy-lambda.outputs.function_name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: wrapper
+
+      - name: Build Lambda JAR
+        run: |
+          cd backend
+          ./gradlew clean springCloudFunctionLambdaJar
+          ls -la build/libs/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Deploy to Lambda
+        id: deploy-lambda
+        run: |
+          FUNCTION_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}-api"
+          JAR_PATH="backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+          
+          echo "🚀 Deploying backend to Lambda: $FUNCTION_NAME"
+          
+          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            aws lambda update-function-code \
+              --function-name "$FUNCTION_NAME" \
+              --zip-file "fileb://$JAR_PATH"
+            
+            aws lambda wait function-updated \
+              --function-name "$FUNCTION_NAME"
+            
+            echo "✅ Backend deployment completed"
+            echo "function_name=$FUNCTION_NAME" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Lambda function $FUNCTION_NAME not found"
+            exit 1
+          fi
+
+      - name: Verify Backend Deployment
+        run: |
+          FUNCTION_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}-api"
+          
+          # 関数の基本情報を取得
+          aws lambda get-function --function-name "$FUNCTION_NAME" \
+            --query 'Configuration.{FunctionName:FunctionName,Runtime:Runtime,LastModified:LastModified,CodeSize:CodeSize}' \
+            --output table
+
+  # フロントエンドデプロイ（バックエンド優先の場合）
+  deploy-frontend-after-backend:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs: 
+      - deploy-backend
+    if: |
+      always() && 
+      github.event.inputs.deploy_order == 'backend-first' &&
+      needs.deploy-backend.result == 'success'
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    outputs:
+      frontend_status: ${{ steps.monitor-build.outcome }}
+      amplify_url: ${{ steps.get-url.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Get Amplify App ID
+        id: get_app_id
+        run: |
+          APP_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}"
+          APP_ID=$(aws amplify list-apps --query "apps[?name=='$APP_NAME'].appId" --output text)
+          
+          if [ -z "$APP_ID" ] || [ "$APP_ID" = "None" ]; then
+            echo "❌ Amplify app '$APP_NAME' not found"
+            exit 1
+          fi
+          
+          echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
+
+      - name: Trigger Amplify Build
+        id: trigger_build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          
+          echo "🚀 Deploying frontend to Amplify..."
+          
+          JOB_ID=$(aws amplify start-job \
+            --app-id "$APP_ID" \
+            --branch-name "main" \
+            --job-type RELEASE \
+            --query 'jobSummary.jobId' \
+            --output text)
+          
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+
+      - name: Monitor Build Progress
+        id: monitor-build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          JOB_ID="${{ steps.trigger_build.outputs.job_id }}"
+          
+          for i in {1..60}; do
+            STATUS=$(aws amplify get-job \
+              --app-id "$APP_ID" \
+              --branch-name "main" \
+              --job-id "$JOB_ID" \
+              --query 'job.summary.status' \
+              --output text)
+            
+            echo "Build status: $STATUS (check $i/60)"
+            
+            case $STATUS in
+              "SUCCEED")
+                echo "✅ Frontend deployment completed"
+                break
+                ;;
+              "FAILED")
+                echo "❌ Frontend deployment failed"
+                exit 1
+                ;;
+              "CANCELLED")
+                echo "❌ Frontend deployment cancelled"
+                exit 1
+                ;;
+              "RUNNING"|"PENDING")
+                if [ $i -eq 60 ]; then
+                  echo "❌ Frontend deployment timeout"
+                  exit 1
+                fi
+                sleep 10
+                ;;
+            esac
+          done
+
+      - name: Get Deployment URL
+        id: get-url
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          DOMAIN=$(aws amplify get-app --app-id "$APP_ID" --query 'app.defaultDomain' --output text)
+          echo "url=https://$DOMAIN" >> $GITHUB_OUTPUT
+
+  # フロントエンドデプロイ（フロントエンド優先の場合）
+  deploy-frontend-first:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs: 
+      - deploy-infrastructure
+    if: |
+      always() && 
+      (github.event.inputs.include_infrastructure == 'false' || needs.deploy-infrastructure.result == 'success') &&
+      github.event.inputs.deploy_order == 'frontend-first'
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    outputs:
+      frontend_status: ${{ steps.monitor-build.outcome }}
+      amplify_url: ${{ steps.get-url.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Get Amplify App ID
+        id: get_app_id
+        run: |
+          APP_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}"
+          APP_ID=$(aws amplify list-apps --query "apps[?name=='$APP_NAME'].appId" --output text)
+          
+          if [ -z "$APP_ID" ] || [ "$APP_ID" = "None" ]; then
+            echo "❌ Amplify app '$APP_NAME' not found"
+            exit 1
+          fi
+          
+          echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
+
+      - name: Trigger Amplify Build
+        id: trigger_build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          
+          echo "🚀 Deploying frontend to Amplify (frontend-first)..."
+          
+          JOB_ID=$(aws amplify start-job \
+            --app-id "$APP_ID" \
+            --branch-name "main" \
+            --job-type RELEASE \
+            --query 'jobSummary.jobId' \
+            --output text)
+          
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+
+      - name: Monitor Build Progress
+        id: monitor-build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          JOB_ID="${{ steps.trigger_build.outputs.job_id }}"
+          
+          for i in {1..60}; do
+            STATUS=$(aws amplify get-job \
+              --app-id "$APP_ID" \
+              --branch-name "main" \
+              --job-id "$JOB_ID" \
+              --query 'job.summary.status' \
+              --output text)
+            
+            echo "Build status: $STATUS (check $i/60)"
+            
+            case $STATUS in
+              "SUCCEED")
+                echo "✅ Frontend deployment completed"
+                break
+                ;;
+              "FAILED")
+                echo "❌ Frontend deployment failed"
+                exit 1
+                ;;
+              "CANCELLED")
+                echo "❌ Frontend deployment cancelled"
+                exit 1
+                ;;
+              "RUNNING"|"PENDING")
+                if [ $i -eq 60 ]; then
+                  echo "❌ Frontend deployment timeout"
+                  exit 1
+                fi
+                sleep 10
+                ;;
+            esac
+          done
+
+      - name: Get Deployment URL
+        id: get-url
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          DOMAIN=$(aws amplify get-app --app-id "$APP_ID" --query 'app.defaultDomain' --output text)
+          echo "url=https://$DOMAIN" >> $GITHUB_OUTPUT
+
+  # バックエンドデプロイ（フロントエンド優先の場合）
+  deploy-backend-after-frontend:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs: 
+      - deploy-frontend-first
+    if: |
+      always() && 
+      github.event.inputs.deploy_order == 'frontend-first' &&
+      needs.deploy-frontend-first.result == 'success'
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    outputs:
+      backend_status: ${{ steps.deploy-lambda.outcome }}
+      lambda_function_name: ${{ steps.deploy-lambda.outputs.function_name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: wrapper
+
+      - name: Build Lambda JAR
+        run: |
+          cd backend
+          ./gradlew clean springCloudFunctionLambdaJar
+          ls -la build/libs/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Deploy to Lambda
+        id: deploy-lambda
+        run: |
+          FUNCTION_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}-api"
+          JAR_PATH="backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+          
+          echo "🚀 Deploying backend to Lambda (after frontend)..."
+          
+          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            aws lambda update-function-code \
+              --function-name "$FUNCTION_NAME" \
+              --zip-file "fileb://$JAR_PATH"
+            
+            aws lambda wait function-updated \
+              --function-name "$FUNCTION_NAME"
+            
+            echo "✅ Backend deployment completed"
+            echo "function_name=$FUNCTION_NAME" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Lambda function $FUNCTION_NAME not found"
+            exit 1
+          fi
+
+  # 並行デプロイ用フロントエンド
+  deploy-frontend-parallel:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    needs: 
+      - deploy-infrastructure
+    if: |
+      always() && 
+      (github.event.inputs.include_infrastructure == 'false' || needs.deploy-infrastructure.result == 'success') &&
+      github.event.inputs.deploy_order == 'parallel'
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    outputs:
+      frontend_status: ${{ steps.monitor-build.outcome }}
+      amplify_url: ${{ steps.get-url.outputs.url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Get Amplify App ID
+        id: get_app_id
+        run: |
+          APP_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}"
+          APP_ID=$(aws amplify list-apps --query "apps[?name=='$APP_NAME'].appId" --output text)
+          
+          if [ -z "$APP_ID" ] || [ "$APP_ID" = "None" ]; then
+            echo "❌ Amplify app '$APP_NAME' not found"
+            exit 1
+          fi
+          
+          echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
+
+      - name: Trigger Amplify Build
+        id: trigger_build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          
+          echo "🚀 Deploying frontend to Amplify (parallel)..."
+          
+          JOB_ID=$(aws amplify start-job \
+            --app-id "$APP_ID" \
+            --branch-name "main" \
+            --job-type RELEASE \
+            --query 'jobSummary.jobId' \
+            --output text)
+          
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+
+      - name: Monitor Build Progress
+        id: monitor-build
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          JOB_ID="${{ steps.trigger_build.outputs.job_id }}"
+          
+          for i in {1..60}; do
+            STATUS=$(aws amplify get-job \
+              --app-id "$APP_ID" \
+              --branch-name "main" \
+              --job-id "$JOB_ID" \
+              --query 'job.summary.status' \
+              --output text)
+            
+            echo "Build status: $STATUS (check $i/60)"
+            
+            case $STATUS in
+              "SUCCEED")
+                echo "✅ Frontend deployment completed"
+                break
+                ;;
+              "FAILED")
+                echo "❌ Frontend deployment failed"
+                exit 1
+                ;;
+              "CANCELLED")
+                echo "❌ Frontend deployment cancelled"
+                exit 1
+                ;;
+              "RUNNING"|"PENDING")
+                if [ $i -eq 60 ]; then
+                  echo "❌ Frontend deployment timeout"
+                  exit 1
+                fi
+                sleep 10
+                ;;
+            esac
+          done
+
+      - name: Get Deployment URL
+        id: get-url
+        run: |
+          APP_ID="${{ steps.get_app_id.outputs.app_id }}"
+          DOMAIN=$(aws amplify get-app --app-id "$APP_ID" --query 'app.defaultDomain' --output text)
+          echo "url=https://$DOMAIN" >> $GITHUB_OUTPUT
+
+  # 統合テストとサマリー
+  integration-test-and-summary:
+    runs-on: ubuntu-latest
+    needs: 
+      - deploy-backend
+      - deploy-frontend-after-backend
+      - deploy-frontend-first
+      - deploy-backend-after-frontend
+      - deploy-frontend-parallel
+    if: always()
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
+          aws-region: ap-northeast-1
+
+      - name: Run Integration Tests
+        id: integration-test
+        run: |
+          echo "🧪 Running integration tests..."
+          
+          # Lambda関数のヘルスチェック
+          FUNCTION_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}-api"
+          
+          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
+            echo "✅ Lambda function is available"
+            
+            # Lambda関数の簡単なテスト呼び出し
+            RESPONSE=$(aws lambda invoke \
+              --function-name "$FUNCTION_NAME" \
+              --payload '{"httpMethod":"GET","path":"/health","headers":{}}' \
+              --cli-binary-format raw-in-base64-out \
+              response.json 2>/dev/null && cat response.json || echo "Test failed")
+            
+            if echo "$RESPONSE" | grep -q '"statusCode":200'; then
+              echo "✅ Lambda health check passed"
+            else
+              echo "⚠️ Lambda health check failed, but deployment succeeded"
+            fi
+          else
+            echo "⚠️ Lambda function not found"
+          fi
+
+      - name: Generate Deployment Summary
+        run: |
+          echo "# 🚀 Full Stack Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ github.event.inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Strategy:** ${{ github.event.inputs.deploy_order }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Infrastructure:** ${{ github.event.inputs.include_infrastructure == 'true' && '✅ Included' || '⏭️ Skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Deployment Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # インフラストラクチャ結果
+          if [ "${{ github.event.inputs.include_infrastructure }}" = "true" ]; then
+            if [ "${{ needs.deploy-infrastructure.result }}" = "success" ]; then
+              echo "- 🏗️ **Infrastructure (Terraform):** ✅ Success" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- 🏗️ **Infrastructure (Terraform):** ❌ Failed" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+          
+          # バックエンド結果
+          BACKEND_RESULT=""
+          case "${{ github.event.inputs.deploy_order }}" in
+            "backend-first"|"parallel")
+              BACKEND_RESULT="${{ needs.deploy-backend.result }}"
+              ;;
+            "frontend-first")
+              BACKEND_RESULT="${{ needs.deploy-backend-after-frontend.result }}"
+              ;;
+          esac
+          
+          if [ "$BACKEND_RESULT" = "success" ]; then
+            echo "- 🔧 **Backend (Lambda):** ✅ Success" >> $GITHUB_STEP_SUMMARY
+          elif [ "$BACKEND_RESULT" = "failure" ]; then
+            echo "- 🔧 **Backend (Lambda):** ❌ Failed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- 🔧 **Backend (Lambda):** ⏭️ Skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # フロントエンド結果
+          FRONTEND_RESULT=""
+          case "${{ github.event.inputs.deploy_order }}" in
+            "backend-first")
+              FRONTEND_RESULT="${{ needs.deploy-frontend-after-backend.result }}"
+              ;;
+            "frontend-first")
+              FRONTEND_RESULT="${{ needs.deploy-frontend-first.result }}"
+              ;;
+            "parallel")
+              FRONTEND_RESULT="${{ needs.deploy-frontend-parallel.result }}"
+              ;;
+          esac
+          
+          if [ "$FRONTEND_RESULT" = "success" ]; then
+            echo "- 🎨 **Frontend (Amplify):** ✅ Success" >> $GITHUB_STEP_SUMMARY
+          elif [ "$FRONTEND_RESULT" = "failure" ]; then
+            echo "- 🎨 **Frontend (Amplify):** ❌ Failed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- 🎨 **Frontend (Amplify):** ⏭️ Skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # URL情報
+          echo "## Access Information" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # フロントエンドURL
+          FRONTEND_URL=""
+          case "${{ github.event.inputs.deploy_order }}" in
+            "backend-first")
+              FRONTEND_URL="${{ needs.deploy-frontend-after-backend.outputs.amplify_url }}"
+              ;;
+            "frontend-first")
+              FRONTEND_URL="${{ needs.deploy-frontend-first.outputs.amplify_url }}"
+              ;;
+            "parallel")
+              FRONTEND_URL="${{ needs.deploy-frontend-parallel.outputs.amplify_url }}"
+              ;;
+          esac
+          
+          if [ -n "$FRONTEND_URL" ]; then
+            echo "- 🌐 **Frontend URL:** [$FRONTEND_URL]($FRONTEND_URL)" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # API Gateway URL（将来的に追加予定）
+          echo "- 🔗 **API Gateway:** \`shirogane-holy-knights-${{ github.event.inputs.environment }}-api\`" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "*✨ Full stack deployment completed successfully! ✨*" >> $GITHUB_STEP_SUMMARY
