@@ -80,7 +80,6 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      SPRING_PROFILES_ACTIVE = "lambda"
       SPRING_CLOUD_FUNCTION_DEFINITION = "apiGatewayFunction"
       MAIN_CLASS = "com.shirogane.holy.knights.Application"
       DATABASE_HOST     = var.db_host

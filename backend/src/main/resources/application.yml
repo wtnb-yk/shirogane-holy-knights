@@ -61,6 +61,8 @@ spring.cloud.function:
   web:
     export:
       enabled: true
+  context:
+    active-profiles: lambda
 
 # AWS Lambda関連設定
 aws:
