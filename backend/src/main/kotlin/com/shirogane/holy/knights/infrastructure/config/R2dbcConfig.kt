@@ -31,14 +31,20 @@ class R2dbcConfig {
         val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
         val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
         
-        val configuration = PostgresqlConnectionConfiguration.builder()
+        val isLambda = System.getenv("SPRING_PROFILES_ACTIVE")?.contains("lambda") ?: false
+        
+        val builder = PostgresqlConnectionConfiguration.builder()
             .host(host)
             .port(port)
             .database(database)
             .username(username)
             .password(password)
-            .enableSsl()
-            .build()
+        
+        val configuration = if (isLambda) {
+            builder.enableSsl().build()
+        } else {
+            builder.build()
+        }
         
         return PostgresqlConnectionFactory(configuration)
     }
