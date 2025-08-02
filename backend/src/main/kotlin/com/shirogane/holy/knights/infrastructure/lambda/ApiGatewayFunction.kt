@@ -7,21 +7,25 @@ import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.env.Environment
+import org.springframework.stereotype.Component
 import java.util.function.Function
 
 /**
  * AWS Lambda + API Gateway用のFunction実装
  */
+@Component
 class ApiGatewayFunction(
     private val videoUseCase: VideoUseCasePort,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val environment: Environment
 ) : Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     private val logger = LoggerFactory.getLogger(ApiGatewayFunction::class.java)
     
-    @Value("\${cors.allowed-origins:*}")
-    private val allowedOriginsConfig: String = "*"
+    private val allowedOriginsConfig: String by lazy {
+        environment.getProperty("cors.allowed-origins", "*")
+    }
 
     override fun apply(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
         logger.info("Lambda Function called: ${request.httpMethod} ${request.path}")
