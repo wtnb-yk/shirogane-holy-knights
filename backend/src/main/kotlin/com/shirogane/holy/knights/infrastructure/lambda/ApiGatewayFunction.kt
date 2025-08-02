@@ -14,7 +14,7 @@ import java.util.function.Function
 /**
  * AWS Lambda + API Gateway用のFunction実装
  */
-@Component
+@Component("apiGatewayFunction")
 class ApiGatewayFunction(
     private val videoUseCase: VideoUseCasePort,
     private val objectMapper: ObjectMapper,
