@@ -29,8 +29,4 @@ class FunctionConfig {
         return ObjectMapper().registerKotlinModule()
     }
     
-    @Bean
-    fun apiGatewayFunction(useCase: VideoUseCasePort, mapper: ObjectMapper): Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-        return ApiGatewayFunction(useCase, mapper)
-    }
 }
