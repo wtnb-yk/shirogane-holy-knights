@@ -63,7 +63,7 @@ jobs:
       - name: Terraform Init
         run: |
           echo "Initializing Terraform for ${{ github.event.inputs.environment }} environment..."
-          terraform init
+          terraform init -upgrade
 
       - name: Terraform Validate
         run: |
