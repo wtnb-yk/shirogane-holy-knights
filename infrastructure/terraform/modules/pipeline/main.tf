@@ -1,6 +1,10 @@
 # CodePipeline用S3バケット
 resource "aws_s3_bucket" "pipeline_artifacts" {
   bucket = "${var.project_name}-${var.environment}-pipeline-artifacts"
+  
+  lifecycle {
+    ignore_changes = [bucket]
+  }
 }
 
 resource "aws_s3_bucket_versioning" "pipeline_artifacts" {

@@ -201,9 +201,9 @@ resource "aws_security_group_rule" "pipeline_to_database" {
 # Current account data
 data "aws_caller_identity" "current" {}
 
-# GitHubActionsDeployRoleにIAM読み取り権限を追加
-resource "aws_iam_role_policy" "github_actions_iam_read" {
-  name = "GitHubActionsIAMReadPolicy"
+# GitHubActionsDeployRoleに必要なIAM権限を追加
+resource "aws_iam_role_policy" "github_actions_iam_permissions" {
+  name = "GitHubActionsIAMPermissions"
   role = "GitHubActionsDeployRole"
 
   policy = jsonencode({
@@ -213,7 +213,26 @@ resource "aws_iam_role_policy" "github_actions_iam_read" {
         Effect = "Allow"
         Action = [
           "iam:GetRole",
-          "iam:ListRoles"
+          "iam:ListRoles",
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:UpdateRole",
+          "iam:PutRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:CreateInstanceProfile",
+          "iam:DeleteInstanceProfile",
+          "iam:AddRoleToInstanceProfile",
+          "iam:RemoveRoleFromInstanceProfile",
+          "iam:GetInstanceProfile",
+          "iam:ListInstanceProfiles",
+          "iam:CreatePolicy",
+          "iam:DeletePolicy",
+          "iam:GetPolicy",
+          "iam:ListPolicies"
         ]
         Resource = "*"
       }

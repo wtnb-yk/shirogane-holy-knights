@@ -130,6 +130,10 @@ resource "aws_api_gateway_account" "main" {
 resource "aws_cloudwatch_log_group" "api_gateway" {
   name              = "/aws/apigateway/${var.project_name}-${var.environment}"
   retention_in_days = var.log_retention_days
+  
+  lifecycle {
+    ignore_changes = [name]
+  }
 }
 
 # API Gateway Method Settings
@@ -203,7 +207,10 @@ resource "aws_api_gateway_domain_name" "main" {
 
   certificate_arn = aws_acm_certificate_validation.api_domain[0].certificate_arn
   domain_name     = var.custom_domain_name
-
+  
+  lifecycle {
+    ignore_changes = [domain_name]
+  }
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-api-domain"

@@ -64,6 +64,10 @@ resource "aws_iam_role_policy" "lambda_policy" {
 resource "aws_cloudwatch_log_group" "lambda" {
   name              = "/aws/lambda/${var.project_name}-${var.environment}-api"
   retention_in_days = var.log_retention_days
+  
+  lifecycle {
+    ignore_changes = [name]
+  }
 }
 
 # Lambda Function
