@@ -22,7 +22,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "pipeline_artifact
 
 # GitHub接続（CodeStar Connections）
 resource "aws_codestarconnections_connection" "github" {
-  name          = "${var.project_name}-${var.environment}-github"
+  name          = "shirogane-${var.environment}-github"
   provider_type = "GitHub"
 }
 
