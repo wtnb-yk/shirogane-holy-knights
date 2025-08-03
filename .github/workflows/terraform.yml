@@ -102,7 +102,7 @@ jobs:
           echo "⚠️  Applying Terraform changes to ${{ github.event.inputs.environment }} environment..."
           echo "This will make actual changes to AWS resources!"
           
-          terraform apply -input=false -auto-approve tfplan -dry-run
+          terraform apply -input=false -auto-approve tfplan
           
           echo "✅ Terraform apply completed successfully"
 
