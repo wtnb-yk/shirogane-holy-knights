@@ -72,15 +72,28 @@ resource "aws_instance" "nat_instance" {
 }
 
 
-# IAM Role for NAT Instance (既存のロールを参照)
-data "aws_iam_role" "nat_instance" {
+# IAM Role for NAT Instance
+resource "aws_iam_role" "nat_instance" {
   name = "${var.project_name}-${var.environment}-nat-instance-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
 # IAM Policy for NAT Instance
 resource "aws_iam_role_policy" "nat_instance" {
   name = "${var.project_name}-${var.environment}-nat-instance-policy"
-  role = data.aws_iam_role.nat_instance.id
+  role = aws_iam_role.nat_instance.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -100,6 +113,6 @@ resource "aws_iam_role_policy" "nat_instance" {
 # IAM Instance Profile
 resource "aws_iam_instance_profile" "nat_instance" {
   name = "${var.project_name}-${var.environment}-nat-instance-profile"
-  role = data.aws_iam_role.nat_instance.name
+  role = aws_iam_role.nat_instance.name
 }
 

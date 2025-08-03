@@ -200,3 +200,23 @@ resource "aws_security_group_rule" "pipeline_to_database" {
 
 # Current account data
 data "aws_caller_identity" "current" {}
+
+# GitHubActionsDeployRoleにIAM読み取り権限を追加
+resource "aws_iam_role_policy" "github_actions_iam_read" {
+  name = "GitHubActionsIAMReadPolicy"
+  role = "GitHubActionsDeployRole"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:GetRole",
+          "iam:ListRoles"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
