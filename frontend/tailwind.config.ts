@@ -64,6 +64,19 @@ const config: Config = {
           'cream': '#F9F7F4',     // フッター背景
           'charcoal': '#374553',  // テキスト色
         },
+        // ノエル専用カラーパレット
+        'noel': {
+          'primary': '#8B9DC3',      // ノエルブルー
+          'secondary': '#DDB892',    // ゴールドアクセント  
+          'bg-light': '#F8F9FA',     // 薄い背景
+          'text-primary': '#2D3748', // メインテキスト
+          'text-secondary': '#718096', // サブテキスト
+        },
+        'youtube': {
+          'red': '#FF0000',          // YouTube公式赤
+          'dark': '#282828',         // YouTube暗色
+          'light': '#F9F9F9',        // YouTube明色
+        },
       },
     },
   },
