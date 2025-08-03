@@ -50,35 +50,35 @@ jobs:
           role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
           aws-region: ap-northeast-1
 
-#      - name: Run Database Migration
-#        run: |
-#          echo "Running database migration using r2dbc-migrate for ${{ github.event.inputs.environment }} environment..."
-#
-#          # 環境に応じたDB接続情報を設定
-#          if [ "${{ github.event.inputs.environment }}" = "dev" ]; then
-#            export DB_HOST="shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com"
-#            export DB_PORT="5432"
-#            export DB_NAME="shirogane"
-#            # ユーザー名とパスワードをSecrets Managerから取得
-#            SECRET_VALUE=$(aws secretsmanager get-secret-value \
-#              --secret-id "rds!db-e5c2c73b-60bc-4a8e-bdab-e47a09a79b52" \
-#              --query SecretString --output text)
-#            export DB_USER=$(echo "$SECRET_VALUE" | jq -r .username)
-#            export DB_PASSWORD=$(echo "$SECRET_VALUE" | jq -r .password)
-#          elif [ "${{ github.event.inputs.environment }}" = "prod" ]; then
-#            # TODO: prod環境のDB接続情報を設定（将来実装）
-#            echo "❌ Production environment not implemented yet"
-#            exit 1
-#          else
-#            echo "❌ Environment ${{ github.event.inputs.environment }} not supported"
-#            exit 1
-#          fi
-#
-#          # Liquibaseを使用したマイグレーション実行
-#          cd backend
-#          ./gradlew liquibaseUpdate
-#
-#          echo "✅ Database migration completed successfully using Liquibase"
+      - name: Run Database Migration
+        run: |
+          echo "Running database migration using r2dbc-migrate for ${{ github.event.inputs.environment }} environment..."
+
+          # 環境に応じたDB接続情報を設定
+          if [ "${{ github.event.inputs.environment }}" = "dev" ]; then
+            export DB_HOST="shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com"
+            export DB_PORT="5432"
+            export DB_NAME="shirogane"
+            # ユーザー名とパスワードをSecrets Managerから取得
+            SECRET_VALUE=$(aws secretsmanager get-secret-value \
+              --secret-id "rds!db-e5c2c73b-60bc-4a8e-bdab-e47a09a79b52" \
+              --query SecretString --output text)
+            export DB_USER=$(echo "$SECRET_VALUE" | jq -r .username)
+            export DB_PASSWORD=$(echo "$SECRET_VALUE" | jq -r .password)
+          elif [ "${{ github.event.inputs.environment }}" = "prod" ]; then
+            # TODO: prod環境のDB接続情報を設定（将来実装）
+            echo "❌ Production environment not implemented yet"
+            exit 1
+          else
+            echo "❌ Environment ${{ github.event.inputs.environment }} not supported"
+            exit 1
+          fi
+
+          # Liquibaseを使用したマイグレーション実行
+          cd backend
+          ./gradlew liquibaseUpdate
+
+          echo "✅ Database migration completed successfully using Liquibase"
 
       - name: Deploy to Lambda
         run: |

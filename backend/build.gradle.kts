@@ -134,21 +134,21 @@ val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradl
     exclude("META-INF/*.RSA")
 }
 
-//// Liquibaseマイグレーション実行タスク（CI/CD用）
-//val liquibaseUpdate by tasks.registering(JavaExec::class) {
-//    group = "database"
-//    description = "Run Liquibase database migration"
-//    classpath = sourceSets.main.get().runtimeClasspath
-//    mainClass.set("liquibase.integration.commandline.Main")
-//
-//    args = listOf(
-//        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane_db"}",
-//        "--username=${System.getenv("DB_USER") ?: "postgres"}",
-//        "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
-//        "--changeLogFile=classpath:db/changelog/db.changelog-master.yaml",
-//        "update"
-//    )
-//}
+// Liquibaseマイグレーション実行タスク（CI/CD用）
+val liquibaseUpdate by tasks.registering(JavaExec::class) {
+    group = "database"
+    description = "Run Liquibase database migration"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("liquibase.integration.commandline.Main")
+
+    args = listOf(
+        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane_db"}",
+        "--username=${System.getenv("DB_USER") ?: "postgres"}",
+        "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
+        "--changeLogFile=classpath:db/changelog/db.changelog-master.yaml",
+        "update"
+    )
+}
 
 graalvmNative {
     binaries {
