@@ -57,12 +57,6 @@ export interface NewsSearchResultDto {
   hasMore: boolean;
 }
 
-/**
- * ニュース詳細パラメータの型定義
- */
-export interface NewsDetailParamsDto {
-  id: string;
-}
 
 /**
  * フィルターオプションの型定義

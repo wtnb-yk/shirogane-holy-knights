@@ -92,22 +92,6 @@ class NewsRepositoryImpl(
         }
     }
 
-    override suspend fun findById(id: NewsId): News? {
-        logger.info("ニュース詳細取得: id=${id.value}")
-        return try {
-            val criteria = Criteria.where("id").`is`(id.value)
-            
-            val newsEntity = template.select(NewsEntity::class.java)
-                .matching(Query.query(criteria))
-                .one()
-                .awaitSingleOrNull()
-            
-            newsEntity?.let { buildNews(it) }
-        } catch (e: Exception) {
-            logger.error("ニュース詳細取得エラー", e)
-            null
-        }
-    }
 
     override suspend fun countAll(params: NewsListParamsDto): Int {
         logger.info("ニュース総数取得")

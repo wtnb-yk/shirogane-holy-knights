@@ -1,7 +1,6 @@
 import { 
   NewsSearchParamsDto, 
   NewsListParamsDto, 
-  NewsDetailParamsDto,
   NewsSearchResultDto, 
   NewsDto,
   NewsApiError 
@@ -83,34 +82,4 @@ export class NewsClient {
     }
   }
 
-  /**
-   * ニュース詳細APIを呼び出す
-   * @param params 詳細パラメータ
-   * @returns ニュース詳細
-   */
-  static async getNewsDetail(
-    params: NewsDetailParamsDto
-  ): Promise<NewsDto> {
-    try {
-      const response = await fetch(`${API_CONFIG.baseUrl}/newsDetail`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw {
-          error: errorData.error || 'ニュース詳細の取得に失敗しました。',
-          statusCode: response.status,
-        } as NewsApiError;
-      }
-
-      return response.json();
-    } catch (error) {
-      throw error;
-    }
-  }
 }

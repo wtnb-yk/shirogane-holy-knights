@@ -18,10 +18,6 @@ interface NewsUseCasePort {
      */
     suspend fun searchNews(params: NewsSearchParamsDto): NewsSearchResultDto
 
-    /**
-     * ニュース詳細を取得
-     */
-    suspend fun getNewsById(id: String): NewsDto?
 
     /**
      * ニュースカテゴリ一覧を取得

@@ -44,7 +44,6 @@ class ApiGatewayFunction(
                 request.path == "/videoSearch" && request.httpMethod == "POST" -> handleVideoSearch(request)
                 request.path == "/newsList" && request.httpMethod == "POST" -> handleNewsList(request)
                 request.path == "/newsSearch" && request.httpMethod == "POST" -> handleNewsSearch(request)
-                request.path == "/newsDetail" && request.httpMethod == "POST" -> handleNewsDetail(request)
                 request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories(request)
                 else -> {
                     logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
@@ -159,37 +158,6 @@ class ApiGatewayFunction(
             .withBody(objectMapper.writeValueAsString(result))
     }
     
-    private fun handleNewsDetail(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        logger.info("News detail requested")
-        
-        val detailRequest = if (request.body != null) {
-            objectMapper.readValue(request.body, NewsDetailRequestDto::class.java)
-        } else {
-            logger.error("News detail request body is null")
-            return APIGatewayProxyResponseEvent()
-                .withStatusCode(400)
-                .withHeaders(mapOf("Content-Type" to "application/json"))
-                .withBody(objectMapper.writeValueAsString(mapOf("error" to "Request body is required")))
-        }
-        
-        logger.info("News detail ID: ${detailRequest.id}")
-        
-        val news = runBlocking { newsUseCase.getNewsById(detailRequest.id) }
-        
-        return if (news != null) {
-            logger.info("News detail found: ${detailRequest.id}")
-            APIGatewayProxyResponseEvent()
-                .withStatusCode(200)
-                .withHeaders(mapOf("Content-Type" to "application/json"))
-                .withBody(objectMapper.writeValueAsString(news))
-        } else {
-            logger.warn("News not found: ${detailRequest.id}")
-            APIGatewayProxyResponseEvent()
-                .withStatusCode(404)
-                .withHeaders(mapOf("Content-Type" to "application/json"))
-                .withBody(objectMapper.writeValueAsString(mapOf("error" to "News not found")))
-        }
-    }
     
     private fun handleNewsCategories(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
         logger.info("News categories requested")

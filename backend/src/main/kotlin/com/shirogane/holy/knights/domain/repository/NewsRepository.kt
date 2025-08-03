@@ -22,10 +22,6 @@ interface NewsRepository {
      */
     suspend fun searchNews(params: NewsSearchParamsDto): List<News>
 
-    /**
-     * ニュースIDで単一ニュースを取得
-     */
-    suspend fun findById(id: NewsId): News?
 
     /**
      * ニュース総件数を取得（ページング用）

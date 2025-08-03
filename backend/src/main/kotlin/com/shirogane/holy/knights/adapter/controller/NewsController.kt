@@ -71,27 +71,6 @@ class NewsController(private val newsUseCase: NewsUseCasePort) {
         )
     }
 
-    /**
-     * ニュース詳細取得
-     */
-    @PostMapping("/newsDetail")
-    fun getNewsById(@RequestBody request: NewsDetailRequestDto): Mono<ResponseEntity<NewsDto>> {
-        logger.info("ニュース詳細取得: id=${request.id}")
-        
-        return Mono.fromCallable {
-            runBlocking { newsUseCase.getNewsById(request.id) }
-        }.map { news ->
-            if (news != null) {
-                logger.info("ニュース詳細取得完了: id=${request.id}")
-                ResponseEntity.ok(news)
-            } else {
-                logger.warn("ニュースが見つかりません: id=${request.id}")
-                ResponseEntity.notFound().build()
-            }
-        }.doOnError { error ->
-            logger.error("ニュース詳細取得エラー: id=${request.id}", error)
-        }.onErrorReturn(ResponseEntity.internalServerError().build())
-    }
 
     /**
      * ニュースカテゴリ一覧取得

@@ -72,17 +72,6 @@ class NewsUseCaseImpl(
         }
     }
 
-    override suspend fun getNewsById(id: String): NewsDto? {
-        logger.info("ニュース詳細取得ユースケース実行: id=$id")
-        
-        return try {
-            val news = newsRepository.findById(NewsId(id))
-            news?.let { NewsDto.fromDomain(it) }
-        } catch (e: Exception) {
-            logger.error("ニュース詳細取得エラー", e)
-            null
-        }
-    }
 
     override suspend fun getNewsCategories(): List<NewsCategoryDto> {
         logger.info("ニュースカテゴリ一覧取得ユースケース実行")

@@ -130,9 +130,3 @@ data class NewsListParamsDto(
     }
 }
 
-/**
- * ニュース詳細取得リクエストDTO
- */
-data class NewsDetailRequestDto(
-    val id: String
-)
