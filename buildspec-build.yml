@@ -15,12 +15,15 @@ phases:
       - cd backend
       - echo Running Gradle build
       - ./gradlew clean springCloudFunctionLambdaJar
+      - echo "Gradle task completed, checking immediate file status:"
+      - find . -name "*.jar" -type f 2>/dev/null || echo "No jar files found yet"
       - echo Build completed successfully
   
   post_build:
     commands:
       - echo Build completed on `date`
-      - ls -la backend/build/libs/
+      - sleep 5
+      - if [ -d "backend/build/libs/" ]; then ls -la backend/build/libs/; else echo "libs directory not found, searching for jar files:"; find backend -name "*.jar" -type f; fi
 
 artifacts:
   files:
