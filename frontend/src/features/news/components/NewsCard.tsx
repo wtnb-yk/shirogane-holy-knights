@@ -39,7 +39,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
         <div className="flex flex-col sm:flex-row">
           {/* 画像部分 */}
           {news.thumbnailUrl && (
-            <div className="relative w-full sm:w-72 h-40 sm:h-[162px] flex-shrink-0 overflow-hidden bg-sage-100">
+            <div className="relative w-full sm:w-80 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-sage-100">
               <Image 
                 src={news.thumbnailUrl} 
                 alt={news.title} 
@@ -55,7 +55,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           )}
           
           {/* コンテンツ部分 */}
-          <div className="flex-1 p-4 flex flex-col justify-between">
+          <div className="flex-1 p-3 flex flex-col justify-between">
             <div>
               {/* カテゴリとメタ情報 */}
               <div className="flex items-center gap-2 mb-2">
@@ -79,7 +79,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
               </Link>
               
               {/* 要約 */}
-              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+              <p className="text-sm text-gray-600 line-clamp-4 mb-2">
                 {news.summary}
               </p>
             </div>
