@@ -108,7 +108,7 @@ module "api_gateway" {
   
   # Custom domain settings for dev environment
   custom_domain_name = "api.dev.noe-room.com"
-  hosted_zone_id     = "Z04900993DUUUVXCT5E57"
+  hosted_zone_id     = data.aws_route53_zone.main.zone_id
 
   providers = {
     aws.us_east_1 = aws.us_east_1
@@ -139,7 +139,7 @@ module "amplify" {
   }
   
   custom_domain = "noe-room.com"
-  hosted_zone_id = "Z04900993DUUUVXCT5E57"
+  hosted_zone_id = data.aws_route53_zone.main.zone_id
 }
 
 # Bastion Host
@@ -200,5 +200,10 @@ resource "aws_security_group_rule" "pipeline_to_database" {
 
 # Current account data
 data "aws_caller_identity" "current" {}
+
+# Existing Route53 hosted zone
+data "aws_route53_zone" "main" {
+  name = "noe-room.com"
+}
 
 
