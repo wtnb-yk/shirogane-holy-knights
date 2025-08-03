@@ -33,8 +33,8 @@ export const VideosGrid = ({ videos, loading, error }: VideosGridProps) => {
   if (videos.length === 0) {
     return (
       <div className="text-center py-20">
-        <div className="text-6xl mb-4">🔍</div>
-        <p className="text-xl text-gray-600">動画が見つかりませんでした。</p>
+        <p className="text-gray-500 text-lg font-medium mb-2">動画が見つかりませんでした</p>
+        <p className="text-gray-400 text-sm">検索条件を変更してお試しください</p>
       </div>
     );
   }

@@ -6,7 +6,7 @@ import { SearchInput } from '@/components/ui/SearchInput';
 import { NewsCategoryFilter } from '@/features/news/components/NewsCategoryFilter';
 import { NewsSearchResultsSummary } from '@/features/news/components/NewsSearchResultsSummary';
 import { NewsGrid } from '@/features/news/components/NewsGrid';
-import { NewsPagination } from '@/features/news/components/NewsPagination';
+import { Pagination } from '@/components/ui/Pagination';
 import { NewsStatsSummary } from '@/features/news/components/NewsStatsSummary';
 
 export default function NewsPage() {
@@ -70,12 +70,14 @@ export default function NewsPage() {
 
         {/* ページネーション */}
         {totalCount > 20 && (
-          <NewsPagination
+          <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             hasMore={hasMore}
             onPageChange={setCurrentPage}
             loading={loading}
+            animationDelay="600ms"
+            size="md"
           />
         )}
 

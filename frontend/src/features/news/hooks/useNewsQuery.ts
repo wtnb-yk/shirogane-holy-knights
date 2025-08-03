@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { NewsDto, NewsSearchParamsDto, NewsListParamsDto, NewsSearchResultDto, NewsFilterOptions } from '../types/types';
+import { NewsClient } from '../api/newsClient';
 
 interface UseNewsQueryOptions {
   pageSize: number;
@@ -42,55 +43,32 @@ export const useNewsQuery = (
       try {
         setLoading(true);
         setError(null);
-
-        let response: Response;
-        let endpoint: string;
-        let requestBody: NewsSearchParamsDto | NewsListParamsDto;
-
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+        
+        let result: NewsSearchResultDto;
         
         // 検索クエリがある場合は検索API、そうでなければ一覧API
         if (searchQuery.trim()) {
-          endpoint = `${baseUrl}/newsSearch`;
-          requestBody = {
+          result = await NewsClient.searchNews({
             query: searchQuery,
             categoryId: filters.categoryId,
             startDate: filters.startDate,
             endDate: filters.endDate,
             page: currentPage,
             pageSize,
-          };
+          });
         } else {
-          endpoint = `${baseUrl}/newsList`;
-          requestBody = {
+          result = await NewsClient.getNewsList({
             categoryId: filters.categoryId,
             page: currentPage,
             pageSize,
-          };
+          });
         }
-
-        response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        });
-
-        if (!response.ok) {
-          throw new Error('ニュースの取得に失敗しました');
-        }
-
-        const data: NewsSearchResultDto = await response.json();
         
-        setNews(data.items);
-        setTotalCount(data.totalCount);
-        setHasMore(data.hasMore);
+        setNews(result.items);
+        setTotalCount(result.totalCount);
+        setHasMore(result.hasMore);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-        setNews([]);
-        setTotalCount(0);
-        setHasMore(false);
+        setError('ニュースの取得に失敗しました。');
       } finally {
         setLoading(false);
       }

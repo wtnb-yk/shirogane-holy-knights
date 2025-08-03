@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { NewsDto } from '../types/types';
+import { NewsClient } from '../api/newsClient';
 
 interface UseNewsDetailResult {
   news: NewsDto | null;
@@ -29,27 +30,10 @@ export const useNewsDetail = (newsId: string): UseNewsDetailResult => {
         setLoading(true);
         setError(null);
 
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-        const response = await fetch(`${baseUrl}/newsDetail`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id: newsId }),
-        });
-
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('ニュースが見つかりませんでした');
-          }
-          throw new Error('ニュース詳細の取得に失敗しました');
-        }
-
-        const data: NewsDto = await response.json();
+        const data = await NewsClient.getNewsDetail({ id: newsId });
         setNews(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-        setNews(null);
+        setError('ニュース詳細の取得に失敗しました。');
       } finally {
         setLoading(false);
       }

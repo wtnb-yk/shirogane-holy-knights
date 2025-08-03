@@ -12,7 +12,7 @@ const API_CONFIG = {
  * Lambda関数クライアント
  * Spring Cloud Functionで実装されたLambda関数を呼び出すためのクライアント
  */
-export class LambdaClient {
+export class VideoClient {
 
   /**
    * 動画検索Lambda関数を呼び出す
