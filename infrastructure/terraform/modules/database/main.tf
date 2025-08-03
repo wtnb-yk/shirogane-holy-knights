@@ -3,6 +3,10 @@ resource "aws_db_subnet_group" "main" {
   name       = "${var.project_name}-${var.environment}-db-subnet-group"
   subnet_ids = var.subnet_ids
 
+  lifecycle {
+    ignore_changes = [name]
+  }
+
   tags = {
     Name = "${var.project_name}-${var.environment}-db-subnet-group"
   }
@@ -12,6 +16,10 @@ resource "aws_db_subnet_group" "main" {
 resource "aws_db_parameter_group" "main" {
   name   = "${var.project_name}-${var.environment}-db-params"
   family = "postgres15"
+
+  lifecycle {
+    ignore_changes = [name]
+  }
 
   parameter {
     name  = "shared_preload_libraries"
