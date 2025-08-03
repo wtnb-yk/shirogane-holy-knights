@@ -30,14 +30,27 @@ resource "aws_codestarconnections_connection" "github" {
   provider_type = "GitHub"
 }
 
-# CodeBuild用サービスロール (既存のロールを参照)
-data "aws_iam_role" "codebuild" {
+# CodeBuild用サービスロール
+resource "aws_iam_role" "codebuild" {
   name = "${var.project_name}-${var.environment}-codebuild-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "codebuild.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy" "codebuild" {
   name = "${var.project_name}-${var.environment}-codebuild-policy"
-  role = data.aws_iam_role.codebuild.id
+  role = aws_iam_role.codebuild.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -111,14 +124,27 @@ resource "aws_iam_role_policy" "codebuild" {
   })
 }
 
-# CodePipeline用サービスロール (既存のロールを参照)
-data "aws_iam_role" "codepipeline" {
+# CodePipeline用サービスロール
+resource "aws_iam_role" "codepipeline" {
   name = "${var.project_name}-${var.environment}-codepipeline-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "codepipeline.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy" "codepipeline" {
   name = "${var.project_name}-${var.environment}-codepipeline-policy"
-  role = data.aws_iam_role.codepipeline.id
+  role = aws_iam_role.codepipeline.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -162,7 +188,7 @@ resource "aws_iam_role_policy" "codepipeline" {
 # CodeBuildプロジェクト - Build
 resource "aws_codebuild_project" "build" {
   name         = "${var.project_name}-${var.environment}-build"
-  service_role = data.aws_iam_role.codebuild.arn
+  service_role = aws_iam_role.codebuild.arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -183,7 +209,7 @@ resource "aws_codebuild_project" "build" {
 # CodeBuildプロジェクト - Migration
 resource "aws_codebuild_project" "migration" {
   name         = "${var.project_name}-${var.environment}-migration"
-  service_role = data.aws_iam_role.codebuild.arn
+  service_role = aws_iam_role.codebuild.arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -230,7 +256,7 @@ resource "aws_codebuild_project" "migration" {
 # CodeBuildプロジェクト - Deploy
 resource "aws_codebuild_project" "deploy" {
   name         = "${var.project_name}-${var.environment}-deploy"
-  service_role = data.aws_iam_role.codebuild.arn
+  service_role = aws_iam_role.codebuild.arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -274,7 +300,7 @@ resource "aws_security_group" "codebuild_migration" {
 # CodePipeline
 resource "aws_codepipeline" "main" {
   name     = "${var.project_name}-${var.environment}-pipeline"
-  role_arn = data.aws_iam_role.codepipeline.arn
+  role_arn = aws_iam_role.codepipeline.arn
 
   artifact_store {
     location = aws_s3_bucket.pipeline_artifacts.bucket
