@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Navigation } from './Navigation';
 
 export function Header() {
-  const pathname = usePathname();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-brand-navy shadow-sm animate-fade-in">
@@ -18,18 +17,7 @@ export function Header() {
             </Link>
           </div>
           
-          <nav className="flex items-center space-x-6">
-            <Link
-              href="/videos" 
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 ${
-                pathname === '/videos' 
-                  ? 'text-brand-navy bg-white shadow-sm' 
-                  : 'text-gray-300 hover:text-white hover:bg-white/20'
-              }`}
-            >
-              配信・動画
-            </Link>
-          </nav>
+          <Navigation />
         </div>
       </div>
       <div className="absolute bottom-2 left-0 right-0 h-[2px] bg-brand-gold"></div>
