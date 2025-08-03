@@ -58,8 +58,6 @@ spring.cloud.function:
   definition: "apiGatewayFunction"
   scan:
     packages: "com.shirogane.holy.knights"
-  context:
-    active-profiles: lambda
 
 # AWS Lambda関連設定
 aws:

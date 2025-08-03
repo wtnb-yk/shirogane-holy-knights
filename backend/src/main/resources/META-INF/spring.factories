@@ -1,1 +1,7 @@
-org.springframework.cloud.function.scan.FunctionRegistrar=com.shirogane.holy.knights.infrastructure.lambda.functions
+# Spring Application Context Initializers
+org.springframework.context.ApplicationContextInitializer=\
+  com.shirogane.holy.knights.infrastructure.lambda.SpringProfileInitializer
+
+# Spring Cloud Function Registrar
+org.springframework.cloud.function.scan.FunctionRegistrar=\
+  com.shirogane.holy.knights.infrastructure.lambda.functions
