@@ -1,19 +1,6 @@
-# IAM Role for Lambda
-resource "aws_iam_role" "lambda_execution" {
+# IAM Role for Lambda (既存のロールを参照)
+data "aws_iam_role" "lambda_execution" {
   name = "${var.project_name}-${var.environment}-lambda-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-      }
-    ]
-  })
 }
 
 # Get RDS credentials from Secrets Manager
@@ -28,42 +15,17 @@ locals {
   db_password    = var.use_secrets_manager ? try(local.db_credentials.password, var.db_password) : var.db_password
 }
 
-# IAM Policy for Lambda
-resource "aws_iam_role_policy" "lambda_policy" {
-  name = "${var.project_name}-${var.environment}-lambda-policy"
-  role = aws_iam_role.lambda_execution.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = "arn:aws:logs:*:*:*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ec2:CreateNetworkInterface",
-          "ec2:DescribeNetworkInterfaces",
-          "ec2:DeleteNetworkInterface",
-          "ec2:AssignPrivateIpAddresses",
-          "ec2:UnassignPrivateIpAddresses"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
+# IAM Policy for Lambda (既存のロールにポリシーが既にアタッチされているため削除)
+# resource "aws_iam_role_policy" "lambda_policy" は削除
 
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "lambda" {
   name              = "/aws/lambda/${var.project_name}-${var.environment}-api"
   retention_in_days = var.log_retention_days
+  
+  lifecycle {
+    ignore_changes = [name]
+  }
 }
 
 # Lambda Function
@@ -71,7 +33,7 @@ resource "aws_lambda_function" "api" {
   # ダミーZIPファイルで箱だけ作成 - 実際のコードはCodePipelineでデプロイ
   filename         = "${path.module}/dummy.zip"
   function_name    = "${var.project_name}-${var.environment}-api"
-  role            = aws_iam_role.lambda_execution.arn
+  role            = data.aws_iam_role.lambda_execution.arn
   handler         = "index.handler"
   source_code_hash = filebase64sha256("${path.module}/dummy.zip")
 
@@ -98,7 +60,6 @@ resource "aws_lambda_function" "api" {
   }
 
   depends_on = [
-    aws_iam_role_policy.lambda_policy,
     aws_cloudwatch_log_group.lambda
   ]
 
@@ -115,7 +76,7 @@ resource "aws_lambda_function" "api" {
 # Attach the IAM policy from secrets module if using Secrets Manager
 resource "aws_iam_role_policy_attachment" "secrets_access" {
   count      = var.use_secrets_manager ? 1 : 0
-  role       = aws_iam_role.lambda_execution.name
+  role       = data.aws_iam_role.lambda_execution.name
   policy_arn = var.secrets_access_policy_arn
 }
 

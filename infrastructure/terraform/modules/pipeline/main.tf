@@ -1,6 +1,10 @@
 # CodePipeline用S3バケット
 resource "aws_s3_bucket" "pipeline_artifacts" {
   bucket = "${var.project_name}-${var.environment}-pipeline-artifacts"
+  
+  lifecycle {
+    ignore_changes = [bucket]
+  }
 }
 
 resource "aws_s3_bucket_versioning" "pipeline_artifacts" {
@@ -29,6 +33,10 @@ resource "aws_codestarconnections_connection" "github" {
 # CodeBuild用サービスロール
 resource "aws_iam_role" "codebuild" {
   name = "${var.project_name}-${var.environment}-codebuild-role"
+  
+  lifecycle {
+    ignore_changes = [name]
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -123,6 +131,10 @@ resource "aws_iam_role_policy" "codebuild" {
 # CodePipeline用サービスロール
 resource "aws_iam_role" "codepipeline" {
   name = "${var.project_name}-${var.environment}-codepipeline-role"
+  
+  lifecycle {
+    ignore_changes = [name]
+  }
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

@@ -9,38 +9,21 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-# IAM role for Session Manager
-resource "aws_iam_role" "bastion_role" {
+# IAM role for Session Manager (既存のロールを参照)
+data "aws_iam_role" "bastion_role" {
   name = "${var.project_name}-${var.environment}-bastion-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-bastion-role"
-  }
 }
 
 # Attach AWS managed policy for Session Manager
 resource "aws_iam_role_policy_attachment" "bastion_ssm_policy" {
-  role       = aws_iam_role.bastion_role.name
+  role       = data.aws_iam_role.bastion_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 # Instance profile for the bastion host
 resource "aws_iam_instance_profile" "bastion_profile" {
   name = "${var.project_name}-${var.environment}-bastion-profile"
-  role = aws_iam_role.bastion_role.name
+  role = data.aws_iam_role.bastion_role.name
 }
 
 # Security group for bastion host
