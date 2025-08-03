@@ -23,7 +23,8 @@ phases:
     commands:
       - echo Build completed on `date`
       - sleep 5
-      - if [ -d "backend/build/libs/" ]; then ls -la backend/build/libs/; else echo "libs directory not found, searching for jar files:"; find backend -name "*.jar" -type f; fi
+      - cd backend
+      - if [ -d "build/libs/" ]; then ls -la build/libs/; else echo "libs directory not found, searching for jar files:"; find . -name "*.jar" -type f; fi
 
 artifacts:
   files:
