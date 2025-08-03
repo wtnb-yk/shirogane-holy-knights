@@ -201,10 +201,40 @@ resource "aws_security_group_rule" "pipeline_to_database" {
 # Current account data
 data "aws_caller_identity" "current" {}
 
-# GitHubActionsDeployRoleに必要なIAM権限を追加
+# GitHubActionsDeployRole
+resource "aws_iam_role" "github_actions_deploy_role" {
+  name = "GitHubActionsDeployRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
+        }
+        Condition = {
+          StringEquals = {
+            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+            "token.actions.githubusercontent.com:sub" = "repo:${var.github_repository_id}:ref:refs/heads/main"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# PowerUserAccessポリシーを追加
+resource "aws_iam_role_policy_attachment" "github_actions_power_user" {
+  role       = aws_iam_role.github_actions_deploy_role.name
+  policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+}
+
+# PowerUserAccessにはIAM権限が含まれていないため、必要に応じて追加のIAM権限を付与
 resource "aws_iam_role_policy" "github_actions_iam_permissions" {
   name = "GitHubActionsIAMPermissions"
-  role = "GitHubActionsDeployRole"
+  role = aws_iam_role.github_actions_deploy_role.name
 
   policy = jsonencode({
     Version = "2012-10-17"
