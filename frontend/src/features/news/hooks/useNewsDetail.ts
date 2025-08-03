@@ -29,7 +29,8 @@ export const useNewsDetail = (newsId: string): UseNewsDetailResult => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/newsDetail', {
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+        const response = await fetch(`${baseUrl}/newsDetail`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

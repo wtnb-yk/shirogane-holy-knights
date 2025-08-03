@@ -23,7 +23,8 @@ export const useNewsCategories = (): UseNewsCategoriesResult => {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/news/categories');
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+        const response = await fetch(`${baseUrl}/news/categories`);
         
         if (!response.ok) {
           throw new Error('カテゴリ一覧の取得に失敗しました');

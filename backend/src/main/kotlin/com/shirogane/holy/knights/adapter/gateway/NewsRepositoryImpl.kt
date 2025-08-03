@@ -99,6 +99,7 @@ class NewsRepositoryImpl(
             
             val newsEntity = template.select(NewsEntity::class.java)
                 .matching(Query.query(criteria))
+                .one()
                 .awaitSingleOrNull()
             
             newsEntity?.let { buildNews(it) }
@@ -181,6 +182,7 @@ class NewsRepositoryImpl(
         return try {
             val categoryEntity = template.select(NewsCategoryEntity::class.java)
                 .matching(Query.query(Criteria.where("id").`is`(categoryId)))
+                .one()
                 .awaitSingleOrNull()
             
             categoryEntity?.let { buildNewsCategory(it) }
@@ -243,6 +245,7 @@ class NewsRepositoryImpl(
         return try {
             val detailsEntity = template.select(NewsDetailsEntity::class.java)
                 .matching(Query.query(Criteria.where("news_id").`is`(newsId)))
+                .one()
                 .awaitSingleOrNull()
             
             detailsEntity?.let {

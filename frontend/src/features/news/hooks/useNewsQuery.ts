@@ -47,9 +47,11 @@ export const useNewsQuery = (
         let endpoint: string;
         let requestBody: NewsSearchParamsDto | NewsListParamsDto;
 
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+        
         // 検索クエリがある場合は検索API、そうでなければ一覧API
         if (searchQuery.trim()) {
-          endpoint = '/api/newsSearch';
+          endpoint = `${baseUrl}/newsSearch`;
           requestBody = {
             query: searchQuery,
             categoryId: filters.categoryId,
@@ -59,7 +61,7 @@ export const useNewsQuery = (
             pageSize,
           };
         } else {
-          endpoint = '/api/newsList';
+          endpoint = `${baseUrl}/newsList`;
           requestBody = {
             categoryId: filters.categoryId,
             page: currentPage,
