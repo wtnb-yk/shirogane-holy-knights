@@ -68,11 +68,12 @@ resource "aws_cloudwatch_log_group" "lambda" {
 
 # Lambda Function
 resource "aws_lambda_function" "api" {
-  filename         = var.lambda_jar_path
+  # ダミーZIPファイルで箱だけ作成 - 実際のコードはCodePipelineでデプロイ
+  filename         = "${path.module}/dummy.zip"
   function_name    = "${var.project_name}-${var.environment}-api"
   role            = aws_iam_role.lambda_execution.arn
-  handler         = "org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest"
-  source_code_hash = filebase64sha256(var.lambda_jar_path)
+  handler         = "index.handler"
+  source_code_hash = filebase64sha256("${path.module}/dummy.zip")
 
   runtime     = "java17"
   memory_size = var.memory_size
@@ -100,6 +101,16 @@ resource "aws_lambda_function" "api" {
     aws_iam_role_policy.lambda_policy,
     aws_cloudwatch_log_group.lambda
   ]
+
+  # CodePipelineがコードを更新するため、ファイル関連の変更を無視
+  lifecycle {
+    ignore_changes = [
+      filename,
+      source_code_hash,
+      handler,
+      last_modified
+    ]
+  }
 }
 
 # Attach the IAM policy from secrets module if using Secrets Manager

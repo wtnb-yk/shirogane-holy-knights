@@ -18,10 +18,7 @@ variable "security_group_ids" {
   type        = list(string)
 }
 
-variable "lambda_jar_path" {
-  description = "Path to Lambda JAR file"
-  type        = string
-}
+# Lambda JAR path not needed - CodePipeline handles deployment
 
 variable "memory_size" {
   description = "Lambda memory size in MB"
