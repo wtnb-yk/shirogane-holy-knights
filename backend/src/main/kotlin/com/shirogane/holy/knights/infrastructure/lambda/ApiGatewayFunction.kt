@@ -4,7 +4,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
+import com.shirogane.holy.knights.application.dto.*
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
+import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.core.env.Environment
@@ -17,6 +19,7 @@ import java.util.function.Function
 @Component
 class ApiGatewayFunction(
     private val videoUseCase: VideoUseCasePort,
+    private val newsUseCase: NewsUseCasePort,
     private val objectMapper: ObjectMapper,
     private val environment: Environment
 ) : Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -39,6 +42,10 @@ class ApiGatewayFunction(
             val response = when {
                 request.path == "/health" && request.httpMethod == "GET" -> handleHealth()
                 request.path == "/videoSearch" && request.httpMethod == "POST" -> handleVideoSearch(request)
+                request.path == "/newsList" && request.httpMethod == "POST" -> handleNewsList(request)
+                request.path == "/newsSearch" && request.httpMethod == "POST" -> handleNewsSearch(request)
+                request.path == "/newsDetail" && request.httpMethod == "POST" -> handleNewsDetail(request)
+                request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories(request)
                 else -> {
                     logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
                     APIGatewayProxyResponseEvent()
@@ -110,6 +117,90 @@ class ApiGatewayFunction(
         headers["Access-Control-Max-Age"] = "3600"
         
         return response.withHeaders(headers)
+    }
+    
+    private fun handleNewsList(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+        logger.info("News list requested")
+        
+        val params = if (request.body != null) {
+            objectMapper.readValue(request.body, NewsListParamsDto::class.java)
+        } else {
+            NewsListParamsDto() // デフォルト値
+        }
+        
+        logger.info("News list params: $params")
+        
+        val result = runBlocking { newsUseCase.getNewsList(params) }
+        logger.info("News list returning ${result.items.size} items")
+        
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(result))
+    }
+    
+    private fun handleNewsSearch(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+        logger.info("News search requested")
+        
+        val params = if (request.body != null) {
+            objectMapper.readValue(request.body, NewsSearchParamsDto::class.java)
+        } else {
+            NewsSearchParamsDto() // デフォルト値
+        }
+        
+        logger.info("News search params: $params")
+        
+        val result = runBlocking { newsUseCase.searchNews(params) }
+        logger.info("News search returning ${result.items.size} items")
+        
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(result))
+    }
+    
+    private fun handleNewsDetail(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+        logger.info("News detail requested")
+        
+        val detailRequest = if (request.body != null) {
+            objectMapper.readValue(request.body, NewsDetailRequestDto::class.java)
+        } else {
+            logger.error("News detail request body is null")
+            return APIGatewayProxyResponseEvent()
+                .withStatusCode(400)
+                .withHeaders(mapOf("Content-Type" to "application/json"))
+                .withBody(objectMapper.writeValueAsString(mapOf("error" to "Request body is required")))
+        }
+        
+        logger.info("News detail ID: ${detailRequest.id}")
+        
+        val news = runBlocking { newsUseCase.getNewsById(detailRequest.id) }
+        
+        return if (news != null) {
+            logger.info("News detail found: ${detailRequest.id}")
+            APIGatewayProxyResponseEvent()
+                .withStatusCode(200)
+                .withHeaders(mapOf("Content-Type" to "application/json"))
+                .withBody(objectMapper.writeValueAsString(news))
+        } else {
+            logger.warn("News not found: ${detailRequest.id}")
+            APIGatewayProxyResponseEvent()
+                .withStatusCode(404)
+                .withHeaders(mapOf("Content-Type" to "application/json"))
+                .withBody(objectMapper.writeValueAsString(mapOf("error" to "News not found")))
+        }
+    }
+    
+    private fun handleNewsCategories(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+        logger.info("News categories requested")
+        
+        val categories = runBlocking { newsUseCase.getNewsCategories() }
+        logger.info("News categories returning ${categories.size} items")
+        
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(categories))
     }
     
     /**
