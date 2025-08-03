@@ -107,8 +107,7 @@ resource "aws_lambda_function" "api" {
     ignore_changes = [
       filename,
       source_code_hash,
-      handler,
-      last_modified
+      handler
     ]
   }
 }

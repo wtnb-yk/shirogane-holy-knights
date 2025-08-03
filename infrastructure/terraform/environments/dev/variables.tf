@@ -98,7 +98,7 @@ variable "db_publicly_accessible" {
 variable "github_repository" {
   description = "GitHub repository URL"
   type        = string
-  default     = ""
+  default     = "https://github.com/wtnb-yk/shirogane-holy-knights"
 }
 
 variable "github_branch" {
