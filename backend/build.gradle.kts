@@ -145,7 +145,7 @@ val liquibaseUpdate by tasks.registering(JavaExec::class) {
         "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane_db"}",
         "--username=${System.getenv("DB_USER") ?: "postgres"}",
         "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
-        "--changeLogFile=classpath:db/changelog/db.changelog-master.yaml",
+        "--changeLogFile=classpath:db/changelog/changelog.xml",
         "update"
     )
 }
