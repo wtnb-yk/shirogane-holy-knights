@@ -10,6 +10,7 @@ interface NavigationMenuItems {
 
 const navigationItems: NavigationMenuItems[] = [
   { href: '/videos', label: '配信・動画' },
+  { href: '/news', label: 'ニュース' },
 ];
 
 export function Navigation() {
