@@ -2,6 +2,10 @@
 resource "aws_secretsmanager_secret" "db_credentials" {
   name = "/${var.project_name}/${var.environment}/rds/credentials"
   description = "RDS database credentials for ${var.project_name} ${var.environment} environment"
+  
+  lifecycle {
+    ignore_changes = [name]
+  }
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-rds-credentials"

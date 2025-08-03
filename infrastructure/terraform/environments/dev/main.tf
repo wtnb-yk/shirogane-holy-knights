@@ -76,7 +76,6 @@ module "lambda" {
   subnet_ids      = module.network.private_subnet_ids
   security_group_ids = [module.network.lambda_security_group_id]
   
-  lambda_jar_path = var.lambda_jar_path
   db_host         = replace(module.database.db_endpoint, ":5432", "")
   db_port         = "5432"
   db_name         = var.db_name
@@ -201,3 +200,5 @@ resource "aws_security_group_rule" "pipeline_to_database" {
 
 # Current account data
 data "aws_caller_identity" "current" {}
+
+

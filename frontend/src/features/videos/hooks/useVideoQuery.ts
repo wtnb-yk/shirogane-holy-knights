@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { LambdaClient } from '../api/lambdaClient';
 import { VideoDto } from '../types/types';
-import { FilterOptions } from '../components/FilterBar';
+import { FilterOptions } from '../components/filter/FilterBar';
 
 interface UseVideoQueryOptions {
   pageSize?: number;
