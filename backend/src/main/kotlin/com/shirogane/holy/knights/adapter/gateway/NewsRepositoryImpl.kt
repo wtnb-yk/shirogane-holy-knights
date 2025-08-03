@@ -266,7 +266,9 @@ class NewsRepositoryImpl(
 /**
  * ニュースエンティティ（R2DBC用）
  */
+@org.springframework.data.relational.core.mapping.Table("news")
 data class NewsEntity(
+    @org.springframework.data.annotation.Id
     val id: String,
     val title: String,
     val categoryId: Int,
@@ -277,7 +279,9 @@ data class NewsEntity(
 /**
  * ニュース詳細エンティティ（R2DBC用）
  */
+@org.springframework.data.relational.core.mapping.Table("news_details")
 data class NewsDetailsEntity(
+    @org.springframework.data.annotation.Id
     val newsId: String,
     val content: String,
     val summary: String?,
@@ -289,7 +293,9 @@ data class NewsDetailsEntity(
 /**
  * ニュースカテゴリエンティティ（R2DBC用）
  */
+@org.springframework.data.relational.core.mapping.Table("news_categories")
 data class NewsCategoryEntity(
+    @org.springframework.data.annotation.Id
     val id: Int,
     val name: String,
     val displayName: String,

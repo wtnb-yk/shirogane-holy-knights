@@ -46,15 +46,7 @@ export class NewsClient {
         } as NewsApiError;
       }
 
-      const result = await response.json();
-      // APIレスポンスをフロントエンド期待形式に変換
-      return {
-        items: result.news || [],
-        totalCount: result.totalCount || 0,
-        page: result.currentPage || 1,
-        pageSize: result.pageSize || 20,
-        hasMore: result.hasMore || false
-      };
+      return response.json();
     } catch (error) {
       throw error;
     }
@@ -85,15 +77,7 @@ export class NewsClient {
         } as NewsApiError;
       }
 
-      const result = await response.json();
-      // APIレスポンスをフロントエンド期待形式に変換
-      return {
-        items: result.news || [],
-        totalCount: result.totalCount || 0,
-        page: result.currentPage || 1,
-        pageSize: result.pageSize || 20,
-        hasMore: result.hasMore || false
-      };
+      return response.json();
     } catch (error) {
       throw error;
     }
