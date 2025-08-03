@@ -19,6 +19,25 @@ services:
       timeout: 5s
       retries: 5
 
+  # Liquibase マイグレーション
+  liquibase:
+    image: liquibase/liquibase:4.24
+    container_name: shirogane-liquibase
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/src/main/resources/db/changelog:/liquibase/changelog
+    command: >
+      liquibase
+      --url=jdbc:postgresql://postgres:5432/shirogane
+      --username=postgres
+      --password=postgres
+      --changeLogFile=changelog/changelog.xml
+      update
+    networks:
+      - shirogane-network
+
   # バックエンドサービス (Lambda モード)
   backend:
     build:
@@ -27,6 +46,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      liquibase:
+        condition: service_completed_successfully
     environment:
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432

@@ -52,8 +52,8 @@ dependencies {
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
     implementation("org.postgresql:postgresql:$postgresqlVersion")
     
-    // R2DBC Migration
-    implementation("name.nkonev.r2dbc-migrate:r2dbc-migrate-spring-boot-starter:2.8.0")
+    // Liquibase Migration
+    implementation("org.liquibase:liquibase-core:4.24.0")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -134,14 +134,21 @@ val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradl
     exclude("META-INF/*.RSA")
 }
 
-
-// マイグレーション実行タスク
-val migrationRun by tasks.registering(JavaExec::class) {
-    group = "database"
-    description = "Run database migration using r2dbc-migrate"
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("com.shirogane.holy.knights.MigrationRunner")
-}
+//// Liquibaseマイグレーション実行タスク（CI/CD用）
+//val liquibaseUpdate by tasks.registering(JavaExec::class) {
+//    group = "database"
+//    description = "Run Liquibase database migration"
+//    classpath = sourceSets.main.get().runtimeClasspath
+//    mainClass.set("liquibase.integration.commandline.Main")
+//
+//    args = listOf(
+//        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane_db"}",
+//        "--username=${System.getenv("DB_USER") ?: "postgres"}",
+//        "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
+//        "--changeLogFile=classpath:db/changelog/db.changelog-master.yaml",
+//        "update"
+//    )
+//}
 
 graalvmNative {
     binaries {
