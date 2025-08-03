@@ -22,25 +22,29 @@ class R2dbcConfig {
     
     private val logger = LoggerFactory.getLogger(R2dbcConfig::class.java)
     
-//    @Bean
-//    @Primary
-//    fun connectionFactory(): ConnectionFactory {
-//        val host = System.getenv("DATABASE_HOST") ?: "localhost"
-//        val port = System.getenv("DATABASE_PORT")?.toIntOrNull() ?: 5432
-//        val database = System.getenv("DATABASE_NAME") ?: "shirogane"
-//        val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
-//        val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
-//
-//        val configuration = PostgresqlConnectionConfiguration.builder()
-//            .host(host)
-//            .port(port)
-//            .database(database)
-//            .username(username)
-//            .password(password)
-//            .build()
-//
-//        return PostgresqlConnectionFactory(configuration)
-//    }
+    @Bean
+    @Primary
+    fun connectionFactory(): ConnectionFactory {
+        val host = System.getenv("DATABASE_HOST") ?: "localhost"
+        val port = System.getenv("DATABASE_PORT")?.toIntOrNull() ?: 5432
+        val database = System.getenv("DATABASE_NAME") ?: "shirogane"
+        val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
+        val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
+
+        val configuration = PostgresqlConnectionConfiguration.builder()
+            .host(host)
+            .port(port)
+            .database(database)
+            .username(username)
+            .password(password)
+
+        val isLambda = System.getenv("SPRING_PROFILES_ACTIVE")?.contains("lambda") ?: false
+        if (isLambda) {
+            configuration.enableSsl()
+        }
+
+        return PostgresqlConnectionFactory(configuration.build())
+    }
     
     @Bean
     fun r2dbcEntityTemplate(connectionFactory: ConnectionFactory): R2dbcEntityTemplate {

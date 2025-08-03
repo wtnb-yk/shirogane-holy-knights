@@ -6,10 +6,11 @@ spring:
     name: shirogane-holy-knights-api
   main:
     web-application-type: reactive
-  r2dbc:
-    url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}?sslmode=disable
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:postgres}
+  # R2dbcConfig.ktでカスタムconnectionFactory()を定義しているため、以下の設定は不要
+  # r2dbc:
+  #   url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}?sslmode=disable
+  #   username: ${DATABASE_USERNAME:postgres}
+  #   password: ${DATABASE_PASSWORD:postgres}
   autoconfigure:
     exclude: []
   jackson:
@@ -73,17 +74,18 @@ spring:
       on-profile: lambda
   main:
     web-application-type: reactive
-  r2dbc:
-    url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}?sslmode=require
-    username: ${DATABASE_USERNAME:postgres}  
-    password: ${DATABASE_PASSWORD:postgres}
-    pool:
-      initial-size: 1
-      max-size: 3
-      max-idle-time: 10s
-      max-acquire-time: 30s
-      max-create-connection-time: 30s
-      validation-query: SELECT 1
+  # R2dbcConfig.ktでカスタムconnectionFactory()を定義しているため、以下の設定は不要
+  # r2dbc:
+  #   url: r2dbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:shirogane}?sslmode=require
+  #   username: ${DATABASE_USERNAME:postgres}  
+  #   password: ${DATABASE_PASSWORD:postgres}
+  #   pool:
+  #     initial-size: 1
+  #     max-size: 3
+  #     max-idle-time: 10s
+  #     max-acquire-time: 30s
+  #     max-create-connection-time: 30s
+  #     validation-query: SELECT 1
 
 
 # Lambda専用のロギング設定
