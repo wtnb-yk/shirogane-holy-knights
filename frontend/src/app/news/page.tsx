@@ -25,7 +25,7 @@ export default function NewsPage() {
     filters,
     setFilters,
     clearAllFilters
-  } = useNews({ pageSize: 20 });
+  } = useNews({ pageSize: 10 });
 
   return (
     <div className="min-h-screen bg-white">
@@ -69,7 +69,7 @@ export default function NewsPage() {
         />
 
         {/* ページネーション */}
-        {totalCount > 20 && (
+        {totalCount > 10 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -85,7 +85,7 @@ export default function NewsPage() {
         <NewsStatsSummary
           currentPage={currentPage}
           totalCount={totalCount}
-          pageSize={20}
+          pageSize={10}
           loading={loading}
         />
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BaseGrid } from '@/components/common/BaseGrid';
+import { NewsListGrid } from './NewsListGrid';
 import { NewsDto } from '../types/types';
 import { NewsCard } from './NewsCard';
 import { SkeletonNewsCard } from './SkeletonNewsCard';
@@ -14,7 +14,7 @@ interface NewsGridProps {
 
 export const NewsGrid = ({ news, loading, error }: NewsGridProps) => {
   return (
-    <BaseGrid
+    <NewsListGrid
       items={news}
       loading={loading}
       error={error}
@@ -25,7 +25,6 @@ export const NewsGrid = ({ news, loading, error }: NewsGridProps) => {
         subtitle: '検索条件を変更してお試しください'
       }}
       skeletonCount={6}
-      gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
     />
   );
 };
