@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Calendar, ExternalLink } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { NewsDto } from '../types/types';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -72,27 +71,21 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
               </div>
               
               {/* タイトル */}
-              <Link href={`/news/${news.id}`}>
-                <h3 className="text-base font-bold mb-2 line-clamp-2 text-gray-800 group-hover:text-sage-300 transition-colors duration-200 cursor-pointer">
-                  {news.title}
-                </h3>
-              </Link>
+              <h3 className="text-base font-bold mb-2 line-clamp-2 text-gray-800">
+                {news.title}
+              </h3>
               
               {/* 要約 */}
-              <p className="text-sm text-gray-600 line-clamp-4 mb-2">
-                {news.summary}
-              </p>
+              {news.summary && (
+                <p className="text-sm text-gray-600 line-clamp-4 mb-2">
+                  {news.summary}
+                </p>
+              )}
             </div>
             
             {/* フッター */}
             <div className="flex justify-between items-center">
-              <Link
-                href={`/news/${news.id}`}
-                className="inline-flex items-center gap-1 text-sm text-sage-300 hover:text-gray-800 font-medium transition-all duration-300 hover:translate-x-1"
-              >
-                詳細を見る
-                <ExternalLink className="w-3 h-3" />
-              </Link>
+              <div></div>
               
               {news.externalUrl && (
                 <a

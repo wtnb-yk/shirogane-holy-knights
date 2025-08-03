@@ -8,8 +8,8 @@ export interface NewsDto {
   categoryName: string;
   categoryDisplayName: string;
   publishedAt: string;
-  content: string;
-  summary: string;
+  content?: string;
+  summary?: string;
   thumbnailUrl?: string;
   externalUrl?: string;
 }
