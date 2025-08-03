@@ -129,7 +129,6 @@ def import_channels(conn, channels_df, channel_details_df=None):
                 row['title'],
                 row.get('handle', None),
                 row.get('description', ''),
-                int(row.get('subscriber_count', 0)) if pd.notna(row.get('subscriber_count')) else 0,
                 row.get('icon_url', '')
             ) 
             for _, row in merged_df.iterrows()
@@ -142,7 +141,6 @@ def import_channels(conn, channels_df, channel_details_df=None):
                 row['title'],
                 None,  # handle
                 '',    # description
-                0,     # subscriber_count
                 ''     # icon_url
             ) 
             for _, row in channels_df.iterrows()
@@ -150,14 +148,13 @@ def import_channels(conn, channels_df, channel_details_df=None):
     
     # UPSERT クエリ（既存データがあれば更新）
     query = """
-        INSERT INTO channels (id, title, handle, description, subscriber_count, icon_url) 
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO channels (id, title, handle, description, icon_url) 
+        VALUES (%s, %s, %s, %s, %s)
         ON CONFLICT (id) 
         DO UPDATE SET 
             title = EXCLUDED.title,
             handle = EXCLUDED.handle,
             description = EXCLUDED.description,
-            subscriber_count = EXCLUDED.subscriber_count,
             icon_url = EXCLUDED.icon_url
     """
     

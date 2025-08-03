@@ -64,7 +64,6 @@ def get_channel_info(youtube, channel_id):
         'channel_id': channel['id'],
         'handle': CHANNEL_HANDLE,
         'description': channel['snippet'].get('description', ''),
-        'subscriber_count': channel['statistics'].get('subscriberCount', 0),
         'icon_url': channel['snippet'].get('thumbnails', {}).get('high', {}).get('url', '')
     }
     
