@@ -118,3 +118,9 @@ variable "github_access_token" {
   sensitive   = true
   default     = ""
 }
+
+variable "github_repository_id" {
+  description = "GitHub repository ID (e.g., owner/repo-name)"
+  type        = string
+  default     = "wtnb-yk/shirogane-holy-knights"
+}

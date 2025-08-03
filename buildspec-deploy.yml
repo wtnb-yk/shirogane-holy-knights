@@ -1,0 +1,43 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+  
+  pre_build:
+    commands:
+      - echo Lambda deployment started on `date`
+      - echo "Function name: $LAMBDA_FUNCTION_NAME"
+  
+  build:
+    commands:
+      - echo Checking if Lambda function exists
+      - |
+        if aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" >/dev/null 2>&1; then
+          echo "Lambda function exists, updating code..."
+          
+          # 関数コードの更新
+          aws lambda update-function-code \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --zip-file "fileb://backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+          
+          # 更新完了まで待機
+          aws lambda wait function-updated \
+            --function-name "$LAMBDA_FUNCTION_NAME"
+          
+          echo "Lambda function updated successfully"
+        else
+          echo "❌ Lambda function $LAMBDA_FUNCTION_NAME not found"
+          echo "Please create the infrastructure using Terraform first"
+          exit 1
+        fi
+  
+  post_build:
+    commands:
+      - echo Lambda deployment completed on `date`
+      - |
+        # 関数情報の取得
+        aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" \
+          --query 'Configuration.{FunctionName:FunctionName,Runtime:Runtime,LastModified:LastModified,CodeSize:CodeSize}' \
+          --output table

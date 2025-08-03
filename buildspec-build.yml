@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+  
+  pre_build:
+    commands:
+      - echo Build started on `date`
+      - echo Building JAR file for Lambda deployment
+  
+  build:
+    commands:
+      - cd backend
+      - echo Running Gradle build
+      - ./gradlew clean springCloudFunctionLambdaJar
+      - echo Build completed successfully
+  
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - ls -la backend/build/libs/
+
+artifacts:
+  files:
+    - backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar
+  name: lambda-artifact

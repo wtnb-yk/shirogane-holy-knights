@@ -1,6 +1,6 @@
-name: Deploy Backend
+name: Trigger CodePipeline
 
-run-name: Deploy Backend (${{ github.event.inputs.environment }})
+run-name: Trigger CodePipeline (${{ github.event.inputs.environment }})
 
 on:
   workflow_dispatch:
@@ -13,106 +13,65 @@ on:
         options:
           - dev
           # - prod  # 将来のprod環境対応時にコメントアウト解除
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  trigger-pipeline:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.event.inputs.environment || 'dev' }}
     
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          gradle-version: wrapper
-
-      - name: Build Lambda JAR
-        run: |
-          cd backend
-          ./gradlew springCloudFunctionLambdaJar
-          ls -la build/libs/
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
           aws-region: ap-northeast-1
 
-      - name: Run Database Migration
+      - name: Trigger CodePipeline
         run: |
-          echo "Running database migration using r2dbc-migrate for ${{ github.event.inputs.environment }} environment..."
+          ENVIRONMENT=${{ github.event.inputs.environment || 'dev' }}
+          PIPELINE_NAME="shirogane-holy-knights-${ENVIRONMENT}-pipeline"
+          
+          echo "Triggering CodePipeline: $PIPELINE_NAME"
+          
+          # CodePipelineの実行を開始
+          EXECUTION_ID=$(aws codepipeline start-pipeline-execution \
+            --name "$PIPELINE_NAME" \
+            --query 'pipelineExecutionId' \
+            --output text)
+          
+          echo "Pipeline execution started with ID: $EXECUTION_ID"
+          echo "Monitor progress at: https://console.aws.amazon.com/codesuite/codepipeline/pipelines/$PIPELINE_NAME/view"
 
-          # 環境に応じたDB接続情報を設定
-          if [ "${{ github.event.inputs.environment }}" = "dev" ]; then
-            export DB_HOST="shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com:5432"
-            export DB_NAME="shirogane"
-            # ユーザー名とパスワードをSecrets Managerから取得
-            SECRET_VALUE=$(aws secretsmanager get-secret-value \
-              --secret-id "/shirogane-holy-knights/dev/rds/credentials" \
-              --query SecretString --output text)
-            export DB_USER=$(echo "$SECRET_VALUE" | jq -r .username)
-            export DB_PASSWORD=$(echo "$SECRET_VALUE" | jq -r .password)
-          elif [ "${{ github.event.inputs.environment }}" = "prod" ]; then
-            # TODO: prod環境のDB接続情報を設定（将来実装）
-            echo "❌ Production environment not implemented yet"
-            exit 1
-          else
-            echo "❌ Environment ${{ github.event.inputs.environment }} not supported"
-            exit 1
-          fi
-
-          # Liquibaseを使用したマイグレーション実行
-          cd backend
-          ./gradlew liquibaseUpdate
-
-          echo "✅ Database migration completed successfully using Liquibase"
-
-      - name: Deploy to Lambda
+      - name: Wait for pipeline completion (optional)
         run: |
-          FUNCTION_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}-api"
-          JAR_PATH="backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+          ENVIRONMENT=${{ github.event.inputs.environment || 'dev' }}
+          PIPELINE_NAME="shirogane-holy-knights-${ENVIRONMENT}-pipeline"
           
-          echo "Deploying to Lambda function: $FUNCTION_NAME"
+          echo "Monitoring pipeline execution..."
           
-          # Lambda関数の存在確認
-          if aws lambda get-function --function-name "$FUNCTION_NAME" >/dev/null 2>&1; then
-            echo "Lambda function exists, updating code..."
+          # パイプラインの状態を監視（最大30分）
+          for i in {1..60}; do
+            STATUS=$(aws codepipeline get-pipeline-state \
+              --name "$PIPELINE_NAME" \
+              --query 'stageStates[0].latestExecution.status' \
+              --output text)
             
-            # 関数コードの更新
-            aws lambda update-function-code \
-              --function-name "$FUNCTION_NAME" \
-              --zip-file "fileb://$JAR_PATH"
+            echo "Pipeline status: $STATUS"
             
-            # 更新完了まで待機
-            aws lambda wait function-updated \
-              --function-name "$FUNCTION_NAME"
+            if [ "$STATUS" = "Succeeded" ]; then
+              echo "✅ Pipeline completed successfully!"
+              break
+            elif [ "$STATUS" = "Failed" ]; then
+              echo "❌ Pipeline failed!"
+              exit 1
+            fi
             
-            echo "Lambda function updated successfully"
-          else
-            echo "❌ Lambda function $FUNCTION_NAME not found"
-            echo "Please create the infrastructure using Terraform first"
-            exit 1
-          fi
-
-      - name: Verify deployment
-        run: |
-          FUNCTION_NAME="shirogane-holy-knights-${{ github.event.inputs.environment }}-api"
-          
-          # 関数情報の取得
-          aws lambda get-function --function-name "$FUNCTION_NAME" \
-            --query 'Configuration.{FunctionName:FunctionName,Runtime:Runtime,LastModified:LastModified,CodeSize:CodeSize}' \
-            --output table
-          
-          echo "✅ Deployment completed successfully to ${{ github.event.inputs.environment }} environment"
+            sleep 30
+          done

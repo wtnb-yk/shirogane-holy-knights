@@ -156,6 +156,27 @@ module "bastion" {
   db_endpoint  = replace(module.database.db_endpoint, ":5432", "")
 }
 
+# CodePipeline
+module "pipeline" {
+  source = "../../modules/pipeline"
+
+  environment    = var.environment
+  project_name   = var.project_name
+  vpc_id         = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+  private_subnet_arns = [
+    "arn:aws:ec2:${var.aws_region}:${data.aws_caller_identity.current.account_id}:subnet/${module.network.private_subnet_ids[0]}",
+    "arn:aws:ec2:${var.aws_region}:${data.aws_caller_identity.current.account_id}:subnet/${module.network.private_subnet_ids[1]}"
+  ]
+  
+  rds_endpoint          = module.database.db_endpoint
+  rds_secret_arn        = module.secrets.secret_arn
+  db_name               = var.db_name
+  lambda_function_arn   = module.lambda.function_arn
+  lambda_function_name  = module.lambda.function_name
+  github_repository_id  = var.github_repository_id
+}
+
 # Additional security group rule for bastion -> database access
 resource "aws_security_group_rule" "bastion_to_database" {
   type                     = "ingress"
@@ -166,3 +187,17 @@ resource "aws_security_group_rule" "bastion_to_database" {
   security_group_id        = module.network.database_security_group_id
   description              = "Database access from bastion host"
 }
+
+# Pipeline migration -> database access
+resource "aws_security_group_rule" "pipeline_to_database" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = module.pipeline.migration_security_group_id
+  security_group_id        = module.network.database_security_group_id
+  description              = "Database access from CodeBuild migration"
+}
+
+# Current account data
+data "aws_caller_identity" "current" {}
