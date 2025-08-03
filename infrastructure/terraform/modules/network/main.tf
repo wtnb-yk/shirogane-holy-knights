@@ -169,38 +169,6 @@ resource "aws_security_group" "database" {
   name_prefix = "${var.project_name}-${var.environment}-db-"
   vpc_id      = aws_vpc.main.id
 
-  # Lambda からのアクセス
-  ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.lambda.id]
-  }
-
-  # DBクライアントからのアクセス（特定IPアドレスのみ）
-  dynamic "ingress" {
-    for_each = var.allowed_db_client_cidrs != null ? var.allowed_db_client_cidrs : []
-    content {
-      from_port   = 5432
-      to_port     = 5432
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "DB client access from ${ingress.value}"
-    }
-  }
-
-  # 踏み台EC2からのアクセス
-  dynamic "ingress" {
-    for_each = var.bastion_security_group_id != null ? [1] : []
-    content {
-      from_port       = 5432
-      to_port         = 5432
-      protocol        = "tcp"
-      security_groups = [var.bastion_security_group_id]
-      description     = "DB access from bastion host"
-    }
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
