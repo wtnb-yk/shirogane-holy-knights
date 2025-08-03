@@ -135,6 +135,14 @@ val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradl
 }
 
 
+// マイグレーション実行タスク
+val migrationRun by tasks.registering(JavaExec::class) {
+    group = "database"
+    description = "Run database migration using r2dbc-migrate"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.shirogane.holy.knights.MigrationRunner")
+}
+
 graalvmNative {
     binaries {
         named("main") {
