@@ -7,7 +7,7 @@ phases:
   pre_build:
     commands:
       - echo Lambda deployment started on `date`
-      - echo "Function name: $LAMBDA_FUNCTION_NAME"
+      - echo 'Function name: $LAMBDA_FUNCTION_NAME'
   
   build:
     commands:
