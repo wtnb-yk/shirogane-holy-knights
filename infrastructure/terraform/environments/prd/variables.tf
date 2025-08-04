@@ -102,7 +102,7 @@ variable "lambda_jar_path" {
 variable "github_repository" {
   description = "GitHub repository URL"
   type        = string
-  default     = "https://github.com/yuuuki15/shirogane-holy-knights"
+  default     = "https://github.com/wtnb-yk/shirogane-holy-knights"
 }
 
 variable "github_branch" {
@@ -114,5 +114,5 @@ variable "github_branch" {
 variable "github_repository_id" {
   description = "GitHub repository ID for CodeBuild connection"
   type        = string
-  default     = "yuuuki15/shirogane-holy-knights"
+  default     = "wtnb-yk/shirogane-holy-knights"
 }
