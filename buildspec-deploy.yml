@@ -11,6 +11,10 @@ phases:
   
   build:
     commands:
+      - echo Building JAR file for deployment
+      - cd backend
+      - ./gradlew clean springCloudFunctionLambdaJar
+      - cd ..
       - echo Checking if Lambda function exists
       - |
         if aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" >/dev/null 2>&1; then
