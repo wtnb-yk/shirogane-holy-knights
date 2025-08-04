@@ -20,7 +20,7 @@ export const NewsSearchResultsSummary = ({
 }: NewsSearchResultsSummaryProps) => {
   const { categories } = useNewsCategories();
   
-  const hasFilters = searchQuery.trim() || filters.categoryId;
+  const hasFilters = Boolean(searchQuery.trim()) || Boolean(filters.categoryId);
   
   const getCategoryName = (categoryId?: number) => {
     if (!categoryId) return null;

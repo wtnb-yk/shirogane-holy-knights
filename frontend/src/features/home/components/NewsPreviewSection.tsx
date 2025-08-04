@@ -1,7 +1,9 @@
+'use client';
+
 import React from 'react';
-import { useNews } from '@/features/news/hooks/useNews';
 import { NewsCard } from '@/features/news/components/NewsCard';
 import { SkeletonNewsCard } from '@/features/news/components/SkeletonNewsCard';
+import { useNews } from '@/features/news/hooks/useNews';
 
 export default function NewsPreviewSection() {
   const { news, loading, error } = useNews({ 
@@ -31,7 +33,6 @@ export default function NewsPreviewSection() {
             ) : error ? (
               // エラー状態
               <div className="col-span-full text-center py-12">
-                <div className="text-6xl mb-4">😔</div>
                 <p className="text-noel-text-secondary">
                   ニュースの取得に失敗しました
                 </p>

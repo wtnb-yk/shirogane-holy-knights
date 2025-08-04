@@ -17,7 +17,7 @@ COPY . .
 
 # 環境変数
 ENV NODE_ENV=development
-ENV NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=http://localhost:8080
 
 # ポート
 EXPOSE 3000

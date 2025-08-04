@@ -17,7 +17,7 @@ export const SearchResultsSummary = ({
   totalCount,
   onClearAllFilters
 }: SearchResultsSummaryProps) => {
-  const hasFilters = filters.selectedTags.length > 0 || filters.startDate || filters.endDate;
+  const hasFilters = filters.selectedTags.length > 0 || Boolean(filters.startDate) || Boolean(filters.endDate);
   
   // フィルターサマリーの生成
   const filterParts: string[] = [];

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useVideos } from '@/features/videos/hooks/useVideos';
 import { VideoCard } from '@/features/videos/components/VideoCard';
@@ -26,12 +28,11 @@ export default function ArchivePreviewSection() {
             {loading ? (
               // ローディング状態
               Array.from({ length: 6 }).map((_, index) => (
-                <SkeletonCard key={index} />
+                <SkeletonCard key={index} index={index} />
               ))
             ) : error ? (
               // エラー状態
               <div className="col-span-full text-center py-12">
-                <div className="text-6xl mb-4">😔</div>
                 <p className="text-noel-text-secondary">
                   動画の取得に失敗しました
                 </p>
@@ -47,7 +48,7 @@ export default function ArchivePreviewSection() {
                     animationFillMode: 'both'
                   }}
                 >
-                  <VideoCard video={video} />
+                  <VideoCard key={video.id} video={video} index={index} />
                 </div>
               ))
             ) : (

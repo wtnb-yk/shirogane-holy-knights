@@ -32,7 +32,6 @@ interface UseNewsOptions {
 
 /**
  * ニュース機能の統合hook
- * 各機能を分離したhooksを組み合わせて使用
  */
 export const useNews = (options: UseNewsOptions = {}): UseNewsResult => {
   const { pageSize = 20, initialPage = 1 } = options;
