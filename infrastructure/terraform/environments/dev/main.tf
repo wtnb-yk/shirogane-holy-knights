@@ -108,7 +108,7 @@ module "api_gateway" {
   
   # Custom domain settings for dev environment
   custom_domain_name = "api.dev.noe-room.com"
-  hosted_zone_id     = "Z04900993DUUUVXCT5E57"
+  hosted_zone_id     = data.aws_route53_zone.main.zone_id
 
   providers = {
     aws.us_east_1 = aws.us_east_1
@@ -139,7 +139,7 @@ module "amplify" {
   }
   
   custom_domain = "noe-room.com"
-  hosted_zone_id = "Z04900993DUUUVXCT5E57"
+  hosted_zone_id = data.aws_route53_zone.main.zone_id
 }
 
 # Bastion Host
@@ -198,7 +198,35 @@ resource "aws_security_group_rule" "pipeline_to_database" {
   description              = "Database access from CodeBuild migration"
 }
 
+# Lambda -> database access
+resource "aws_security_group_rule" "lambda_to_database" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = module.network.lambda_security_group_id
+  security_group_id        = module.network.database_security_group_id
+  description              = "Database access from Lambda"
+}
+
+# DB client access from specific IP addresses
+resource "aws_security_group_rule" "db_client_access" {
+  for_each          = var.allowed_db_client_cidrs != null ? toset(var.allowed_db_client_cidrs) : []
+  type              = "ingress"
+  from_port         = 5432
+  to_port           = 5432
+  protocol          = "tcp"
+  cidr_blocks       = [each.value]
+  security_group_id = module.network.database_security_group_id
+  description       = "DB client access from ${each.value}"
+}
+
 # Current account data
 data "aws_caller_identity" "current" {}
+
+# Existing Route53 hosted zone
+data "aws_route53_zone" "main" {
+  name = "noe-room.com"
+}
 
 

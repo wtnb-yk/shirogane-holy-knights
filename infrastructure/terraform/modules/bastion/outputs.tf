@@ -10,7 +10,7 @@ output "security_group_id" {
 
 output "iam_role_arn" {
   description = "Bastion IAM role ARN"
-  value       = data.aws_iam_role.bastion_role.arn
+  value       = aws_iam_role.bastion_role.arn
 }
 
 output "start_command" {

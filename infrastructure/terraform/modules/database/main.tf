@@ -18,8 +18,9 @@ resource "aws_db_parameter_group" "main" {
   }
 
   parameter {
-    name  = "shared_preload_libraries"
-    value = "pg_stat_statements"
+    name         = "shared_preload_libraries"
+    value        = "pg_stat_statements"
+    apply_method = "pending-reboot"
   }
 
   parameter {
@@ -29,7 +30,7 @@ resource "aws_db_parameter_group" "main" {
 
   parameter {
     name  = "log_duration"
-    value = "on"
+    value = "1"
   }
 
   tags = {
