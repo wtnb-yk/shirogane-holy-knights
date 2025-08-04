@@ -20,7 +20,7 @@ phases:
           # 関数コードの更新
           aws lambda update-function-code \
             --function-name "$LAMBDA_FUNCTION_NAME" \
-            --zip-file "fileb://../backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+            --zip-file "fileb://backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
           
           # 更新完了まで待機
           aws lambda wait function-updated \

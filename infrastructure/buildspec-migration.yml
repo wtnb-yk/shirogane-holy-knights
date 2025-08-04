@@ -19,7 +19,10 @@ phases:
   
   build:
     commands:
-      - cd ../backend
+      - pwd
+      - ls -la
+      - ls -la ..
+      - cd backend
       - echo Running Liquibase migration
       - ./gradlew liquibaseUpdate
       - echo Migration completed successfully
