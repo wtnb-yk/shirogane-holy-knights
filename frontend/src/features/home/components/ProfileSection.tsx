@@ -3,11 +3,18 @@ import { DecorativeFrame } from '@/components/ui/decorations/DecorativeFrame';
 import { DecorativeRibbon } from '@/components/ui/decorations/DecorativeRibbon';
 import { KnightEmblem } from '@/components/ui/decorations/KnightEmblem';
 import { SectionDivider } from '@/components/ui/decorations/SectionDivider';
+import { SwordDecoration } from '@/components/ui/decorations/SwordDecoration';
+import { ShieldDecoration } from '@/components/ui/decorations/ShieldDecoration';
+import { CowPatternDecoration } from '@/components/ui/decorations/CowPatternDecoration';
+import { CowBellDecoration } from '@/components/ui/decorations/CowBellDecoration';
+import { HoofDecoration } from '@/components/ui/decorations/HoofDecoration';
+import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
+import { FloatingParticles } from '@/components/ui/decorations/FloatingParticles';
 
 export default function ProfileSection() {
   const profileData = {
     name: "白銀ノエル",
-    nameEn: "Shiragami Noel",
+    nameEn: "Shirogane Noel",
     debut: "2019年8月8日",
     birthday: "11月24日",
     height: "154cm",
@@ -21,109 +28,120 @@ export default function ProfileSection() {
   return (
     <>
       <SectionDivider variant="wave" />
-      <section id="profile" className="min-h-screen flex items-center bg-noel-bg-light py-20 relative overflow-hidden">
-        {/* 背景装飾 - デスクトップのみ */}
-        <div className="absolute top-10 left-10 opacity-10 hidden lg:block">
-          <KnightEmblem size="xl" variant="shield" />
+      <section id="profile" className="py-20 bg-gradient-to-br from-blue-50/40 via-white to-sage-100/40 relative overflow-hidden">
+        
+        {/* 控えめな背景装飾 */}
+        <FloatingParticles count={6} variant="stars" className="text-blue-200/30" />
+        <FloatingParticles count={4} variant="sparkles" className="text-sage-300/25" />
+        
+        {/* さりげない角装飾 */}
+        <div className="absolute top-16 left-16 opacity-10 hidden xl:block">
+          <SwordDecoration size="lg" variant="classic" />
         </div>
-        <div className="absolute bottom-10 right-10 opacity-10 hidden lg:block">
-          <KnightEmblem size="lg" variant="crest" />
+        <div className="absolute top-16 right-16 opacity-10 hidden xl:block">
+          <ShieldDecoration size="lg" variant="knight" />
+        </div>
+        <div className="absolute bottom-16 left-20 opacity-8 hidden lg:block">
+          <CowBellDecoration size="md" variant="single" />
+        </div>
+        <div className="absolute bottom-16 right-20 opacity-8 hidden lg:block">
+          <HoofDecoration size="md" variant="single" />
         </div>
         
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="animate-section-enter">
-            <DecorativeRibbon variant="banner" className="mb-16">
-              <h2 className="text-5xl font-bold text-noel-text-primary">
+            {/* エレガントなタイトル */}
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
                 Profile
               </h2>
-            </DecorativeRibbon>
+              <div className="w-24 h-1 bg-gradient-to-r from-sage-300 to-blue-400 mx-auto rounded-full"></div>
+            </div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* 画像エリア（仮） */}
+            {/* 美しい画像エリア */}
             <div className="order-2 md:order-1">
-              <DecorativeFrame variant="royal" className="p-4">
-                <div className="bg-gradient-to-br from-noel-primary/20 to-noel-secondary/20 rounded-2xl aspect-square flex items-center justify-center shadow-xl relative overflow-hidden">
-                  {/* 装飾的なオーバーレイ */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-noel-primary/10 to-transparent" />
-                  <div className="absolute top-4 right-4">
-                    <KnightEmblem size="md" variant="crest" />
-                  </div>
-                  
-                  <div className="text-center text-noel-text-secondary relative z-10">
-                    <div className="text-8xl mb-4 drop-shadow-lg">🦁</div>
-                    <p className="text-xl font-bold text-noel-primary">白銀ノエル</p>
-                    <p className="text-sm bg-white/80 px-3 py-1 rounded-full mt-2">※画像は後日追加予定</p>
-                  </div>
+              <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-sage-200">
+                {/* さりげない装飾 */}
+                <div className="absolute top-4 right-4 opacity-20">
+                  <KnightEmblem size="sm" variant="simple" />
                 </div>
-              </DecorativeFrame>
+                
+                <ImagePlaceholder 
+                  variant="noel-portrait" 
+                  size="lg" 
+                  message="白銀ノエル様の画像"
+                  showDecorations={false}
+                />
+                
+                <div className="absolute bottom-4 left-4 opacity-20">
+                  <KnightEmblem size="sm" variant="simple" />
+                </div>
+              </div>
             </div>
 
-            {/* プロフィール情報 */}
+            {/* エレガントなプロフィール情報 */}
             <div className="order-1 md:order-2 space-y-6">
-              <DecorativeFrame variant="elegant" className="bg-white rounded-xl shadow-xl">
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <KnightEmblem size="sm" variant="simple" />
-                    <h3 className="text-2xl font-bold text-noel-text-primary border-b-2 border-noel-primary pb-2 flex-1">
-                      基本情報
-                    </h3>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">名前:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">英語表記:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.nameEn}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">デビュー:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.debut}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">誕生日:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.birthday}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">身長:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.height}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">ファンネーム:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.fanName}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">ハッシュタグ:</span>
-                      <span className="text-noel-primary font-semibold">{profileData.hashtag}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-noel-text-secondary font-medium">期生:</span>
-                      <span className="text-noel-text-primary font-semibold">{profileData.generation}</span>
-                    </div>
-                  </div>
+              {/* 基本情報カード */}
+              <div className="bg-white rounded-3xl p-8 shadow-xl border border-blue-100 relative">
+                <div className="absolute top-4 left-4 opacity-15">
+                  <SwordDecoration size="sm" variant="classic" />
                 </div>
-              </DecorativeFrame>
+                
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                  基本情報
+                  <div className="flex-1 h-0.5 bg-gradient-to-r from-sage-300 to-blue-300"></div>
+                </h3>
+                
+                <div className="space-y-3">
+                  {[
+                    { label: '名前', value: profileData.name },
+                    { label: '英語表記', value: profileData.nameEn },
+                    { label: 'デビュー', value: profileData.debut },
+                    { label: '誕生日', value: profileData.birthday },
+                    { label: '身長', value: profileData.height },
+                    { label: 'ファンネーム', value: profileData.fanName },
+                    { label: 'ハッシュタグ', value: profileData.hashtag },
+                    { label: '期生', value: profileData.generation }
+                  ].map((item, index) => (
+                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200">
+                      <span className="text-gray-600 font-medium">{item.label}:</span>
+                      <span className="text-gray-800 font-semibold">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="absolute bottom-4 right-4 opacity-15">
+                  <ShieldDecoration size="sm" variant="knight" />
+                </div>
+              </div>
 
-              <DecorativeFrame variant="elegant" className="bg-white rounded-xl shadow-xl">
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <KnightEmblem size="sm" variant="crest" />
-                    <h3 className="text-2xl font-bold text-noel-text-primary border-b-2 border-noel-secondary pb-2 flex-1">
-                      紹介
-                    </h3>
-                  </div>
-                  <p className="text-noel-text-secondary leading-relaxed">
-                    {profileData.description}
-                  </p>
-                  <DecorativeRibbon variant="scroll" className="mt-6">
-                    <p className="text-noel-primary font-bold">
-                      「{profileData.catchphrase}」
-                    </p>
-                  </DecorativeRibbon>
+              {/* 紹介カード */}
+              <div className="bg-white rounded-3xl p-8 shadow-xl border border-blue-100 relative">
+                <div className="absolute top-4 left-4 opacity-15">
+                  <CowBellDecoration size="sm" variant="single" />
                 </div>
-              </DecorativeFrame>
+                
+                <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                  紹介
+                  <div className="flex-1 h-0.5 bg-gradient-to-r from-blue-300 to-sage-300"></div>
+                </h3>
+                
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  {profileData.description}
+                </p>
+                
+                <div className="bg-gradient-to-r from-sage-50 to-blue-50 rounded-2xl p-4 text-center">
+                  <p className="text-sage-300 font-bold text-lg">
+                    「{profileData.catchphrase}」
+                  </p>
+                </div>
+                
+                <div className="absolute bottom-4 right-4 opacity-15">
+                  <HoofDecoration size="sm" variant="single" />
+                </div>
+              </div>
             </div>
           </div>
         </div>

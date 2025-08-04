@@ -3,7 +3,7 @@ import React from 'react';
 export default function YouTubeLinkSection() {
   const channelInfo = {
     channelName: "白銀ノエル Ch. ホロライブ",
-    channelUrl: "https://www.youtube.com/@shiragaminoel",
+    channelUrl: "https://www.youtube.com/@shiroganenoel",
     description: "配信で会える白い獅子に会いに行こう",
     subscriberCount: "149万人", // 静的表示
   };

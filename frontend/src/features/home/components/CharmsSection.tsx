@@ -53,29 +53,30 @@ export default function CharmsSection() {
   return (
     <>
       <SectionDivider variant="ornate" />
-      <section className="py-20 bg-white relative overflow-hidden">
-        {/* 背景装飾 - デスクトップのみ */}
-        <div className="absolute top-20 left-5 opacity-5 hidden lg:block">
-          <KnightEmblem size="xl" variant="crest" />
+      <section className="py-20 bg-gradient-to-br from-sage-50/30 via-white to-blue-50/30 relative overflow-hidden">
+        {/* 控えめな背景装飾 */}
+        <div className="absolute top-20 left-12 opacity-8 hidden lg:block">
+          <KnightEmblem size="lg" variant="simple" />
         </div>
-        <div className="absolute bottom-20 right-5 opacity-5 hidden lg:block">
-          <KnightEmblem size="lg" variant="shield" />
+        <div className="absolute bottom-20 right-12 opacity-8 hidden lg:block">
+          <KnightEmblem size="lg" variant="simple" />
         </div>
         
-        <div className="max-w-6xl mx-auto px-4 relative z-10">
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="animate-section-enter">
-            <DecorativeRibbon variant="banner" className="mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-noel-text-primary">
+            {/* エレガントなタイトル */}
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
                 白銀ノエルの魅力
               </h2>
-            </DecorativeRibbon>
-            
-            <p className="text-center text-lg text-noel-text-secondary mb-12 max-w-3xl mx-auto">
-              多くの団員に愛される白銀ノエル団長の魅力をご紹介します
-            </p>
+              <div className="w-24 h-1 bg-gradient-to-r from-sage-300 to-blue-400 mx-auto rounded-full mb-6"></div>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                多くの団員に愛される白銀ノエル団長の魅力をご紹介します
+              </p>
+            </div>
 
             {/* 魅力ポイント一覧 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {charms.map((charm, index) => (
                 <div
                   key={charm.id}
@@ -85,38 +86,36 @@ export default function CharmsSection() {
                     animationFillMode: 'both'
                   }}
                 >
-                  <DecorativeFrame variant="simple" className="h-full">
-                    <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 h-full">
-                      <div className="text-center mb-4">
-                        <div className="text-5xl mb-3">
-                          {charm.icon}
-                        </div>
-                        <h3 className={`text-xl font-bold ${charm.color} mb-2`}>
-                          {charm.title}
-                        </h3>
+                  <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 h-full border border-gray-100">
+                    <div className="text-center mb-6">
+                      <div className="text-4xl mb-4">
+                        {charm.icon}
                       </div>
-                      
-                      <p className="text-noel-text-secondary text-sm leading-relaxed">
-                        {charm.description}
-                      </p>
-                      
-                      {/* 装飾的なボーダー */}
-                      <div className="mt-4 flex justify-center">
-                        <div className="w-12 h-1 bg-gradient-to-r from-noel-primary to-noel-secondary rounded-full opacity-30"></div>
-                      </div>
+                      <h3 className="text-xl font-bold text-gray-800 mb-3">
+                        {charm.title}
+                      </h3>
                     </div>
-                  </DecorativeFrame>
+                    
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {charm.description}
+                    </p>
+                    
+                    {/* 美しいボーダー */}
+                    <div className="mt-6 flex justify-center">
+                      <div className="w-16 h-0.5 bg-gradient-to-r from-sage-300 to-blue-300 rounded-full"></div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* セクション下部の装飾 */}
+            {/* エレガントなメッセージ */}
             <div className="mt-16 text-center">
-              <DecorativeRibbon variant="scroll" className="bg-noel-bg-light/50">
-                <p className="text-noel-primary font-semibold">
+              <div className="bg-gradient-to-r from-sage-50 to-blue-50 rounded-3xl p-8 shadow-lg border border-sage-200">
+                <p className="text-gray-700 font-semibold text-lg">
                   これからも白銀ノエル団長を応援していきましょう！
                 </p>
-              </DecorativeRibbon>
+              </div>
             </div>
           </div>
         </div>

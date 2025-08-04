@@ -227,3 +227,97 @@
 .stagger-delay-400 { animation-delay: 400ms; }
 .stagger-delay-500 { animation-delay: 500ms; }
 .stagger-delay-600 { animation-delay: 600ms; }
+
+/* 新しい騎士・牛テーマアニメーション */
+@keyframes swordGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px rgba(192, 192, 192, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.3));
+  }
+}
+
+@keyframes shieldShine {
+  0% {
+    filter: brightness(1) drop-shadow(0 0 5px rgba(176, 176, 176, 0.3));
+  }
+  50% {
+    filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+  }
+  100% {
+    filter: brightness(1) drop-shadow(0 0 5px rgba(176, 176, 176, 0.3));
+  }
+}
+
+@keyframes bellRing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+
+@keyframes hoofBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+@keyframes swordTrail {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) rotate(-45deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(0px) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(20px) rotate(45deg);
+  }
+}
+
+@keyframes cowPatternPulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* アニメーションクラス */
+.animate-sword-glow {
+  animation: swordGlow 3s ease-in-out infinite;
+}
+
+.animate-shield-shine {
+  animation: shieldShine 2s ease-in-out infinite;
+}
+
+.animate-bell-ring {
+  animation: bellRing 1s ease-in-out infinite;
+}
+
+.animate-hoof-bounce {
+  animation: hoofBounce 2s ease-in-out infinite;
+}
+
+.animate-sword-trail {
+  animation: swordTrail 2s ease-in-out infinite;
+}
+
+.animate-cow-pattern-pulse {
+  animation: cowPatternPulse 3s ease-in-out infinite;
+}
