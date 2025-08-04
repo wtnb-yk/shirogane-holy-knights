@@ -63,7 +63,7 @@ variable "db_instance_class" {
 variable "db_name" {
   description = "Database name"
   type        = string
-  default     = "shirogane_portal"
+  default     = "shirogane"
 }
 
 variable "db_username" {

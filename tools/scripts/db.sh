@@ -16,8 +16,8 @@ DB_NAME=""
 SECRET_ID=""
 
 DB_PORT=5432
-SESSION_FILE="$(dirname "$0")/.db-session"
-FIXED_PORT=15432
+# SESSION_FILE will be set in init_environment based on environment
+# FIXED_PORT will be set in init_environment based on environment
 
 # Colors
 RED='\033[0;31m'
@@ -78,16 +78,15 @@ init_environment() {
         DB_ENDPOINT="shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com"
         DB_NAME="shirogane"
         SECRET_ID="/shirogane-holy-knights/dev/rds/credentials"
+        FIXED_PORT=15432
+        SESSION_FILE="$(dirname "$0")/.db-session-dev"
     else
-        # prd environment - get from Terraform output
-        DB_ENDPOINT=$(cd "$TERRAFORM_DIR" && terraform output -raw db_endpoint 2>/dev/null | sed 's/:5432$//' || echo "")
-        if [[ -z "$DB_ENDPOINT" ]]; then
-            log_error "prd環境のDB endpointが取得できません"
-            log_warning "ヒント: cd infrastructure/terraform/environments/prd && terraform apply"
-            exit 1
-        fi
-        DB_NAME="shirogane_portal"
+        # prd environment
+        DB_ENDPOINT="shirogane-holy-knights-prd-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com"
+        DB_NAME="shirogane"
         SECRET_ID="/shirogane-holy-knights/prd/rds/credentials"
+        FIXED_PORT=25432
+        SESSION_FILE="$(dirname "$0")/.db-session-prd"
     fi
     
     log_info "環境: $ENVIRONMENT"
@@ -122,9 +121,9 @@ is_port_available() {
     ! lsof -i :$port >/dev/null 2>&1
 }
 
-# Check if port 15432 is available
+# Check if environment-specific port is available
 check_port_available() {
-    local port=15432
+    local port=$FIXED_PORT
     
     # Check if port is actively listening (not just closed connections)
     if lsof -i :"$port" | grep -q "LISTEN"; then
@@ -240,7 +239,7 @@ test_db_connection() {
 start_tunnel() {
     local port=$1
     
-    log_step "$SEARCH ポート15432の確認中..."
+    log_step "$SEARCH ポート${FIXED_PORT}の確認中..."
     
     if ! port=$(check_port_available); then
         return 1
