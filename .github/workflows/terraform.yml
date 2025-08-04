@@ -10,7 +10,7 @@ on:
         type: choice
         options:
           - dev
-          # - prod  # 将来のprod環境対応時にコメントアウト解除
+          # - prod
       action:
         description: 'Terraform Action'
         required: true

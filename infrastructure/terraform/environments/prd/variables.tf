@@ -16,11 +16,11 @@ variable "aws_region" {
   default     = "ap-northeast-1"
 }
 
-# Network
+# VPC Configuration
 variable "vpc_cidr" {
   description = "CIDR block for VPC"
   type        = string
-  default     = "10.1.0.0/16"  # dev環境と異なるCIDRを使用
+  default     = "10.1.0.0/16"  # Different from dev (10.0.0.0/16)
 }
 
 variable "availability_zones" {
@@ -30,41 +30,40 @@ variable "availability_zones" {
 }
 
 variable "public_subnet_cidrs" {
-  description = "CIDR blocks for public subnets"
+  description = "Public subnet CIDR blocks"
   type        = list(string)
   default     = ["10.1.1.0/24", "10.1.2.0/24"]
 }
 
 variable "private_subnet_cidrs" {
-  description = "CIDR blocks for private subnets"
+  description = "Private subnet CIDR blocks"
   type        = list(string)
-  default     = ["10.1.11.0/24", "10.1.12.0/24"]
+  default     = ["10.1.10.0/24", "10.1.11.0/24"]
 }
 
 variable "enable_nat_gateway" {
-  description = "Enable NAT Gateway for private subnets"
+  description = "Enable NAT Gateway"
   type        = bool
-  default     = true
+  default     = false  # Use NAT Instance instead for cost optimization
 }
 
-# DBクライアント接続用IP制限設定（本番環境用）
-variable "allowed_db_client_cidrs" {
-  description = "CIDR blocks allowed to access database from external clients (production should be more restrictive)"
-  type        = list(string)
-  default     = []  # 本番環境では明示的に設定が必要
+variable "enable_nat_instance" {
+  description = "Enable NAT Instance"
+  type        = bool
+  default     = true  # Use NAT Instance for cost optimization
 }
 
-# Database
+# Database Configuration
 variable "db_instance_class" {
   description = "RDS instance class"
   type        = string
-  default     = "db.t3.small"  # 本番環境ではdev環境より大きなインスタンス
+  default     = "db.t3.micro"  # Minimum instance for production
 }
 
 variable "db_name" {
   description = "Database name"
   type        = string
-  default     = "shirogane"
+  default     = "shirogane_portal"
 }
 
 variable "db_username" {
@@ -74,84 +73,46 @@ variable "db_username" {
 }
 
 variable "db_password" {
-  description = "Database password (not used when Secrets Manager is enabled)"
+  description = "Database password"
   type        = string
+  default     = "dummy-password"  # Will be overridden by Secrets Manager
   sensitive   = true
-  default     = ""
 }
 
 variable "db_publicly_accessible" {
-  description = "Whether the DB instance is publicly accessible (for DB client connections)"
+  description = "Make RDS instance publicly accessible"
   type        = bool
-  default     = false  # 本番環境ではセキュリティ重視でfalse
+  default     = false  # Production should not be publicly accessible
 }
 
-variable "backup_retention_period" {
-  description = "Backup retention period in days (production should have longer retention)"
-  type        = number
-  default     = 30  # 本番環境では長期保持
+variable "allowed_db_client_cidrs" {
+  description = "Allowed CIDR blocks for database client access"
+  type        = list(string)
+  default     = null  # No direct client access in production
 }
 
-# Lambda
+# Lambda Configuration
 variable "lambda_jar_path" {
   description = "Path to Lambda JAR file"
   type        = string
-  default     = "../../../backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+  default     = "../../../../backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
 }
 
-variable "lambda_memory_size" {
-  description = "Lambda memory size in MB"
-  type        = number
-  default     = 2048  # 本番環境では大きなメモリを割り当て
-}
-
-variable "lambda_timeout" {
-  description = "Lambda timeout in seconds"
-  type        = number
-  default     = 60
-}
-
-variable "cors_allowed_origins" {
-  description = "CORS allowed origins for API Gateway"
-  type        = string
-  default     = "https://noe-room.com"  # 本番ドメインのみ
-}
-
-# API Gateway
-variable "api_custom_domain_name" {
-  description = "Custom domain name for API Gateway"
-  type        = string
-  default     = "api.noe-room.com"
-}
-
-variable "hosted_zone_id" {
-  description = "Route53 hosted zone ID for custom domain"
-  type        = string
-  default     = "Z04900993DUUUVXCT5E57"
-}
-
-# Amplify
+# GitHub Configuration
 variable "github_repository" {
   description = "GitHub repository URL"
   type        = string
-  default     = ""
+  default     = "https://github.com/yuuuki15/shirogane-holy-knights"
 }
 
 variable "github_branch" {
   description = "GitHub branch to deploy"
   type        = string
-  default     = "main"
+  default     = "main"  # Use main branch for production
 }
 
-variable "github_access_token" {
-  description = "GitHub personal access token"
+variable "github_repository_id" {
+  description = "GitHub repository ID for CodeBuild connection"
   type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "amplify_custom_domain" {
-  description = "Custom domain for Amplify"
-  type        = string
-  default     = "noe-room.com"
+  default     = "yuuuki15/shirogane-holy-knights"
 }

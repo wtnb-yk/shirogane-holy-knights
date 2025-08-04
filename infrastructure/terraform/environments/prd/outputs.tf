@@ -1,71 +1,91 @@
-# Database outputs
+# VPC Outputs
+output "vpc_id" {
+  description = "The ID of the VPC"
+  value       = module.network.vpc_id
+}
+
+output "public_subnet_ids" {
+  description = "List of public subnet IDs"
+  value       = module.network.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  description = "List of private subnet IDs"
+  value       = module.network.private_subnet_ids
+}
+
+# Database Outputs
 output "db_endpoint" {
-  description = "RDS instance endpoint"
+  description = "The connection endpoint for the RDS instance"
   value       = module.database.db_endpoint
 }
 
 output "db_instance_id" {
-  description = "RDS instance ID"
+  description = "The RDS instance ID"
   value       = module.database.db_instance_id
 }
 
-# Network outputs
-output "vpc_id" {
-  description = "VPC ID"
-  value       = module.network.vpc_id
-}
-
-output "private_subnet_ids" {
-  description = "Private subnet IDs"
-  value       = module.network.private_subnet_ids
-}
-
-output "public_subnet_ids" {
-  description = "Public subnet IDs"
-  value       = module.network.public_subnet_ids
-}
-
-# Lambda outputs
+# Lambda Outputs
 output "lambda_function_name" {
-  description = "Lambda function name"
+  description = "The name of the Lambda function"
   value       = module.lambda.function_name
 }
 
 output "lambda_function_arn" {
-  description = "Lambda function ARN"
+  description = "The ARN of the Lambda function"
   value       = module.lambda.function_arn
 }
 
-# API Gateway outputs
-output "api_gateway_url" {
-  description = "API Gateway URL"
+# API Gateway Outputs
+output "api_endpoint" {
+  description = "The API Gateway endpoint URL"
   value       = module.api_gateway.api_endpoint
 }
 
-output "api_gateway_custom_domain_url" {
-  description = "API Gateway custom domain URL"
+output "api_custom_domain" {
+  description = "The API Gateway custom domain"
   value       = module.api_gateway.custom_domain_endpoint
 }
 
-# Amplify outputs
+output "api_gateway_id" {
+  description = "The ID of the API Gateway REST API"
+  value       = module.api_gateway.rest_api_id
+}
+
+# Amplify Outputs
 output "amplify_app_id" {
-  description = "Amplify app ID"
+  description = "The ID of the Amplify app"
   value       = module.amplify.app_id
 }
 
-output "amplify_default_domain" {
-  description = "Amplify default domain"
-  value       = module.amplify.default_domain
+output "amplify_app_url" {
+  description = "The default URL of the Amplify app"
+  value       = module.amplify.app_url
 }
 
 output "amplify_custom_domain" {
-  description = "Amplify custom domain"
-  value       = module.amplify.custom_domain
+  description = "The custom domain for the Amplify app"
+  value       = "https://noe-room.com"
 }
 
-# Secrets Manager outputs
-output "secrets_manager_secret_arn" {
-  description = "Secrets Manager secret ARN"
-  value       = module.secrets.secret_arn
-  sensitive   = true
+# Bastion Outputs
+output "bastion_instance_id" {
+  description = "The ID of the bastion EC2 instance"
+  value       = module.bastion.instance_id
+}
+
+output "bastion_ssm_start_session_command" {
+  description = "AWS CLI command to start SSM session to bastion host"
+  value       = module.bastion.ssm_start_session_command
+}
+
+# Pipeline Outputs
+output "pipeline_name" {
+  description = "The name of the CodePipeline"
+  value       = module.pipeline.pipeline_name
+}
+
+output "pipeline_arn" {
+  description = "The ARN of the CodePipeline"
+  value       = module.pipeline.pipeline_arn
 }
