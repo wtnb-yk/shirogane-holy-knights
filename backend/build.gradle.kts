@@ -141,14 +141,11 @@ val liquibaseUpdate by tasks.registering(JavaExec::class) {
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass.set("liquibase.integration.commandline.Main")
     
-    // リソースファイルが確実にクラスパスに含まれるように依存関係を設定
-    dependsOn(tasks.processResources)
-
     args = listOf(
         "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane_db"}",
         "--username=${System.getenv("DB_USER") ?: "postgres"}",
         "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
-        "--changeLogFile=classpath:db/changelog/changelog.xml",
+        "--changeLogFile=${projectDir}/src/main/resources/db/changelog/changelog.xml",
         "update"
     )
 }
