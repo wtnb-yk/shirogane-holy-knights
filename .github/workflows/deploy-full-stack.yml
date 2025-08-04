@@ -12,7 +12,7 @@ on:
         type: choice
         options:
           - dev
-          # - prod  # 将来のprod環境対応時にコメントアウト解除
+          - prd
       deploy_order:
         description: 'Deployment Strategy'
         required: true

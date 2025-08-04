@@ -10,7 +10,7 @@ on:
         type: choice
         options:
           - dev
-          # - prod
+          - prd
       action:
         description: 'Terraform Action'
         required: true
