@@ -104,15 +104,6 @@ resource "aws_lambda_function" "api" {
     aws_iam_role_policy.lambda_policy,
     aws_cloudwatch_log_group.lambda
   ]
-
-  # CodePipelineがコードを更新するため、ファイル関連の変更を無視
-  lifecycle {
-    ignore_changes = [
-      filename,
-      source_code_hash,
-      handler
-    ]
-  }
 }
 
 # Attach the IAM policy from secrets module if using Secrets Manager
