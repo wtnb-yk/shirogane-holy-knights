@@ -11,8 +11,8 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-brand-charcoal mb-2">団員ポータル</h3>
             <p className="text-sm text-brand-charcoal/80">
-              白銀ノエルさんのファン（団員）向けの<br />
-              非公式ポータルサイト
+              ホロライブ3期生、白銀ノエルさんのファン（団員）<br />
+              向けの非公式ポータルサイト
             </p>
           </div>
           

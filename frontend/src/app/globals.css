@@ -64,3 +64,37 @@
     transform: translateY(0);
   }
 }
+
+@keyframes heroTitle {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sectionEnter {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-title {
+  animation: heroTitle 1.2s ease-out forwards;
+}
+
+.animate-section-enter {
+  animation: sectionEnter 0.8s ease-out forwards;
+}
+
+.stagger-children > * {
+  animation-delay: calc(var(--stagger-delay, 0) * 100ms);
+}

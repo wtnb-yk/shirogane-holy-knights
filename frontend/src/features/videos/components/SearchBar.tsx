@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SearchInput } from './search/SearchInput';
+import { SearchInput } from '@/components/ui/SearchInput';
 import { FilterButton } from './search/FilterButton';
 
 interface SearchBarProps {
@@ -29,6 +29,7 @@ export const SearchBar = ({
         onSearch={onSearch}
         onClearSearch={onClearSearch}
         disabled={disabled}
+        placeholder="タイトルで検索..."
       />
       <FilterButton
         onFilterClick={onFilterClick}

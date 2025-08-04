@@ -7,7 +7,7 @@ import { FilterModal } from '@/features/videos/components/filter/FilterModal';
 import { SearchResultsSummary } from '@/features/videos/components/results/SearchResultsSummary';
 import { StatsSummary } from '@/features/videos/components/results/StatsSummary';
 import { VideosGrid } from '@/features/videos/components/VideosGrid';
-import { Pagination } from '@/features/videos/components/Pagination';
+import { Pagination } from '@/components/ui/Pagination';
 
 export default function VideosList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -61,6 +61,7 @@ export default function VideosList() {
             totalPages={totalPages}
             hasMore={hasMore}
             onPageChange={setCurrentPage}
+            size="sm"
           />
         )}
 

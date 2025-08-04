@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { LambdaClient } from '../api/lambdaClient';
+import { VideoClient } from '../api/lambdaClient';
 import { VideoDto } from '../types/types';
 import { FilterOptions } from '../components/filter/FilterBar';
 
@@ -47,7 +47,7 @@ export const useVideoQuery = (
         setLoading(true);
         setError(null);
         
-        const searchResult = await LambdaClient.callVideoSearchFunction({
+        const searchResult = await VideoClient.callVideoSearchFunction({
           page: currentPage,
           pageSize: pageSize,
           query: searchQuery || undefined,
@@ -62,7 +62,6 @@ export const useVideoQuery = (
         
       } catch (err) {
         setError('動画の取得に失敗しました。');
-        console.error('Error fetching videos:', err);
       } finally {
         setLoading(false);
       }
