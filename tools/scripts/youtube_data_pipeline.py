@@ -21,18 +21,28 @@ import sys
 import subprocess
 import time
 from datetime import datetime
-from dotenv import load_dotenv
 
 # 環境変数をロード（環境に応じて.envファイルを選択）
+def load_env_file(env_file_path):
+    """手動で.envファイルを読み込む"""
+    if not os.path.exists(env_file_path):
+        return False
+    
+    with open(env_file_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                os.environ[key.strip()] = value.strip()
+    return True
+
 env_file = os.getenv('ENV_FILE', '../config/.env')  # デフォルトは ../config/.env
-if os.path.exists(env_file):
-    load_dotenv(env_file)
+if load_env_file(env_file):
     print(f"環境設定ファイルを読み込みました: {env_file}")
 else:
     # フォールバック: カレントディレクトリの.envを試行
     fallback_env = '.env'
-    if os.path.exists(fallback_env):
-        load_dotenv(fallback_env)
+    if load_env_file(fallback_env):
         print(f"環境設定ファイルを読み込みました: {fallback_env}")
     else:
         print("警告: 環境設定ファイルが見つかりません")
@@ -64,7 +74,6 @@ def check_prerequisites():
         'googleapiclient',
         'pandas',
         'psycopg2',
-        'dotenv'
     ]
     
     for module in required_modules:

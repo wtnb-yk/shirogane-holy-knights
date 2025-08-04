@@ -6,7 +6,7 @@ CSVファイルからPostgreSQLデータベースへデータをインポート�
 
 使用方法:
 1. 必要なライブラリをインストール
-   pip install pandas psycopg2-binary python-dotenv
+   pip install pandas psycopg2-binary
 2. .envファイルにデータベース接続情報を設定
 3. CSVファイルのディレクトリを指定して実行
 """
@@ -19,18 +19,28 @@ import datetime
 import psycopg2
 from psycopg2.extras import execute_batch
 import pandas as pd
-from dotenv import load_dotenv
+# dotenvを使わずに手動で環境変数をロード
+def load_env_file(env_file_path):
+    """手動で.envファイルを読み込む"""
+    if not os.path.exists(env_file_path):
+        return False
+    
+    with open(env_file_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, value = line.split('=', 1)
+                os.environ[key.strip()] = value.strip()
+    return True
 
 # 環境変数をロード（環境に応じて.envファイルを選択）
 env_file = os.getenv('ENV_FILE', '../config/.env')  # デフォルトは ../config/.env
-if os.path.exists(env_file):
-    load_dotenv(env_file)
+if load_env_file(env_file):
     print(f"環境設定ファイルを読み込みました: {env_file}")
 else:
     # フォールバック: カレントディレクトリの.envを試行
     fallback_env = '.env'
-    if os.path.exists(fallback_env):
-        load_dotenv(fallback_env)
+    if load_env_file(fallback_env):
         print(f"環境設定ファイルを読み込みました: {fallback_env}")
     else:
         print("警告: 環境設定ファイルが見つかりません")
@@ -268,20 +278,18 @@ def import_content_details(conn, df):
     data = [
         (
             row['video_id'],
-            row.get('description', ''),
-            False  # is_members_onlyは常にFalse
+            row.get('description', '')
         ) 
         for _, row in df.iterrows()
     ]
     
     # UPSERT クエリ
     query = """
-        INSERT INTO content_details (video_id, description, is_members_only) 
-        VALUES (%s, %s, %s)
+        INSERT INTO content_details (video_id, description) 
+        VALUES (%s, %s)
         ON CONFLICT (video_id) 
         DO UPDATE SET 
-            description = EXCLUDED.description,
-            is_members_only = EXCLUDED.is_members_only
+            description = EXCLUDED.description
     """
     
     try:
