@@ -12,9 +12,6 @@ phases:
   
   build:
     commands:
-      - pwd
-      - ls -la
-      - ls -la ..
       - cd backend
       - echo Running Gradle build
       - ./gradlew clean springCloudFunctionLambdaJar
