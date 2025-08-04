@@ -47,11 +47,6 @@ output "api_custom_domain" {
   value       = module.api_gateway.custom_domain_endpoint
 }
 
-output "api_gateway_id" {
-  description = "The ID of the API Gateway REST API"
-  value       = module.api_gateway.rest_api_id
-}
-
 # Amplify Outputs
 output "amplify_app_id" {
   description = "The ID of the Amplify app"
@@ -74,9 +69,9 @@ output "bastion_instance_id" {
   value       = module.bastion.instance_id
 }
 
-output "bastion_ssm_start_session_command" {
-  description = "AWS CLI command to start SSM session to bastion host"
-  value       = module.bastion.ssm_start_session_command
+output "bastion_connect_command" {
+  description = "Command to connect to bastion via Session Manager"
+  value       = module.bastion.connect_command
 }
 
 # Pipeline Outputs
