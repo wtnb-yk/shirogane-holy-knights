@@ -34,7 +34,7 @@ resource "aws_amplify_branch" "main" {
   branch_name = "main"
 
   framework = "Next.js - SSR"
-  stage     = var.environment == "prod" ? "PRODUCTION" : "DEVELOPMENT"
+  stage     = var.environment == "prd" ? "PRODUCTION" : "DEVELOPMENT"
 
   enable_auto_build = false
 }
@@ -48,7 +48,7 @@ resource "aws_amplify_domain_association" "main" {
 
   sub_domain {
     branch_name = aws_amplify_branch.main.branch_name
-    prefix      = var.environment == "prod" ? "" : var.environment
+    prefix      = var.environment == "prd" ? "www" : var.environment
   }
 }
 
@@ -64,7 +64,7 @@ resource "aws_route53_record" "amplify_domain" {
   count = var.custom_domain != "" && var.hosted_zone_id != "" ? 1 : 0
 
   zone_id = var.hosted_zone_id
-  name    = var.environment == "prod" ? var.custom_domain : "${var.environment}.${var.custom_domain}"
+  name    = var.environment == "prd" ? "www.${var.custom_domain}" : "${var.environment}.${var.custom_domain}"
   type    = "CNAME"
   ttl     = 300
 

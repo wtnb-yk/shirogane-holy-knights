@@ -93,7 +93,7 @@ module "lambda" {
   timeout     = 30  # 本番環境では30秒に短縮
   
   # CORS設定（本番環境専用Origin設定）
-  cors_allowed_origins = "https://noe-room.com,https://www.noe-room.com"
+  cors_allowed_origins = "https://www.noe-room.com"
   
   api_gateway_execution_arn = module.api_gateway.api_execution_arn
 }

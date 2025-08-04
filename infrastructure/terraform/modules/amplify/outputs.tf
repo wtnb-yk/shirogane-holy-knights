@@ -10,7 +10,7 @@ output "app_url" {
 
 output "custom_domain_url" {
   description = "Custom domain URL if configured"
-  value       = var.custom_domain != "" ? "https://${var.environment == "prod" ? "" : "${var.environment}."}${var.custom_domain}" : ""
+  value       = var.custom_domain != "" ? "https://${var.environment == "prd" ? "www." : "${var.environment}."}${var.custom_domain}" : ""
 }
 
 output "webhook_url" {
