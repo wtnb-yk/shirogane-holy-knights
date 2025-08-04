@@ -366,7 +366,7 @@ resource "aws_codepipeline" "main" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["build_output"]
+      input_artifacts = ["source_output"]
       
       configuration = {
         ProjectName = aws_codebuild_project.deploy.name
