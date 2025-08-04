@@ -92,7 +92,12 @@ variable "db_publicly_accessible" {
   default     = true
 }
 
-# Lambda (JAR path not needed - CodePipeline handles deployment)
+# Lambda
+variable "lambda_jar_path" {
+  description = "Path to Lambda JAR file"
+  type        = string
+  default     = "../../../../backend/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar"
+}
 
 # Amplify
 variable "github_repository" {

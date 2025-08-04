@@ -64,7 +64,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
 resource "aws_cloudwatch_log_group" "lambda" {
   name              = "/aws/lambda/${var.project_name}-${var.environment}-api"
   retention_in_days = var.log_retention_days
-  
+
   lifecycle {
     ignore_changes = [name]
   }
@@ -72,12 +72,11 @@ resource "aws_cloudwatch_log_group" "lambda" {
 
 # Lambda Function
 resource "aws_lambda_function" "api" {
-  # ダミーZIPファイルで箱だけ作成 - 実際のコードはCodePipelineでデプロイ
-  filename         = "${path.module}/dummy.zip"
+  filename         = var.lambda_jar_path
   function_name    = "${var.project_name}-${var.environment}-api"
   role            = aws_iam_role.lambda_execution.arn
-  handler         = "index.handler"
-  source_code_hash = filebase64sha256("${path.module}/dummy.zip")
+  handler         = "org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest"
+  source_code_hash = filebase64sha256(var.lambda_jar_path)
 
   runtime     = "java17"
   memory_size = var.memory_size
