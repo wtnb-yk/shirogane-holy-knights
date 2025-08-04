@@ -1,60 +1,63 @@
 import React from 'react';
-import { DecorativeFrame } from '@/components/ui/decorations/DecorativeFrame';
 import { FloatingParticles } from '@/components/ui/decorations/FloatingParticles';
 import { KnightEmblem } from '@/components/ui/decorations/KnightEmblem';
 import { SwordDecoration } from '@/components/ui/decorations/SwordDecoration';
 import { ShieldDecoration } from '@/components/ui/decorations/ShieldDecoration';
-import { CowPatternDecoration } from '@/components/ui/decorations/CowPatternDecoration';
 import { CowBellDecoration } from '@/components/ui/decorations/CowBellDecoration';
 import { HoofDecoration } from '@/components/ui/decorations/HoofDecoration';
 import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
-import { ImageLayout } from '@/components/ui/decorations/ImageLayout';
 
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* 上品で柔らかい背景グラデーション */}
-      <div className="absolute inset-0 bg-gradient-to-br from-sage-100/60 via-white to-blue-50/40" />
+      {/* 背景画像 */}
+      <div className="absolute inset-0 z-0">
+        <ImagePlaceholder 
+          variant="noel-hero-bg" 
+          size="hero"
+          message="白銀ノエル様の背景画像"
+          showDecorations={false}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/30"></div>
+      </div>
       
-      {/* 控えめなパーティクル */}
-      <FloatingParticles count={8} variant="stars" className="text-sage-300/40" />
-      <FloatingParticles count={6} variant="sparkles" className="text-blue-200/30" />
+      {/* 騎士らしいアニメーション */}
+      <FloatingParticles count={8} variant="stars" className="text-yellow-300/60" />
+      <FloatingParticles count={6} variant="sparkles" className="text-white/50" />
+      
+      {/* 旗たなびくアニメーション */}
+      <div className="absolute top-20 left-20 animate-pulse opacity-40 hidden lg:block">
+        <div className="w-16 h-24 bg-gradient-to-b from-sage-400 to-sage-600 rounded-r-lg shadow-lg animate-wave"></div>
+      </div>
+      <div className="absolute top-20 right-20 animate-pulse opacity-40 hidden lg:block">
+        <div className="w-16 h-24 bg-gradient-to-b from-blue-400 to-blue-600 rounded-l-lg shadow-lg animate-wave"></div>
+      </div>
 
-      {/* メインコンテンツ */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        {/* エレガントなタイトルエリア */}
-        <div className="mb-12">
-          {/* 上品な装飾フレーム */}
-          <div className="relative bg-white/70 backdrop-blur-sm rounded-3xl p-12 shadow-xl border border-sage-200">
-            {/* さりげない角装飾 */}
-            <div className="absolute top-4 left-4 opacity-30">
-              <KnightEmblem size="sm" variant="simple" />
+      {/* メインコンテンツ - 中央配置 */}
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        {/* 背景の上に重ねるタイトル */}
+        <div className="text-center text-white relative z-10">
+          {/* 輝く紋章 */}
+          <div className="mb-8 animate-pulse">
+            <div className="inline-block p-4 bg-white/20 backdrop-blur-sm rounded-full border-2 border-white/50">
+              <KnightEmblem size="lg" variant="crest" className="text-white animate-spin-slow" />
             </div>
-            <div className="absolute top-4 right-4 opacity-30">
-              <KnightEmblem size="sm" variant="simple" />
-            </div>
+          </div>
+          
+          {/* 大胆なタイトル */}
+          <div className="animate-hero-title">
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6 leading-tight drop-shadow-2xl animate-glow">
+              白銀ノエル
+            </h1>
             
-            <div className="animate-hero-title">
-              <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 leading-tight">
-                白銀ノエル
-              </h1>
-              
-              <p className="text-lg md:text-xl text-gray-600 mb-4 font-medium">
-                白銀聖騎士団団長
-              </p>
-              
-              <p className="text-xl md:text-2xl text-sage-300 font-semibold">
-                「こんまっする〜」
-              </p>
-            </div>
+            <p className="text-2xl md:text-3xl mb-4 font-bold drop-shadow-lg">
+              白銀聖騎士団団長
+            </p>
             
-            {/* 下部の控えめな装飾 */}
-            <div className="absolute bottom-4 left-4 opacity-30">
-              <KnightEmblem size="sm" variant="simple" />
-            </div>
-            <div className="absolute bottom-4 right-4 opacity-30">
-              <KnightEmblem size="sm" variant="simple" />
-            </div>
+            <p className="text-2xl md:text-4xl font-bold text-yellow-300 drop-shadow-lg animate-pulse">
+              「こんまっする〜」
+            </p>
           </div>
         </div>
         
@@ -75,18 +78,34 @@ export default function HeroSection() {
         </div>
       </div>
       
-      {/* 控えめな角装飾 - 参考サイトのような上品さ */}
-      <div className="absolute top-12 left-12 opacity-20 hidden lg:block">
-        <SwordDecoration size="md" variant="classic" />
+      {/* 動的な騎士装飾 */}
+      <div className="absolute top-1/4 left-8 opacity-60 hidden lg:block animate-bounce">
+        <SwordDecoration size="lg" variant="classic" className="text-yellow-400 animate-pulse" />
       </div>
-      <div className="absolute top-12 right-12 opacity-20 hidden lg:block">
-        <ShieldDecoration size="md" variant="knight" />
+      <div className="absolute top-1/4 right-8 opacity-60 hidden lg:block animate-bounce">
+        <ShieldDecoration size="lg" variant="royal" className="text-blue-300 animate-pulse" />
       </div>
-      <div className="absolute bottom-24 left-16 opacity-15 hidden lg:block">
-        <CowBellDecoration size="sm" variant="single" />
+      <div className="absolute bottom-1/4 left-12 opacity-40 hidden lg:block">
+        <CowBellDecoration size="md" variant="chain" className="text-sage-300 animate-swing" />
       </div>
-      <div className="absolute bottom-24 right-16 opacity-15 hidden lg:block">
-        <HoofDecoration size="sm" variant="single" />
+      <div className="absolute bottom-1/4 right-12 opacity-40 hidden lg:block">
+        <HoofDecoration size="md" variant="walking" className="text-yellow-300 animate-bounce" />
+      </div>
+      
+      {/* 輝く粒子効果 */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full animate-twinkle opacity-70"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 2}s`
+            }}
+          />
+        ))}
       </div>
 
       {/* 上品なスクロール誘導 */}

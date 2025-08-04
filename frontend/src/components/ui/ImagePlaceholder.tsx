@@ -4,8 +4,8 @@ import { SwordDecoration } from './decorations/SwordDecoration';
 import { ShieldDecoration } from './decorations/ShieldDecoration';
 
 interface ImagePlaceholderProps {
-  variant?: 'noel-portrait' | 'knight-scene' | 'cow-theme' | 'decorative';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'hero';
+  variant?: 'noel-portrait' | 'knight-scene' | 'cow-theme' | 'decorative' | 'noel-hero-bg';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'hero';
   className?: string;
   message?: string;
   showDecorations?: boolean;
@@ -24,6 +24,7 @@ export function ImagePlaceholder({
       case 'md': return 'h-48 w-48';
       case 'lg': return 'h-64 w-64';
       case 'xl': return 'h-80 w-80';
+      case '2xl': return 'h-96 w-96';
       case 'hero': return 'h-96 w-full max-w-2xl';
       default: return 'h-48 w-48';
     }
@@ -118,7 +119,7 @@ export function ImagePlaceholder({
       {variantContent.pattern}
       
       {/* メインコンテンツ */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 relative z-10">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-10">
         <div className={`text-6xl mb-4 ${size === 'hero' ? 'text-8xl mb-6' : ''} drop-shadow-lg`}>
           {variantContent.emoji}
         </div>

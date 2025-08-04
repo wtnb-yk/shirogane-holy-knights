@@ -11,20 +11,21 @@ export default function NewsPreviewSection() {
   });
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-4">
+    <section className="py-16 bg-white">
+      <div className="max-w-5xl mx-auto px-4">
         <div className="animate-section-enter">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-noel-text-primary mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               最新ニュース
             </h2>
-            <p className="text-lg text-noel-text-secondary">
+            <div className="w-24 h-1 bg-gradient-to-r from-sage-300 to-blue-400 mx-auto rounded-full mb-6"></div>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               白銀ノエルさんに関する最新情報をお届けします
             </p>
           </div>
 
-          {/* ニュース一覧 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {/* ニュース一覧 - PC版では大型カード混在 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 gap-6 xl:gap-8 mb-12 xl:mb-20">
             {loading ? (
               // ローディング状態
               Array.from({ length: 3 }).map((_, index) => (
@@ -44,7 +45,7 @@ export default function NewsPreviewSection() {
                   key={item.id}
                   className="animate-fade-in"
                   style={{ 
-                    animationDelay: `${index * 100}ms`,
+                    animationDelay: `${index * 50}ms`,
                     animationFillMode: 'both'
                   }}
                 >
@@ -66,7 +67,7 @@ export default function NewsPreviewSection() {
           <div className="text-center">
             <a
               href="/news"
-              className="inline-flex items-center px-8 py-4 bg-noel-primary text-white rounded-lg font-semibold hover:bg-noel-primary/90 transition-all duration-200 hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-8 py-4 xl:px-12 xl:py-6 bg-gradient-to-r from-sage-300 to-blue-400 text-white rounded-2xl font-semibold hover:from-sage-200 hover:to-blue-500 transition-all duration-300 hover:scale-105 hover:-translate-y-1 shadow-lg hover:shadow-xl xl:text-lg xl:shadow-2xl"
             >
               すべてのニュースを見る
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

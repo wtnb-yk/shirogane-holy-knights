@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import { DecorativeFrame } from '@/components/ui/decorations/DecorativeFrame';
-import { DecorativeRibbon } from '@/components/ui/decorations/DecorativeRibbon';
 import { KnightEmblem } from '@/components/ui/decorations/KnightEmblem';
 import { SectionDivider } from '@/components/ui/decorations/SectionDivider';
 import { useVideos } from '@/features/videos/hooks/useVideos';
@@ -73,9 +71,9 @@ export default function StatsSection() {
       <SectionDivider variant="zigzag" />
       <section className="py-20 bg-noel-bg-light relative overflow-hidden">
         {/* 背景パターン - デスクトップのみ */}
-        <div className="absolute inset-0 opacity-5 hidden lg:block">
-          <div className="grid grid-cols-8 gap-4 h-full">
-            {Array.from({ length: 32 }).map((_, index) => (
+        <div className="absolute inset-0 opacity-8 hidden xl:block">
+          <div className="grid grid-cols-6 gap-8 h-full">
+            {Array.from({ length: 12 }).map((_, index) => (
               <div key={index} className="flex items-center justify-center">
                 <KnightEmblem size="sm" variant="simple" />
               </div>
@@ -85,11 +83,12 @@ export default function StatsSection() {
         
         <div className="max-w-6xl mx-auto px-4 relative z-10">
           <div className="animate-section-enter">
-            <DecorativeRibbon variant="banner" className="mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-noel-text-primary">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-noel-text-primary mb-4">
                 活動の軌跡
               </h2>
-            </DecorativeRibbon>
+              <div className="w-24 h-1 bg-gradient-to-r from-sage-300 to-blue-400 mx-auto rounded-full"></div>
+            </div>
             
             <p className="text-center text-lg text-noel-text-secondary mb-12 max-w-3xl mx-auto">
               デビューから現在まで、白銀ノエル団長の配信活動を数字で振り返ります
@@ -106,66 +105,67 @@ export default function StatsSection() {
                     animationFillMode: 'both'
                   }}
                 >
-                  <DecorativeFrame variant="simple" className="h-full">
-                    <div className={`bg-gradient-to-br ${stat.bgColor} rounded-xl p-6 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 h-full`}>
-                      <div className="text-4xl mb-3">
-                        {stat.icon}
-                      </div>
-                      <div className={`text-3xl font-bold ${stat.color} mb-2`}>
-                        {stat.value}
-                      </div>
-                      <div className="text-noel-text-secondary font-medium">
-                        {stat.label}
-                      </div>
+                  <div className={`bg-gradient-to-br ${stat.bgColor} bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 h-full border border-gray-100`}>
+                    <div className="text-5xl mb-4">
+                      {stat.icon}
                     </div>
-                  </DecorativeFrame>
+                    <div className={`text-3xl font-bold ${stat.color} mb-2`}>
+                      {stat.value}
+                    </div>
+                    <div className="text-noel-text-secondary font-medium">
+                      {stat.label}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* 活動の種類 */}
-            <DecorativeFrame variant="elegant" className="bg-white rounded-xl shadow-xl mb-12">
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-8 justify-center">
-                  <KnightEmblem size="md" variant="crest" />
-                  <h3 className="text-2xl font-bold text-noel-text-primary">
-                    主な活動内容
-                  </h3>
-                  <KnightEmblem size="md" variant="shield" />
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                  {achievements.map((achievement, index) => (
-                    <div
-                      key={index}
-                      className="text-center p-4 rounded-lg bg-noel-bg-light/50 hover:bg-noel-bg-light transition-colors duration-300"
-                      style={{ 
-                        animationDelay: `${(index + 4) * 100}ms`,
-                        animationFillMode: 'both'
-                      }}
-                    >
-                      <div className="text-3xl mb-3">
-                        {achievement.icon}
-                      </div>
-                      <h4 className="font-bold text-noel-text-primary mb-2">
-                        {achievement.title}
-                      </h4>
-                      <p className="text-sm text-noel-text-secondary">
-                        {achievement.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+            <div className="bg-white rounded-3xl shadow-xl mb-12 p-8 border border-gray-100">
+              <div className="flex items-center gap-3 mb-8 justify-center">
+                <h3 className="text-2xl font-bold text-noel-text-primary">
+                  主な活動内容
+                </h3>
+                <div className="w-16 h-0.5 bg-gradient-to-r from-sage-300 to-blue-300 rounded-full"></div>
               </div>
-            </DecorativeFrame>
+                
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {achievements.map((achievement, index) => (
+                  <div
+                    key={index}
+                    className="text-center p-6 rounded-2xl bg-gradient-to-br from-sage-50 to-blue-50 hover:shadow-md transition-all duration-300 hover:scale-105"
+                    style={{ 
+                      animationDelay: `${(index + 4) * 50}ms`,
+                      animationFillMode: 'both'
+                    }}
+                  >
+                    <div className="text-4xl mb-4">
+                      {achievement.icon}
+                    </div>
+                    <h4 className="font-bold text-noel-text-primary mb-3 text-lg">
+                      {achievement.title}
+                    </h4>
+                    <p className="text-base text-noel-text-secondary">
+                      {achievement.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            {/* メッセージ */}
+            {/* メッセージ - PC版ではより印象的 */}
             <div className="text-center">
-              <DecorativeRibbon variant="scroll" className="bg-gradient-to-r from-noel-primary/10 to-noel-secondary/10">
-                <p className="text-noel-primary font-bold text-lg">
+              <div className="bg-gradient-to-r from-sage-50 to-blue-50 rounded-3xl p-8 xl:p-12 2xl:p-16 shadow-lg xl:shadow-2xl border border-sage-200 xl:border-2 xl:mx-8 2xl:mx-16">
+                <div className="mb-4 xl:mb-6">
+                  <div className="text-4xl xl:text-5xl">✨</div>
+                </div>
+                <p className="text-sage-300 font-bold text-xl xl:text-2xl 2xl:text-3xl xl:leading-relaxed">
                   これからも末永く応援をお願いします！
                 </p>
-              </DecorativeRibbon>
+                <div className="mt-6 xl:mt-8 flex justify-center">
+                  <div className="w-24 xl:w-32 h-1 bg-gradient-to-r from-sage-300 to-blue-300 rounded-full"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

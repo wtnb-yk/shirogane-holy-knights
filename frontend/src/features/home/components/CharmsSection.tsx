@@ -1,6 +1,4 @@
 import React from 'react';
-import { DecorativeFrame } from '@/components/ui/decorations/DecorativeFrame';
-import { DecorativeRibbon } from '@/components/ui/decorations/DecorativeRibbon';
 import { KnightEmblem } from '@/components/ui/decorations/KnightEmblem';
 import { SectionDivider } from '@/components/ui/decorations/SectionDivider';
 
@@ -53,16 +51,13 @@ export default function CharmsSection() {
   return (
     <>
       <SectionDivider variant="ornate" />
-      <section className="py-20 bg-gradient-to-br from-sage-50/30 via-white to-blue-50/30 relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-sage-50/30 via-white to-blue-50/30 relative overflow-hidden">
         {/* 控えめな背景装飾 */}
-        <div className="absolute top-20 left-12 opacity-8 hidden lg:block">
-          <KnightEmblem size="lg" variant="simple" />
-        </div>
-        <div className="absolute bottom-20 right-12 opacity-8 hidden lg:block">
-          <KnightEmblem size="lg" variant="simple" />
+        <div className="absolute top-16 right-16 opacity-10 hidden lg:block">
+          <KnightEmblem size="md" variant="simple" />
         </div>
         
-        <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
           <div className="animate-section-enter">
             {/* エレガントなタイトル */}
             <div className="text-center mb-16">
@@ -76,22 +71,22 @@ export default function CharmsSection() {
             </div>
 
             {/* 魅力ポイント一覧 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {charms.map((charm, index) => (
                 <div
                   key={charm.id}
                   className="animate-fade-in"
                   style={{ 
-                    animationDelay: `${index * 100}ms`,
+                    animationDelay: `${index * 50}ms`,
                     animationFillMode: 'both'
                   }}
                 >
-                  <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 h-full border border-gray-100">
-                    <div className="text-center mb-6">
+                  <div className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 h-full border border-gray-100">
+                    <div className="text-center mb-4">
                       <div className="text-4xl mb-4">
                         {charm.icon}
                       </div>
-                      <h3 className="text-xl font-bold text-gray-800 mb-3">
+                      <h3 className="text-lg font-bold text-gray-800 mb-3">
                         {charm.title}
                       </h3>
                     </div>
@@ -101,8 +96,8 @@ export default function CharmsSection() {
                     </p>
                     
                     {/* 美しいボーダー */}
-                    <div className="mt-6 flex justify-center">
-                      <div className="w-16 h-0.5 bg-gradient-to-r from-sage-300 to-blue-300 rounded-full"></div>
+                    <div className="mt-4 flex justify-center">
+                      <div className="w-12 h-0.5 bg-gradient-to-r from-sage-300 to-blue-300 rounded-full"></div>
                     </div>
                   </div>
                 </div>
@@ -110,9 +105,9 @@ export default function CharmsSection() {
             </div>
 
             {/* エレガントなメッセージ */}
-            <div className="mt-16 text-center">
-              <div className="bg-gradient-to-r from-sage-50 to-blue-50 rounded-3xl p-8 shadow-lg border border-sage-200">
-                <p className="text-gray-700 font-semibold text-lg">
+            <div className="mt-12 text-center">
+              <div className="bg-gradient-to-r from-sage-50 to-blue-50 rounded-3xl p-6 shadow-lg border border-sage-200">
+                <p className="text-gray-700 font-semibold text-base">
                   これからも白銀ノエル団長を応援していきましょう！
                 </p>
               </div>
