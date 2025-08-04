@@ -5,37 +5,17 @@
 
 set -euo pipefail
 
-# Configuration
-# Terraformから正しいBastionインスタンスIDを取得
-TERRAFORM_DIR="$(dirname "$0")/../infrastructure/terraform/environments/dev"
+# Environment will be set in main function
+ENVIRONMENT=""
+
+# Configuration variables (will be set in main function)
+TERRAFORM_DIR=""
 INSTANCE_ID=""
+DB_ENDPOINT=""
+DB_NAME=""
+SECRET_ID=""
 
-# Try to get from Terraform first
-if [[ -d "$TERRAFORM_DIR" ]]; then
-    INSTANCE_ID=$(cd "$TERRAFORM_DIR" && terraform output -raw bastion_instance_id 2>/dev/null || echo "")
-fi
-
-# Fallback to AWS CLI if Terraform fails
-if [[ -z "$INSTANCE_ID" || "$INSTANCE_ID" == "None" ]]; then
-    # Get instances managed by Terraform (has ManagedBy=Terraform tag)
-    INSTANCE_ID=$(aws ec2 describe-instances \
-        --filters "Name=tag:Name,Values=shirogane-holy-knights-dev-bastion" \
-                  "Name=tag:ManagedBy,Values=Terraform" \
-                  "Name=instance-state-name,Values=running,stopped" \
-        --query 'Reservations[0].Instances[0].InstanceId' \
-        --output text 2>/dev/null)
-fi
-
-if [[ -z "$INSTANCE_ID" || "$INSTANCE_ID" == "None" ]]; then
-    echo -e "${RED}エラー: Terraform管理のBastionインスタンスが見つかりません${NC}"
-    echo -e "${YELLOW}ヒント: cd infrastructure/terraform/environments/dev && terraform apply${NC}"
-    exit 1
-fi
-
-DB_ENDPOINT="shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com"
 DB_PORT=5432
-DB_NAME="shirogane"
-SECRET_ID="/shirogane-holy-knights/dev/rds/credentials"
 SESSION_FILE="$(dirname "$0")/.db-session"
 FIXED_PORT=15432
 
@@ -58,6 +38,62 @@ CLOCK="⏰"
 TOOL="🔧"
 STOP="🛑"
 CLIPBOARD="📋"
+
+# Initialize environment configuration
+init_environment() {
+    # Validate environment
+    if [[ "$ENVIRONMENT" != "dev" && "$ENVIRONMENT" != "prd" ]]; then
+        log_error "無効な環境: '$ENVIRONMENT'. 'dev' または 'prd' を使用してください。"
+        echo "使用方法: $0 [dev|prd] [command]"
+        exit 1
+    fi
+    
+    # Set Terraform directory
+    TERRAFORM_DIR="$(dirname "$0")/../infrastructure/terraform/environments/$ENVIRONMENT"
+    
+    # Try to get bastion instance ID from Terraform first
+    if [[ -d "$TERRAFORM_DIR" ]]; then
+        INSTANCE_ID=$(cd "$TERRAFORM_DIR" && terraform output -raw bastion_instance_id 2>/dev/null || echo "")
+    fi
+    
+    # Fallback to AWS CLI if Terraform fails
+    if [[ -z "$INSTANCE_ID" || "$INSTANCE_ID" == "None" ]]; then
+        # Get instances managed by Terraform (has ManagedBy=Terraform tag)
+        INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=shirogane-holy-knights-$ENVIRONMENT-bastion" \
+                      "Name=tag:ManagedBy,Values=Terraform" \
+                      "Name=instance-state-name,Values=running,stopped" \
+            --query 'Reservations[0].Instances[0].InstanceId' \
+            --output text 2>/dev/null)
+    fi
+    
+    if [[ -z "$INSTANCE_ID" || "$INSTANCE_ID" == "None" ]]; then
+        log_error "Terraform管理のBastionインスタンスが見つかりません"
+        log_warning "ヒント: cd infrastructure/terraform/environments/$ENVIRONMENT && terraform apply"
+        exit 1
+    fi
+    
+    # Environment-specific database configuration
+    if [[ "$ENVIRONMENT" == "dev" ]]; then
+        DB_ENDPOINT="shirogane-holy-knights-dev-db.chki60iywt92.ap-northeast-1.rds.amazonaws.com"
+        DB_NAME="shirogane"
+        SECRET_ID="/shirogane-holy-knights/dev/rds/credentials"
+    else
+        # prd environment - get from Terraform output
+        DB_ENDPOINT=$(cd "$TERRAFORM_DIR" && terraform output -raw db_endpoint 2>/dev/null | sed 's/:5432$//' || echo "")
+        if [[ -z "$DB_ENDPOINT" ]]; then
+            log_error "prd環境のDB endpointが取得できません"
+            log_warning "ヒント: cd infrastructure/terraform/environments/prd && terraform apply"
+            exit 1
+        fi
+        DB_NAME="shirogane_portal"
+        SECRET_ID="/shirogane-holy-knights/prd/rds/credentials"
+    fi
+    
+    log_info "環境: $ENVIRONMENT"
+    log_info "DB Endpoint: $DB_ENDPOINT"
+    log_info "Instance ID: $INSTANCE_ID"
+}
 
 # Utility functions
 log_info() {
@@ -436,14 +472,31 @@ check_dependencies() {
 
 # Main logic
 main() {
-    local command="${1:-}"
-    local port_arg="${2:-}"
+    # Handle arguments: [environment] [command] [port]
+    local arg1="${1:-}"
+    local arg2="${2:-}"
+    local arg3="${3:-}"
+    
+    # If first argument is env (dev/prd), shift arguments
+    if [[ "$arg1" == "dev" || "$arg1" == "prd" ]]; then
+        ENVIRONMENT="$arg1"
+        local command="$arg2"
+        local port_arg="$arg3"
+    else
+        # Default environment is dev
+        ENVIRONMENT="dev" 
+        local command="$arg1"
+        local port_arg="$arg2"
+    fi
     
     # Check dependencies first (except for help)
     if [[ "$command" != "help" && "$command" != "-h" && "$command" != "--help" ]]; then
         if ! check_dependencies; then
             exit 1
         fi
+        
+        # Initialize environment configuration
+        init_environment
     fi
     
     case "$command" in

@@ -47,4 +47,14 @@ db-status:
 db-disconnect:
 	./scripts/db.sh stop
 
-.PHONY: setup-dev setup-prd run-local run-dev run-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-connect db-status db-disconnect
+# prd環境データベース接続（Bastion経由）
+db-connect-prd:
+	./scripts/db.sh prd
+
+db-status-prd:
+	./scripts/db.sh prd status
+
+db-disconnect-prd:
+	./scripts/db.sh prd stop
+
+.PHONY: setup-dev setup-prd run-local run-dev run-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-connect db-status db-disconnect db-connect-prd db-status-prd db-disconnect-prd
