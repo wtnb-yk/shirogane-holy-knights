@@ -31,7 +31,7 @@ phases:
           echo "Please create the infrastructure using Terraform first"
           exit 1
         fi
-  
+
   post_build:
     commands:
       - echo Lambda deployment completed on `date`
