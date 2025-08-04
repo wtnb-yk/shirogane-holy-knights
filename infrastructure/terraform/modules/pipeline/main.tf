@@ -202,7 +202,7 @@ resource "aws_codebuild_project" "build" {
 
   source {
     type = "CODEPIPELINE"
-    buildspec = "buildspec-build.yml"
+    buildspec = "infrastructure/buildspec-build.yml"
   }
 }
 
@@ -243,7 +243,7 @@ resource "aws_codebuild_project" "migration" {
 
   source {
     type = "CODEPIPELINE"
-    buildspec = "buildspec-migration.yml"
+    buildspec = "infrastructure/buildspec-migration.yml"
   }
 
   vpc_config {
@@ -275,7 +275,7 @@ resource "aws_codebuild_project" "deploy" {
 
   source {
     type = "CODEPIPELINE"
-    buildspec = "buildspec-deploy.yml"
+    buildspec = "infrastructure/buildspec-deploy.yml"
   }
 }
 
