@@ -68,8 +68,8 @@ class VideoRepositoryImpl(
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN video_details vd ON v.id = vd.video_id
-                LEFT JOIN video_tags vtg ON v.id = vtg.video_id
-                LEFT JOIN tags t ON vtg.tag_id = t.id
+                LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
+                LEFT JOIN video_tags t ON vtg.tag_id = t.id
                 $whereClause
             """.trimIndent()
 
@@ -135,8 +135,8 @@ class VideoRepositoryImpl(
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN stream_details sd ON v.id = sd.video_id
-                LEFT JOIN video_tags vtg ON v.id = vtg.video_id
-                LEFT JOIN tags t ON vtg.tag_id = t.id
+                LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
+                LEFT JOIN video_tags t ON vtg.tag_id = t.id
                 $whereClause
             """.trimIndent()
 
@@ -197,8 +197,8 @@ class VideoRepositoryImpl(
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN video_details vd ON v.id = vd.video_id
-                LEFT JOIN video_tags vtg ON v.id = vtg.video_id
-                LEFT JOIN tags t ON vtg.tag_id = t.id
+                LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
+                LEFT JOIN video_tags t ON vtg.tag_id = t.id
                 $whereClause
                 GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
                          v.duration, v.channel_id, v.created_at, vd.published_at
@@ -270,8 +270,8 @@ class VideoRepositoryImpl(
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN stream_details sd ON v.id = sd.video_id
-                LEFT JOIN video_tags vtg ON v.id = vtg.video_id
-                LEFT JOIN tags t ON vtg.tag_id = t.id
+                LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
+                LEFT JOIN video_tags t ON vtg.tag_id = t.id
                 $whereClause
                 GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
                          v.duration, v.channel_id, v.created_at, sd.started_at
@@ -389,7 +389,7 @@ data class StreamDetailsEntity(
     val createdAt: Instant?
 )
 
-@org.springframework.data.relational.core.mapping.Table("video_tags")
+@org.springframework.data.relational.core.mapping.Table("video_video_tags")
 data class VideoTagEntity(
     @org.springframework.data.annotation.Id
     val id: Long? = null,
@@ -397,7 +397,7 @@ data class VideoTagEntity(
     val tagId: Long
 )
 
-@org.springframework.data.relational.core.mapping.Table("tags")
+@org.springframework.data.relational.core.mapping.Table("video_tags")
 data class TagEntity(
     @org.springframework.data.annotation.Id
     val id: Long? = null,
