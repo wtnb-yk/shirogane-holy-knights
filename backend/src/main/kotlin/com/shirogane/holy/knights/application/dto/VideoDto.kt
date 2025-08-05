@@ -20,7 +20,6 @@ data class VideoDto(
     val tags: List<String> = emptyList(),
     val duration: String? = null, // HH:MM:SS形式の動画長
     val thumbnailUrl: String? = null,
-    val isMembersOnly: Boolean = false
 ) {
     companion object {
         /**
@@ -37,7 +36,6 @@ data class VideoDto(
                 tags = video.tags.map { it.name },
                 duration = video.videoDetails?.duration?.value,
                 thumbnailUrl = video.videoDetails?.thumbnailUrl,
-                isMembersOnly = video.contentDetails?.isMembersOnly ?: false
             )
         }
     }

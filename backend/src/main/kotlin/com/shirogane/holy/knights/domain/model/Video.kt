@@ -30,7 +30,6 @@ data class VideoDetailsVO(
  */
 data class ContentDetails(
     val description: String? = null,
-    val isMembersOnly: Boolean = false
 )
 
 /**

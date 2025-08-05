@@ -44,37 +44,37 @@ class VideoUseCaseImpl(
         }
     }
 
-    override suspend fun searchVideos(params: VideoSearchParamsDto): VideoSearchResultDto {
-        logger.info("動画検索実行: $params")
+    override suspend fun searchVideos(searchParams: VideoSearchParamsDto): VideoSearchResultDto {
+        logger.info("動画検索実行: $searchParams")
         
         return try {
-            val offset = (params.page - 1) * params.pageSize
-            val startDate = params.startDate?.let { Instant.parse(it) }
-            val endDate = params.endDate?.let { Instant.parse(it) }
+            val offset = (searchParams.page - 1) * searchParams.pageSize
+            val startDate = searchParams.startDate?.let { Instant.parse(it) }
+            val endDate = searchParams.endDate?.let { Instant.parse(it) }
             
             val videos = videoRepository.search(
-                query = params.query,
-                tags = params.tags,
+                query = searchParams.query,
+                tags = searchParams.tags,
                 startDate = startDate,
                 endDate = endDate,
-                limit = params.pageSize,
+                limit = searchParams.pageSize,
                 offset = offset
             )
             
             val totalCount = videoRepository.countBySearchCriteria(
-                query = params.query,
-                tags = params.tags,
+                query = searchParams.query,
+                tags = searchParams.tags,
                 startDate = startDate,
                 endDate = endDate
             )
             
-            val hasMore = (params.page * params.pageSize) < totalCount
+            val hasMore = (searchParams.page * searchParams.pageSize) < totalCount
             
             VideoSearchResultDto(
                 items = videos.map { convertToDto(it) },
                 totalCount = totalCount,
-                page = params.page,
-                pageSize = params.pageSize,
+                page = searchParams.page,
+                pageSize = searchParams.pageSize,
                 hasMore = hasMore
             )
         } catch (e: Exception) {
@@ -82,8 +82,8 @@ class VideoUseCaseImpl(
             VideoSearchResultDto(
                 items = emptyList(),
                 totalCount = 0,
-                page = params.page,
-                pageSize = params.pageSize,
+                page = searchParams.page,
+                pageSize = searchParams.pageSize,
                 hasMore = false
             )
         }
@@ -124,7 +124,6 @@ class VideoUseCaseImpl(
             url = video.videoDetails?.url ?: "",
             tags = video.tags.map { it.name },
             channelId = video.channelId.value,
-            isMembersOnly = video.contentDetails?.isMembersOnly ?: false
         )
     }
 }
