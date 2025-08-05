@@ -20,7 +20,7 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
     >
       <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border border-sage-200 hover:scale-[1.02] hover:-translate-y-1">
         {video.thumbnailUrl && (
-          <div className="relative w-full h-48 overflow-hidden bg-sage-100">
+          <div className="relative w-full aspect-video overflow-hidden bg-sage-100">
             <Image 
               src={video.thumbnailUrl} 
               alt={video.title} 
