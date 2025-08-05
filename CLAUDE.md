@@ -62,6 +62,7 @@
 - `infrastructure/`：TerraformまたはCloudFormationでのIaCコード  
 - `ci-cd/`：AmplifyやGitHub ActionsなどCI/CD設定ファイル  
 - `docs/`：設計・仕様・ドキュメント関連ファイル
+  - `database-schema.md`：データベーススキーマ仕様書（PostgreSQL 13テーブル構成）
 
 ## 5. バックエンド設計ポイント
 - **Spring Boot採用**：安定したエコシステムと豊富なライブラリを持つフレームワーク。
