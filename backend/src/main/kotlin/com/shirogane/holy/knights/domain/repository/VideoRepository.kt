@@ -31,7 +31,7 @@ interface VideoRepository {
      * @param endDate 終了日時
      * @return 検索条件に合致する動画の総数
      */
-    suspend fun countBySearchCriteria(
+    suspend fun countVideosBySearchCriteria(
         query: String? = null,
         tags: List<String>? = null,
         startDate: Instant? = null,

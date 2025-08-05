@@ -34,7 +34,7 @@ class VideoUseCaseImpl(
                 offset = offset
             )
             
-            val totalCount = videoRepository.countBySearchCriteria(
+            val totalCount = videoRepository.countVideosBySearchCriteria(
                 query = searchParams.query,
                 tags = searchParams.tags,
                 startDate = startDate,
