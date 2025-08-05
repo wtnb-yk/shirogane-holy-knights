@@ -42,6 +42,7 @@ class ApiGatewayFunction(
             val response = when {
                 request.path == "/health" && request.httpMethod == "GET" -> handleHealth()
                 request.path == "/videos" && request.httpMethod == "POST" -> handleVideoSearch(request)
+                request.path == "/streams" && request.httpMethod == "POST" -> handleStreamSearch(request)
                 request.path == "/news" && request.httpMethod == "POST" -> handleNewsSearch(request)
                 request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories(request)
                 else -> {
@@ -90,6 +91,26 @@ class ApiGatewayFunction(
         
         val result = runBlocking { videoUseCase.searchVideos(params) }
         logger.info("Video search returning ${result.items.size} items")
+        
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(result))
+    }
+    
+    private fun handleStreamSearch(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+        logger.info("Stream search requested")
+        
+        val params = if (request.body != null) {
+            objectMapper.readValue(request.body, StreamSearchParamsDto::class.java)
+        } else {
+            StreamSearchParamsDto() // デフォルト値
+        }
+        
+        logger.info("Stream search params: $params")
+        
+        val result = runBlocking { videoUseCase.searchStreams(params) }
+        logger.info("Stream search returning ${result.items.size} items")
         
         return APIGatewayProxyResponseEvent()
             .withStatusCode(200)
