@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.core.env.Environment
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.r2dbc.dialect.PostgresDialect
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
@@ -18,7 +19,9 @@ import org.springframework.r2dbc.core.DatabaseClient
 
 @Configuration
 @EnableR2dbcRepositories(basePackages = ["com.shirogane.holy.knights.adapter.gateway"])
-class R2dbcConfig {
+class R2dbcConfig(
+    private val environment: Environment
+) {
     
     private val logger = LoggerFactory.getLogger(R2dbcConfig::class.java)
     
@@ -38,9 +41,15 @@ class R2dbcConfig {
             .username(username)
             .password(password)
 
-        val isLambda = System.getenv("SPRING_PROFILES_ACTIVE")?.contains("lambda") ?: false
+        // Springプロファイルまたは環境変数でLambda環境を判定
+        val isLambda = environment.activeProfiles.contains("lambda") ||
+                       System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null
+        
         if (isLambda) {
+            logger.info("Lambda environment detected, enabling SSL for database connection")
             configuration.enableSsl()
+        } else {
+            logger.info("Non-Lambda environment, SSL not enabled for database connection")
         }
 
         return PostgresqlConnectionFactory(configuration.build())
