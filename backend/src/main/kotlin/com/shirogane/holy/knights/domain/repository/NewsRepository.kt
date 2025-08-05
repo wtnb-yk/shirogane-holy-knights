@@ -10,7 +10,6 @@ import java.time.Instant
  * ドメイン層で定義するアウトバウンドポート
  */
 interface NewsRepository {
-
     /**
      * ニュース検索
      */
@@ -37,24 +36,4 @@ interface NewsRepository {
      * 全カテゴリを取得
      */
     suspend fun findAllCategories(): List<NewsCategory>
-
-    /**
-     * カテゴリIDでカテゴリを取得
-     */
-    suspend fun findCategoryById(categoryId: Int): NewsCategory?
-
-    /**
-     * ニュース作成
-     */
-    suspend fun save(news: News): News
-
-    /**
-     * ニュース更新
-     */
-    suspend fun update(news: News): News
-
-    /**
-     * ニュース削除
-     */
-    suspend fun deleteById(id: NewsId): Boolean
 }

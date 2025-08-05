@@ -160,57 +160,8 @@ class NewsRepositoryImpl(
         }
     }
 
-    override suspend fun findCategoryById(categoryId: Int): NewsCategory? {
-        logger.info("ニュースカテゴリ取得: id=$categoryId")
-        return try {
-            val categoryEntity = template.select(NewsCategoryEntity::class.java)
-                .matching(Query.query(Criteria.where("id").`is`(categoryId)))
-                .one()
-                .awaitSingleOrNull()
-            
-            categoryEntity?.let { buildNewsCategory(it) }
-        } catch (e: Exception) {
-            logger.error("ニュースカテゴリ取得エラー", e)
-            null
-        }
-    }
-
-    override suspend fun save(news: News): News {
-        // TODO: 実装（管理機能用）
-        throw NotImplementedError("save機能は管理機能実装時に追加予定")
-    }
-
-    override suspend fun update(news: News): News {
-        // TODO: 実装（管理機能用）
-        throw NotImplementedError("update機能は管理機能実装時に追加予定")
-    }
-
-    override suspend fun deleteById(id: NewsId): Boolean {
-        // TODO: 実装（管理機能用）
-        throw NotImplementedError("delete機能は管理機能実装時に追加予定")
-    }
-
-    /**
-     * NewsEntityからNewsドメインモデルを構築
-     */
-    private suspend fun buildNews(entity: NewsEntity): News {
-        val category = findCategoryById(entity.categoryId) 
-            ?: throw IllegalStateException("カテゴリが見つかりません: ${entity.categoryId}")
-        
-        val newsDetails = findNewsDetailsById(entity.id)
-        
-        return News(
-            id = NewsId(entity.id),
-            title = entity.title,
-            category = category,
-            publishedAt = entity.publishedAt,
-            newsDetails = newsDetails
-        )
-    }
-
     /**
      * JOINクエリの結果からNewsドメインモデルを構築
-     * N+1問題を解決するため、1回のクエリで取得したデータを使用
      */
     private fun buildNewsFromRow(row: Row): News {
         val category = NewsCategory(
@@ -248,30 +199,6 @@ class NewsRepositoryImpl(
             description = entity.description,
             sortOrder = entity.sortOrder
         )
-    }
-    
-    /**
-     * ニュース詳細情報を取得
-     */
-    private suspend fun findNewsDetailsById(newsId: String): NewsDetails? {
-        return try {
-            val detailsEntity = template.select(NewsDetailsEntity::class.java)
-                .matching(Query.query(Criteria.where("news_id").`is`(newsId)))
-                .one()
-                .awaitSingleOrNull()
-            
-            detailsEntity?.let {
-                NewsDetails(
-                    content = it.content,
-                    summary = it.summary,
-                    thumbnailUrl = it.thumbnailUrl,
-                    externalUrl = it.externalUrl
-                )
-            }
-        } catch (e: Exception) {
-            logger.error("ニュース詳細取得エラー", e)
-            null
-        }
     }
 }
 
