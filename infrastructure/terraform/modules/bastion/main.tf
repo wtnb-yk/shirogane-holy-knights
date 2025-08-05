@@ -50,11 +50,11 @@ resource "aws_security_group" "bastion" {
 
   # SSH access from Instance Connect Endpoint
   ingress {
-    from_port                = 22
-    to_port                  = 22
-    protocol                 = "tcp"
-    source_security_group_id = aws_security_group.instance_connect_endpoint.id
-    description              = "SSH access from Instance Connect Endpoint"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.instance_connect_endpoint.id]
+    description     = "SSH access from Instance Connect Endpoint"
   }
 
   # Only outbound traffic (for DB access)
