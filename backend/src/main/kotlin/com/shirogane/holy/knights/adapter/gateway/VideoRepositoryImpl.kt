@@ -3,13 +3,10 @@ package com.shirogane.holy.knights.adapter.gateway
 import com.shirogane.holy.knights.domain.model.*
 import com.shirogane.holy.knights.domain.repository.VideoRepository
 import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.relational.core.query.Criteria
 import org.springframework.data.relational.core.query.Query
-import org.springframework.data.domain.Sort
 import io.r2dbc.spi.Row
 import java.time.Instant
 
@@ -19,39 +16,6 @@ class VideoRepositoryImpl(
 
     private val logger = LoggerFactory.getLogger(VideoRepositoryImpl::class.java)
 
-    override suspend fun findAll(limit: Int, offset: Int): List<Video> {
-        logger.info("findAll called with limit=$limit, offset=$offset")
-        // JOINクエリ版を使用してN+1問題を解決
-        return findAllWithJoin(limit, offset)
-    }
-
-    override suspend fun count(): Int {
-        logger.info("動画総数取得")
-        return try {
-            template.count(Query.empty(), VideoEntity::class.java)
-                .awaitSingle()
-                .toInt()
-        } catch (e: Exception) {
-            logger.error("動画総数取得エラー", e)
-            0
-        }
-    }
-
-    override suspend fun findById(id: VideoId): Video? {
-        logger.info("動画取得: id=$id")
-        return try {
-            val video = template.select(VideoEntity::class.java)
-                .matching(Query.query(Criteria.where("id").`is`(id.value)))
-                .one()
-                .awaitSingleOrNull()
-            
-            video?.let { buildVideo(it) }
-        } catch (e: Exception) {
-            logger.error("動画取得エラー: id=$id", e)
-            null
-        }
-    }
-
     override suspend fun search(
         query: String?,
         tags: List<String>?,
@@ -60,7 +24,6 @@ class VideoRepositoryImpl(
         limit: Int,
         offset: Int
     ): List<Video> {
-        // JOINクエリ版を使用してN+1問題を解決
         return searchWithJoin(query, tags, startDate, endDate, limit, offset)
     }
 
@@ -110,75 +73,6 @@ class VideoRepositoryImpl(
         }
     }
 
-    override suspend fun getRelatedVideos(id: VideoId, limit: Int): List<Video> {
-        logger.info("関連動画取得: id=$id, limit=$limit")
-        return try {
-            // 簡易実装：同じチャンネルの最新動画を取得
-            val targetVideo = findById(id)
-            if (targetVideo != null) {
-                template.select(VideoEntity::class.java)
-                    .matching(
-                        Query.query(
-                            Criteria.where("channel_id").`is`(targetVideo.channelId.value)
-                                .and(Criteria.where("id").not(id.value))
-                        ).limit(limit)
-                    )
-                    .all()
-                    .collectList()
-                    .awaitSingle()
-                    .map { buildVideo(it) }
-            } else {
-                emptyList()
-            }
-        } catch (e: Exception) {
-            logger.error("関連動画取得エラー: id=$id", e)
-            emptyList()
-        }
-    }
-
-    /**
-     * JOINクエリでN+1問題を解決する findAll メソッド
-     */
-    private suspend fun findAllWithJoin(limit: Int, offset: Int): List<Video> {
-        logger.info("JOINクエリで動画一覧取得: limit=$limit, offset=$offset")
-        return try {
-            val sql = """
-                SELECT 
-                    v.id, v.title, v.published_at, v.channel_id,
-                    vd.url, vd.duration, vd.thumbnail_url,
-                    cd.description,
-                    STRING_AGG(t.name, ',' ORDER BY t.name) as tags
-                FROM videos v
-                LEFT JOIN video_details vd ON v.id = vd.video_id
-                LEFT JOIN content_details cd ON v.id = cd.video_id
-                LEFT JOIN video_tags vt ON v.id = vt.video_id
-                LEFT JOIN tags t ON vt.tag_id = t.id
-                GROUP BY v.id, v.title, v.published_at, v.channel_id,
-                         vd.url, vd.duration, vd.thumbnail_url,
-                         cd.description
-                ORDER BY v.published_at DESC
-                LIMIT :limit OFFSET :offset
-            """.trimIndent()
-
-            template.databaseClient
-                .sql(sql)
-                .bind("limit", limit)
-                .bind("offset", offset)
-                .map { row ->
-                    buildVideoFromRow(row as Row)
-                }
-                .all()
-                .collectList()
-                .awaitSingle()
-        } catch (e: Exception) {
-            logger.error("JOINクエリでの動画一覧取得エラー", e)
-            emptyList()
-        }
-    }
-
-    /**
-     * JOINクエリでN+1問題を解決する search メソッド
-     */
     private suspend fun searchWithJoin(
         query: String?,
         tags: List<String>?,
@@ -252,9 +146,6 @@ class VideoRepositoryImpl(
         }
     }
 
-    /**
-     * JOINクエリ結果からVideoドメインオブジェクトを構築するヘルパー関数
-     */
     private fun buildVideoFromRow(row: Row): Video {
         val tags = row.get("tags", String::class.java)
             ?.split(",")
@@ -276,60 +167,6 @@ class VideoRepositoryImpl(
                 description = row.get("description", String::class.java),
             ),
             tags = tags
-        )
-    }
-
-    /**
-     * データベースエンティティからドメインモデルを構築するヘルパー関数（旧バージョン・互換性維持用）
-     */
-    private suspend fun buildVideo(videoEntity: VideoEntity): Video {
-        // 関連データを並行取得
-        val videoDetailsDeferred = template.select(VideoDetailsEntity::class.java)
-            .matching(Query.query(Criteria.where("video_id").`is`(videoEntity.id)))
-            .one()
-            .awaitSingleOrNull()
-
-        val contentDetailsDeferred = template.select(ContentDetailsEntity::class.java)
-            .matching(Query.query(Criteria.where("video_id").`is`(videoEntity.id)))
-            .one()
-            .awaitSingleOrNull()
-
-        // タグ取得（video_tags経由でjoin）
-        val tagIds = template.select(VideoTagEntity::class.java)
-            .matching(Query.query(Criteria.where("video_id").`is`(videoEntity.id)))
-            .all()
-            .collectList()
-            .awaitSingle()
-
-        val tags = if (tagIds.isNotEmpty()) {
-            template.select(TagEntity::class.java)
-                .matching(Query.query(Criteria.where("id").`in`(tagIds.map { it.tagId })))
-                .all()
-                .collectList()
-                .awaitSingle()
-        } else {
-            emptyList()
-        }
-
-        // ドメインオブジェクトを構築
-        return Video(
-            id = VideoId(videoEntity.id),
-            title = videoEntity.title,
-            publishedAt = videoEntity.publishedAt,
-            channelId = ChannelId(videoEntity.channelId),
-            videoDetails = videoDetailsDeferred?.let { 
-                VideoDetailsVO(
-                    url = it.url,
-                    duration = it.duration?.let { d -> Duration(d) },
-                    thumbnailUrl = it.thumbnailUrl
-                )
-            },
-            contentDetails = contentDetailsDeferred?.let {
-                ContentDetails(
-                    description = it.description,
-                )
-            },
-            tags = tags.map { Tag(it.name) }
         )
     }
 }
