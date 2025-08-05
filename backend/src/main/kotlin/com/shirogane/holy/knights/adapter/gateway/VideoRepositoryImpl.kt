@@ -135,8 +135,8 @@ class VideoRepositoryImpl(
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN stream_details sd ON v.id = sd.video_id
-                LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
-                LEFT JOIN video_tags t ON vtg.tag_id = t.id
+                LEFT JOIN video_stream_tags vst ON v.id = vst.video_id
+                LEFT JOIN stream_tags t ON vst.tag_id = t.id
                 $whereClause
             """.trimIndent()
 
@@ -265,13 +265,13 @@ class VideoRepositoryImpl(
                     v.id, v.title, v.description, v.url, v.thumbnail_url, 
                     v.duration, v.channel_id, v.created_at,
                     sd.started_at,
-                    STRING_AGG(DISTINCT t.name, ',' ORDER BY t.name) as tags
+                    STRING_AGG(DISTINCT t.name, ',' ORDER BY t.name) as stream_tags
                 FROM videos v
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN stream_details sd ON v.id = sd.video_id
-                LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
-                LEFT JOIN video_tags t ON vtg.tag_id = t.id
+                LEFT JOIN video_stream_tags vst ON v.id = vst.video_id
+                LEFT JOIN stream_tags t ON vst.tag_id = t.id
                 $whereClause
                 GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
                          v.duration, v.channel_id, v.created_at, sd.started_at
@@ -325,10 +325,10 @@ class VideoRepositoryImpl(
     }
 
     private fun buildStreamFromRow(row: Row): Video {
-        val tags = row.get("tags", String::class.java)
+        val streamTags = row.get("stream_tags", String::class.java)
             ?.split(",")
             ?.filter { it.isNotBlank() }
-            ?.map { Tag(it.trim()) }
+            ?.map { StreamTag(it.trim()) }
             ?: emptyList()
 
         return Video(
@@ -352,7 +352,7 @@ class VideoRepositoryImpl(
             contentDetails = ContentDetails(
                 description = row.get("description", String::class.java),
             ),
-            tags = tags
+            streamTags = streamTags
         )
     }
 }
@@ -418,4 +418,21 @@ data class VideoVideoTypeEntity(
     val videoId: String,
     val videoTypeId: Int,
     val createdAt: Instant?
+)
+
+@org.springframework.data.relational.core.mapping.Table("stream_tags")
+data class StreamTagEntity(
+    @org.springframework.data.annotation.Id
+    val id: Long? = null,
+    val name: String,
+    val description: String?,
+    val createdAt: Instant?
+)
+
+@org.springframework.data.relational.core.mapping.Table("video_stream_tags")
+data class VideoStreamTagEntity(
+    @org.springframework.data.annotation.Id
+    val id: Long? = null,
+    val videoId: String,
+    val tagId: Long
 )

@@ -14,7 +14,8 @@ data class Video(
     val videoDetails: VideoDetailsVO? = null,
     val streamDetails: StreamDetailsVO? = null,
     val contentDetails: ContentDetails? = null,
-    val tags: List<Tag> = emptyList()
+    val tags: List<Tag> = emptyList(),
+    val streamTags: List<StreamTag> = emptyList()
 )
 
 /**
@@ -57,10 +58,18 @@ value class ChannelId(val value: String) {
 }
 
 /**
- * タグ値オブジェクト
+ * 動画タグ値オブジェクト
  */
 @JvmInline
 value class Tag(val name: String) {
+    override fun toString(): String = name
+}
+
+/**
+ * 配信タグ値オブジェクト
+ */
+@JvmInline
+value class StreamTag(val name: String) {
     override fun toString(): String = name
 }
 

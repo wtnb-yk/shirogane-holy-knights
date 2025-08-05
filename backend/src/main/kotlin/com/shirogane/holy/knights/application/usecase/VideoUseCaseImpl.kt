@@ -130,7 +130,7 @@ class VideoUseCaseImpl(
             duration = video.videoDetails?.duration?.value,
             thumbnailUrl = video.videoDetails?.thumbnailUrl,
             url = video.videoDetails?.url ?: "https://www.youtube.com/watch?v=${video.id.value}",
-            tags = video.tags.map { it.name },
+            tags = video.streamTags.map { it.name },
             channelId = video.channelId.value,
         )
     }
