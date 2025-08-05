@@ -15,13 +15,13 @@ interface NewsCardProps {
 // カテゴリバッジのスタイル
 const getCategoryBadgeStyle = (categoryName: string) => {
   switch (categoryName) {
-    case 'GOODS':
+    case 'グッズ':
       return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'COLLABORATION':
+    case 'コラボ':
       return 'bg-green-100 text-green-800 border-green-200';
-    case 'EVENT':
+    case 'イベント':
       return 'bg-purple-100 text-purple-800 border-purple-200';
-    case 'MEDIA':
+    case 'メディア':
       return 'bg-orange-100 text-orange-800 border-orange-200';
     default:
       return 'bg-sage-100 text-sage-800 border-sage-200';
