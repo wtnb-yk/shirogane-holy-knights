@@ -37,4 +37,38 @@ interface VideoRepository {
         startDate: Instant? = null,
         endDate: Instant? = null
     ): Int
+    
+    /**
+     * 配信検索条件による検索
+     * @param query タイトル・説明の部分一致検索クエリ
+     * @param tags タグによるフィルタリング
+     * @param startDate 開始日時
+     * @param endDate 終了日時
+     * @param limit 取得上限数
+     * @param offset オフセット
+     * @return 検索条件に合致する配信のリスト
+     */
+    suspend fun searchStreams(
+        query: String? = null,
+        tags: List<String>? = null,
+        startDate: Instant? = null,
+        endDate: Instant? = null,
+        limit: Int,
+        offset: Int
+    ): List<Video>
+    
+    /**
+     * 配信検索条件による総件数取得
+     * @param query タイトル・説明の部分一致検索クエリ
+     * @param tags タグによるフィルタリング
+     * @param startDate 開始日時
+     * @param endDate 終了日時
+     * @return 検索条件に合致する配信の総数
+     */
+    suspend fun countStreamsBySearchCriteria(
+        query: String? = null,
+        tags: List<String>? = null,
+        startDate: Instant? = null,
+        endDate: Instant? = null
+    ): Int
 }

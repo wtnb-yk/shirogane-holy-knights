@@ -12,6 +12,7 @@ data class Video(
     val publishedAt: Instant,
     val channelId: ChannelId,
     val videoDetails: VideoDetailsVO? = null,
+    val streamDetails: StreamDetailsVO? = null,
     val contentDetails: ContentDetails? = null,
     val tags: List<Tag> = emptyList()
 )
@@ -23,6 +24,13 @@ data class VideoDetailsVO(
     val url: String,
     val duration: Duration? = null,
     val thumbnailUrl: String? = null
+)
+
+/**
+ * 配信詳細情報値オブジェクト
+ */
+data class StreamDetailsVO(
+    val startedAt: Instant? = null
 )
 
 /**
