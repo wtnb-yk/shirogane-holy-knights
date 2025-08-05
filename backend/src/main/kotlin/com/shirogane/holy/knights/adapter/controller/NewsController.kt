@@ -2,11 +2,9 @@ package com.shirogane.holy.knights.adapter.controller
 
 import com.shirogane.holy.knights.application.dto.*
 import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 /**
  * ニュース関連のコントローラー
@@ -21,17 +19,15 @@ class NewsController(private val newsUseCase: NewsUseCasePort) {
      * ニュース検索
      */
     @PostMapping("/news")
-    fun searchNews(@RequestBody params: NewsSearchParamsDto): Mono<ResponseEntity<NewsSearchResultDto>> {
+    suspend fun searchNews(@RequestBody params: NewsSearchParamsDto): ResponseEntity<NewsSearchResultDto> {
         logger.info("ニュース検索: $params")
         
-        return Mono.fromCallable {
-            runBlocking { newsUseCase.searchNews(params) }
-        }.map { result ->
+        return try {
+            val result = newsUseCase.searchNews(params)
             logger.info("ニュース検索完了: ${result.items.size}件")
             ResponseEntity.ok(result)
-        }.doOnError { error ->
+        } catch (error: Exception) {
             logger.error("ニュース検索エラー", error)
-        }.onErrorReturn(
             ResponseEntity.internalServerError().body(
                 NewsSearchResultDto(
                     items = emptyList(),
@@ -41,7 +37,7 @@ class NewsController(private val newsUseCase: NewsUseCasePort) {
                     hasMore = false
                 )
             )
-        )
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.shirogane.holy.knights.adapter.gateway
 
 import com.shirogane.holy.knights.domain.model.*
 import com.shirogane.holy.knights.domain.repository.NewsRepository
+import io.r2dbc.spi.Row
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.slf4j.LoggerFactory
@@ -29,43 +30,80 @@ class NewsRepositoryImpl(
     ): List<News> {
         logger.info("ニュース検索: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate, limit=$limit, offset=$offset")
         return try {
-            var criteria = Criteria.empty()
-            
-            query?.let {
-                criteria = criteria.and(
-                    Criteria.where("title").like("%$it%")
-                        .or(Criteria.where("nd.content").like("%$it%"))
-                )
-            }
-            
-            categoryId?.let {
-                criteria = criteria.and(Criteria.where("category_id").`is`(it))
-            }
-            
-            startDate?.let {
-                criteria = criteria.and(Criteria.where("published_at").greaterThanOrEquals(it))
-            }
-            
-            endDate?.let {
-                criteria = criteria.and(Criteria.where("published_at").lessThanOrEquals(it))
-            }
-            
-            val sqlQuery = Query.query(criteria)
-                .offset(offset.toLong())
-                .limit(limit)
-                .sort(Sort.by(Sort.Direction.DESC, "published_at"))
-            
-            val newsEntities = template.select(NewsEntity::class.java)
-                .matching(sqlQuery)
-                .all()
-                .collectList()
-                .awaitSingle()
-            
-            newsEntities.map { buildNews(it) }
+            searchWithJoin(query, categoryId, startDate, endDate, limit, offset)
         } catch (e: Exception) {
             logger.error("ニュース検索エラー", e)
             emptyList()
         }
+    }
+
+    /**
+     * JOINクエリを使った最適化されたニュース検索
+     */
+    private suspend fun searchWithJoin(
+        query: String?,
+        categoryId: Int?,
+        startDate: Instant?,
+        endDate: Instant?,
+        limit: Int,
+        offset: Int
+    ): List<News> {
+        val conditions = mutableListOf<String>()
+        val bindings = mutableMapOf<String, Any>()
+        
+        // WHERE句の動的構築
+        query?.let {
+            conditions.add("(n.title LIKE :query OR nd.content LIKE :query)")
+            bindings["query"] = "%$it%"
+        }
+        
+        categoryId?.let {
+            conditions.add("n.category_id = :categoryId")
+            bindings["categoryId"] = it
+        }
+        
+        startDate?.let {
+            conditions.add("n.published_at >= :startDate")
+            bindings["startDate"] = it
+        }
+        
+        endDate?.let {
+            conditions.add("n.published_at <= :endDate")
+            bindings["endDate"] = it
+        }
+        
+        val whereClause = if (conditions.isNotEmpty()) {
+            "WHERE ${conditions.joinToString(" AND ")}"
+        } else {
+            ""
+        }
+        
+        val sql = """
+            SELECT 
+                n.id, n.title, n.published_at,
+                nc.id as category_id, nc.name as category_name, 
+                nc.display_name as category_display_name,
+                nc.description as category_description,
+                nc.sort_order as category_sort_order,
+                nd.content, nd.summary, nd.thumbnail_url, nd.external_url
+            FROM news n
+            INNER JOIN news_categories nc ON n.category_id = nc.id
+            LEFT JOIN news_details nd ON n.id = nd.news_id
+            $whereClause
+            ORDER BY n.published_at DESC
+            LIMIT :limit OFFSET :offset
+        """.trimIndent()
+        
+        var sqlQuery = template.databaseClient.sql(sql)
+        bindings.forEach { (key, value) ->
+            sqlQuery = sqlQuery.bind(key, value)
+        }
+        sqlQuery = sqlQuery.bind("limit", limit).bind("offset", offset)
+        
+        return sqlQuery.map { row -> buildNewsFromRow(row as Row) }
+            .all()
+            .collectList()
+            .awaitSingle()
     }
 
     override suspend fun countBySearchCriteria(
@@ -74,7 +112,7 @@ class NewsRepositoryImpl(
         startDate: Instant?,
         endDate: Instant?
     ): Int {
-        logger.info("検索結果総数取得（統合版）: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate")
+        logger.info("検索結果総数取得: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate")
         return try {
             var criteria = Criteria.empty()
             
@@ -166,6 +204,35 @@ class NewsRepositoryImpl(
             title = entity.title,
             category = category,
             publishedAt = entity.publishedAt,
+            newsDetails = newsDetails
+        )
+    }
+
+    /**
+     * JOINクエリの結果からNewsドメインモデルを構築
+     * N+1問題を解決するため、1回のクエリで取得したデータを使用
+     */
+    private fun buildNewsFromRow(row: Row): News {
+        val category = NewsCategory(
+            id = row.get("category_id", Integer::class.java)!!.toInt(),
+            name = row.get("category_name", String::class.java)!!,
+            displayName = row.get("category_display_name", String::class.java)!!,
+            description = row.get("category_description", String::class.java),
+            sortOrder = row.get("category_sort_order", Integer::class.java)!!.toInt()
+        )
+        
+        val newsDetails = NewsDetails(
+            content = row.get("content", String::class.java) ?: "",
+            summary = row.get("summary", String::class.java),
+            thumbnailUrl = row.get("thumbnail_url", String::class.java),
+            externalUrl = row.get("external_url", String::class.java)
+        )
+        
+        return News(
+            id = NewsId(row.get("id", String::class.java)!!),
+            title = row.get("title", String::class.java)!!,
+            category = category,
+            publishedAt = row.get("published_at", Instant::class.java)!!,
             newsDetails = newsDetails
         )
     }
