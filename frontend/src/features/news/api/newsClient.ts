@@ -29,7 +29,7 @@ export class NewsClient {
     params: NewsSearchParamsDto
   ): Promise<NewsSearchResultDto> {
     try {
-      const response = await fetch(`${API_CONFIG.baseUrl}/newsSearch`, {
+      const response = await fetch(`${API_CONFIG.baseUrl}/news`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

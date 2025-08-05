@@ -41,9 +41,9 @@ class ApiGatewayFunction(
         return try {
             val response = when {
                 request.path == "/health" && request.httpMethod == "GET" -> handleHealth()
-                request.path == "/videoSearch" && request.httpMethod == "POST" -> handleVideoSearch(request)
+                request.path == "/videos" && request.httpMethod == "POST" -> handleVideoSearch(request)
                 request.path == "/newsList" && request.httpMethod == "POST" -> handleNewsList(request)
-                request.path == "/newsSearch" && request.httpMethod == "POST" -> handleNewsSearch(request)
+                request.path == "/news" && request.httpMethod == "POST" -> handleNewsSearch(request)
                 request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories(request)
                 else -> {
                     logger.warn("Unknown path: ${request.httpMethod} ${request.path}")

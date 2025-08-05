@@ -4,10 +4,10 @@ import React from 'react';
 import { useNews } from '@/features/news/hooks/useNews';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { NewsCategoryFilter } from '@/features/news/components/NewsCategoryFilter';
-import { NewsSearchResultsSummary } from '@/features/news/components/NewsSearchResultsSummary';
 import { NewsGrid } from '@/features/news/components/NewsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { NewsStatsSummary } from '@/features/news/components/NewsStatsSummary';
+import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
 
 export default function NewsPage() {
   const {

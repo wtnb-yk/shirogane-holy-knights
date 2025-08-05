@@ -24,7 +24,7 @@ export class VideoClient {
   ): Promise<VideoSearchResult> {
     try {
       // Spring Cloud Functionのエンドポイント
-      const response = await fetch(`${API_CONFIG.baseUrl}/videoSearch`, {
+      const response = await fetch(`${API_CONFIG.baseUrl}/videos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

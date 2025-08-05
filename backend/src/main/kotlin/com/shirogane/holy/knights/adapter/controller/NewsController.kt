@@ -47,7 +47,7 @@ class NewsController(private val newsUseCase: NewsUseCasePort) {
     /**
      * ニュース検索
      */
-    @PostMapping("/newsSearch")
+    @PostMapping("/news")
     fun searchNews(@RequestBody params: NewsSearchParamsDto): Mono<ResponseEntity<NewsSearchResultDto>> {
         logger.info("ニュース検索: $params")
         

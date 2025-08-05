@@ -22,7 +22,7 @@ class VideoController(private val videoUseCase: VideoUseCasePort) {
     /**
      * 動画検索 - フロントエンド用エンドポイント
      */
-    @PostMapping("/videoSearch")
+    @PostMapping("/videos")
     fun videoSearch(@RequestBody params: VideoSearchParamsDto): Mono<ResponseEntity<VideoSearchResultDto>> {
         logger.info("videoSearch called with params: $params")
         
