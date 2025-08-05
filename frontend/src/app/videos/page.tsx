@@ -2,83 +2,112 @@
 
 import React, { useState } from 'react';
 import { useVideos } from '@/features/videos/hooks/useVideos';
+import { useStreams } from '@/features/videos/hooks/useStreams';
+import { ContentType } from '@/features/videos/types/types';
 import { SearchBar } from '@/features/videos/components/SearchBar';
 import { FilterModal } from '@/features/videos/components/filter/FilterModal';
 import { SearchResultsSummary } from '@/features/videos/components/results/SearchResultsSummary';
 import { StatsSummary } from '@/features/videos/components/results/StatsSummary';
 import { VideosGrid } from '@/features/videos/components/VideosGrid';
+import { StreamsGrid } from '@/features/videos/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 
 export default function VideosList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
   
-  const {
-    videos,
-    loading,
-    error,
-    currentPage,
-    totalCount,
-    hasMore,
-    totalPages,
-    setCurrentPage,
-    searchQuery,
-    handleSearch,
-    clearSearch,
-    filters,
-    setFilters,
-    availableTags,
-    clearAllFilters
-  } = useVideos({ pageSize: 20 });
+  const videosData = useVideos({ pageSize: 20 });
+  const streamsData = useStreams({ pageSize: 20 });
+  
+  // 現在選択されているタブのデータを取得
+  const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
 
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 opacity-0 animate-slide-up">
-          <h1 className="text-4xl font-bold mb-2 text-gray-800">
+          <h1 className="text-4xl font-bold mb-6 text-gray-800">
             配信・動画
           </h1>
+          
+          {/* タブ切り替えUI */}
+          <div className="flex border-b border-sage-200">
+            <button
+              onClick={() => setContentType(ContentType.STREAMS)}
+              className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
+                contentType === ContentType.STREAMS 
+                  ? 'text-gray-800 border-sage-300 bg-sage-100/30' 
+                  : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-sage-200'
+              }`}
+            >
+              配信
+            </button>
+            <button
+              onClick={() => setContentType(ContentType.VIDEOS)}
+              className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
+                contentType === ContentType.VIDEOS 
+                  ? 'text-gray-800 border-sage-300 bg-sage-100/30' 
+                  : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-sage-200'
+              }`}
+            >
+              動画
+            </button>
+          </div>
         </div>
 
         <SearchBar 
-          searchValue={searchQuery}
-          onSearch={handleSearch}
-          onClearSearch={clearSearch}
+          searchValue={currentData.searchQuery}
+          onSearch={currentData.handleSearch}
+          onClearSearch={currentData.clearSearch}
           onFilterClick={() => setShowFilterModal(true)}
         />
 
         <SearchResultsSummary
-          searchQuery={searchQuery}
-          filters={filters}
-          totalCount={totalCount}
-          onClearAllFilters={clearAllFilters}
+          searchQuery={currentData.searchQuery}
+          filters={currentData.filters}
+          totalCount={currentData.totalCount}
+          onClearAllFilters={currentData.clearAllFilters}
         />
 
-        <VideosGrid videos={videos} loading={loading} error={error} />
+        {/* タブに応じてGrid表示を切り替え */}
+        {contentType === ContentType.VIDEOS ? (
+          <VideosGrid 
+            videos={videosData.videos} 
+            loading={videosData.loading} 
+            error={videosData.error} 
+          />
+        ) : (
+          <StreamsGrid 
+            streams={streamsData.streams} 
+            loading={streamsData.loading} 
+            error={streamsData.error} 
+          />
+        )}
 
-        {totalCount > 20 && (
+        {currentData.totalCount > 20 && (
           <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            hasMore={hasMore}
-            onPageChange={setCurrentPage}
+            currentPage={currentData.currentPage}
+            totalPages={currentData.totalPages}
+            hasMore={currentData.hasMore}
+            onPageChange={currentData.setCurrentPage}
             size="sm"
           />
         )}
 
         <StatsSummary
-          currentPage={currentPage}
-          totalCount={totalCount}
+          currentPage={currentData.currentPage}
+          totalCount={currentData.totalCount}
           pageSize={20}
-          loading={loading}
+          loading={currentData.loading}
         />
 
         <FilterModal
           isOpen={showFilterModal}
           onClose={() => setShowFilterModal(false)}
-          filters={filters}
-          onFiltersChange={setFilters}
-          availableTags={availableTags}
-          onClearAllFilters={clearAllFilters}
+          filters={currentData.filters}
+          onFiltersChange={currentData.setFilters}
+          availableTags={currentData.availableTags}
+          onClearAllFilters={currentData.clearAllFilters}
         />
       </div>
     </div>
