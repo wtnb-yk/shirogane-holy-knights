@@ -114,19 +114,4 @@ data class NewsSearchResultDto(
     val hasMore: Boolean
 )
 
-/**
- * ニュース一覧取得パラメータDTO
- */
-data class NewsListParamsDto(
-    val categoryId: Int? = null,
-    val page: Int = 1,
-    val pageSize: Int = 20
-) {
-    /**
-     * オフセットを計算
-     */
-    fun getOffset(): Int {
-        return (page - 1) * pageSize
-    }
-}
 

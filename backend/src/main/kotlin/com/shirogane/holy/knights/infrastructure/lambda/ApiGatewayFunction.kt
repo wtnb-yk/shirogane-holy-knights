@@ -42,7 +42,6 @@ class ApiGatewayFunction(
             val response = when {
                 request.path == "/health" && request.httpMethod == "GET" -> handleHealth()
                 request.path == "/videos" && request.httpMethod == "POST" -> handleVideoSearch(request)
-                request.path == "/newsList" && request.httpMethod == "POST" -> handleNewsList(request)
                 request.path == "/news" && request.httpMethod == "POST" -> handleNewsSearch(request)
                 request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories(request)
                 else -> {
@@ -118,28 +117,8 @@ class ApiGatewayFunction(
         return response.withHeaders(headers)
     }
     
-    private fun handleNewsList(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        logger.info("News list requested")
-        
-        val params = if (request.body != null) {
-            objectMapper.readValue(request.body, NewsListParamsDto::class.java)
-        } else {
-            NewsListParamsDto() // デフォルト値
-        }
-        
-        logger.info("News list params: $params")
-        
-        val result = runBlocking { newsUseCase.getNewsList(params) }
-        logger.info("News list returning ${result.items.size} items")
-        
-        return APIGatewayProxyResponseEvent()
-            .withStatusCode(200)
-            .withHeaders(mapOf("Content-Type" to "application/json"))
-            .withBody(objectMapper.writeValueAsString(result))
-    }
-    
     private fun handleNewsSearch(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        logger.info("News search requested")
+        logger.info("News search requested (統合版：一覧取得と検索機能を統合)")
         
         val params = if (request.body != null) {
             objectMapper.readValue(request.body, NewsSearchParamsDto::class.java)

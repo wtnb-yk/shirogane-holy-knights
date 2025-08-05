@@ -1,6 +1,5 @@
 import { 
   NewsSearchParamsDto, 
-  NewsListParamsDto, 
   NewsSearchResultDto, 
   NewsDto,
   NewsApiError 
@@ -21,51 +20,31 @@ const API_CONFIG = {
 export class NewsClient {
 
   /**
-   * ニュース検索APIを呼び出す
+   * ニュース検索APIを呼び出す (統合版：一覧取得と検索機能を統合)
+   * Video実装パターンに合わせて統合
    * @param params 検索パラメータ
    * @returns 検索結果
    */
   static async searchNews(
-    params: NewsSearchParamsDto
+    params: NewsSearchParamsDto = {}
   ): Promise<NewsSearchResultDto> {
     try {
+      // デフォルト値を設定（Video実装パターンに合わせて）
+      const requestParams = {
+        query: params.query,
+        categoryId: params.categoryId,
+        startDate: params.startDate,
+        endDate: params.endDate,
+        page: params.page || 1,
+        pageSize: params.pageSize || 20,
+      };
+
       const response = await fetch(`${API_CONFIG.baseUrl}/news`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(params),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw {
-          error: errorData.error || 'ニュースの取得に失敗しました。',
-          statusCode: response.status,
-        } as NewsApiError;
-      }
-
-      return response.json();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * ニュース一覧APIを呼び出す
-   * @param params 一覧パラメータ
-   * @returns 一覧結果
-   */
-  static async getNewsList(
-    params: NewsListParamsDto
-  ): Promise<NewsSearchResultDto> {
-    try {
-      const response = await fetch(`${API_CONFIG.baseUrl}/newsList`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
+        body: JSON.stringify(requestParams),
       });
 
       if (!response.ok) {

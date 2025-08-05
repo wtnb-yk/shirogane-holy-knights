@@ -18,33 +18,6 @@ class NewsController(private val newsUseCase: NewsUseCasePort) {
     private val logger = LoggerFactory.getLogger(NewsController::class.java)
 
     /**
-     * ニュース一覧取得
-     */
-    @PostMapping("/newsList")
-    fun getNewsList(@RequestBody params: NewsListParamsDto): Mono<ResponseEntity<NewsSearchResultDto>> {
-        logger.info("ニュース一覧取得: $params")
-        
-        return Mono.fromCallable {
-            runBlocking { newsUseCase.getNewsList(params) }
-        }.map { result ->
-            logger.info("ニュース一覧取得完了: ${result.items.size}件")
-            ResponseEntity.ok(result)
-        }.doOnError { error ->
-            logger.error("ニュース一覧取得エラー", error)
-        }.onErrorReturn(
-            ResponseEntity.internalServerError().body(
-                NewsSearchResultDto(
-                    items = emptyList(),
-                    totalCount = 0,
-                    page = params.page,
-                    pageSize = params.pageSize,
-                    hasMore = false
-                )
-            )
-        )
-    }
-
-    /**
      * ニュース検索
      */
     @PostMapping("/news")

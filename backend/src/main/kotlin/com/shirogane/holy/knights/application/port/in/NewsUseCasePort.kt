@@ -9,15 +9,9 @@ import com.shirogane.holy.knights.application.dto.*
 interface NewsUseCasePort {
 
     /**
-     * ニュース一覧を取得
-     */
-    suspend fun getNewsList(params: NewsListParamsDto): NewsSearchResultDto
-
-    /**
      * ニュース検索
      */
     suspend fun searchNews(params: NewsSearchParamsDto): NewsSearchResultDto
-
 
     /**
      * ニュースカテゴリ一覧を取得

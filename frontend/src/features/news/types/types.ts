@@ -26,24 +26,16 @@ export interface NewsCategoryDto {
 }
 
 /**
- * ニュース検索パラメータの型定義
+ * ニュース検索パラメータの型定義 (統合版：一覧取得と検索機能を統合)
+ * Video実装パターンに合わせて統合
  */
 export interface NewsSearchParamsDto {
   query?: string;
   categoryId?: number;
   startDate?: string;
   endDate?: string;
-  page: number;
-  pageSize: number;
-}
-
-/**
- * ニュース一覧パラメータの型定義
- */
-export interface NewsListParamsDto {
-  categoryId?: number;
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
 }
 
 /**

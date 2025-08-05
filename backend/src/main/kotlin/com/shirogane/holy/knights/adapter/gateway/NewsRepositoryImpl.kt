@@ -2,11 +2,8 @@ package com.shirogane.holy.knights.adapter.gateway
 
 import com.shirogane.holy.knights.domain.model.*
 import com.shirogane.holy.knights.domain.repository.NewsRepository
-import com.shirogane.holy.knights.application.dto.NewsListParamsDto
-import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.relational.core.query.Criteria
@@ -22,65 +19,44 @@ class NewsRepositoryImpl(
 
     private val logger = LoggerFactory.getLogger(NewsRepositoryImpl::class.java)
 
-    override suspend fun findAll(params: NewsListParamsDto): List<News> {
-        logger.info("ニュース一覧取得: $params")
+    override suspend fun search(
+        query: String?,
+        categoryId: Int?,
+        startDate: Instant?,
+        endDate: Instant?,
+        limit: Int,
+        offset: Int
+    ): List<News> {
+        logger.info("ニュース検索: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate, limit=$limit, offset=$offset")
         return try {
             var criteria = Criteria.empty()
             
-            params.categoryId?.let {
-                criteria = criteria.and(Criteria.where("category_id").`is`(it))
-            }
-            
-            val query = Query.query(criteria)
-                .offset(params.getOffset().toLong())
-                .limit(params.pageSize)
-                .sort(Sort.by(Sort.Direction.DESC, "published_at"))
-            
-            val newsEntities = template.select(NewsEntity::class.java)
-                .matching(query)
-                .all()
-                .collectList()
-                .awaitSingle()
-            
-            newsEntities.map { buildNews(it) }
-        } catch (e: Exception) {
-            logger.error("ニュース一覧取得エラー", e)
-            emptyList()
-        }
-    }
-
-    override suspend fun searchNews(params: NewsSearchParamsDto): List<News> {
-        logger.info("ニュース検索: $params")
-        return try {
-            var criteria = Criteria.empty()
-            
-            params.query?.let {
+            query?.let {
                 criteria = criteria.and(
                     Criteria.where("title").like("%$it%")
                         .or(Criteria.where("nd.content").like("%$it%"))
                 )
             }
             
-            params.categoryId?.let {
+            categoryId?.let {
                 criteria = criteria.and(Criteria.where("category_id").`is`(it))
             }
             
-            params.getStartDateAsInstant()?.let {
+            startDate?.let {
                 criteria = criteria.and(Criteria.where("published_at").greaterThanOrEquals(it))
             }
             
-            params.getEndDateAsInstant()?.let {
+            endDate?.let {
                 criteria = criteria.and(Criteria.where("published_at").lessThanOrEquals(it))
             }
             
-            
-            val query = Query.query(criteria)
-                .offset(params.getOffset().toLong())
-                .limit(params.pageSize)
+            val sqlQuery = Query.query(criteria)
+                .offset(offset.toLong())
+                .limit(limit)
                 .sort(Sort.by(Sort.Direction.DESC, "published_at"))
             
             val newsEntities = template.select(NewsEntity::class.java)
-                .matching(query)
+                .matching(sqlQuery)
                 .all()
                 .collectList()
                 .awaitSingle()
@@ -92,49 +68,34 @@ class NewsRepositoryImpl(
         }
     }
 
-
-    override suspend fun countAll(params: NewsListParamsDto): Int {
-        logger.info("ニュース総数取得")
+    override suspend fun countBySearchCriteria(
+        query: String?,
+        categoryId: Int?,
+        startDate: Instant?,
+        endDate: Instant?
+    ): Int {
+        logger.info("検索結果総数取得（統合版）: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate")
         return try {
             var criteria = Criteria.empty()
             
-            params.categoryId?.let {
-                criteria = criteria.and(Criteria.where("category_id").`is`(it))
-            }
-            
-            template.count(Query.query(criteria), NewsEntity::class.java)
-                .awaitSingle()
-                .toInt()
-        } catch (e: Exception) {
-            logger.error("ニュース総数取得エラー", e)
-            0
-        }
-    }
-
-    override suspend fun countSearchResults(params: NewsSearchParamsDto): Int {
-        logger.info("検索結果総数取得")
-        return try {
-            var criteria = Criteria.empty()
-            
-            params.query?.let {
+            query?.let {
                 criteria = criteria.and(
                     Criteria.where("title").like("%$it%")
                         .or(Criteria.where("nd.content").like("%$it%"))
                 )
             }
             
-            params.categoryId?.let {
+            categoryId?.let {
                 criteria = criteria.and(Criteria.where("category_id").`is`(it))
             }
             
-            params.getStartDateAsInstant()?.let {
+            startDate?.let {
                 criteria = criteria.and(Criteria.where("published_at").greaterThanOrEquals(it))
             }
             
-            params.getEndDateAsInstant()?.let {
+            endDate?.let {
                 criteria = criteria.and(Criteria.where("published_at").lessThanOrEquals(it))
             }
-            
             
             template.count(Query.query(criteria), NewsEntity::class.java)
                 .awaitSingle()

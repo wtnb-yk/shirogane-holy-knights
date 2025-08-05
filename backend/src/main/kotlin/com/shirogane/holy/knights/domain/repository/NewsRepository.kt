@@ -3,8 +3,7 @@ package com.shirogane.holy.knights.domain.repository
 import com.shirogane.holy.knights.domain.model.News
 import com.shirogane.holy.knights.domain.model.NewsCategory
 import com.shirogane.holy.knights.domain.model.NewsId
-import com.shirogane.holy.knights.application.dto.NewsListParamsDto
-import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
+import java.time.Instant
 
 /**
  * ニュースリポジトリインターフェース
@@ -13,25 +12,26 @@ import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 interface NewsRepository {
 
     /**
-     * ニュース一覧を取得
-     */
-    suspend fun findAll(params: NewsListParamsDto): List<News>
-
-    /**
      * ニュース検索
      */
-    suspend fun searchNews(params: NewsSearchParamsDto): List<News>
-
+    suspend fun search(
+        query: String? = null,
+        categoryId: Int? = null,
+        startDate: Instant? = null,
+        endDate: Instant? = null,
+        limit: Int,
+        offset: Int
+    ): List<News>
 
     /**
-     * ニュース総件数を取得（ページング用）
+     * ニュース検索結果総件数を取得
      */
-    suspend fun countAll(params: NewsListParamsDto): Int
-
-    /**
-     * ニュース検索結果総件数を取得（ページング用）
-     */
-    suspend fun countSearchResults(params: NewsSearchParamsDto): Int
+    suspend fun countBySearchCriteria(
+        query: String? = null,
+        categoryId: Int? = null,
+        startDate: Instant? = null,
+        endDate: Instant? = null
+    ): Int
 
     /**
      * 全カテゴリを取得

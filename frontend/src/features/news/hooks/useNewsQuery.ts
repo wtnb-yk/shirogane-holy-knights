@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { NewsDto, NewsSearchParamsDto, NewsListParamsDto, NewsSearchResultDto, NewsFilterOptions } from '../types/types';
+import { NewsDto, NewsSearchParamsDto, NewsSearchResultDto, NewsFilterOptions } from '../types/types';
 import { NewsClient } from '../api/newsClient';
 
 interface UseNewsQueryOptions {
@@ -23,7 +23,8 @@ interface UseNewsQueryResult {
 }
 
 /**
- * ニュースAPI呼び出しのフック
+ * ニュースAPI呼び出しのフック (統合版：一覧取得と検索機能を統合)
+ * Video実装パターンに合わせて統合
  */
 export const useNewsQuery = (
   options: UseNewsQueryOptions,
@@ -44,25 +45,15 @@ export const useNewsQuery = (
         setLoading(true);
         setError(null);
         
-        let result: NewsSearchResultDto;
-        
-        // 検索クエリがある場合は検索API、そうでなければ一覧API
-        if (searchQuery.trim()) {
-          result = await NewsClient.searchNews({
-            query: searchQuery,
-            categoryId: filters.categoryId,
-            startDate: filters.startDate,
-            endDate: filters.endDate,
-            page: currentPage,
-            pageSize,
-          });
-        } else {
-          result = await NewsClient.getNewsList({
-            categoryId: filters.categoryId,
-            page: currentPage,
-            pageSize,
-          });
-        }
+        // 統合版：常にsearchNewsを使用（Video実装パターンに合わせて）
+        const result = await NewsClient.searchNews({
+          query: searchQuery.trim() || undefined, // 空文字列の場合はundefinedにする
+          categoryId: filters.categoryId,
+          startDate: filters.startDate,
+          endDate: filters.endDate,
+          page: currentPage,
+          pageSize,
+        });
         
         setNews(result.items);
         setTotalCount(result.totalCount);
