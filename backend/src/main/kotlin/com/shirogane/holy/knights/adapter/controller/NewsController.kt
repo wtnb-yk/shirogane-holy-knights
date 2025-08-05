@@ -49,16 +49,16 @@ class NewsController(private val newsUseCase: NewsUseCasePort) {
      * ニュースカテゴリ一覧取得
      */
     @GetMapping("/news/categories")
-    fun getNewsCategories(): Mono<ResponseEntity<List<NewsCategoryDto>>> {
+    suspend fun getNewsCategories(): ResponseEntity<List<NewsCategoryDto>> {
         logger.info("ニュースカテゴリ一覧取得")
         
-        return Mono.fromCallable {
-            runBlocking { newsUseCase.getNewsCategories() }
-        }.map { categories ->
+        return try {
+            val categories = newsUseCase.getNewsCategories()
             logger.info("ニュースカテゴリ一覧取得完了: ${categories.size}件")
             ResponseEntity.ok(categories)
-        }.doOnError { error ->
+        } catch (error: Exception) {
             logger.error("ニュースカテゴリ一覧取得エラー", error)
-        }.onErrorReturn(ResponseEntity.internalServerError().body(emptyList()))
+            ResponseEntity.internalServerError().body(emptyList())
+        }
     }
 }
