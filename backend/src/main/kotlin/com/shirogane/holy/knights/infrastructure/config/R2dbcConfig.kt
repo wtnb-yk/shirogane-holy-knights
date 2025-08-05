@@ -18,7 +18,7 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 import org.springframework.r2dbc.core.DatabaseClient
 
 @Configuration
-@EnableR2dbcRepositories(basePackages = ["com.shirogane.holy.knights.adapter.gateway"])
+//@EnableR2dbcRepositories(basePackages = ["com.shirogane.holy.knights.adapter.gateway"])
 class R2dbcConfig(
     private val environment: Environment
 ) {
