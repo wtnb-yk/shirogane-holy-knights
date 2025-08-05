@@ -15,20 +15,20 @@ interface VideoRepository {
      * @param offset オフセット
      * @return 動画のリスト
      */
-    fun findAll(limit: Int, offset: Int): List<Video>
+    suspend fun findAll(limit: Int, offset: Int): List<Video>
     
     /**
      * 総件数を取得
      * @return 動画の総数
      */
-    fun count(): Int
+    suspend fun count(): Int
     
     /**
      * IDによる動画取得
      * @param id 動画ID
      * @return 動画情報（存在しない場合はnull）
      */
-    fun findById(id: VideoId): Video?
+    suspend fun findById(id: VideoId): Video?
     
     /**
      * 検索条件による検索
@@ -40,7 +40,7 @@ interface VideoRepository {
      * @param offset オフセット
      * @return 検索条件に合致する動画のリスト
      */
-    fun search(
+    suspend fun search(
         query: String? = null,
         tags: List<String>? = null,
         startDate: Instant? = null,
@@ -57,7 +57,7 @@ interface VideoRepository {
      * @param endDate 終了日時
      * @return 検索条件に合致する動画の総数
      */
-    fun countBySearchCriteria(
+    suspend fun countBySearchCriteria(
         query: String? = null,
         tags: List<String>? = null,
         startDate: Instant? = null,
@@ -70,5 +70,5 @@ interface VideoRepository {
      * @param limit 取得上限数
      * @return 関連する動画のリスト
      */
-    fun getRelatedVideos(id: VideoId, limit: Int): List<Video>
+    suspend fun getRelatedVideos(id: VideoId, limit: Int): List<Video>
 }

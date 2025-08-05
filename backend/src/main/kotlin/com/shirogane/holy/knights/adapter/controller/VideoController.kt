@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 /**
  * 動画関連のAPIエンドポイント
@@ -27,7 +28,8 @@ class VideoController(private val videoUseCase: VideoUseCasePort) {
         
         return Mono.fromCallable {
             runBlocking { videoUseCase.searchVideos(params) }
-        }.map { result ->
+        }.subscribeOn(Schedulers.boundedElastic())
+        .map { result ->
             logger.info("videoSearch returning ${result.items.size} items")
             ResponseEntity.ok(result)
         }.doOnError { error ->

@@ -15,7 +15,7 @@ interface VideoUseCasePort {
      * @param pageSize 1ページあたりの件数
      * @return 動画検索結果DTO
      */
-    fun getAllVideos(page: Int = 1, pageSize: Int = 20): VideoSearchResultDto
+    suspend fun getAllVideos(page: Int = 1, pageSize: Int = 20): VideoSearchResultDto
     
     /**
      * IDによる動画詳細取得

@@ -15,7 +15,7 @@ class VideoUseCaseImpl(
 
     private val logger = LoggerFactory.getLogger(VideoUseCaseImpl::class.java)
 
-    override fun getAllVideos(page: Int, pageSize: Int): VideoSearchResultDto {
+    override suspend fun getAllVideos(page: Int, pageSize: Int): VideoSearchResultDto {
         logger.info("動画一覧取得: page=$page, pageSize=$pageSize")
         
         return try {
