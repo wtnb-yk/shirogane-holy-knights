@@ -10,7 +10,7 @@ import org.springframework.core.env.ConfigurableEnvironment
 class SpringProfileInitializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
     
     override fun initialize(applicationContext: ConfigurableApplicationContext) {
-        val environment = applicationContext.environment as ConfigurableEnvironment
+        val environment = applicationContext.environment
         val springProfilesActive = System.getenv("SPRING_PROFILES_ACTIVE")
         
         if (springProfilesActive != null && springProfilesActive.isNotBlank()) {

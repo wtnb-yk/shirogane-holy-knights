@@ -14,11 +14,9 @@ import org.springframework.context.annotation.Primary
 import org.springframework.core.env.Environment
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.r2dbc.dialect.PostgresDialect
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 import org.springframework.r2dbc.core.DatabaseClient
 
 @Configuration
-//@EnableR2dbcRepositories(basePackages = ["com.shirogane.holy.knights.adapter.gateway"])
 class R2dbcConfig(
     private val environment: Environment
 ) {

@@ -48,7 +48,16 @@ resource "aws_security_group" "bastion" {
   name_prefix = "${var.project_name}-${var.environment}-bastion-"
   vpc_id      = var.vpc_id
 
-  # Only outbound traffic (for Session Manager and DB access)
+  # SSH access from Instance Connect Endpoint
+  ingress {
+    from_port                = 22
+    to_port                  = 22
+    protocol                 = "tcp"
+    source_security_group_id = aws_security_group.instance_connect_endpoint.id
+    description              = "SSH access from Instance Connect Endpoint"
+  }
+
+  # Only outbound traffic (for DB access)
   egress {
     from_port   = 0
     to_port     = 0
@@ -93,56 +102,28 @@ resource "aws_instance" "bastion" {
   }
 }
 
-# VPC Endpoints for Session Manager (required for private subnet)
-resource "aws_vpc_endpoint" "ssm" {
-  vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${var.aws_region}.ssm"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = var.vpc_endpoint_subnet_ids
-  security_group_ids  = [aws_security_group.vpc_endpoints.id]
-  private_dns_enabled = true
+# EC2 Instance Connect Endpoint (無料のSSHアクセス)
+resource "aws_ec2_instance_connect_endpoint" "bastion" {
+  subnet_id          = var.subnet_id
+  security_group_ids = [aws_security_group.instance_connect_endpoint.id]
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-ssm-endpoint"
+    Name = "${var.project_name}-${var.environment}-instance-connect-endpoint"
   }
 }
 
-resource "aws_vpc_endpoint" "ssmmessages" {
-  vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${var.aws_region}.ssmmessages"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = var.vpc_endpoint_subnet_ids
-  security_group_ids  = [aws_security_group.vpc_endpoints.id]
-  private_dns_enabled = true
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-ssmmessages-endpoint"
-  }
-}
-
-resource "aws_vpc_endpoint" "ec2messages" {
-  vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${var.aws_region}.ec2messages"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = var.vpc_endpoint_subnet_ids
-  security_group_ids  = [aws_security_group.vpc_endpoints.id]
-  private_dns_enabled = true
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-ec2messages-endpoint"
-  }
-}
-
-# Security group for VPC endpoints
-resource "aws_security_group" "vpc_endpoints" {
-  name_prefix = "${var.project_name}-${var.environment}-vpc-endpoints-"
+# Security group for EC2 Instance Connect Endpoint
+resource "aws_security_group" "instance_connect_endpoint" {
+  name_prefix = "${var.project_name}-${var.environment}-ice-"
   vpc_id      = var.vpc_id
 
+  # SSHアクセスを許可
   ingress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion.id]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "SSH access via Instance Connect Endpoint"
   }
 
   egress {
@@ -153,6 +134,71 @@ resource "aws_security_group" "vpc_endpoints" {
   }
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-vpc-endpoints-sg"
+    Name = "${var.project_name}-${var.environment}-ice-sg"
   }
 }
+
+# VPC Endpoints for Session Manager (required for private subnet)
+# コスト削減のため一時的にコメントアウト - EC2 Instance Connect Endpointを使用中
+# resource "aws_vpc_endpoint" "ssm" {
+#   vpc_id              = var.vpc_id
+#   service_name        = "com.amazonaws.${var.aws_region}.ssm"
+#   vpc_endpoint_type   = "Interface"
+#   subnet_ids          = var.vpc_endpoint_subnet_ids
+#   security_group_ids  = [aws_security_group.vpc_endpoints.id]
+#   private_dns_enabled = true
+# 
+#   tags = {
+#     Name = "${var.project_name}-${var.environment}-ssm-endpoint"
+#   }
+# }
+# 
+# resource "aws_vpc_endpoint" "ssmmessages" {
+#   vpc_id              = var.vpc_id
+#   service_name        = "com.amazonaws.${var.aws_region}.ssmmessages"
+#   vpc_endpoint_type   = "Interface"
+#   subnet_ids          = var.vpc_endpoint_subnet_ids
+#   security_group_ids  = [aws_security_group.vpc_endpoints.id]
+#   private_dns_enabled = true
+# 
+#   tags = {
+#     Name = "${var.project_name}-${var.environment}-ssmmessages-endpoint"
+#   }
+# }
+# 
+# resource "aws_vpc_endpoint" "ec2messages" {
+#   vpc_id              = var.vpc_id
+#   service_name        = "com.amazonaws.${var.aws_region}.ec2messages"
+#   vpc_endpoint_type   = "Interface"
+#   subnet_ids          = var.vpc_endpoint_subnet_ids
+#   security_group_ids  = [aws_security_group.vpc_endpoints.id]
+#   private_dns_enabled = true
+# 
+#   tags = {
+#     Name = "${var.project_name}-${var.environment}-ec2messages-endpoint"
+#   }
+# }
+# 
+# # Security group for VPC endpoints
+# resource "aws_security_group" "vpc_endpoints" {
+#   name_prefix = "${var.project_name}-${var.environment}-vpc-endpoints-"
+#   vpc_id      = var.vpc_id
+# 
+#   ingress {
+#     from_port       = 443
+#     to_port         = 443
+#     protocol        = "tcp"
+#     security_groups = [aws_security_group.bastion.id]
+#   }
+# 
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# 
+#   tags = {
+#     Name = "${var.project_name}-${var.environment}-vpc-endpoints-sg"
+#   }
+# }

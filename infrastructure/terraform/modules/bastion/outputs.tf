@@ -18,9 +18,14 @@ output "start_command" {
   value       = "aws ec2 start-instances --instance-ids ${aws_instance.bastion.id}"
 }
 
+output "instance_connect_endpoint_id" {
+  description = "EC2 Instance Connect Endpoint ID"
+  value       = aws_ec2_instance_connect_endpoint.bastion.id
+}
+
 output "connect_command" {
-  description = "Command to connect to bastion via Session Manager"
-  value       = "aws ssm start-session --target ${aws_instance.bastion.id}"
+  description = "Command to connect to bastion via Instance Connect"
+  value       = "aws ec2-instance-connect ssh --instance-id ${aws_instance.bastion.id} --instance-connect-endpoint-id ${aws_ec2_instance_connect_endpoint.bastion.id}"
 }
 
 output "stop_command" {
