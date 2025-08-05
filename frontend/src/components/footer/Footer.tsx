@@ -11,8 +11,8 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-brand-charcoal mb-2">団員ポータル</h3>
             <p className="text-sm text-brand-charcoal/80">
-              ホロライブ3期生、白銀ノエルさんのファン（団員）<br />
-              向けの非公式ポータルサイト
+              ホロライブ3期生、白銀ノエル団長の<br />
+              非公式ファンサイトです
             </p>
           </div>
           
@@ -28,6 +28,11 @@ export function Footer() {
               <li>
                 <Link href="/videos" className="text-sm text-brand-charcoal/80 hover:text-brand-charcoal transition-colors">
                   配信・動画
+                </Link>
+              </li>
+              <li>
+                <Link href="/news" className="text-sm text-brand-charcoal/80 hover:text-brand-charcoal transition-colors">
+                  ニュース
                 </Link>
               </li>
             </ul>
@@ -64,7 +69,7 @@ export function Footer() {
         {/* 下部：コピーライト */}
         <div className="mt-8 pt-6 border-t border-brand-charcoal/20">
           <p className="text-center text-sm text-brand-charcoal/60">
-            &copy; 2025 団員ポータル - 非公式ファンサイト
+            &copy; 2025 団員ポータル
           </p>
         </div>
       </div>
