@@ -42,7 +42,7 @@ export const SearchInput = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md relative">
+    <form onSubmit={handleSubmit} className="w-full max-w-2xl relative">
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage-300 w-5 h-5" />
       <input
         type="text"

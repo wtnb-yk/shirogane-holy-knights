@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Radio, Tag, ExternalLink } from 'lucide-react';
+import { Radio, Tag } from 'lucide-react';
 import { StreamDto } from '../types/types';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface StreamCardProps {
@@ -14,8 +14,12 @@ interface StreamCardProps {
 
 const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
   return (
-    <div 
-      className="h-full group opacity-0 animate-fade-in" 
+    <a 
+      href={stream.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${stream.title}をYouTubeで視聴`}
+      className="block h-full group opacity-0 animate-fade-in cursor-pointer" 
       style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
     >
       <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border border-sage-200 hover:scale-[1.02] hover:-translate-y-1">
@@ -35,7 +39,7 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
           </div>
         )}
         <CardContent className="p-5">
-          <h3 className="text-lg font-bold mb-3 line-clamp-2 text-gray-800 group-hover:text-sage-300 transition-colors duration-200">
+          <h3 className="text-base font-bold mb-3 line-clamp-3 text-gray-800 group-hover:text-sage-300 transition-colors duration-200">
             {stream.title}
           </h3>
           <div className="flex items-center gap-2 text-sm text-sage-300 mb-3">
@@ -81,19 +85,8 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
             )}
           </div>
         </CardContent>
-        <CardFooter className="p-5 pt-0">
-          <a
-            href={stream.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sage-300 hover:text-gray-800 font-medium transition-all duration-300 hover:translate-x-2"
-          >
-            YouTubeで視聴
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </CardFooter>
       </Card>
-    </div>
+    </a>
   );
 };
 

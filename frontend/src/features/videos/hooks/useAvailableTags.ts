@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { VideoDto } from '../types/types';
+import {StreamDto, VideoDto} from '../types/types';
 
 interface UseAvailableTagsResult {
   availableTags: string[];
@@ -11,7 +11,7 @@ interface UseAvailableTagsResult {
  * 動画から利用可能なタグを抽出するhook
  * @param videos 動画データ配列
  */
-export const useAvailableTags = (videos: VideoDto[]): UseAvailableTagsResult => {
+export const useAvailableTags = (videos: (VideoDto | StreamDto)[]): UseAvailableTagsResult => {
   const availableTags = useMemo(() => {
     const allTags = new Set<string>();
     
