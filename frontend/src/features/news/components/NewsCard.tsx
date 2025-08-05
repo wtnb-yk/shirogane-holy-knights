@@ -62,7 +62,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                   variant="outline"
                   className={`text-xs border ${getCategoryBadgeStyle(news.categoryName)}`}
                 >
-                  {news.categoryDisplayName}
+                  {news.categoryName}
                 </Badge>
                 <div className="flex items-center gap-1 text-xs text-sage-300">
                   <Calendar className="w-3 h-3" />
@@ -75,10 +75,10 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                 {news.title}
               </h3>
               
-              {/* 要約 */}
-              {news.summary && (
+              {/* コンテンツ */}
+              {news.content && (
                 <p className="text-sm text-gray-600 line-clamp-4 mb-2">
-                  {news.summary}
+                  {news.content}
                 </p>
               )}
             </div>

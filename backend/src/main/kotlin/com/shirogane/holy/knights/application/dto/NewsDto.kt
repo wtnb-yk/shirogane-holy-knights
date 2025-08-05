@@ -14,7 +14,6 @@ data class NewsDto(
     val title: String,
     val categoryId: Int,
     val categoryName: String,
-    val categoryDisplayName: String,
     val publishedAt: String, // ISO 8601形式の日時文字列
     val content: String? = null,
     val summary: String? = null,
@@ -31,12 +30,10 @@ data class NewsDto(
                 title = news.title,
                 categoryId = news.category.id,
                 categoryName = news.category.name,
-                categoryDisplayName = news.category.displayName,
                 publishedAt = news.publishedAt.toString(),
-                content = news.newsDetails?.content,
-                summary = news.newsDetails?.summary,
-                thumbnailUrl = news.newsDetails?.thumbnailUrl,
-                externalUrl = news.newsDetails?.externalUrl
+                content = news.content,
+                thumbnailUrl = news.thumbnailUrl,
+                externalUrl = news.externalUrl
             )
         }
     }
@@ -49,8 +46,6 @@ data class NewsDto(
 data class NewsCategoryDto(
     val id: Int,
     val name: String,
-    val displayName: String,
-    val description: String? = null,
     val sortOrder: Int = 0
 ) {
     companion object {
@@ -61,8 +56,6 @@ data class NewsCategoryDto(
             return NewsCategoryDto(
                 id = category.id,
                 name = category.name,
-                displayName = category.displayName,
-                description = category.description,
                 sortOrder = category.sortOrder
             )
         }

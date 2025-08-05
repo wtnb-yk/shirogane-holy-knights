@@ -60,7 +60,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
                 : 'bg-white text-sage-300 border border-sage-200 hover:bg-sage-100'
             }`}
           >
-            {category.displayName}
+            {category.name}
           </button>
         ))}
       </div>

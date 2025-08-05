@@ -6,10 +6,8 @@ export interface NewsDto {
   title: string;
   categoryId: number;
   categoryName: string;
-  categoryDisplayName: string;
   publishedAt: string;
   content?: string;
-  summary?: string;
   thumbnailUrl?: string;
   externalUrl?: string;
 }
@@ -20,8 +18,6 @@ export interface NewsDto {
 export interface NewsCategoryDto {
   id: number;
   name: string;
-  displayName: string;
-  description: string;
   sortOrder: number;
 }
 

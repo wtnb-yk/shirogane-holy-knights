@@ -10,19 +10,12 @@ data class News(
     val id: NewsId,
     val title: String,
     val category: NewsCategory,
-    val publishedAt: Instant,
-    val newsDetails: NewsDetails? = null
+    val content: String,
+    val thumbnailUrl: String? = null,
+    val externalUrl: String? = null,
+    val publishedAt: Instant
 )
 
-/**
- * ニュース詳細情報値オブジェクト
- */
-data class NewsDetails(
-    val content: String,
-    val summary: String? = null,
-    val thumbnailUrl: String? = null,
-    val externalUrl: String? = null
-)
 
 /**
  * ニュースID値オブジェクト
@@ -38,7 +31,5 @@ value class NewsId(val value: String) {
 data class NewsCategory(
     val id: Int,
     val name: String,
-    val displayName: String,
-    val description: String? = null,
     val sortOrder: Int = 0
 )

@@ -25,7 +25,7 @@ export const NewsSearchResultsSummary = ({
   const getCategoryName = (categoryId?: number) => {
     if (!categoryId) return null;
     const category = categories.find(c => c.id === categoryId);
-    return category?.displayName || '';
+    return category?.name || '';
   };
 
   const categoryName = getCategoryName(filters.categoryId);

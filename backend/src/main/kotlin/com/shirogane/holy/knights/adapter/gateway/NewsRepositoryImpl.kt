@@ -53,7 +53,7 @@ class NewsRepositoryImpl(
         
         // WHERE句の動的構築
         query?.let {
-            conditions.add("(n.title LIKE :query OR nd.content LIKE :query)")
+            conditions.add("(n.title LIKE :query OR n.content LIKE :query)")
             bindings["query"] = "%$it%"
         }
         
@@ -80,15 +80,11 @@ class NewsRepositoryImpl(
         
         val sql = """
             SELECT 
-                n.id, n.title, n.published_at,
+                n.id, n.title, n.content, n.thumbnail_url, n.external_url, n.published_at,
                 nc.id as category_id, nc.name as category_name, 
-                nc.display_name as category_display_name,
-                nc.description as category_description,
-                nc.sort_order as category_sort_order,
-                nd.content, nd.summary, nd.thumbnail_url, nd.external_url
+                nc.sort_order as category_sort_order
             FROM news n
             INNER JOIN news_categories nc ON n.category_id = nc.id
-            LEFT JOIN news_details nd ON n.id = nd.news_id
             $whereClause
             ORDER BY n.published_at DESC
             LIMIT :limit OFFSET :offset
@@ -119,7 +115,7 @@ class NewsRepositoryImpl(
             query?.let {
                 criteria = criteria.and(
                     Criteria.where("title").like("%$it%")
-                        .or(Criteria.where("nd.content").like("%$it%"))
+                        .or(Criteria.where("content").like("%$it%"))
                 )
             }
             
@@ -167,24 +163,17 @@ class NewsRepositoryImpl(
         val category = NewsCategory(
             id = row.get("category_id", Integer::class.java)!!.toInt(),
             name = row.get("category_name", String::class.java)!!,
-            displayName = row.get("category_display_name", String::class.java)!!,
-            description = row.get("category_description", String::class.java),
             sortOrder = row.get("category_sort_order", Integer::class.java)!!.toInt()
-        )
-        
-        val newsDetails = NewsDetails(
-            content = row.get("content", String::class.java) ?: "",
-            summary = row.get("summary", String::class.java),
-            thumbnailUrl = row.get("thumbnail_url", String::class.java),
-            externalUrl = row.get("external_url", String::class.java)
         )
         
         return News(
             id = NewsId(row.get("id", String::class.java)!!),
             title = row.get("title", String::class.java)!!,
             category = category,
-            publishedAt = row.get("published_at", Instant::class.java)!!,
-            newsDetails = newsDetails
+            content = row.get("content", String::class.java)!!,
+            thumbnailUrl = row.get("thumbnail_url", String::class.java),
+            externalUrl = row.get("external_url", String::class.java),
+            publishedAt = row.get("published_at", Instant::class.java)!!
         )
     }
     
@@ -195,8 +184,6 @@ class NewsRepositoryImpl(
         return NewsCategory(
             id = entity.id,
             name = entity.name,
-            displayName = entity.displayName,
-            description = entity.description,
             sortOrder = entity.sortOrder
         )
     }
@@ -211,21 +198,10 @@ data class NewsEntity(
     val id: String,
     val title: String,
     val categoryId: Int,
-    val publishedAt: Instant,
-    val createdAt: Instant
-)
-
-/**
- * ニュース詳細エンティティ（R2DBC用）
- */
-@org.springframework.data.relational.core.mapping.Table("news_details")
-data class NewsDetailsEntity(
-    @org.springframework.data.annotation.Id
-    val newsId: String,
     val content: String,
-    val summary: String?,
     val thumbnailUrl: String?,
     val externalUrl: String?,
+    val publishedAt: Instant,
     val createdAt: Instant
 )
 
@@ -237,8 +213,6 @@ data class NewsCategoryEntity(
     @org.springframework.data.annotation.Id
     val id: Int,
     val name: String,
-    val displayName: String,
-    val description: String?,
     val sortOrder: Int,
     val createdAt: Instant
 )
