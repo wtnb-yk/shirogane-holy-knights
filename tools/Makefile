@@ -1,23 +1,23 @@
 # YouTube動画データ取得・インポートツール ショートカット
 
-# セットアップコマンド
+## セットアップコマンド
 setup-dev:
 	cd scripts && ./setup-env.sh dev
 
 setup-prd:
 	cd scripts && ./setup-env.sh prd
 
-# 統合実行コマンド
-run-local:
+## 統合実行コマンド
+sync-local:
 	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_pipeline.py
 
-run-dev:
+sync-dev:
 	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_pipeline.py
 
-run-prd:
+sync-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_pipeline.py
 
-# データ取得のみ
+## データ取得のみ
 fetch-local:
 	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_fetcher.py
 
@@ -27,7 +27,7 @@ fetch-dev:
 fetch-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_fetcher.py
 
-# DBインポートのみ（最新の結果ディレクトリを自動選択）
+## DBインポートのみ（最新の結果ディレクトリを自動選択）
 import-local:
 	cd scripts && ENV_FILE=../config/.env.local python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
 
@@ -38,23 +38,25 @@ import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
 
 # データベース接続（Bastion経由）
-db-connect:
+
+## dev環境データベース接続
+db-dev:
 	./scripts/db.sh
 
-db-status:
+db-dev-status:
 	./scripts/db.sh status
 
-db-disconnect:
+db-dev-stop:
 	./scripts/db.sh stop
 
-# prd環境データベース接続（Bastion経由）
-db-connect-prd:
+## prd環境データベース接続
+db-prd:
 	./scripts/db.sh prd
 
-db-status-prd:
+db-prd-status:
 	./scripts/db.sh prd status
 
-db-disconnect-prd:
+db-prd-stop:
 	./scripts/db.sh prd stop
 
-.PHONY: setup-dev setup-prd run-local run-dev run-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-connect db-status db-disconnect db-connect-prd db-status-prd db-disconnect-prd
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
