@@ -157,7 +157,8 @@ def get_videos_details(youtube, video_ids, channel_id):
                 'url': f"https://www.youtube.com/watch?v={video_id}",
                 'thumbnail_url': video['snippet']['thumbnails'].get('high', {}).get('url', ''),
                 'duration': convert_duration_to_hhmmss(video.get('contentDetails', {}).get('duration', '')),
-                'channel_id': channel_id
+                'channel_id': channel_id,
+                'video_type': video_type
             }
             videos.append(video_data)
             

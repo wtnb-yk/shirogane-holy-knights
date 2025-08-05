@@ -332,27 +332,43 @@ def import_stream_details(conn, df):
 
 def import_video_video_types(conn, video_types_data):
     """動画タイプ関連情報をインポート"""
+    print(f"\n=== video_video_types インポート開始 ===")
+    print(f"処理対象データ件数: {len(video_types_data) if video_types_data else 0}")
+    
     if not video_types_data:
         print("動画タイプデータがありません")
         return
     
+    # サンプルデータを表示
+    print(f"サンプルデータ (最初の3件):")
+    for i, data in enumerate(video_types_data[:3]):
+        print(f"  {i+1}: video_id={data[0]}, video_type_id={data[1]}")
+    
     cursor = conn.cursor()
     
-    # UPSERT クエリ
+    # 実行予定のSQL文を表示
     query = """
         INSERT INTO video_video_types (video_id, video_type_id) 
         VALUES (%s, %s)
         ON CONFLICT (video_id, video_type_id) 
         DO NOTHING
     """
+    print(f"実行SQL: {query.strip()}")
     
     try:
+        print("SQL実行中...")
         execute_batch(cursor, query, video_types_data)
+        print("SQL実行完了、COMMITします...")
         conn.commit()
         print(f"video_video_types: {len(video_types_data)}件のデータをインポートしました")
     except Exception as e:
         conn.rollback()
         print(f"video_video_typesインポートエラー: {str(e)}")
+        print(f"エラータイプ: {type(e).__name__}")
+        if hasattr(e, 'pgcode'):
+            print(f"PostgreSQLエラーコード: {e.pgcode}")
+        import traceback
+        traceback.print_exc()
         raise
     finally:
         cursor.close()
