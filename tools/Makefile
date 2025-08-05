@@ -37,6 +37,16 @@ import-dev:
 import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
 
+## ニュースデータインポート
+news-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 news_importer.py news.csv
+
+news-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 news_importer.py news.csv
+
+news-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py news.csv
+
 # データベース接続（Bastion経由）
 
 ## dev環境データベース接続
@@ -59,4 +69,4 @@ db-prd-status:
 db-prd-stop:
 	./scripts/db.sh prd stop
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
