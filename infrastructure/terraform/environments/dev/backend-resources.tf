@@ -6,11 +6,13 @@ resource "aws_s3_bucket" "terraform_state" {
     prevent_destroy = false
   }
 
-  tags = {
-    Name        = "Terraform State Bucket"
-    Environment = "dev"
-    Purpose     = "Terraform Remote State Storage"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name    = "Terraform State Bucket"
+      Purpose = "Terraform Remote State Storage"
+    }
+  )
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state" {
@@ -50,9 +52,11 @@ resource "aws_dynamodb_table" "terraform_locks" {
     type = "S"
   }
 
-  tags = {
-    Name        = "Terraform State Lock Table"
-    Environment = "dev"
-    Purpose     = "Terraform State Locking"
-  }
+  tags = merge(
+    var.tags,
+    {
+      Name    = "Terraform State Lock Table"
+      Purpose = "Terraform State Locking"
+    }
+  )
 }
