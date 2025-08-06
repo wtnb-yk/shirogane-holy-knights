@@ -84,3 +84,19 @@ output "pipeline_arn" {
   description = "The ARN of the CodePipeline"
   value       = module.pipeline.pipeline_arn
 }
+
+# CDN Outputs
+output "cdn_s3_bucket_name" {
+  description = "Name of the CDN S3 bucket"
+  value       = module.cdn.s3_bucket_name
+}
+
+output "cdn_cloudfront_url" {
+  description = "CloudFront distribution URL"
+  value       = module.cdn.cloudfront_url
+}
+
+output "cdn_cloudfront_domain" {
+  description = "CloudFront distribution domain name"
+  value       = module.cdn.cloudfront_domain_name
+}
