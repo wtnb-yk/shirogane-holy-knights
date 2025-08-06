@@ -1,4 +1,5 @@
 name: Terraform Infrastructure
+run-name: Terraform ${{ github.event.inputs.action }} - ${{ github.event.inputs.environment }} environment
 
 on:
   workflow_dispatch:
