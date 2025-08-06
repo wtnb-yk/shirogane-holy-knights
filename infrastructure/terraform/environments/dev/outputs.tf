@@ -51,18 +51,18 @@ output "bastion_stop_command" {
   value       = module.bastion.stop_command
 }
 
-# CDN outputs
+# CDN outputs (from prd environment)
 output "cdn_s3_bucket_name" {
-  description = "S3 bucket name for images"
-  value       = module.cdn.s3_bucket_name
+  description = "S3 bucket name for images (shared, managed in prd)"
+  value       = data.terraform_remote_state.prd.outputs.cdn_s3_bucket_name
 }
 
 output "cdn_cloudfront_domain" {
-  description = "CloudFront distribution domain name"
-  value       = module.cdn.cloudfront_domain_name
+  description = "CloudFront distribution domain name (shared, managed in prd)"
+  value       = data.terraform_remote_state.prd.outputs.cdn_cloudfront_domain
 }
 
 output "cdn_cloudfront_url" {
-  description = "CloudFront distribution URL"
-  value       = module.cdn.cloudfront_url
+  description = "CloudFront distribution URL (shared, managed in prd)"
+  value       = data.terraform_remote_state.prd.outputs.cdn_cloudfront_url
 }

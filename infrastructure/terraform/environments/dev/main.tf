@@ -135,7 +135,7 @@ module "amplify" {
   
   environment_variables = {
     NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
-    NEXT_PUBLIC_CDN_URL = module.cdn.cloudfront_url
+    NEXT_PUBLIC_CDN_URL = data.terraform_remote_state.prd.outputs.cdn_cloudfront_url
     PORT = "3000"
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
   }
@@ -144,12 +144,14 @@ module "amplify" {
   hosted_zone_id = data.aws_route53_zone.main.zone_id
 }
 
-# CDN for images
-module "cdn" {
-  source = "../../modules/cdn"
-
-  environment  = var.environment
-  project_name = var.project_name
+# Reference to prd environment CDN resources (shared across environments)
+data "terraform_remote_state" "prd" {
+  backend = "s3"
+  config = {
+    bucket = "shirogane-holy-knights-terraform-state"
+    key    = "environments/prd/terraform.tfstate"
+    region = "ap-northeast-1"
+  }
 }
 
 # Bastion Host

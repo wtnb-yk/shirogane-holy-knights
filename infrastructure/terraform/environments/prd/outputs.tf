@@ -85,18 +85,23 @@ output "pipeline_arn" {
   value       = module.pipeline.pipeline_arn
 }
 
-# CDN Outputs
+# CDN Outputs (managed in prd but shared across environments)
 output "cdn_s3_bucket_name" {
-  description = "Name of the CDN S3 bucket"
-  value       = module.cdn.s3_bucket_name
+  description = "Name of the CDN S3 bucket (shared)"
+  value       = aws_s3_bucket.images.id
+}
+
+output "cdn_s3_bucket_arn" {
+  description = "ARN of the CDN S3 bucket (shared)"
+  value       = aws_s3_bucket.images.arn
 }
 
 output "cdn_cloudfront_url" {
-  description = "CloudFront distribution URL"
-  value       = module.cdn.cloudfront_url
+  description = "CloudFront distribution URL (shared)"
+  value       = "https://${aws_cloudfront_distribution.images.domain_name}"
 }
 
 output "cdn_cloudfront_domain" {
-  description = "CloudFront distribution domain name"
-  value       = module.cdn.cloudfront_domain_name
+  description = "CloudFront distribution domain name (shared)"
+  value       = aws_cloudfront_distribution.images.domain_name
 }
