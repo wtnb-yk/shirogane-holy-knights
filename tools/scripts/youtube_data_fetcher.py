@@ -7,9 +7,8 @@
 出力内容:
 1. channels.csv - チャンネル情報
 2. channel_details.csv - チャンネル詳細情報
-3. videos.csv - 動画基本情報（description, url, thumbnail_url含む）
-4. video_details.csv - 動画詳細情報（published_at - 動画のみ）
-5. stream_details.csv - ライブ配信詳細情報（started_at - 配信のみ）
+3. videos.csv - 動画基本情報（description, url, thumbnail_url, published_at含む）
+4. stream_details.csv - ライブ配信詳細情報（started_at - 配信のみ）
 
 使用方法:
 1. YouTube Data API v3のAPIキーを取得
@@ -116,7 +115,6 @@ def get_all_video_ids(youtube, channel_id):
 def get_videos_details(youtube, video_ids, channel_id):
     """動画IDリストから詳細情報を取得"""
     videos = []
-    video_details = []
     stream_details = []
     
     # YouTube APIは一度に50件までしか取得できないため、50件ずつ処理
@@ -157,18 +155,11 @@ def get_videos_details(youtube, video_ids, channel_id):
                 'url': f"https://www.youtube.com/watch?v={video_id}",
                 'thumbnail_url': video['snippet']['thumbnails'].get('high', {}).get('url', ''),
                 'duration': convert_duration_to_hhmmss(video.get('contentDetails', {}).get('duration', '')),
+                'published_at': video['snippet']['publishedAt'],  # 動画でも配信でもsnippet.publishedAtを使用
                 'channel_id': channel_id,
                 'video_type': video_type
             }
             videos.append(video_data)
-            
-            # 動画詳細情報（video_detailsテーブル用 - 動画のみ）
-            if not is_stream:
-                video_detail = {
-                    'video_id': video_id,
-                    'published_at': published_at
-                }
-                video_details.append(video_detail)
             
             # ライブ配信詳細情報（stream_detailsテーブル用 - 配信のみ）
             if is_stream and 'liveStreamingDetails' in video:
@@ -183,7 +174,7 @@ def get_videos_details(youtube, video_ids, channel_id):
             
             
     print(f"{len(videos)} 件の動画情報を取得しました")
-    return videos, video_details, stream_details
+    return videos, stream_details
 
 def convert_duration_to_hhmmss(duration_str):
     """ISO 8601 形式の期間を HH:MM:SS 形式に変換"""
@@ -299,13 +290,12 @@ def main():
             return
             
         # 各動画の詳細情報を取得
-        videos, video_details, stream_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
+        videos, stream_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
         
         # CSVファイルに保存
         save_to_csv([channel_info], 'channels.csv', output_dir)
         save_to_csv([channel_details], 'channel_details.csv', output_dir)
         save_to_csv(videos, 'videos.csv', output_dir)
-        save_to_csv(video_details, 'video_details.csv', output_dir)
         save_to_csv(stream_details, 'stream_details.csv', output_dir)
         
         # 出力ディレクトリと結果のサマリを表示

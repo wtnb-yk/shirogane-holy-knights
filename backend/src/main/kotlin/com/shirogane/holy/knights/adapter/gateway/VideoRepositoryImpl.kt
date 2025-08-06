@@ -44,12 +44,12 @@ class VideoRepositoryImpl(
         }
 
         startDate?.let {
-            conditions.add("vd.published_at >= :startDate")
+            conditions.add("v.published_at >= :startDate")
             bindings["startDate"] = it
         }
 
         endDate?.let {
-            conditions.add("vd.published_at <= :endDate")
+            conditions.add("v.published_at <= :endDate")
             bindings["endDate"] = it
         }
 
@@ -67,7 +67,6 @@ class VideoRepositoryImpl(
                 FROM videos v
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
-                LEFT JOIN video_details vd ON v.id = vd.video_id
                 LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
                 LEFT JOIN video_tags t ON vtg.tag_id = t.id
                 $whereClause
@@ -169,12 +168,12 @@ class VideoRepositoryImpl(
             }
 
             startDate?.let {
-                conditions.add("vd.published_at >= :startDate")
+                conditions.add("v.published_at >= :startDate")
                 bindings["startDate"] = it
             }
 
             endDate?.let {
-                conditions.add("vd.published_at <= :endDate")
+                conditions.add("v.published_at <= :endDate")
                 bindings["endDate"] = it
             }
 
@@ -191,18 +190,17 @@ class VideoRepositoryImpl(
                 SELECT 
                     v.id, v.title, v.description, v.url, v.thumbnail_url, 
                     v.duration, v.channel_id, v.created_at,
-                    vd.published_at,
+                    v.published_at,
                     STRING_AGG(DISTINCT t.name, ',' ORDER BY t.name) as tags
                 FROM videos v
                 JOIN video_video_types vvt ON v.id = vvt.video_id
                 JOIN video_types vt ON vvt.video_type_id = vt.id
-                LEFT JOIN video_details vd ON v.id = vd.video_id
                 LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
                 LEFT JOIN video_tags t ON vtg.tag_id = t.id
                 $whereClause
                 GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
-                         v.duration, v.channel_id, v.created_at, vd.published_at
-                ORDER BY vd.published_at DESC NULLS LAST, v.created_at DESC
+                         v.duration, v.channel_id, v.created_at, v.published_at
+                ORDER BY v.published_at DESC NULLS LAST, v.created_at DESC
                 LIMIT :limit OFFSET :offset
             """.trimIndent()
 
@@ -263,7 +261,7 @@ class VideoRepositoryImpl(
             val sql = """
                 SELECT 
                     v.id, v.title, v.description, v.url, v.thumbnail_url, 
-                    v.duration, v.channel_id, v.created_at,
+                    v.duration, v.channel_id, v.published_at,
                     sd.started_at,
                     STRING_AGG(DISTINCT t.name, ',' ORDER BY t.name) as stream_tags
                 FROM videos v
@@ -334,7 +332,7 @@ class VideoRepositoryImpl(
         return Video(
             id = VideoId(row.get("id", String::class.java)!!),
             title = row.get("title", String::class.java)!!,
-            publishedAt = row.get("created_at", Instant::class.java)!!,
+            publishedAt = row.get("published_at", Instant::class.java)!!,
             channelId = ChannelId(row.get("channel_id", String::class.java)!!),
             videoDetails = VideoDetailsVO(
                 url = row.get("url", String::class.java) ?: "https://www.youtube.com/watch?v=${
@@ -370,13 +368,6 @@ data class VideoEntity(
     val thumbnailUrl: String?,
     val duration: String?,
     val channelId: String,
-    val createdAt: Instant?
-)
-
-@org.springframework.data.relational.core.mapping.Table("video_details")
-data class VideoDetailsEntity(
-    @org.springframework.data.annotation.Id
-    val videoId: String,
     val publishedAt: Instant?,
     val createdAt: Instant?
 )

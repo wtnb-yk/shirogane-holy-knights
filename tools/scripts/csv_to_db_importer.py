@@ -95,7 +95,6 @@ def read_csv_files(directory):
         'channels': 'channels.csv',
         'channel_details': 'channel_details.csv',
         'videos': 'videos*.csv',  # 分割ファイル対応
-        'video_details': 'video_details*.csv',
         'stream_details': 'stream_details*.csv'
     }
     
@@ -180,7 +179,7 @@ def import_channels(conn, channels_df, channel_details_df=None):
         cursor.close()
 
 def import_videos(conn, df):
-    """動画基本情報をインポート"""
+    """動画基本情報をインポート（published_atも含む）"""
     if df is None or df.empty:
         print("動画データがありません")
         return None
@@ -193,29 +192,39 @@ def import_videos(conn, df):
     
     for _, row in df.iterrows():
         try:
+            video_id = row['id']
+            # published_atはvideos.csvから直接取得（動画でも配信でもsnippet.publishedAt）
+            published_at = None
+            if 'published_at' in row and pd.notna(row['published_at']):
+                try:
+                    published_at = pd.to_datetime(row['published_at']).strftime('%Y-%m-%d %H:%M:%S')
+                except Exception as e:
+                    print(f"動画ID {video_id} の日付変換エラー: {str(e)}")
+            
             data.append((
-                row['id'],
+                video_id,
                 row['title'],
                 row.get('description', ''),
                 row.get('url', ''),
                 row.get('thumbnail_url', ''),
                 row.get('duration', None),
+                published_at,  # published_atを追加
                 row['channel_id']
             ))
             
             # video_typeが存在する場合、video_video_types用のデータを準備
             if 'video_type' in row:
                 video_type_id = 1 if row['video_type'] == 'stream' else 2
-                video_types_data.append((row['id'], video_type_id))
+                video_types_data.append((video_id, video_type_id))
                 
         except Exception as e:
             print(f"動画ID {row['id']} のデータ準備エラー: {str(e)}")
             continue
     
-    # UPSERT クエリ（新しいvideosテーブル構造に対応）
+    # UPSERT クエリ（published_atを含む）
     query = """
-        INSERT INTO videos (id, title, description, url, thumbnail_url, duration, channel_id) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO videos (id, title, description, url, thumbnail_url, duration, published_at, channel_id) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (id) 
         DO UPDATE SET 
             title = EXCLUDED.title,
@@ -223,6 +232,7 @@ def import_videos(conn, df):
             url = EXCLUDED.url,
             thumbnail_url = EXCLUDED.thumbnail_url,
             duration = EXCLUDED.duration,
+            published_at = EXCLUDED.published_at,
             channel_id = EXCLUDED.channel_id
     """
     
@@ -234,52 +244,6 @@ def import_videos(conn, df):
     except Exception as e:
         conn.rollback()
         print(f"videosインポートエラー: {str(e)}")
-        raise
-    finally:
-        cursor.close()
-
-def import_video_details(conn, df):
-    """動画詳細情報をインポート（video_details.csvから）"""
-    if df is None or df.empty:
-        print("動画詳細データがありません")
-        return
-    
-    cursor = conn.cursor()
-    
-    # video_details.csvからデータを準備
-    data = []
-    for _, row in df.iterrows():
-        try:
-            # published_atを適切なタイムスタンプ形式に変換
-            published_at = pd.to_datetime(row['published_at']).strftime('%Y-%m-%d %H:%M:%S')
-            data.append((
-                row['video_id'],
-                published_at
-            ))
-        except Exception as e:
-            print(f"動画ID {row['video_id']} の日付変換エラー: {str(e)}")
-            continue
-    
-    if not data:
-        print("video_details: インポート対象のデータがありません")
-        return
-    
-    # UPSERT クエリ
-    query = """
-        INSERT INTO video_details (video_id, published_at) 
-        VALUES (%s, %s)
-        ON CONFLICT (video_id) 
-        DO UPDATE SET 
-            published_at = EXCLUDED.published_at
-    """
-    
-    try:
-        execute_batch(cursor, query, data)
-        conn.commit()
-        print(f"video_details: {len(data)}件のデータをインポートしました")
-    except Exception as e:
-        conn.rollback()
-        print(f"video_detailsインポートエラー: {str(e)}")
         raise
     finally:
         cursor.close()
@@ -377,7 +341,7 @@ def verify_import(conn):
     """インポート結果を検証"""
     cursor = conn.cursor()
     
-    tables = ['channels', 'videos', 'video_details', 'stream_details', 'video_video_types']
+    tables = ['channels', 'videos', 'stream_details', 'video_video_types']
     
     print("\n=== インポート結果の検証 ===")
     for table in tables:
@@ -422,20 +386,16 @@ def main():
         if channels_df is not None:
             import_channels(conn, channels_df, channel_details_df)
         
-        # 2. 動画基本情報
+        # 2. 動画基本情報（published_atも含めて一括でインポート）
         video_types_data = None
         if 'videos' in csv_files:
             video_types_data = import_videos(conn, csv_files['videos'])
         
-        # 3. 動画詳細（video_details.csvから）
-        if 'video_details' in csv_files:
-            import_video_details(conn, csv_files['video_details'])
-        
-        # 4. ライブ配信詳細（stream_details.csvから）
+        # 3. ライブ配信詳細（stream_details.csvから）- 既にvideosテーブルにインポート済み
         if 'stream_details' in csv_files:
             import_stream_details(conn, csv_files['stream_details'])
         
-        # 5. 動画タイプ関連
+        # 4. 動画タイプ関連
         if video_types_data:
             import_video_video_types(conn, video_types_data)
         
