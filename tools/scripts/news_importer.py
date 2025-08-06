@@ -225,10 +225,26 @@ def validate_and_prepare_data(df, category_mapping):
                 errors.append(f"行 {index + 2}: contentが空です")
                 continue
             
-            # カテゴリIDの変換
-            category_id = category_mapping.get(category)
-            if category_id is None:
-                errors.append(f"行 {index + 2}: 無効なカテゴリです: {category}")
+            # カテゴリIDの変換（複数カテゴリ対応：半角スペース区切り）
+            categories = str(category).split(' ')  # 半角スペースで分割
+            category_ids = []
+            invalid_categories = []
+            
+            for cat in categories:
+                cat = cat.strip()  # 前後の空白を除去
+                if cat:  # 空文字列でない場合のみ処理
+                    category_id = category_mapping.get(cat)
+                    if category_id is not None:
+                        category_ids.append(category_id)
+                    else:
+                        invalid_categories.append(cat)
+            
+            if invalid_categories:
+                errors.append(f"行 {index + 2}: 無効なカテゴリです: {', '.join(invalid_categories)}")
+                continue
+            
+            if not category_ids:
+                errors.append(f"行 {index + 2}: 有効なカテゴリが見つかりません: {category}")
                 continue
             
             # 日付の解析
@@ -253,7 +269,7 @@ def validate_and_prepare_data(df, category_mapping):
             processed_data.append({
                 'id': news_id,
                 'title': title,
-                'category_id': category_id,
+                'category_ids': category_ids,  # 複数カテゴリIDの配列
                 'content': content,
                 'thumbnail_url': thumbnail_url,
                 'external_url': external_url,
@@ -276,19 +292,18 @@ def validate_and_prepare_data(df, category_mapping):
     return processed_data
 
 def import_news_data(conn, news_data):
-    """ニュースデータをデータベースにインポート"""
+    """ニュースデータをデータベースにインポート（複数カテゴリ対応）"""
     if not news_data:
         print("インポート対象のデータがありません")
-        return
+        return None
     
     cursor = conn.cursor()
     
-    # データを準備
+    # データを準備（category_idは除外）
     data = [
         (
             item['id'],
             item['title'],
-            item['category_id'],
             item['content'],
             item['thumbnail_url'],
             item['external_url'],
@@ -297,14 +312,20 @@ def import_news_data(conn, news_data):
         for item in news_data
     ]
     
-    # UPSERT クエリ（idが重複した場合は更新）
+    # カテゴリ関連データを準備
+    news_categories_data = []
+    for item in news_data:
+        if 'category_ids' in item and item['category_ids']:
+            for category_id in item['category_ids']:
+                news_categories_data.append((item['id'], category_id))
+    
+    # UPSERT クエリ（category_idを削除）
     query = """
-        INSERT INTO news (id, title, category_id, content, thumbnail_url, external_url, published_at) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO news (id, title, content, thumbnail_url, external_url, published_at) 
+        VALUES (%s, %s, %s, %s, %s, %s)
         ON CONFLICT (id) 
         DO UPDATE SET 
             title = EXCLUDED.title,
-            category_id = EXCLUDED.category_id,
             content = EXCLUDED.content,
             thumbnail_url = EXCLUDED.thumbnail_url,
             external_url = EXCLUDED.external_url,
@@ -322,9 +343,54 @@ def import_news_data(conn, news_data):
         total_count = cursor.fetchone()[0]
         print(f"newsテーブルの総レコード数: {total_count}")
         
+        return news_categories_data  # カテゴリ関連データを返す
+        
     except Exception as e:
         conn.rollback()
         print(f"newsインポートエラー: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise
+    finally:
+        cursor.close()
+
+def import_news_news_categories(conn, news_categories_data):
+    """ニュースとカテゴリの関連情報をインポート"""
+    print(f"\n=== news_news_categories インポート開始 ===")
+    print(f"処理対象データ件数: {len(news_categories_data) if news_categories_data else 0}")
+    
+    if not news_categories_data:
+        print("ニュースカテゴリ関連データがありません")
+        return
+    
+    # サンプルデータを表示
+    print(f"サンプルデータ (最初の3件):")
+    for i, data in enumerate(news_categories_data[:3]):
+        print(f"  {i+1}: news_id={data[0]}, news_category_id={data[1]}")
+    
+    cursor = conn.cursor()
+    
+    # 実行予定のSQL文を表示
+    query = """
+        INSERT INTO news_news_categories (news_id, news_category_id) 
+        VALUES (%s, %s)
+        ON CONFLICT (news_id, news_category_id) 
+        DO NOTHING
+    """
+    print(f"実行SQL: {query.strip()}")
+    
+    try:
+        print("SQL実行中...")
+        execute_batch(cursor, query, news_categories_data)
+        print("SQL実行完了、COMMITします...")
+        conn.commit()
+        print(f"news_news_categories: {len(news_categories_data)}件のデータをインポートしました")
+    except Exception as e:
+        conn.rollback()
+        print(f"news_news_categoriesインポートエラー: {str(e)}")
+        print(f"エラータイプ: {type(e).__name__}")
+        if hasattr(e, 'pgcode'):
+            print(f"PostgreSQLエラーコード: {e.pgcode}")
         import traceback
         traceback.print_exc()
         raise
@@ -337,11 +403,11 @@ def verify_import(conn):
     
     print("\n=== インポート結果の検証 ===")
     
-    # 各カテゴリごとのレコード数を表示
+    # 各カテゴリごとのレコード数を表示（中間テーブル経由）
     cursor.execute("""
-        SELECT nc.name, COUNT(n.id) as count
+        SELECT nc.name, COUNT(nnc.news_id) as count
         FROM news_categories nc
-        LEFT JOIN news n ON nc.id = n.category_id
+        LEFT JOIN news_news_categories nnc ON nc.id = nnc.news_category_id
         GROUP BY nc.id, nc.name
         ORDER BY nc.id
     """)
@@ -350,11 +416,15 @@ def verify_import(conn):
     for category_name, count in results:
         print(f"{category_name}: {count}件")
     
-    # 最新のニュース5件を表示
+    # 最新のニュース5件を表示（複数カテゴリ対応）
     cursor.execute("""
-        SELECT n.title, nc.name, n.published_at
+        SELECT n.title, 
+               STRING_AGG(nc.name, ' ' ORDER BY nc.id) as categories, 
+               n.published_at
         FROM news n
-        JOIN news_categories nc ON n.category_id = nc.id
+        LEFT JOIN news_news_categories nnc ON n.id = nnc.news_id
+        LEFT JOIN news_categories nc ON nnc.news_category_id = nc.id
+        GROUP BY n.id, n.title, n.published_at
         ORDER BY n.published_at DESC
         LIMIT 5
     """)
@@ -362,8 +432,9 @@ def verify_import(conn):
     recent_news = cursor.fetchall()
     if recent_news:
         print("\n最新のニュース5件:")
-        for title, category, published_at in recent_news:
-            print(f"  [{category}] {title} ({published_at})")
+        for title, categories, published_at in recent_news:
+            category_display = f"[{categories}]" if categories else "[カテゴリなし]"
+            print(f"  {category_display} {title} ({published_at})")
     
     cursor.close()
 
@@ -399,7 +470,11 @@ def main():
         news_data = validate_and_prepare_data(df, category_mapping)
         
         # データベースにインポート
-        import_news_data(conn, news_data)
+        news_categories_data = import_news_data(conn, news_data)
+        
+        # ニュースカテゴリ関連をインポート
+        if news_categories_data:
+            import_news_news_categories(conn, news_categories_data)
         
         # インポート結果を検証
         verify_import(conn)
