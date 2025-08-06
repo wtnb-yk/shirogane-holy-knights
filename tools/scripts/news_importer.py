@@ -397,6 +397,47 @@ def import_news_news_categories(conn, news_categories_data):
     finally:
         cursor.close()
 
+def clear_existing_data(conn):
+    """既存のニュースデータを全削除"""
+    cursor = conn.cursor()
+    
+    print("\n=== 既存データの削除開始 ===")
+    
+    try:
+        # 削除前の件数確認
+        cursor.execute("SELECT COUNT(*) FROM news_news_categories")
+        categories_count = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM news")
+        news_count = cursor.fetchone()[0]
+        
+        print(f"削除前の件数:")
+        print(f"  news_news_categories: {categories_count}件")
+        print(f"  news: {news_count}件")
+        
+        # 外部キー制約を考慮した順序で削除
+        print("news_news_categoriesテーブルのデータを削除中...")
+        cursor.execute("DELETE FROM news_news_categories")
+        deleted_categories = cursor.rowcount
+        
+        print("newsテーブルのデータを削除中...")
+        cursor.execute("DELETE FROM news")
+        deleted_news = cursor.rowcount
+        
+        conn.commit()
+        
+        print(f"削除完了:")
+        print(f"  news_news_categories: {deleted_categories}件削除")
+        print(f"  news: {deleted_news}件削除")
+        
+    except Exception as e:
+        conn.rollback()
+        print(f"データ削除エラー: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise
+    finally:
+        cursor.close()
+
 def verify_import(conn):
     """インポート結果を検証"""
     cursor = conn.cursor()
@@ -468,6 +509,9 @@ def main():
         
         # データを検証・準備
         news_data = validate_and_prepare_data(df, category_mapping)
+        
+        # 既存データを削除
+        clear_existing_data(conn)
         
         # データベースにインポート
         news_categories_data = import_news_data(conn, news_data)
