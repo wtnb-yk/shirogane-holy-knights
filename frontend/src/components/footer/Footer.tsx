@@ -11,9 +11,16 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-brand-charcoal mb-2">団員ポータル</h3>
             <p className="text-sm text-brand-charcoal/80">
-              ホロライブ3期生、白銀ノエル団長の<br />
-              非公式ファンサイトです
+              当サイトはホロライブ3期生白銀ノエル団長を応援する非公式ファンサイトです。ご本人様およびカバー株式会社様、ホロライブプロダクション様は当サイトの運営には一切関わっておりません。
             </p>
+            <a 
+              href="https://hololivepro.com/terms/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-brand-charcoal/80 hover:text-brand-charcoal transition-colors inline-block mt-2"
+            >
+              カバー株式会社様　二次創作ガイドライン
+            </a>
           </div>
           
           {/* 中央：リンク */}
