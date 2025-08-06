@@ -53,13 +53,29 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
         <div className="flex-1 p-3 flex flex-col justify-between">
           <div>
             {/* カテゴリとメタ情報 */}
-            <div className="flex items-center gap-2 mb-2">
-              <Badge
-                variant="outline"
-                className={`text-xs border ${getCategoryBadgeStyle(news.categoryName)}`}
-              >
-                {news.categoryName}
-              </Badge>
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              {/* 複数カテゴリ対応 */}
+              {news.categories && news.categories.length > 0 ? (
+                news.categories.map((category) => (
+                  <Badge
+                    key={category.id}
+                    variant="outline"
+                    className={`text-xs border ${getCategoryBadgeStyle(category.name)}`}
+                  >
+                    {category.name}
+                  </Badge>
+                ))
+              ) : (
+                // 後方互換性のため（旧形式サポート）
+                news.categoryName && (
+                  <Badge
+                    variant="outline"
+                    className={`text-xs border ${getCategoryBadgeStyle(news.categoryName)}`}
+                  >
+                    {news.categoryName}
+                  </Badge>
+                )
+              )}
               <div className="flex items-center gap-1 text-xs text-sage-300">
                 <Calendar className="w-3 h-3" />
                 <span>{new Date(news.publishedAt).toLocaleDateString('ja-JP')}</span>

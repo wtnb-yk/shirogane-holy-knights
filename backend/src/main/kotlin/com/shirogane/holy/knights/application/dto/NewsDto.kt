@@ -12,28 +12,35 @@ import java.time.Instant
 data class NewsDto(
     val id: String,
     val title: String,
-    val categoryId: Int,
-    val categoryName: String,
+    val categories: List<NewsCategoryDto>,
     val publishedAt: String, // ISO 8601形式の日時文字列
     val content: String? = null,
     val summary: String? = null,
     val thumbnailUrl: String? = null,
-    val externalUrl: String? = null
+    val externalUrl: String? = null,
+    // 後方互換性のため単一カテゴリ情報も保持（最初のカテゴリを使用）
+    val categoryId: Int? = null,
+    val categoryName: String? = null
 ) {
     companion object {
         /**
          * ドメインモデルからDTOへの変換
          */
         fun fromDomain(news: News): NewsDto {
+            val categoryDtos = news.categories.map { NewsCategoryDto.fromDomain(it) }
+            val firstCategory = news.categories.firstOrNull()
+            
             return NewsDto(
                 id = news.id.value,
                 title = news.title,
-                categoryId = news.category.id,
-                categoryName = news.category.name,
+                categories = categoryDtos,
                 publishedAt = news.publishedAt.toString(),
                 content = news.content,
                 thumbnailUrl = news.thumbnailUrl,
-                externalUrl = news.externalUrl
+                externalUrl = news.externalUrl,
+                // 後方互換性のため
+                categoryId = firstCategory?.id,
+                categoryName = firstCategory?.name
             )
         }
     }
@@ -67,7 +74,8 @@ data class NewsCategoryDto(
  */
 data class NewsSearchParamsDto(
     val query: String? = null,
-    val categoryId: Int? = null,
+    val categoryId: Int? = null, // 後方互換性のため保持
+    val categoryIds: List<Int>? = null, // 複数カテゴリ対応
     val startDate: String? = null, // ISO 8601形式の日時文字列
     val endDate: String? = null,   // ISO 8601形式の日時文字列
     val page: Int = 1,
@@ -92,6 +100,20 @@ data class NewsSearchParamsDto(
      */
     fun getOffset(): Int {
         return (page - 1) * pageSize
+    }
+    
+    /**
+     * 有効なカテゴリIDリストを取得（後方互換性対応）
+     */
+    fun getEffectiveCategoryIds(): List<Int>? {
+        return when {
+            // 新しい形式（複数カテゴリ）が指定されている場合
+            !categoryIds.isNullOrEmpty() -> categoryIds
+            // 旧形式（単一カテゴリ）が指定されている場合
+            categoryId != null -> listOf(categoryId)
+            // どちらも指定されていない場合
+            else -> null
+        }
     }
 }
 

@@ -9,7 +9,7 @@ import java.time.Instant
 data class News(
     val id: NewsId,
     val title: String,
-    val category: NewsCategory,
+    val categories: List<NewsCategory>,
     val content: String,
     val thumbnailUrl: String? = null,
     val externalUrl: String? = null,

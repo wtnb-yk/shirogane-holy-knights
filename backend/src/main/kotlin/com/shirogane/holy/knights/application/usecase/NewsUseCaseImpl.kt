@@ -25,6 +25,7 @@ class NewsUseCaseImpl(
             val newsList = newsRepository.search(
                 query = params.query,
                 categoryId = params.categoryId,
+                categoryIds = params.categoryIds,
                 startDate = startDate,
                 endDate = endDate,
                 limit = params.pageSize,
@@ -34,6 +35,7 @@ class NewsUseCaseImpl(
             val totalCount = newsRepository.countBySearchCriteria(
                 query = params.query,
                 categoryId = params.categoryId,
+                categoryIds = params.categoryIds,
                 startDate = startDate,
                 endDate = endDate
             )

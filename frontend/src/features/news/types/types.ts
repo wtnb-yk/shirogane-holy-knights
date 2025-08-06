@@ -4,12 +4,14 @@
 export interface NewsDto {
   id: string;
   title: string;
-  categoryId: number;
-  categoryName: string;
+  categories: NewsCategoryDto[];
   publishedAt: string;
   content?: string;
   thumbnailUrl?: string;
   externalUrl?: string;
+  // 後方互換性のため単一カテゴリ情報も保持
+  categoryId?: number;
+  categoryName?: string;
 }
 
 /**
@@ -27,7 +29,8 @@ export interface NewsCategoryDto {
  */
 export interface NewsSearchParamsDto {
   query?: string;
-  categoryId?: number;
+  categoryId?: number; // 後方互換性のため保持
+  categoryIds?: number[]; // 複数カテゴリ対応
   startDate?: string;
   endDate?: string;
   page?: number;
@@ -50,7 +53,8 @@ export interface NewsSearchResultDto {
  * フィルターオプションの型定義
  */
 export interface NewsFilterOptions {
-  categoryId?: number;
+  categoryId?: number; // 後方互換性のため保持
+  categoryIds?: number[]; // 複数カテゴリ対応
   startDate?: string;
   endDate?: string;
 }

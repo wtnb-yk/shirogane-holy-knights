@@ -23,14 +23,22 @@ class NewsRepositoryImpl(
     override suspend fun search(
         query: String?,
         categoryId: Int?,
+        categoryIds: List<Int>?,
         startDate: Instant?,
         endDate: Instant?,
         limit: Int,
         offset: Int
     ): List<News> {
-        logger.info("ニュース検索: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate, limit=$limit, offset=$offset")
+        // 有効なカテゴリIDリストを取得（後方互換性対応）
+        val effectiveCategoryIds = when {
+            !categoryIds.isNullOrEmpty() -> categoryIds
+            categoryId != null -> listOf(categoryId)
+            else -> null
+        }
+        
+        logger.info("ニュース検索: query=$query, categoryIds=$effectiveCategoryIds, startDate=$startDate, endDate=$endDate, limit=$limit, offset=$offset")
         return try {
-            searchWithJoin(query, categoryId, startDate, endDate, limit, offset)
+            searchWithJoin(query, effectiveCategoryIds, startDate, endDate, limit, offset)
         } catch (e: Exception) {
             logger.error("ニュース検索エラー", e)
             emptyList()
@@ -38,11 +46,12 @@ class NewsRepositoryImpl(
     }
 
     /**
-     * JOINクエリを使った最適化されたニュース検索
+     * JOINクエリを使った最適化されたニュース検索（複数カテゴリ対応）
+     * 全ての検索で中間テーブルを使用
      */
     private suspend fun searchWithJoin(
         query: String?,
-        categoryId: Int?,
+        categoryIds: List<Int>?,
         startDate: Instant?,
         endDate: Instant?,
         limit: Int,
@@ -57,9 +66,12 @@ class NewsRepositoryImpl(
             bindings["query"] = "%$it%"
         }
         
-        categoryId?.let {
-            conditions.add("n.category_id = :categoryId")
-            bindings["categoryId"] = it
+        categoryIds?.takeIf { it.isNotEmpty() }?.let { ids ->
+            val placeholders = ids.mapIndexed { index, _ -> ":categoryId$index" }.joinToString(",")
+            conditions.add("nnc.news_category_id IN ($placeholders)")
+            ids.forEachIndexed { index, id ->
+                bindings["categoryId$index"] = id
+            }
         }
         
         startDate?.let {
@@ -78,17 +90,24 @@ class NewsRepositoryImpl(
             ""
         }
         
+        // 全てのクエリで news_news_categories 中間テーブルを使用
         val sql = """
             SELECT 
                 n.id, n.title, n.content, n.thumbnail_url, n.external_url, n.published_at,
-                nc.id as category_id, nc.name as category_name, 
-                nc.sort_order as category_sort_order
+                COALESCE(STRING_AGG(DISTINCT nc.id::text, ',' ORDER BY nc.sort_order), '') as category_ids,
+                COALESCE(STRING_AGG(DISTINCT nc.name, ',' ORDER BY nc.sort_order), '') as category_names,
+                COALESCE(STRING_AGG(DISTINCT nc.sort_order::text, ',' ORDER BY nc.sort_order), '') as category_sort_orders
             FROM news n
-            INNER JOIN news_categories nc ON n.category_id = nc.id
+            INNER JOIN news_news_categories nnc ON n.id = nnc.news_id
+            INNER JOIN news_categories nc ON nnc.news_category_id = nc.id
             $whereClause
+            GROUP BY n.id, n.title, n.content, n.thumbnail_url, n.external_url, n.published_at
             ORDER BY n.published_at DESC
             LIMIT :limit OFFSET :offset
         """.trimIndent()
+        
+        logger.info("実行SQL: $sql")
+        logger.info("バインド値: $bindings")
         
         var sqlQuery = template.databaseClient.sql(sql)
         bindings.forEach { (key, value) ->
@@ -96,7 +115,7 @@ class NewsRepositoryImpl(
         }
         sqlQuery = sqlQuery.bind("limit", limit).bind("offset", offset)
         
-        return sqlQuery.map { row -> buildNewsFromRow(row as Row) }
+        return sqlQuery.map { row -> buildNewsFromRowWithMultipleCategories(row as Row) }
             .all()
             .collectList()
             .awaitSingle()
@@ -105,35 +124,73 @@ class NewsRepositoryImpl(
     override suspend fun countBySearchCriteria(
         query: String?,
         categoryId: Int?,
+        categoryIds: List<Int>?,
         startDate: Instant?,
         endDate: Instant?
     ): Int {
-        logger.info("検索結果総数取得: query=$query, categoryId=$categoryId, startDate=$startDate, endDate=$endDate")
+        // 有効なカテゴリIDリストを取得（後方互換性対応）
+        val effectiveCategoryIds = when {
+            !categoryIds.isNullOrEmpty() -> categoryIds
+            categoryId != null -> listOf(categoryId)
+            else -> null
+        }
+        
+        logger.info("検索結果総数取得: query=$query, categoryIds=$effectiveCategoryIds, startDate=$startDate, endDate=$endDate")
         return try {
-            var criteria = Criteria.empty()
+            val conditions = mutableListOf<String>()
+            val bindings = mutableMapOf<String, Any>()
             
             query?.let {
-                criteria = criteria.and(
-                    Criteria.where("title").like("%$it%")
-                        .or(Criteria.where("content").like("%$it%"))
-                )
+                conditions.add("(n.title LIKE :query OR n.content LIKE :query)")
+                bindings["query"] = "%$it%"
             }
             
-            categoryId?.let {
-                criteria = criteria.and(Criteria.where("category_id").`is`(it))
+            effectiveCategoryIds?.takeIf { it.isNotEmpty() }?.let { ids ->
+                val placeholders = ids.mapIndexed { index, _ -> ":categoryId$index" }.joinToString(",")
+                conditions.add("nnc.news_category_id IN ($placeholders)")
+                ids.forEachIndexed { index, id ->
+                    bindings["categoryId$index"] = id
+                }
             }
             
             startDate?.let {
-                criteria = criteria.and(Criteria.where("published_at").greaterThanOrEquals(it))
+                conditions.add("n.published_at >= :startDate")
+                bindings["startDate"] = it
             }
             
             endDate?.let {
-                criteria = criteria.and(Criteria.where("published_at").lessThanOrEquals(it))
+                conditions.add("n.published_at <= :endDate")
+                bindings["endDate"] = it
             }
             
-            template.count(Query.query(criteria), NewsEntity::class.java)
+            val whereClause = if (conditions.isNotEmpty()) {
+                "WHERE ${conditions.joinToString(" AND ")}"
+            } else {
+                ""
+            }
+            
+            val sql = """
+                SELECT COUNT(DISTINCT n.id)
+                FROM news n
+                INNER JOIN news_news_categories nnc ON n.id = nnc.news_id
+                INNER JOIN news_categories nc ON nnc.news_category_id = nc.id
+                $whereClause
+            """.trimIndent()
+            
+            logger.info("COUNT実行SQL: $sql")
+            logger.info("COUNTバインド値: $bindings")
+            
+            var sqlQuery = template.databaseClient.sql(sql)
+            bindings.forEach { (key, value) ->
+                sqlQuery = sqlQuery.bind(key, value)
+            }
+            
+            val result = sqlQuery.map { row -> row.get(0, Long::class.java)?.toInt() ?: 0 }
+                .first()
                 .awaitSingle()
-                .toInt()
+                
+            logger.info("COUNT結果: $result")
+            result
         } catch (e: Exception) {
             logger.error("検索結果総数取得エラー", e)
             0
@@ -157,25 +214,54 @@ class NewsRepositoryImpl(
     }
 
     /**
-     * JOINクエリの結果からNewsドメインモデルを構築
+     * JOINクエリの結果からNewsドメインモデルを構築（複数カテゴリ対応）
      */
-    private fun buildNewsFromRow(row: Row): News {
-        val category = NewsCategory(
-            id = row.get("category_id", Integer::class.java)!!.toInt(),
-            name = row.get("category_name", String::class.java)!!,
-            sortOrder = row.get("category_sort_order", Integer::class.java)!!.toInt()
-        )
-        
-        return News(
-            id = NewsId(row.get("id", String::class.java)!!),
-            title = row.get("title", String::class.java)!!,
-            category = category,
-            content = row.get("content", String::class.java)!!,
-            thumbnailUrl = row.get("thumbnail_url", String::class.java),
-            externalUrl = row.get("external_url", String::class.java),
-            publishedAt = row.get("published_at", Instant::class.java)!!
-        )
+    private fun buildNewsFromRowWithMultipleCategories(row: Row): News {
+        try {
+            // STRING_AGG で結合された文字列を分割してカテゴリリストを構築
+            val categoryIdsStr = row.get("category_ids", String::class.java) ?: ""
+            val categoryNamesStr = row.get("category_names", String::class.java) ?: ""
+            val categorySortOrdersStr = row.get("category_sort_orders", String::class.java) ?: ""
+            
+            logger.debug("Row data - IDs: '$categoryIdsStr', Names: '$categoryNamesStr', SortOrders: '$categorySortOrdersStr'")
+            
+            val categories = if (categoryIdsStr.isNotEmpty()) {
+                val ids = categoryIdsStr.split(",").map { it.trim() }
+                val names = categoryNamesStr.split(",").map { it.trim() }
+                val sortOrders = categorySortOrdersStr.split(",").map { it.trim() }
+                
+                if (ids.size == names.size && names.size == sortOrders.size) {
+                    ids.zip(names).zip(sortOrders) { (id, name), sortOrder ->
+                        NewsCategory(
+                            id = id.toInt(),
+                            name = name,
+                            sortOrder = sortOrder.toInt()
+                        )
+                    }
+                } else {
+                    logger.warn("カテゴリデータの長さが不一致: ids=${ids.size}, names=${names.size}, sortOrders=${sortOrders.size}")
+                    emptyList()
+                }
+            } else {
+                logger.debug("カテゴリなしのニュース")
+                emptyList()
+            }
+            
+            return News(
+                id = NewsId(row.get("id", String::class.java)!!),
+                title = row.get("title", String::class.java)!!,
+                categories = categories,
+                content = row.get("content", String::class.java)!!,
+                thumbnailUrl = row.get("thumbnail_url", String::class.java),
+                externalUrl = row.get("external_url", String::class.java),
+                publishedAt = row.get("published_at", Instant::class.java)!!
+            )
+        } catch (e: Exception) {
+            logger.error("News構築エラー", e)
+            throw e
+        }
     }
+    
     
     /**
      * NewsCategoryEntityからNewsCategoryドメインモデルを構築

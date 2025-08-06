@@ -12,10 +12,26 @@ interface NewsCategoryFilterProps {
 export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFilterProps) => {
   const { categories, loading } = useNewsCategories();
 
-  const handleCategoryChange = (categoryId?: number) => {
+  // 現在選択されているカテゴリIDs（後方互換性対応）
+  const selectedCategoryIds = filters.categoryIds || (filters.categoryId ? [filters.categoryId] : []);
+
+  const handleCategoryToggle = (categoryId: number) => {
+    const newCategoryIds = selectedCategoryIds.includes(categoryId)
+      ? selectedCategoryIds.filter(id => id !== categoryId) // 選択解除
+      : [...selectedCategoryIds, categoryId]; // 選択追加
+    
     onFiltersChange({
       ...filters,
-      categoryId,
+      categoryIds: newCategoryIds.length > 0 ? newCategoryIds : undefined,
+      categoryId: undefined, // 新形式使用時は旧形式をクリア
+    });
+  };
+
+  const handleClearAll = () => {
+    onFiltersChange({
+      ...filters,
+      categoryIds: undefined,
+      categoryId: undefined,
     });
   };
 
@@ -37,11 +53,11 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
   return (
     <div className="mb-6 opacity-0 animate-slide-up" style={{ animationDelay: '150ms' }}>
       <div className="flex flex-wrap gap-2">
-        {/* 全てカテゴリ */}
+        {/* 全てクリアボタン */}
         <button
-          onClick={() => handleCategoryChange(undefined)}
+          onClick={handleClearAll}
           className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
-            filters.categoryId === undefined
+            selectedCategoryIds.length === 0
               ? 'bg-sage-300 text-white shadow-md'
               : 'bg-white text-sage-300 border border-sage-200 hover:bg-sage-100'
           }`}
@@ -49,20 +65,31 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
           全て
         </button>
 
-        {/* カテゴリボタン */}
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => handleCategoryChange(category.id)}
-            className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
-              filters.categoryId === category.id
-                ? 'bg-sage-300 text-white shadow-md'
-                : 'bg-white text-sage-300 border border-sage-200 hover:bg-sage-100'
-            }`}
-          >
-            {category.name}
-          </button>
-        ))}
+        {/* カテゴリボタン（複数選択対応） */}
+        {categories.map((category) => {
+          const isSelected = selectedCategoryIds.includes(category.id);
+          return (
+            <button
+              key={category.id}
+              onClick={() => handleCategoryToggle(category.id)}
+              className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
+                isSelected
+                  ? 'bg-sage-300 text-white shadow-md ring-2 ring-sage-200'
+                  : 'bg-white text-sage-300 border border-sage-200 hover:bg-sage-100'
+              }`}
+            >
+              {category.name}
+              {isSelected && <span className="ml-1 text-xs">✓</span>}
+            </button>
+          );
+        })}
+        
+        {/* 選択済みカテゴリ数の表示 */}
+        {selectedCategoryIds.length > 0 && (
+          <div className="flex items-center px-3 py-2 bg-sage-100 rounded-full text-xs text-sage-600">
+            {selectedCategoryIds.length}件選択中
+          </div>
+        )}
       </div>
     </div>
   );

@@ -33,6 +33,7 @@ export class NewsClient {
       const requestParams = {
         query: params.query,
         categoryId: params.categoryId,
+        categoryIds: params.categoryIds,
         startDate: params.startDate,
         endDate: params.endDate,
         page: params.page || 1,
