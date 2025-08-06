@@ -6,6 +6,7 @@ import { Calendar } from 'lucide-react';
 import { NewsDto } from '../types/types';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { getImageUrl } from '@/utils/imageUrl';
 
 interface NewsCardProps {
   news: NewsDto;
@@ -29,19 +30,22 @@ const getCategoryBadgeStyle = (categoryName: string) => {
 };
 
 const NewsCardComponent = ({ news, index }: NewsCardProps) => {
+  // 画像URLを生成（S3パスまたは外部URL対応）
+  const imageUrl = getImageUrl(news.thumbnailUrl);
+  
   const cardContent = (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border-0 hover:scale-[1.01] hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row">
         {/* 画像部分 */}
-        {news.thumbnailUrl && (
+        {imageUrl && (
           <div className="relative w-full sm:w-80 h-52 sm:h-[200px] flex-shrink-0 overflow-hidden bg-sage-100">
             <Image 
-              src={news.thumbnailUrl} 
+              src={imageUrl} 
               alt={news.title} 
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
-              sizes="(max-width: 640px) 100vw, 128px"
+              sizes="(max-width: 640px) 100vw, 320px"
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
             />

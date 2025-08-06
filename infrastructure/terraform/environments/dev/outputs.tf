@@ -50,3 +50,19 @@ output "bastion_stop_command" {
   description = "Command to stop the bastion instance"
   value       = module.bastion.stop_command
 }
+
+# CDN outputs
+output "cdn_s3_bucket_name" {
+  description = "S3 bucket name for images"
+  value       = module.cdn.s3_bucket_name
+}
+
+output "cdn_cloudfront_domain" {
+  description = "CloudFront distribution domain name"
+  value       = module.cdn.cloudfront_domain_name
+}
+
+output "cdn_cloudfront_url" {
+  description = "CloudFront distribution URL"
+  value       = module.cdn.cloudfront_url
+}

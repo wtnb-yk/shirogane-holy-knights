@@ -135,12 +135,21 @@ module "amplify" {
   
   environment_variables = {
     NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
+    NEXT_PUBLIC_CDN_URL = module.cdn.cloudfront_url
     PORT = "3000"
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
   }
   
   custom_domain = "noe-room.com"
   hosted_zone_id = data.aws_route53_zone.main.zone_id
+}
+
+# CDN for images
+module "cdn" {
+  source = "../../modules/cdn"
+
+  environment  = var.environment
+  project_name = var.project_name
 }
 
 # Bastion Host
