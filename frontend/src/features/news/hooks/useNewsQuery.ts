@@ -48,7 +48,7 @@ export const useNewsQuery = (
         // 統合版：常にsearchNewsを使用（Video実装パターンに合わせて）
         const result = await NewsClient.searchNews({
           query: searchQuery.trim() || undefined, // 空文字列の場合はundefinedにする
-          categoryId: filters.categoryId,
+          categoryIds: filters.categoryIds,
           startDate: filters.startDate,
           endDate: filters.endDate,
           page: currentPage,
@@ -66,7 +66,7 @@ export const useNewsQuery = (
     };
 
     fetchNews();
-  }, [currentPage, searchQuery, filters.categoryId, filters.startDate, filters.endDate, pageSize]);
+  }, [currentPage, searchQuery, filters.categoryIds, filters.startDate, filters.endDate, pageSize]);
 
   return {
     news,

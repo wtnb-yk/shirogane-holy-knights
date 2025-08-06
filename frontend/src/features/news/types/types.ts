@@ -29,7 +29,6 @@ export interface NewsCategoryDto {
  */
 export interface NewsSearchParamsDto {
   query?: string;
-  categoryId?: number; // 後方互換性のため保持
   categoryIds?: number[]; // 複数カテゴリ対応
   startDate?: string;
   endDate?: string;
@@ -53,7 +52,6 @@ export interface NewsSearchResultDto {
  * フィルターオプションの型定義
  */
 export interface NewsFilterOptions {
-  categoryId?: number; // 後方互換性のため保持
   categoryIds?: number[]; // 複数カテゴリ対応
   startDate?: string;
   endDate?: string;

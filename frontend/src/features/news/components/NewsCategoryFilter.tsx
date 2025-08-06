@@ -1,7 +1,7 @@
-'use client';
+// 'use client';
 
 import React from 'react';
-import { NewsCategoryDto, NewsFilterOptions } from '../types/types';
+import { NewsFilterOptions } from '../types/types';
 import { useNewsCategories } from '../hooks/useNewsCategories';
 
 interface NewsCategoryFilterProps {
@@ -12,8 +12,7 @@ interface NewsCategoryFilterProps {
 export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFilterProps) => {
   const { categories, loading } = useNewsCategories();
 
-  // 現在選択されているカテゴリIDs（後方互換性対応）
-  const selectedCategoryIds = filters.categoryIds || (filters.categoryId ? [filters.categoryId] : []);
+  const selectedCategoryIds = filters.categoryIds || [];
 
   const handleCategoryToggle = (categoryId: number) => {
     const newCategoryIds = selectedCategoryIds.includes(categoryId)
@@ -23,7 +22,6 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
     onFiltersChange({
       ...filters,
       categoryIds: newCategoryIds.length > 0 ? newCategoryIds : undefined,
-      categoryId: undefined, // 新形式使用時は旧形式をクリア
     });
   };
 
@@ -31,7 +29,6 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
     onFiltersChange({
       ...filters,
       categoryIds: undefined,
-      categoryId: undefined,
     });
   };
 
@@ -79,17 +76,9 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
               }`}
             >
               {category.name}
-              {isSelected && <span className="ml-1 text-xs">✓</span>}
             </button>
           );
         })}
-        
-        {/* 選択済みカテゴリ数の表示 */}
-        {selectedCategoryIds.length > 0 && (
-          <div className="flex items-center px-3 py-2 bg-sage-100 rounded-full text-xs text-sage-600">
-            {selectedCategoryIds.length}件選択中
-          </div>
-        )}
       </div>
     </div>
   );

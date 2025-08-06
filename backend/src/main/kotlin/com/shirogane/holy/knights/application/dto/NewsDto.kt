@@ -74,7 +74,6 @@ data class NewsCategoryDto(
  */
 data class NewsSearchParamsDto(
     val query: String? = null,
-    val categoryId: Int? = null, // 後方互換性のため保持
     val categoryIds: List<Int>? = null, // 複数カテゴリ対応
     val startDate: String? = null, // ISO 8601形式の日時文字列
     val endDate: String? = null,   // ISO 8601形式の日時文字列
@@ -100,20 +99,6 @@ data class NewsSearchParamsDto(
      */
     fun getOffset(): Int {
         return (page - 1) * pageSize
-    }
-    
-    /**
-     * 有効なカテゴリIDリストを取得（後方互換性対応）
-     */
-    fun getEffectiveCategoryIds(): List<Int>? {
-        return when {
-            // 新しい形式（複数カテゴリ）が指定されている場合
-            !categoryIds.isNullOrEmpty() -> categoryIds
-            // 旧形式（単一カテゴリ）が指定されている場合
-            categoryId != null -> listOf(categoryId)
-            // どちらも指定されていない場合
-            else -> null
-        }
     }
 }
 

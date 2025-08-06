@@ -15,7 +15,6 @@ interface NewsRepository {
      */
     suspend fun search(
         query: String? = null,
-        categoryId: Int? = null, // 後方互換性のため保持
         categoryIds: List<Int>? = null, // 複数カテゴリ対応
         startDate: Instant? = null,
         endDate: Instant? = null,
@@ -28,7 +27,6 @@ interface NewsRepository {
      */
     suspend fun countBySearchCriteria(
         query: String? = null,
-        categoryId: Int? = null, // 後方互換性のため保持  
         categoryIds: List<Int>? = null, // 複数カテゴリ対応
         startDate: Instant? = null,
         endDate: Instant? = null

@@ -22,23 +22,15 @@ class NewsRepositoryImpl(
 
     override suspend fun search(
         query: String?,
-        categoryId: Int?,
         categoryIds: List<Int>?,
         startDate: Instant?,
         endDate: Instant?,
         limit: Int,
         offset: Int
     ): List<News> {
-        // 有効なカテゴリIDリストを取得（後方互換性対応）
-        val effectiveCategoryIds = when {
-            !categoryIds.isNullOrEmpty() -> categoryIds
-            categoryId != null -> listOf(categoryId)
-            else -> null
-        }
-        
-        logger.info("ニュース検索: query=$query, categoryIds=$effectiveCategoryIds, startDate=$startDate, endDate=$endDate, limit=$limit, offset=$offset")
+        logger.info("ニュース検索: query=$query, categoryIds=$categoryIds, startDate=$startDate, endDate=$endDate, limit=$limit, offset=$offset")
         return try {
-            searchWithJoin(query, effectiveCategoryIds, startDate, endDate, limit, offset)
+            searchWithJoin(query, categoryIds, startDate, endDate, limit, offset)
         } catch (e: Exception) {
             logger.error("ニュース検索エラー", e)
             emptyList()
@@ -123,19 +115,11 @@ class NewsRepositoryImpl(
 
     override suspend fun countBySearchCriteria(
         query: String?,
-        categoryId: Int?,
         categoryIds: List<Int>?,
         startDate: Instant?,
         endDate: Instant?
     ): Int {
-        // 有効なカテゴリIDリストを取得（後方互換性対応）
-        val effectiveCategoryIds = when {
-            !categoryIds.isNullOrEmpty() -> categoryIds
-            categoryId != null -> listOf(categoryId)
-            else -> null
-        }
-        
-        logger.info("検索結果総数取得: query=$query, categoryIds=$effectiveCategoryIds, startDate=$startDate, endDate=$endDate")
+        logger.info("検索結果総数取得: query=$query, categoryIds=$categoryIds, startDate=$startDate, endDate=$endDate")
         return try {
             val conditions = mutableListOf<String>()
             val bindings = mutableMapOf<String, Any>()
@@ -145,7 +129,7 @@ class NewsRepositoryImpl(
                 bindings["query"] = "%$it%"
             }
             
-            effectiveCategoryIds?.takeIf { it.isNotEmpty() }?.let { ids ->
+            categoryIds?.takeIf { it.isNotEmpty() }?.let { ids ->
                 val placeholders = ids.mapIndexed { index, _ -> ":categoryId$index" }.joinToString(",")
                 conditions.add("nnc.news_category_id IN ($placeholders)")
                 ids.forEachIndexed { index, id ->
