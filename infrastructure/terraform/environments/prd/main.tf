@@ -116,9 +116,9 @@ module "api_gateway" {
   }
 }
 
-# SSM Parameter for GitHub token (using shared token)
+# SSM Parameter for GitHub token
 data "aws_ssm_parameter" "github_token" {
-  name            = "/shirogane-holy-knights/shared/github-token"
+  name            = "/shirogane-holy-knights/prd/github-token"
   with_decryption = true
 }
 
