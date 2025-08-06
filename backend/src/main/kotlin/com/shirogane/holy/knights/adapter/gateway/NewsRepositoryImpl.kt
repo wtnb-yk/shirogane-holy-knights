@@ -94,9 +94,9 @@ class NewsRepositoryImpl(
         val sql = """
             SELECT 
                 n.id, n.title, n.content, n.thumbnail_url, n.external_url, n.published_at,
-                COALESCE(STRING_AGG(DISTINCT nc.id::text, ',' ORDER BY nc.sort_order), '') as category_ids,
-                COALESCE(STRING_AGG(DISTINCT nc.name, ',' ORDER BY nc.sort_order), '') as category_names,
-                COALESCE(STRING_AGG(DISTINCT nc.sort_order::text, ',' ORDER BY nc.sort_order), '') as category_sort_orders
+                COALESCE(STRING_AGG(nc.id::text, ',' ORDER BY nc.sort_order), '') as category_ids,
+                COALESCE(STRING_AGG(nc.name, ',' ORDER BY nc.sort_order), '') as category_names,
+                COALESCE(STRING_AGG(nc.sort_order::text, ',' ORDER BY nc.sort_order), '') as category_sort_orders
             FROM news n
             INNER JOIN news_news_categories nnc ON n.id = nnc.news_id
             INNER JOIN news_categories nc ON nnc.news_category_id = nc.id
@@ -185,7 +185,7 @@ class NewsRepositoryImpl(
                 sqlQuery = sqlQuery.bind(key, value)
             }
             
-            val result = sqlQuery.map { row -> row.get(0, Long::class.java)?.toInt() ?: 0 }
+            val result = sqlQuery.map { row -> row.get(0, Number::class.java)?.toInt() ?: 0 }
                 .first()
                 .awaitSingle()
                 
