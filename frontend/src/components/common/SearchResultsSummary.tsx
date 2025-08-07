@@ -36,7 +36,7 @@ export const SearchResultsSummary = ({
         
         <button
           onClick={onClearAllFilters}
-          className="flex items-center gap-1 px-3 py-1 text-xs text-text-secondary hover:text-text-primary bg-bg-primary border border-surface-border rounded-md hover:bg-bg-accent transition-all duration-200"
+          className="flex items-center gap-1 px-3 py-1 text-xs text-text-secondary hover:text-text-primary bg-bg-primary border border-surface-border rounded-md interactive-hover transition-all duration-ui"
         >
           <X className="w-3 h-3" />
           クリア

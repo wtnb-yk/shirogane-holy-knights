@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StaggeredItem } from '@/components/ui/StaggeredItem';
 
 interface SkeletonNewsCardProps {
   index: number;
@@ -10,10 +11,7 @@ interface SkeletonNewsCardProps {
 
 const SkeletonNewsCardComponent = ({ index }: SkeletonNewsCardProps) => {
   return (
-    <div 
-      className="opacity-0 animate-fade-in" 
-      style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
-    >
+    <StaggeredItem index={index}>
       <Card className="overflow-hidden bg-bg-primary border-0">
         <div className="flex flex-col sm:flex-row">
           {/* 画像部分 */}
@@ -53,7 +51,7 @@ const SkeletonNewsCardComponent = ({ index }: SkeletonNewsCardProps) => {
           </div>
         </div>
       </Card>
-    </div>
+    </StaggeredItem>
   );
 };
 

@@ -14,7 +14,7 @@ export const FilterButton = ({
 }: FilterButtonProps) => {
   return (
     <button 
-      className="px-6 py-3 bg-bg-primary border border-surface-border rounded-lg flex items-center gap-2 hover:bg-bg-accent transition-all duration-200 shadow-sm" 
+      className="px-6 py-3 bg-bg-primary border border-surface-border rounded-lg flex items-center gap-2 interactive-hover transition-all duration-ui shadow-sm" 
       onClick={onFilterClick}
       disabled={disabled}
     >

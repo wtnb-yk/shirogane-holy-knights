@@ -49,14 +49,14 @@ export const SearchInput = ({
         placeholder={placeholder}
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="w-full pl-10 pr-12 py-3 border border-surface-border rounded-lg bg-bg-primary focus:ring-2 focus:ring-text-secondary focus:border-text-secondary transition-all duration-200 shadow-sm text-text-primary placeholder-text-secondary/70"
+        className="w-full pl-10 pr-12 py-3 border border-surface-border rounded-lg bg-bg-primary focus:ring-2 focus:ring-text-secondary focus:border-text-secondary transition-all duration-ui shadow-sm text-text-primary placeholder-text-secondary/70"
         disabled={disabled}
       />
       {inputValue && (
         <button
           type="button"
           onClick={handleClear}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors duration-200"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors duration-ui"
           disabled={disabled}
         >
           <X className="w-5 h-5" />

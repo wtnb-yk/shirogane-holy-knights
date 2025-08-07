@@ -15,6 +15,15 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      animation: {
+        'stagger-fade': 'fadeIn 0.4s ease-out forwards var(--animation-delay, 0ms)',
+        'card-hover': 'cardHover 0.3s ease-out forwards',
+      },
+      transitionDuration: {
+        'card': '300ms',
+        'ui': '200ms',
+        'fast': '150ms',
+      },
       colors: {
         bg: {
           primary: '#FFFFFF',    // メイン背景（現在のnoel-bg-light）

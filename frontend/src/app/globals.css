@@ -36,6 +36,13 @@
     overflow: hidden;
   }
   
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
   .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;
   }
@@ -59,6 +66,47 @@
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
+
+  /* 共通カードホバーエフェクト */
+  .card-hover {
+    @apply transition-all duration-card hover:shadow-xl hover:shadow-text-secondary/20 hover:-translate-y-1;
+  }
+  
+  .card-hover-scale {
+    @apply card-hover hover:scale-[1.01];
+  }
+  
+  .card-hover-scale-md {
+    @apply card-hover hover:scale-[1.02];
+  }
+
+  /* 共通インタラクティブホバー */
+  .interactive-hover {
+    @apply hover:bg-bg-accent transition-colors duration-ui;
+  }
+
+  /* 画像ホバーエフェクト */
+  .image-hover {
+    @apply transition-transform duration-card group-hover:scale-105;
+  }
+
+  /* オーバーレイエフェクト */
+  .image-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-card;
+  }
+
+  /* ツールチップ */
+  .tooltip-base {
+    @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-bg-primary border border-surface-border rounded-md shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-ui pointer-events-none z-50 max-w-xs;
+  }
+
+  /* スタガードアニメーション遅延 */
+  .stagger-delay-1 { --animation-delay: 50ms; }
+  .stagger-delay-2 { --animation-delay: 100ms; }
+  .stagger-delay-3 { --animation-delay: 150ms; }
+  .stagger-delay-4 { --animation-delay: 200ms; }
+  .stagger-delay-5 { --animation-delay: 250ms; }
+  .stagger-delay-6 { --animation-delay: 300ms; }
 }
 
 @keyframes fadeIn {

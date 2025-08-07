@@ -3,6 +3,7 @@
 import React from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StaggeredItem } from '@/components/ui/StaggeredItem';
 
 interface BaseSkeletonProps {
   index: number;
@@ -25,10 +26,7 @@ export const BaseSkeleton = ({
   ]
 }: BaseSkeletonProps) => {
   return (
-    <div 
-      className="h-full opacity-0 animate-fade-in" 
-      style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
-    >
+    <StaggeredItem index={index} className="h-full">
       <Card className="h-full overflow-hidden bg-bg-primary border border-surface-border">
         {showThumbnail && (
           <div className={`relative w-full ${thumbnailHeight} bg-bg-accent`}>
@@ -46,6 +44,6 @@ export const BaseSkeleton = ({
           </CardFooter>
         )}
       </Card>
-    </div>
+    </StaggeredItem>
   );
 };
