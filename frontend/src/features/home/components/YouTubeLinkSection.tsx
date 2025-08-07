@@ -10,17 +10,17 @@ export default function YouTubeLinkSection() {
 
   return (
     <section className="py-16 bg-bg-accent/20 relative">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6 relative">
         {/* 右側画像 */}
-        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 animate-stagger-fade" style={{"--animation-delay": "400ms"} as any}>
+        <div className="absolute -top-12 right-0 animate-stagger-fade hidden lg:block" style={{"--animation-delay": "400ms"} as any}>
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/20 to-accent-beige/20 rounded-full blur-3xl scale-110 animate-pulse"></div>
             <div className="relative hover:scale-105 transition-transform duration-500 ease-out">
               <Image
                 src={lyricalImage}
                 alt="白銀ノエル"
-                width={600}
-                height={900}
+                width={380}
+                height={570}
                 className="drop-shadow-2xl"
                 priority
               />
@@ -73,7 +73,7 @@ export default function YouTubeLinkSection() {
         </div>
 
         {/* 追加情報 */}
-        <div className="relative z-10 mt-16">
+        <div className="mt-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-stagger-fade" style={{"--animation-delay": "400ms"} as any}>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">🎵</div>
