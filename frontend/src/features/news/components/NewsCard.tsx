@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
-import { TEXT_CLAMP, IMAGE_STYLES, BACKGROUND_OPACITY } from '@/constants/styles';
+import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
 
 interface NewsCardProps {
   news: NewsDto;
@@ -36,11 +36,11 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   const imageUrl = getImageUrl(news.thumbnailUrl);
   
   const cardContent = (
-    <InteractiveCard hoverScale="sm" className="border-0 news-card-hover rounded-lg">
+    <InteractiveCard hoverScale="sm" className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl bg-bg-primary">
       <div className="flex flex-col sm:flex-row">
         {/* 画像部分 */}
         {imageUrl && (
-          <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-bg-accent rounded-l-lg">
+          <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-gradient-to-br from-accent-blue/10 to-accent-beige/10 rounded-l-xl">
             <Image 
               src={imageUrl} 
               alt={news.title} 
@@ -85,19 +85,19 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             </div>
             
             {/* 日付情報 */}
-            <div className="flex items-center gap-1 text-xs text-text-secondary mb-3">
-              <Calendar className="w-3 h-3" />
-              <span>{new Date(news.publishedAt).toLocaleDateString('ja-JP')}</span>
+            <div className="flex items-center gap-1.5 text-xs text-text-secondary mb-3">
+              <Calendar className="w-3.5 h-3.5 text-accent-gold" />
+              <span className="font-medium">{new Date(news.publishedAt).toLocaleDateString('ja-JP')}</span>
             </div>
             
             {/* タイトル */}
-            <h3 className={`text-base font-bold mb-2 ${TEXT_CLAMP[2]} text-text-primary`}>
+            <h3 className={`text-lg font-semibold mb-2 ${TEXT_CLAMP[2]} text-text-primary hover:text-accent-blue transition-colors duration-ui`}>
               {news.title}
             </h3>
             
             {/* コンテンツ */}
             {news.content && (
-              <p className={`text-sm text-text-secondary ${TEXT_CLAMP[3]} mb-2`}>
+              <p className={`text-sm text-text-secondary ${TEXT_CLAMP[3]} mb-2 leading-relaxed`}>
                 {news.content}
               </p>
             )}
@@ -115,12 +115,12 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           target="_blank"
           rel="noopener noreferrer"
           hoverScale="sm"
-          className="border-0 news-card-hover rounded-lg"
+          className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl bg-bg-primary"
         >
           <div className="flex flex-col sm:flex-row">
             {/* 画像部分 */}
             {imageUrl && (
-              <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-bg-accent rounded-l-lg">
+              <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-gradient-to-br from-accent-blue/10 to-accent-beige/10 rounded-l-xl">
                 <Image 
                   src={imageUrl} 
                   alt={news.title} 

@@ -25,10 +25,15 @@ export default function VideosList() {
   return (
     <div className="min-h-screen bg-bg-primary">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="mb-8 opacity-0 animate-slide-up">
-          <h1 className="text-4xl font-bold mb-6 text-text-primary">
-            配信・動画
-          </h1>
+        <div className="mb-4 opacity-0 animate-slide-up">
+          <div className="mb-6">
+            <h1 className="text-4xl font-bold text-text-primary">
+              配信・動画
+            </h1>
+          </div>
+          <p className="text-text-secondary text-sm mb-6">
+            配信や動画をチェック！
+          </p>
           
           {/* タブ切り替えUI */}
           <div className="flex border-b border-surface-border">

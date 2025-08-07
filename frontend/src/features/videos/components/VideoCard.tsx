@@ -24,10 +24,10 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
         rel="noopener noreferrer"
         aria-label={`${video.title}をYouTubeで視聴`}
         hoverScale="md"
-        className="video-card-hover rounded-lg overflow-hidden"
+        className="video-card-hover rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-card"
       >
         {video.thumbnailUrl && (
-          <div className="relative w-full aspect-video overflow-hidden bg-bg-accent">
+          <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-accent-gold/20 to-accent-beige/20 rounded-t-xl">
             <Image 
               src={video.thumbnailUrl} 
               alt={video.title} 
@@ -42,22 +42,22 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
           </div>
         )}
         <CardContent className="p-5">
-          <h3 className={`text-base font-bold mb-3 ${TEXT_CLAMP[3]} text-text-primary group-hover:text-text-secondary transition-colors duration-ui`}>
+          <h3 className={`text-lg font-bold mb-3 ${TEXT_CLAMP[2]} text-text-primary group-hover:text-accent-blue transition-colors duration-ui`}>
             {video.title}
           </h3>
           <div className="flex items-center gap-2 text-sm text-text-secondary mb-3">
-            <Calendar className="w-4 h-4" />
-            <span>{new Date(video.publishedAt).toLocaleDateString('ja-JP')}</span>
+            <Calendar className="w-4 h-4 text-accent-gold" />
+            <span className="font-medium">{new Date(video.publishedAt).toLocaleDateString('ja-JP')}</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {video.tags?.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"
-                className={`${BACKGROUND_OPACITY.accent.strong} text-text-primary hover:bg-bg-accent/70 transition-colors duration-ui ${BACKGROUND_OPACITY.surface.light}`}
+                className="bg-gradient-to-r from-accent-gold/20 to-accent-beige/20 text-text-primary hover:from-accent-gold/30 hover:to-accent-beige/30 transition-all duration-ui border border-accent-gold/30"
               >
-                <Tag className="w-3 h-3 mr-1" />
-                {tag}
+                <Tag className="w-3 h-3 mr-1 text-accent-gold" />
+                <span className="font-medium text-xs">{tag}</span>
               </Badge>
             ))}
             {video.tags && video.tags.length > 3 && (

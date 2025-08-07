@@ -32,9 +32,14 @@ export default function NewsPage() {
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* ページタイトル */}
         <div className="mb-8 opacity-0 animate-slide-up">
-          <h1 className="text-4xl font-bold mb-2 text-text-primary">
-            ニュース
-          </h1>
+          <div className="mb-3">
+            <h1 className="text-4xl font-bold text-text-primary">
+              ニュース
+            </h1>
+          </div>
+          <p className="text-text-secondary text-sm">
+            最新情報をお届け！
+          </p>
         </div>
 
         {/* 検索バー */}
