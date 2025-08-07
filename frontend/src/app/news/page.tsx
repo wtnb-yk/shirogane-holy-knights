@@ -37,9 +37,6 @@ export default function NewsPage() {
               ニュース
             </h1>
           </div>
-          <p className="text-text-secondary text-sm">
-            最新情報をお届け！
-          </p>
         </div>
 
         {/* 検索バー */}

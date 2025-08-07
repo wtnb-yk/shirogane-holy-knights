@@ -19,7 +19,7 @@ export default function NewsPreviewSection() {
           </h2>
           <div className="w-20 h-1 bg-text-secondary mx-auto rounded-full mb-4"></div>
           <p className="text-text-secondary max-w-2xl mx-auto">
-            白銀ノエルさんに関する最新情報をお届けします
+            白銀ノエルさんに関する最新情報をお届け！
           </p>
         </div>
 

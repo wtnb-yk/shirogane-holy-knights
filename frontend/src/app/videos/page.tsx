@@ -31,9 +31,6 @@ export default function VideosList() {
               配信・動画
             </h1>
           </div>
-          <p className="text-text-secondary text-sm mb-6">
-            配信や動画をチェック！
-          </p>
           
           {/* タブ切り替えUI */}
           <div className="flex border-b border-surface-border">
