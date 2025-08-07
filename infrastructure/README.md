@@ -63,6 +63,9 @@ gh run list --workflow=terraform.yml
 # バックエンドデプロイワークフローの一覧
 gh run list --workflow=deploy-backend.yml
 
+# フロントエンドデプロイワークフローの一覧
+gh run list --workflow=deploy-frontend.yml
+
 # 実行中のワークフロー詳細確認
 gh run view --workflow=terraform.yml
 ```
