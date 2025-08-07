@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import commonImage from '@/assets/common.png';
 
 export default function ProfileSection() {
   const profileData = {
@@ -7,13 +9,17 @@ export default function ProfileSection() {
     title: "白銀聖騎士団団長",
     debut: "2019年8月8日",
     birthday: "11月24日",
-    age: "永遠の17歳",
-    height: "154cm",
-    fanName: "団員",
-    hashtag: "#白銀ノエル",
+    height: "158cm",
+    fanName: "白銀聖騎士団",
+    hashtag: "#ノエルーム",
+    fanArtHashtag: "#ノエラート",
     generation: "ホロライブ3期生",
-    catchphrase: "おかえり〜",
-    description: "ホロライブ所属のVTuberで、白銀聖騎士団の団長。明るく優しい性格で、団員（ファン）を大切にする心優しい白い獅子。歌とゲームが得意で、特に歌声は多くの人を魅了している。"
+    illustrator: "わたお",
+    catchphrase: "こんまっする〜！",
+    selfIntroduction: "こんまっする～！鉄の胃袋大魔神！白銀聖騎士団の団長、白銀ノエルです！",
+    hobbies: ["食べること", "ゲーム", "アニメ鑑賞"],
+    streamContent: ["ゲーム", "英語勉強", "雑談", "ASMR", "晩酌雑談", "朗読"],
+    description: "ホロライブ3期生所属のVTuber。おっとりしているが、筋力で物事を解決する「ゆるふわ脳筋女騎士」として親しまれている。明るく優しい性格で、白銀聖騎士団（ファン）を大切にする心優しい騎士。"
   };
 
   return (
@@ -21,7 +27,7 @@ export default function ProfileSection() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
-            Profile
+            プロフィール
           </h2>
           <div className="w-20 h-1 bg-text-secondary mx-auto rounded-full"></div>
         </div>
@@ -29,19 +35,36 @@ export default function ProfileSection() {
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* 画像エリア */}
           <div>
-            <div className="bg-bg-accent/30 rounded-xl p-4">
-              <div className="w-full h-96 bg-gradient-to-br from-bg-accent/30 via-white to-text-muted/20 rounded-lg border-2 border-dashed border-surface-border flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">👑</div>
-                  <p className="text-text-secondary font-bold text-sm">ノエル様ポートレート</p>
-                  <p className="text-xs text-text-muted">画像は後日追加予定</p>
-                </div>
-              </div>
+            <div className="w-full h-[600px] flex items-center justify-center">
+              <Image
+                src={commonImage}
+                alt="白銀ノエル プロフィール画像"
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
           </div>
 
           {/* プロフィール情報 */}
           <div className="space-y-6">
+            {/* キャッチフレーズと自己紹介を一番上に */}
+            <div className="text-center">
+              <p className="text-text-secondary font-bold text-2xl mb-4">
+                「{profileData.catchphrase}」
+              </p>
+              <p className="text-text-primary text-xl font-semibold leading-relaxed">
+                {profileData.selfIntroduction}
+              </p>
+            </div>
+
+            {/* 説明文 */}
+            <div className="bg-bg-accent/30 rounded-xl p-6">
+              <p className="text-text-primary leading-relaxed">
+                {profileData.description}
+              </p>
+            </div>
+
+            {/* 基本情報 */}
             <div className="bg-bg-primary rounded-xl border border-surface-border p-6">
               <h3 className="text-xl font-bold text-text-primary mb-4">
                 基本情報
@@ -52,8 +75,12 @@ export default function ProfileSection() {
                   { label: '名前', value: profileData.name },
                   { label: 'デビュー', value: profileData.debut },
                   { label: '誕生日', value: profileData.birthday },
+                  { label: '身長', value: profileData.height },
                   { label: 'ファンネーム', value: profileData.fanName },
-                  { label: '所属', value: profileData.generation }
+                  { label: '所属', value: profileData.generation },
+                  { label: 'イラストレーター', value: profileData.illustrator },
+                  { label: '配信タグ', value: profileData.hashtag },
+                  { label: 'ファンアート', value: profileData.fanArtHashtag }
                 ].map((item, index) => (
                   <div key={index} className="flex justify-between items-center py-2 border-b border-surface-border last:border-0">
                     <span className="text-text-secondary text-sm">{item.label}</span>
@@ -63,16 +90,25 @@ export default function ProfileSection() {
               </div>
             </div>
 
+            {/* 趣味と配信内容 */}
             <div className="bg-bg-accent/30 rounded-xl p-6">
-              <p className="text-text-primary leading-relaxed">
-                {profileData.description}
-              </p>
-            </div>
-
-            <div className="text-center">
-              <p className="text-text-secondary font-medium text-lg">
-                「{profileData.catchphrase}」
-              </p>
+              <h3 className="text-lg font-bold text-text-primary mb-3">趣味</h3>
+              <div className="flex flex-wrap gap-2 mb-6">
+                {profileData.hobbies.map((hobby, index) => (
+                  <span key={index} className="px-3 py-1 bg-bg-primary text-text-primary text-sm rounded-full border border-surface-border">
+                    {hobby}
+                  </span>
+                ))}
+              </div>
+              
+              <h3 className="text-lg font-bold text-text-primary mb-3">配信内容</h3>
+              <div className="flex flex-wrap gap-2">
+                {profileData.streamContent.map((content, index) => (
+                  <span key={index} className="px-3 py-1 bg-bg-primary text-text-primary text-sm rounded-full border border-surface-border">
+                    {content}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
