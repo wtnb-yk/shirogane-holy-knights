@@ -82,15 +82,22 @@ cd tools && make db-{dev|prd}-status
 ### Infrastructure Operations
 
 ```bash
-# Dev環境デプロイ
-cd infrastructure/terraform/environments/dev
-terraform init
-terraform apply
+# Terraform操作 (インフラ構築・更新)
+gh workflow run terraform.yml --field environment=dev --field action=plan
+gh workflow run terraform.yml --field environment=dev --field action=apply
+gh workflow run terraform.yml --field environment=prd --field action=plan
+gh workflow run terraform.yml --field environment=prd --field action=apply
 
-# Lambda関数更新 (AWS CLI)
-aws lambda update-function-code \
-  --function-name shirogane-holy-knights-dev-api \
-  --zip-file fileb://backend/build/libs/shirogane-holy-knights-0.1.0-springboot-lambda.jar
+# Backend デプロイ (Lambda関数更新)
+gh workflow run temp-deploy-bacnend.yml --field environment=dev
+gh workflow run temp-deploy-bacnend.yml --field environment=prd
+
+# ワークフロー実行状況確認
+gh run list --workflow=terraform.yml
+gh run list --workflow=deploy-backend.yml
+
+# 実行中のワークフロー詳細確認
+gh run view --workflow=terraform.yml
 ```
 
 ## Important Project Structure
