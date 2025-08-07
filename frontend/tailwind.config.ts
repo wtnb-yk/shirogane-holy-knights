@@ -62,19 +62,20 @@ const config: Config = {
             'accent': '#ACBDC5',     // アクセント背景（現在のsage-100）
           },
           'text': {
-            'primary': '#374553',    // メインテキスト（現在のbrand-charcoal）
-            'secondary': '#89939d',  // サブテキスト（現在のsage-300）
-            'muted': '#acabb2',      // 薄いテキスト（現在のsage-200）
+            'primary': '#374553',    // メインテキスト
+            'secondary': '#89939d',  // サブテキスト
+            'muted': '#acabb2',      // 薄いテキスト
           },
           'surface': {
-            'primary': '#324353',    // ヘッダーなど（現在のbrand-navy）
-            'secondary': '#8B9DC3',  // カード背景など（現在のnoel-primary）
-            'border': '#acabb2',     // ボーダー色（現在のsage-200）
+            'primary': '#324353',    // ヘッダーなど
+            'secondary': '#8B9DC3',  // カード背景など
+            'border': '#acabb2',     // ボーダー色
           },
           'accent': {
-            'gold': '#F6C794',       // ゴールド（現在のbrand-gold）
-            'blue': '#8B9DC3',       // ブルー（現在のnoel-primary）
-            'beige': '#DDB892',      // ベージュ（現在のnoel-secondary）
+            'gold': '#F6C794',
+            'blue': '#8B9DC3',
+            'beige': '#DDB892',
+            'green': '#5BA179',
           },
         },
       },
