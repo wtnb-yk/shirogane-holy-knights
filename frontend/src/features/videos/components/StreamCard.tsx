@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Radio, Tag } from 'lucide-react';
+import { Radio, Tag, Play } from 'lucide-react';
 import { StreamDto } from '../types/types';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +39,12 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
               blurDataURL={IMAGE_STYLES.placeholder}
             />
             <div className="image-overlay" />
+            {/* 再生アイコン */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="bg-black/50 rounded-full p-3">
+                <Play className="w-6 h-6 text-white fill-white" />
+              </div>
+            </div>
           </div>
         )}
         <CardContent className="p-5">
