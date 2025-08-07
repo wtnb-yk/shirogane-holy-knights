@@ -76,8 +76,8 @@ export const Pagination = ({
         disabled={currentPage <= 1 || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
-          "disabled:hover:bg-white disabled:hover:text-shirogane-text-secondary"
+          "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
+          "disabled:hover:bg-shirogane-bg-primary disabled:hover:text-shirogane-text-secondary"
         )}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -94,7 +94,7 @@ export const Pagination = ({
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
+                "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
@@ -117,7 +117,7 @@ export const Pagination = ({
               page === currentPage
                 ? "bg-shirogane-text-secondary text-white shadow-lg shadow-shirogane-text-secondary/30"
                 : cn(
-                    "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
+                    "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
                     size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
                   )
             )}
@@ -137,7 +137,7 @@ export const Pagination = ({
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
+                "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
@@ -153,8 +153,8 @@ export const Pagination = ({
         disabled={currentPage >= totalPages || !hasMore || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
-          "disabled:hover:bg-white disabled:hover:text-shirogane-text-secondary"
+          "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
+          "disabled:hover:bg-shirogane-bg-primary disabled:hover:text-shirogane-text-secondary"
         )}
       >
         次

@@ -26,7 +26,7 @@ export const SearchResultsSummary = ({
     <div className="mb-6 p-4 bg-shirogane-bg-accent/30 border border-shirogane-surface-border/50 rounded-lg opacity-0 animate-slide-up" style={{ animationDelay: '175ms' }}>
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-shirogane-text-primary">
             {searchQuery && `「${searchQuery}」`}
             {searchQuery && filterSummary && ' / '}
             {filterSummary}
@@ -36,7 +36,7 @@ export const SearchResultsSummary = ({
         
         <button
           onClick={onClearAllFilters}
-          className="flex items-center gap-1 px-3 py-1 text-xs text-shirogane-text-secondary hover:text-gray-800 bg-white border border-shirogane-surface-border rounded-md hover:bg-shirogane-bg-accent transition-all duration-200"
+          className="flex items-center gap-1 px-3 py-1 text-xs text-shirogane-text-secondary hover:text-shirogane-text-primary bg-shirogane-bg-primary border border-shirogane-surface-border rounded-md hover:bg-shirogane-bg-accent transition-all duration-200"
         >
           <X className="w-3 h-3" />
           クリア

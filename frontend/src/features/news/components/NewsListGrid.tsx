@@ -31,8 +31,8 @@ export function NewsListGrid<T>({
     return (
       <div className="flex items-center justify-center h-64 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
         <div className="text-center">
-          <div className="text-red-500 text-lg font-medium mb-2">エラーが発生しました</div>
-          <div className="text-gray-600 text-sm">{error}</div>
+          <div className="text-shirogane-error text-lg font-medium mb-2">エラーが発生しました</div>
+          <div className="text-shirogane-text-secondary text-sm">{error}</div>
         </div>
       </div>
     );
@@ -54,8 +54,8 @@ export function NewsListGrid<T>({
     return (
       <div className="flex items-center justify-center h-64 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
         <div className="text-center">
-          <div className="text-gray-500 text-lg font-medium mb-2">{emptyMessage.title}</div>
-          <div className="text-gray-400 text-sm">{emptyMessage.subtitle}</div>
+          <div className="text-shirogane-text-secondary text-lg font-medium mb-2">{emptyMessage.title}</div>
+          <div className="text-shirogane-text-muted text-sm">{emptyMessage.subtitle}</div>
         </div>
       </div>
     );

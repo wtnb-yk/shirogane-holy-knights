@@ -34,7 +34,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   const imageUrl = getImageUrl(news.thumbnailUrl);
   
   const cardContent = (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-shirogane-text-secondary/20 bg-white border-0 hover:scale-[1.01] hover:-translate-y-1">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-shirogane-text-secondary/20 bg-shirogane-bg-primary border-0 hover:scale-[1.01] hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row">
         {/* 画像部分 */}
         {imageUrl && (
@@ -89,13 +89,13 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             </div>
             
             {/* タイトル */}
-            <h3 className="text-base font-bold mb-2 line-clamp-2 text-gray-800">
+            <h3 className="text-base font-bold mb-2 line-clamp-2 text-shirogane-text-primary">
               {news.title}
             </h3>
             
             {/* コンテンツ */}
             {news.content && (
-              <p className="text-sm text-gray-600 line-clamp-3 mb-2">
+              <p className="text-sm text-shirogane-text-secondary line-clamp-3 mb-2">
                 {news.content}
               </p>
             )}

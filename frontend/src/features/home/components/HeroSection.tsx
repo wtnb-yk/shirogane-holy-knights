@@ -29,13 +29,13 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="/videos"
-            className="px-8 py-3 bg-white text-gray-800 rounded-lg font-medium hover:bg-shirogane-bg-accent transition-colors duration-200"
+            className="px-8 py-3 bg-shirogane-bg-primary text-shirogane-text-primary rounded-lg font-medium hover:bg-shirogane-bg-accent transition-colors duration-200"
           >
             配信アーカイブを見る
           </a>
           <a
             href="/news"
-            className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-gray-800 transition-colors duration-200"
+            className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-shirogane-bg-primary hover:text-shirogane-text-primary transition-colors duration-200"
           >
             最新ニュース
           </a>
@@ -46,7 +46,7 @@ export default function HeroSection() {
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <div className="text-white/60 text-sm animate-bounce">
           <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/60 rounded-full mt-2"></div>
+            <div className="w-1 h-3 bg-shirogane-bg-primary/60 rounded-full mt-2"></div>
           </div>
           <p className="mt-2">scroll</p>
         </div>

@@ -23,9 +23,6 @@ export function FilterBar({
   availableTags = [], 
   className = '' 
 }: FilterBarProps) {
-  // モーダル内では常に展開状態
-  const isExpanded = true;
-
   const handleTagToggle = (tag: string) => {
     const newTags = filters.selectedTags.includes(tag)
       ? filters.selectedTags.filter(t => t !== tag)
@@ -44,7 +41,7 @@ export function FilterBar({
           {/* タグフィルター */}
           {availableTags.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">タグ</h4>
+              <h4 className="text-sm font-medium text-shirogane-text-primary mb-2">タグ</h4>
               <div className="flex flex-wrap gap-2">
                 {availableTags.map((tag) => (
                   <Badge
@@ -53,7 +50,7 @@ export function FilterBar({
                     className={`cursor-pointer transition-all duration-200 ${
                       filters.selectedTags.includes(tag)
                         ? 'bg-shirogane-text-secondary text-white hover:bg-shirogane-bg-accent/80'
-                        : 'border-shirogane-surface-border text-shirogane-text-secondary hover:border-shirogane-text-secondary hover:text-gray-600'
+                        : 'border-shirogane-surface-border text-shirogane-text-secondary hover:border-shirogane-text-secondary hover:text-shirogane-text-secondary'
                     }`}
                     onClick={() => handleTagToggle(tag)}
                   >
@@ -66,7 +63,7 @@ export function FilterBar({
 
           {/* 日付範囲フィルター */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">配信日</h4>
+            <h4 className="text-sm font-medium text-shirogane-text-primary mb-2">配信日</h4>
             <div className="flex gap-3 items-center">
               <div className="flex-1">
                 <input

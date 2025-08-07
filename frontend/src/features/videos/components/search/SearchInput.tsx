@@ -47,7 +47,7 @@ export const SearchInput = ({
         placeholder="タイトルで検索..."
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="w-full pl-10 pr-12 py-3 border border-shirogane-surface-border rounded-lg bg-white focus:ring-2 focus:ring-shirogane-text-secondary focus:border-shirogane-text-secondary transition-all duration-200 shadow-sm text-gray-800 placeholder-shirogane-text-secondary/70"
+        className="w-full pl-10 pr-12 py-3 border border-shirogane-surface-border rounded-lg bg-shirogane-bg-primary focus:ring-2 focus:ring-shirogane-text-secondary focus:border-shirogane-text-secondary transition-all duration-200 shadow-sm text-shirogane-text-primary placeholder-shirogane-text-secondary/70"
         disabled={disabled}
       />
       {inputValue && (

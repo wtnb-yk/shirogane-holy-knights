@@ -56,7 +56,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
           className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
             selectedCategoryIds.length === 0
               ? 'bg-shirogane-text-secondary text-white shadow-md'
-              : 'bg-white text-shirogane-text-secondary border border-shirogane-surface-border hover:bg-shirogane-bg-accent'
+              : 'bg-shirogane-bg-primary text-shirogane-text-secondary border border-shirogane-surface-border hover:bg-shirogane-bg-accent'
           }`}
         >
           全て
@@ -72,7 +72,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
               className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
                 isSelected
                   ? 'bg-shirogane-text-secondary text-white shadow-md ring-2 ring-shirogane-surface-border'
-                  : 'bg-white text-shirogane-text-secondary border border-shirogane-surface-border hover:bg-shirogane-bg-accent'
+                  : 'bg-shirogane-bg-primary text-shirogane-text-secondary border border-shirogane-surface-border hover:bg-shirogane-bg-accent'
               }`}
             >
               {category.name}

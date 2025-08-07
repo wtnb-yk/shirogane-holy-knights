@@ -17,10 +17,10 @@ export default function ProfileSection() {
   };
 
   return (
-    <section id="profile" className="py-16 bg-white">
+    <section id="profile" className="py-16 bg-shirogane-bg-primary">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-shirogane-text-primary mb-2">
             Profile
           </h2>
           <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full"></div>
@@ -42,8 +42,8 @@ export default function ProfileSection() {
 
           {/* プロフィール情報 */}
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-shirogane-surface-border p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
+            <div className="bg-shirogane-bg-primary rounded-xl border border-shirogane-surface-border p-6">
+              <h3 className="text-xl font-bold text-shirogane-text-primary mb-4">
                 基本情報
               </h3>
               
@@ -55,16 +55,16 @@ export default function ProfileSection() {
                   { label: 'ファンネーム', value: profileData.fanName },
                   { label: '所属', value: profileData.generation }
                 ].map((item, index) => (
-                  <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-                    <span className="text-gray-600 text-sm">{item.label}</span>
-                    <span className="text-gray-800 font-medium">{item.value}</span>
+                  <div key={index} className="flex justify-between items-center py-2 border-b border-shirogane-surface-border last:border-0">
+                    <span className="text-shirogane-text-secondary text-sm">{item.label}</span>
+                    <span className="text-shirogane-text-primary font-medium">{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="bg-shirogane-bg-accent/30 rounded-xl p-6">
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-shirogane-text-primary leading-relaxed">
                 {profileData.description}
               </p>
             </div>
