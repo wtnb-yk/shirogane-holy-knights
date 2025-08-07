@@ -74,21 +74,26 @@ export default function YouTubeLinkSection() {
 
         {/* 追加情報 */}
         <div className="mt-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-stagger-fade" style={{"--animation-delay": "400ms"} as any}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-stagger-fade" style={{"--animation-delay": "400ms"} as any}>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">🎵</div>
               <h4 className="font-bold text-text-primary mb-2">歌枠</h4>
-              <p className="text-text-secondary text-sm">美しい歌声でお届けする歌配信をお楽しみください</p>
+              <p className="text-text-secondary text-sm">ノエル団長の歌枠からしか得られない栄養がある</p>
             </div>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">🎮</div>
               <h4 className="font-bold text-text-primary mb-2">ゲーム実況</h4>
-              <p className="text-text-secondary text-sm">様々なゲームを楽しくプレイする様子をご覧ください</p>
+              <p className="text-text-secondary text-sm">操作ミスも神展開もノエル団長の手にかかれば名シーン</p>
             </div>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">💬</div>
               <h4 className="font-bold text-text-primary mb-2">雑談</h4>
-              <p className="text-text-secondary text-sm">団員との楽しいおしゃべりタイムをお楽しみください</p>
+              <p className="text-text-secondary text-sm">優しい声で肩の力が抜ける楽しいおしゃべりタイム</p>
+            </div>
+            <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
+              <div className="text-3xl mb-3">🎧</div>
+              <h4 className="font-bold text-text-primary mb-2">ASMR</h4>
+              <p className="text-text-secondary text-sm">ノエル団長のこだわり溢れるASMRは癒しのひととき</p>
             </div>
           </div>
         </div>
