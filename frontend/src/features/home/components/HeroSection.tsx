@@ -13,15 +13,11 @@ export default function HeroSection() {
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         <div className="text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
-            白銀ノエル
+            だんいんポータル
           </h1>
           
           <p className="text-xl md:text-2xl mb-2 opacity-90">
-            白銀聖騎士団団長
-          </p>
-          
-          <p className="text-lg md:text-xl mb-12 opacity-80">
-            「こんまっする〜」
+            白銀ノエルさんの非公式応援サイト
           </p>
         </div>
       </div>
