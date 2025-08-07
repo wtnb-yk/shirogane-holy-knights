@@ -49,33 +49,33 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        'youtube': {
-          'red': '#FF0000',          // YouTube公式赤
-          'dark': '#282828',         // YouTube暗色
-          'light': '#F9F9F9',        // YouTube明色
+        youtube: {
+          red: '#FF0000',          // YouTube公式赤
+          dark: '#282828',         // YouTube暗色
+          light: '#F9F9F9',        // YouTube明色
         },
         // 統一カラーパレット（白銀聖騎士団テーマ）
-        'shirogane': {
-          'bg': {
-            'primary': '#F8F9FA',    // メイン背景（現在のnoel-bg-light）
-            'secondary': '#F9F7F4',  // セクション背景（現在のbrand-cream）
-            'accent': '#ACBDC5',     // アクセント背景（現在のsage-100）
+        shirogane: {
+          bg: {
+            primary: '#F8F9FA',    // メイン背景（現在のnoel-bg-light）
+            secondary: '#F9F7F4',  // セクション背景（現在のbrand-cream）
+            accent: '#ACBDC5',     // アクセント背景（現在のsage-100）
           },
-          'text': {
-            'primary': '#374553',    // メインテキスト
-            'secondary': '#89939d',  // サブテキスト
-            'muted': '#acabb2',      // 薄いテキスト
+          text: {
+            primary: '#374553',    // メインテキスト
+            secondary: '#89939d',  // サブテキスト
+            muted: '#acabb2',      // 薄いテキスト
           },
-          'surface': {
-            'primary': '#324353',    // ヘッダーなど
-            'secondary': '#8B9DC3',  // カード背景など
-            'border': '#acabb2',     // ボーダー色
+          surface: {
+            primary: '#324353',    // ヘッダーなど
+            secondary: '#8B9DC3',  // カード背景など
+            border: '#acabb2',     // ボーダー色
           },
-          'accent': {
-            'gold': '#F6C794',
-            'blue': '#8B9DC3',
-            'beige': '#DDB892',
-            'green': '#5BA179',
+          accent: {
+            gold: '#F6C794',
+            blue: '#8B9DC3',
+            beige: '#DDB892',
+            green: '#5BA179',
           },
         },
       },
