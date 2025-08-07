@@ -24,22 +24,6 @@ export default function HeroSection() {
             「こんまっする〜」
           </p>
         </div>
-        
-        {/* ボタンエリア */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a
-            href="/videos"
-            className="px-8 py-3 bg-bg-primary text-text-primary rounded-lg font-medium hover:bg-bg-accent transition-colors duration-200"
-          >
-            配信アーカイブを見る
-          </a>
-          <a
-            href="/news"
-            className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-bg-primary hover:text-text-primary transition-colors duration-200"
-          >
-            最新ニュース
-          </a>
-        </div>
       </div>
       
       {/* スクロール誘導 */}

@@ -6,7 +6,7 @@ import { ArchivePreviewCard } from './ArchivePreviewCard';
 import { SkeletonArchivePreviewCard } from './SkeletonArchivePreviewCard';
 
 export default function ArchivePreviewSection() {
-  const { videos, loading, error, totalCount } = useVideos({ 
+  const { videos, loading, error } = useVideos({
     pageSize: 6
   });
 
@@ -48,32 +48,6 @@ export default function ArchivePreviewSection() {
             </div>
           )}
         </div>
-
-        {/* アーカイブ統計情報 */}
-        {totalCount > 0 && (
-          <div className="bg-bg-accent/20 rounded-lg p-8 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
-                <div className="text-3xl font-bold text-text-secondary mb-2">
-                  {totalCount.toLocaleString()}
-                </div>
-                <div className="text-text-secondary text-sm font-medium">総配信数</div>
-              </div>
-              <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
-                <div className="text-3xl font-bold text-text-secondary mb-2">
-                  {Math.round(totalCount / 12)} ヶ月
-                </div>
-                <div className="text-text-secondary text-sm font-medium">配信期間（推定）</div>
-              </div>
-              <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
-                <div className="text-3xl font-bold text-text-secondary mb-2">
-                  ∞
-                </div>
-                <div className="text-text-secondary text-sm font-medium">団員の愛</div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* すべてのアーカイブを見るボタン */}
         <div className="text-center">
