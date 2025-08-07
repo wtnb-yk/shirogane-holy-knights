@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { useVideos } from '@/features/videos/hooks/useVideos';
+import { useStreams } from '@/features/videos/hooks/useStreams';
 import { ArchivePreviewCard } from './ArchivePreviewCard';
 import { SkeletonArchivePreviewCard } from './SkeletonArchivePreviewCard';
 
 export default function ArchivePreviewSection() {
-  const { videos, loading, error } = useVideos({
+  const { streams, loading, error } = useStreams({
     pageSize: 6
   });
 
@@ -32,18 +32,18 @@ export default function ArchivePreviewSection() {
           ) : error ? (
             <div className="col-span-full text-center py-12">
               <p className="text-text-secondary">
-                動画の取得に失敗しました
+                配信の取得に失敗しました
               </p>
             </div>
-          ) : videos && videos.length > 0 ? (
-            videos.map((video, index) => (
-              <ArchivePreviewCard key={video.id} video={video} index={index} />
+          ) : streams && streams.length > 0 ? (
+            streams.map((stream, index) => (
+              <ArchivePreviewCard key={stream.id} stream={stream} index={index} />
             ))
           ) : (
             <div className="col-span-full text-center py-12">
-              <div className="text-5xl mb-4">🎥</div>
+              <div className="text-5xl mb-4">📻</div>
               <p className="text-text-secondary">
-                動画がありません
+                配信がありません
               </p>
             </div>
           )}

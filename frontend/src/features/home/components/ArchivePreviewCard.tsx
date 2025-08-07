@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar, Play } from 'lucide-react';
-import { VideoDto } from '@/features/videos/types/types';
+import { StreamDto } from '@/features/videos/types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
@@ -11,7 +11,7 @@ import { getImageUrl } from '@/utils/imageUrl';
 import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
 
 interface ArchivePreviewCardProps {
-  video: VideoDto;
+  stream: StreamDto;
   index: number;
 }
 
@@ -29,12 +29,12 @@ const getTagBadgeStyle = (tag: string) => {
   return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30';
 };
 
-const ArchivePreviewCardComponent = ({ video, index }: ArchivePreviewCardProps) => {
-  const imageUrl = getImageUrl(video.thumbnailUrl);
+const ArchivePreviewCardComponent = ({ stream, index }: ArchivePreviewCardProps) => {
+  const imageUrl = getImageUrl(stream.thumbnailUrl);
   
   const getPrimaryTag = () => {
-    if (video.tags && video.tags.length > 0) {
-      return video.tags[0];
+    if (stream.tags && stream.tags.length > 0) {
+      return stream.tags[0];
     }
     return null;
   };
@@ -49,7 +49,7 @@ const ArchivePreviewCardComponent = ({ video, index }: ArchivePreviewCardProps) 
           <>
             <Image 
               src={imageUrl} 
-              alt={video.title} 
+              alt={stream.title} 
               fill
               className="object-cover image-hover"
               loading="lazy"
@@ -88,14 +88,17 @@ const ArchivePreviewCardComponent = ({ video, index }: ArchivePreviewCardProps) 
         
         {/* タイトル */}
         <h3 className={`text-base font-semibold mb-2 ${TEXT_CLAMP[2]} text-text-primary flex-1`}>
-          {video.title}
+          {stream.title}
         </h3>
         
         {/* 日付情報 */}
         <div className="flex items-center gap-1.5 text-xs text-text-secondary mt-auto">
           <Calendar className="w-3.5 h-3.5 text-accent-gold" />
           <span className="font-medium">
-            {new Date(video.publishedAt).toLocaleDateString('ja-JP')}
+            {stream.startedAt 
+              ? new Date(stream.startedAt).toLocaleDateString('ja-JP')
+              : '配信日未定'
+            }
           </span>
         </div>
       </div>
@@ -105,7 +108,7 @@ const ArchivePreviewCardComponent = ({ video, index }: ArchivePreviewCardProps) 
   return (
     <StaggeredItem index={index} className="group">
       <InteractiveCard
-        href={video.url}
+        href={stream.url}
         target="_blank"
         rel="noopener noreferrer"
         hoverScale="sm"
