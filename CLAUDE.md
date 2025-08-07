@@ -42,10 +42,9 @@ docker compose up -d --build backend
 ```bash
 # フロントエンド起動 (http://localhost:3001)
 docker compose up -d --build frontend
-
-# リント実行
-# TODO: リントの整備
 ```
+
+**See `frontend/README.md` for frontend-related details**
 
 ### Local Environment Setup
 
@@ -111,9 +110,7 @@ gh run view --workflow=terraform.yml
 - `src/main/resources/db/changelog/` - Liquibase migrations
 
 ### Frontend (Next.js)
-- `src/app/` - App Router pages
-- `src/components/` - Reusable UI components
-- `src/features/` - Feature-specific components & hooks
+**See `frontend/README.md` for detailed structure**
 
 ### Infrastructure  
 - `infrastructure/terraform/environments/` - Environment-specific configs
@@ -141,5 +138,5 @@ gh run view --workflow=terraform.yml
 
 ### Frontend Development Guidelines
 - **Always refer to `frontend/README.md` for frontend-related work**
-- **For UI/design tasks, must check `frontend/docs/ui-design.md` design guidelines**
+- **For UI/design tasks, check the design guidelines in `frontend/docs/ui-design.md`**
 

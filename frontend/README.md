@@ -15,25 +15,12 @@
 - **Utilities**: clsx, class-variance-authority, tailwind-merge
 - **Deployment**: AWS Amplify
 
-## 環境構築
+## 開発コマンド
 
-### 前提条件
-
-### セットアップ
-
-1. **環境変数設定**
+### 基本コマンド
 
 ```bash
-# .env.local.example を .env.local にコピー
-cp .env.local.example .env.local
-
-# 環境変数を設定（下記参照）
-```
-
-2. **Docker Compose での起動（推奨）**
-
-```bash
-# フロントエンド開発サーバー起動 (http://localhost:3001)
+# 開発サーバー起動 (http://localhost:3001)
 docker compose up -d --build frontend
 
 # ログ確認
@@ -41,6 +28,16 @@ docker compose logs -f frontend
 
 # 停止
 docker compose down
+```
+
+## デプロイ
+
+### 手動デプロイ
+
+```bash
+# GitHub Actions 経由でデプロイ
+gh workflow run deploy-frontend.yml --field environment=dev
+gh workflow run deploy-frontend.yml --field environment=prd
 ```
 
 #### CloudFront URL の取得方法
