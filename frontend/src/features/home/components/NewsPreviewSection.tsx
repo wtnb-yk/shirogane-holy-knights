@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { NewsCard } from '@/features/news/components/NewsCard';
-import { SkeletonNewsCard } from '@/features/news/components/SkeletonNewsCard';
+import { NewsPreviewCard } from './NewsPreviewCard';
+import { SkeletonNewsPreviewCard } from './SkeletonNewsPreviewCard';
 import { useNews } from '@/features/news/hooks/useNews';
 
 export default function NewsPreviewSection() {
@@ -27,7 +27,7 @@ export default function NewsPreviewSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {loading ? (
             Array.from({ length: 3 }).map((_, index) => (
-              <SkeletonNewsCard key={index} index={index} />
+              <SkeletonNewsPreviewCard key={index} index={index} />
             ))
           ) : error ? (
             <div className="col-span-full text-center py-12">
@@ -37,7 +37,7 @@ export default function NewsPreviewSection() {
             </div>
           ) : news && news.length > 0 ? (
             news.map((item, index) => (
-              <NewsCard key={item.id} news={item} index={index} />
+              <NewsPreviewCard key={item.id} news={item} index={index} />
             ))
           ) : (
             <div className="col-span-full text-center py-12">
