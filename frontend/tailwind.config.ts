@@ -49,11 +49,6 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        youtube: {
-          red: '#FF0000',          // YouTube公式赤
-          dark: '#282828',         // YouTube暗色
-          light: '#F9F9F9',        // YouTube明色
-        },
         // 統一カラーパレット（白銀聖騎士団テーマ）
         shirogane: {
           bg: {
