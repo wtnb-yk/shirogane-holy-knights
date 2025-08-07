@@ -88,7 +88,7 @@ export default function YouTubeLinkSection() {
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">💬</div>
               <h4 className="font-bold text-text-primary mb-2">雑談</h4>
-              <p className="text-text-secondary text-sm">優しい声で肩の力が抜ける楽しいおしゃべりタイム</p>
+              <p className="text-text-secondary text-sm">優しい声で肩の力が抜ける団員との楽しいおしゃべりタイム</p>
             </div>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">🎧</div>
