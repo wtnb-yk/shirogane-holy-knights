@@ -11,7 +11,8 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-text-primary mb-2">団員ポータル</h3>
             <p className="text-sm text-text-primary/80">
-              当サイトはホロライブ3期生白銀ノエル団長を応援する非公式ファンサイトです。ご本人様およびカバー株式会社様、ホロライブプロダクション様は当サイトの運営には一切関わっておりません。
+              当サイトはホロライブ3期生白銀ノエル団長を応援する非公式ファンサイトです。ご本人様およびカバー株式会社様、ホロライブプロダクション様は当サイトの運営には一切関わっておりません。<br />
+              また、著作権法第32条に基づき画像等を引用しておりますが、引用した画像等の著作権・肖像権等は各権利者に帰属いたします。
             </p>
             <a 
               href="https://hololivepro.com/terms/"
