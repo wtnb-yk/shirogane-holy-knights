@@ -1,11 +1,19 @@
 import React from 'react';
+import Image from 'next/image';
+import headerImage from '@/assets/header_1.png';
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center">
+    <section className="relative h-[70vh] flex items-center justify-center">
       {/* 背景画像 */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-text-muted to-text-secondary"></div>
+        <Image
+          src={headerImage}
+          alt="ヒーロー背景"
+          fill
+          className="object-cover"
+          priority
+        />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
       
