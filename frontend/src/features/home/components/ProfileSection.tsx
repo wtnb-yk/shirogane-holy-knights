@@ -47,14 +47,14 @@ export default function ProfileSection() {
                 priority
               />
               {/* 下半分にテキストオーバーレイ */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8 bg-gradient-to-t from-black/80 via-black/60 to-transparent z-10">
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8 bg-gradient-to-t from-black/30 via-black/20 to-transparent z-10">
                 <div className="space-y-3 md:space-y-4">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 md:px-4 md:py-3">
-                    <p className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-accent-gold drop-shadow-2xl leading-tight text-center">
+                  <div className="rounded-xl px-3 py-2 md:px-4 md:py-3">
+                    <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight text-center whitespace-nowrap" style={{ textShadow: '2px 2px 0 #666, -2px -2px 0 #666, 2px -2px 0 #666, -2px 2px 0 #666' }}>
                       「{profileData.catchphrase}」
                     </p>
                   </div>
-                  <p className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-white leading-relaxed drop-shadow-md">
+                  <p className="text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-white leading-relaxed" style={{ textShadow: '1px 1px 0 #666, -1px -1px 0 #666, 1px -1px 0 #666, -1px 1px 0 #666' }}>
                     {profileData.selfIntroduction}
                   </p>
                 </div>
