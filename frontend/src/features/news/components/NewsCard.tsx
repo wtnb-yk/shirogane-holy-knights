@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Calendar } from 'lucide-react';
+import { Calendar, ExternalLink } from 'lucide-react';
 import { NewsDto } from '../types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
@@ -52,6 +52,12 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
               blurDataURL={IMAGE_STYLES.placeholder}
             />
             <div className="image-overlay" />
+            {/* 外部リンクアイコン */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="bg-black/50 rounded-full p-3">
+                <ExternalLink className="w-6 h-6 text-white" />
+              </div>
+            </div>
           </div>
         )}
         
@@ -132,6 +138,12 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                   blurDataURL={IMAGE_STYLES.placeholder}
                 />
                 <div className="image-overlay" />
+                {/* 外部リンクアイコン */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="bg-black/50 rounded-full p-3">
+                    <ExternalLink className="w-6 h-6 text-white" />
+                  </div>
+                </div>
               </div>
             )}
             
