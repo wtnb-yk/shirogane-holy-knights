@@ -24,11 +24,7 @@ This existing project uses the following technology stack:
 
 ### System Architecture
 
-```
-Frontend (Next.js) → API Gateway → Lambda (Spring Boot) → RDS (PostgreSQL)
-                                                      ↓
-                              CloudFront (CDN) ← S3 (Static files)
-```
+**See `infrastructure/README.md` for detailed architecture**
 
 ## Essential Commands
 
@@ -74,24 +70,7 @@ cd tools && make db-{dev|prd}-status
 
 ### Infrastructure Operations
 
-```bash
-# Terraform operations (Infrastructure build/update)
-gh workflow run terraform.yml --field environment=dev --field action=plan
-gh workflow run terraform.yml --field environment=dev --field action=apply
-gh workflow run terraform.yml --field environment=prd --field action=plan
-gh workflow run terraform.yml --field environment=prd --field action=apply
-
-# Backend deployment (Lambda function update)
-gh workflow run temp-deploy-bacnend.yml --field environment=dev
-gh workflow run temp-deploy-bacnend.yml --field environment=prd
-
-# Check workflow execution status
-gh run list --workflow=terraform.yml
-gh run list --workflow=deploy-backend.yml
-
-# Check running workflow details
-gh run view --workflow=terraform.yml
-```
+**See `infrastructure/README.md` for infrastructure-related details**
 
 ## Important Project Structure
 
@@ -101,26 +80,19 @@ gh run view --workflow=terraform.yml
 ### Frontend (Next.js)
 **See `frontend/README.md` for detailed structure**
 
-### Infrastructure  
-- `infrastructure/terraform/environments/` - Environment-specific configs
-- `infrastructure/terraform/modules/` - Reusable Terraform modules
+### Infrastructure
+**See `infrastructure/README.md` for detailed structure**
 
 ## Development Notes
 
 ### Database Connection
 - Local: `localhost:5432/shirogane` (postgres/postgres)
-- Dev: Connect to RDS via Bastion (`make db-dev`)
-- Prd: Connect to RDS via Bastion (`make db-prd`)
+- Dev/Prd: See `infrastructure/README.md` for RDS connection details
 
 ### Environment-specific Configuration
 - **Backend**: See `backend/README.md` for Spring profiles and Lambda configuration
 - **Frontend**: See `frontend/README.md` for environment variables and deployment settings
-
-### Performance Considerations
-- Lambda: Configured with 1024MB/60 seconds to mitigate Cold Start
-- Backend: R2DBC for asynchronous DB connection
-- Frontend: SWR for optimistic UI updates and caching
-- Static files: CloudFront CDN for global distribution
+- **Infrastructure**: See `infrastructure/README.md` for AWS environment configurations
 
 ## Development Guidelines
 
