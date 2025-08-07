@@ -29,7 +29,7 @@ export const SearchBar = ({
         onSearch={onSearch}
         onClearSearch={onClearSearch}
         disabled={disabled}
-        placeholder="タイトルで検索..."
+        placeholder="お探しの動画タイトルを入力してください"
       />
       <FilterButton
         onFilterClick={onFilterClick}

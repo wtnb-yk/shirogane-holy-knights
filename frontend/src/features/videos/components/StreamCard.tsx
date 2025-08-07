@@ -24,6 +24,7 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
         rel="noopener noreferrer"
         aria-label={`${stream.title}をYouTubeで視聴`}
         hoverScale="md"
+        className="video-card-hover rounded-lg overflow-hidden"
       >
         {stream.thumbnailUrl && (
           <div className="relative w-full aspect-video overflow-hidden bg-bg-accent">

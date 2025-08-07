@@ -47,6 +47,13 @@ const config: Config = {
           beige: '#DDB892',
           green: '#5BA179',
         },
+        badge: {
+          blue: '#4A90E2',      // 鮮やかなブルー（グッズ用）
+          green: '#7ED321',     // 鮮やかなグリーン（コラボ用）
+          orange: '#F5A623',    // 鮮やかなオレンジ（イベント用）
+          purple: '#9013FE',    // 鮮やかなパープル（メディア用）
+          gray: '#9B9B9B',      // デフォルト用グレー
+        },
         error: {
           DEFAULT: '#ef4444',
           light: '#fca5a5',

@@ -69,15 +69,25 @@
 
   /* 共通カードホバーエフェクト */
   .card-hover {
-    @apply transition-all duration-card hover:shadow-xl hover:shadow-text-secondary/20 hover:-translate-y-1;
+    @apply transition-all duration-card hover:shadow-xl hover:shadow-text-secondary/15 hover:-translate-y-1;
   }
   
   .card-hover-scale {
-    @apply card-hover hover:scale-[1.01];
+    @apply card-hover hover:scale-[1.01] hover:shadow-2xl hover:shadow-surface-secondary/20;
   }
   
   .card-hover-scale-md {
-    @apply card-hover hover:scale-[1.02];
+    @apply card-hover hover:scale-[1.02] hover:shadow-2xl hover:shadow-surface-secondary/25;
+  }
+
+  /* より洗練されたニュースカードホバー */
+  .news-card-hover {
+    @apply transition-all duration-300 ease-out hover:shadow-lg hover:shadow-accent-blue/10 hover:-translate-y-0.5 hover:bg-bg-secondary/50;
+  }
+
+  /* 動画カード用のホバーエフェクト */
+  .video-card-hover {
+    @apply transition-all duration-300 ease-out hover:shadow-xl hover:shadow-accent-gold/15 hover:-translate-y-1 hover:scale-[1.01];
   }
 
   /* 共通インタラクティブホバー */

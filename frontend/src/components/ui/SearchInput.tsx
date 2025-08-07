@@ -18,7 +18,7 @@ export const SearchInput = ({
   onSearch,
   onClearSearch,
   disabled = false,
-  placeholder = 'タイトルで検索...'
+  placeholder = 'キーワードを入力してください'
 }: SearchInputProps) => {
   const [inputValue, setInputValue] = useState(searchValue);
 

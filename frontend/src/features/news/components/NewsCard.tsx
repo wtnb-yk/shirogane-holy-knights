@@ -15,19 +15,19 @@ interface NewsCardProps {
   index: number;
 }
 
-// カテゴリバッジのスタイル（Tailwindカラーパレット統一）
+// カテゴリバッジのスタイル（鮮やかで明るい配色）
 const getCategoryBadgeStyle = (categoryName: string) => {
   switch (categoryName) {
     case 'グッズ':
-      return 'bg-accent-blue/20 text-accent-blue border-accent-blue/30';
+      return 'bg-badge-blue/20 text-badge-blue border-badge-blue/30 hover:bg-badge-blue/30 transition-all duration-ui';
     case 'コラボ':
-      return 'bg-accent-green/20 text-accent-green border-accent-green/30';
+      return 'bg-badge-green/20 text-badge-green border-badge-green/30 hover:bg-badge-green/30 transition-all duration-ui';
     case 'イベント':
-      return 'bg-accent-beige/30 text-text-primary border-accent-beige/50';
+      return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30 hover:bg-badge-orange/30 transition-all duration-ui';
     case 'メディア':
-      return 'bg-accent-gold/20 text-accent-gold border-accent-gold/30';
+      return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30 hover:bg-badge-purple/30 transition-all duration-ui';
     default:
-      return `${BACKGROUND_OPACITY.accent.medium} text-text-primary ${BACKGROUND_OPACITY.surface.medium}`;
+      return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30 hover:bg-badge-gray/30 transition-all duration-ui';
   }
 };
 
@@ -36,18 +36,18 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   const imageUrl = getImageUrl(news.thumbnailUrl);
   
   const cardContent = (
-    <InteractiveCard hoverScale="sm" className="border-0">
+    <InteractiveCard hoverScale="sm" className="border-0 news-card-hover rounded-lg">
       <div className="flex flex-col sm:flex-row">
         {/* 画像部分 */}
         {imageUrl && (
-          <div className="relative w-full sm:w-80 h-52 sm:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
+          <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-bg-accent rounded-l-lg">
             <Image 
               src={imageUrl} 
               alt={news.title} 
               fill
               className="object-cover image-hover"
               loading="lazy"
-              sizes="(max-width: 640px) 100vw, 320px"
+              sizes="(max-width: 640px) 100vw, 288px"
               placeholder="blur"
               blurDataURL={IMAGE_STYLES.placeholder}
             />
@@ -56,7 +56,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
         )}
         
         {/* コンテンツ部分 */}
-        <div className="flex-1 p-4 flex flex-col justify-between">
+        <div className="flex-1 p-5 flex flex-col justify-between">
           <div>
             {/* カテゴリバッジ */}
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -115,19 +115,19 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           target="_blank"
           rel="noopener noreferrer"
           hoverScale="sm"
-          className="border-0"
+          className="border-0 news-card-hover rounded-lg"
         >
           <div className="flex flex-col sm:flex-row">
             {/* 画像部分 */}
             {imageUrl && (
-              <div className="relative w-full sm:w-80 h-52 sm:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
+              <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-bg-accent rounded-l-lg">
                 <Image 
                   src={imageUrl} 
                   alt={news.title} 
                   fill
                   className="object-cover image-hover"
                   loading="lazy"
-                  sizes="(max-width: 640px) 100vw, 320px"
+                  sizes="(max-width: 640px) 100vw, 288px"
                   placeholder="blur"
                   blurDataURL={IMAGE_STYLES.placeholder}
                 />
@@ -136,7 +136,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             )}
             
             {/* コンテンツ部分 */}
-            <div className="flex-1 p-4 flex flex-col justify-between">
+            <div className="flex-1 p-5 flex flex-col justify-between">
               <div>
                 {/* カテゴリバッジ */}
                 <div className="flex items-center gap-2 mb-2 flex-wrap">

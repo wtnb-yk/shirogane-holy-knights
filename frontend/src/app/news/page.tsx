@@ -43,7 +43,7 @@ export default function NewsPage() {
             searchValue={searchQuery}
             onSearch={handleSearch}
             onClearSearch={clearSearch}
-            placeholder="ニュースを検索..."
+            placeholder="気になるニュースを探してみてください"
           />
         </div>
 
