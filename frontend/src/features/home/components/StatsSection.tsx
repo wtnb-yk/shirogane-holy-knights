@@ -57,14 +57,14 @@ export default function StatsSection() {
   ];
 
   return (
-    <section className="py-16 bg-shirogane-bg-primary">
+    <section className="py-16 bg-bg-primary">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-shirogane-text-primary mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
             活動の軌跡
           </h2>
-          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full mb-4"></div>
-          <p className="text-shirogane-text-secondary max-w-2xl mx-auto">
+          <div className="w-20 h-1 bg-text-secondary mx-auto rounded-full mb-4"></div>
+          <p className="text-text-secondary max-w-2xl mx-auto">
             デビューから現在まで、白銀ノエル団長の配信活動を数字で振り返ります
           </p>
         </div>
@@ -74,15 +74,15 @@ export default function StatsSection() {
           {stats.map((stat) => (
             <div
               key={stat.id}
-              className="bg-shirogane-bg-primary rounded-lg border border-shirogane-surface-border p-6 text-center hover:shadow-md transition-shadow duration-200"
+              className="bg-bg-primary rounded-lg border border-surface-border p-6 text-center hover:shadow-md transition-shadow duration-200"
             >
               <div className="text-4xl mb-3">
                 {stat.icon}
               </div>
-              <div className="text-2xl font-bold text-shirogane-text-secondary mb-2">
+              <div className="text-2xl font-bold text-text-secondary mb-2">
                 {stat.value}
               </div>
-              <div className="text-shirogane-text-secondary text-sm font-medium">
+              <div className="text-text-secondary text-sm font-medium">
                 {stat.label}
               </div>
             </div>
@@ -90,9 +90,9 @@ export default function StatsSection() {
         </div>
 
         {/* 活動の種類 */}
-        <div className="bg-shirogane-bg-accent/20 rounded-lg p-8 mb-8">
+        <div className="bg-bg-accent/20 rounded-lg p-8 mb-8">
           <div className="text-center mb-8">
-            <h3 className="text-xl font-bold text-shirogane-text-primary">
+            <h3 className="text-xl font-bold text-text-primary">
               主な活動内容
             </h3>
           </div>
@@ -101,15 +101,15 @@ export default function StatsSection() {
             {achievements.map((achievement, index) => (
               <div
                 key={index}
-                className="text-center p-4 rounded-lg bg-shirogane-bg-primary border border-shirogane-surface-border"
+                className="text-center p-4 rounded-lg bg-bg-primary border border-surface-border"
               >
                 <div className="text-3xl mb-3">
                   {achievement.icon}
                 </div>
-                <h4 className="font-bold text-shirogane-text-primary mb-2">
+                <h4 className="font-bold text-text-primary mb-2">
                   {achievement.title}
                 </h4>
-                <p className="text-shirogane-text-secondary text-sm">
+                <p className="text-text-secondary text-sm">
                   {achievement.description}
                 </p>
               </div>
@@ -119,8 +119,8 @@ export default function StatsSection() {
 
         {/* メッセージ */}
         <div className="text-center">
-          <div className="bg-shirogane-bg-primary rounded-lg border border-shirogane-surface-border p-6 max-w-lg mx-auto">
-            <p className="text-shirogane-text-primary font-medium">
+          <div className="bg-bg-primary rounded-lg border border-surface-border p-6 max-w-lg mx-auto">
+            <p className="text-text-primary font-medium">
               これからも末永く応援をお願いします！
             </p>
           </div>

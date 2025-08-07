@@ -11,14 +11,14 @@ export default function NewsPreviewSection() {
   });
 
   return (
-    <section className="py-16 bg-shirogane-bg-accent/20">
+    <section className="py-16 bg-bg-accent/20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-shirogane-text-primary mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
             最新ニュース
           </h2>
-          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full mb-4"></div>
-          <p className="text-shirogane-text-secondary max-w-2xl mx-auto">
+          <div className="w-20 h-1 bg-text-secondary mx-auto rounded-full mb-4"></div>
+          <p className="text-text-secondary max-w-2xl mx-auto">
             白銀ノエルさんに関する最新情報をお届けします
           </p>
         </div>
@@ -31,7 +31,7 @@ export default function NewsPreviewSection() {
             ))
           ) : error ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-shirogane-text-secondary">
+              <p className="text-text-secondary">
                 ニュースの取得に失敗しました
               </p>
             </div>
@@ -42,7 +42,7 @@ export default function NewsPreviewSection() {
           ) : (
             <div className="col-span-full text-center py-12">
               <div className="text-5xl mb-4">📰</div>
-              <p className="text-shirogane-text-secondary">
+              <p className="text-text-secondary">
                 ニュースがありません
               </p>
             </div>
@@ -53,7 +53,7 @@ export default function NewsPreviewSection() {
         <div className="text-center">
           <a
             href="/news"
-            className="inline-flex items-center px-8 py-3 bg-shirogane-bg-primary text-shirogane-text-primary border border-shirogane-surface-border rounded-lg font-medium hover:bg-shirogane-bg-accent transition-colors duration-200"
+            className="inline-flex items-center px-8 py-3 bg-bg-primary text-text-primary border border-surface-border rounded-lg font-medium hover:bg-bg-accent transition-colors duration-200"
           >
             すべてのニュースを見る
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

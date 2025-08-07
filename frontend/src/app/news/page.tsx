@@ -28,11 +28,11 @@ export default function NewsPage() {
   } = useNews({ pageSize: 10 });
 
   return (
-    <div className="min-h-screen bg-shirogane-bg-primary">
+    <div className="min-h-screen bg-bg-primary">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* ページタイトル */}
         <div className="mb-8 opacity-0 animate-slide-up">
-          <h1 className="text-4xl font-bold mb-2 text-shirogane-text-primary">
+          <h1 className="text-4xl font-bold mb-2 text-text-primary">
             ニュース
           </h1>
         </div>

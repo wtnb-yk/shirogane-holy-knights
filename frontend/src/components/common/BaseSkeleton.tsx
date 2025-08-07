@@ -29,9 +29,9 @@ export const BaseSkeleton = ({
       className="h-full opacity-0 animate-fade-in" 
       style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
     >
-      <Card className="h-full overflow-hidden bg-shirogane-bg-primary border border-shirogane-surface-border">
+      <Card className="h-full overflow-hidden bg-bg-primary border border-surface-border">
         {showThumbnail && (
-          <div className={`relative w-full ${thumbnailHeight} bg-shirogane-bg-accent`}>
+          <div className={`relative w-full ${thumbnailHeight} bg-bg-accent`}>
             <Skeleton className="w-full h-full" />
           </div>
         )}

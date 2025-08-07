@@ -41,7 +41,7 @@ export function FilterBar({
           {/* タグフィルター */}
           {availableTags.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-shirogane-text-primary mb-2">タグ</h4>
+              <h4 className="text-sm font-medium text-text-primary mb-2">タグ</h4>
               <div className="flex flex-wrap gap-2">
                 {availableTags.map((tag) => (
                   <Badge
@@ -49,8 +49,8 @@ export function FilterBar({
                     variant={filters.selectedTags.includes(tag) ? "default" : "outline"}
                     className={`cursor-pointer transition-all duration-200 ${
                       filters.selectedTags.includes(tag)
-                        ? 'bg-shirogane-text-secondary text-white hover:bg-shirogane-bg-accent/80'
-                        : 'border-shirogane-surface-border text-shirogane-text-secondary hover:border-shirogane-text-secondary hover:text-shirogane-text-secondary'
+                        ? 'bg-text-secondary text-white hover:bg-bg-accent/80'
+                        : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-secondary'
                     }`}
                     onClick={() => handleTagToggle(tag)}
                   >
@@ -63,27 +63,27 @@ export function FilterBar({
 
           {/* 日付範囲フィルター */}
           <div>
-            <h4 className="text-sm font-medium text-shirogane-text-primary mb-2">配信日</h4>
+            <h4 className="text-sm font-medium text-text-primary mb-2">配信日</h4>
             <div className="flex gap-3 items-center">
               <div className="flex-1">
                 <input
                   type="date"
                   value={filters.startDate || ''}
                   onChange={(e) => handleDateChange('startDate', e.target.value)}
-                  className="w-full px-3 py-2 border border-shirogane-surface-border rounded-md text-sm 
-                           focus:outline-none focus:ring-2 focus:ring-shirogane-text-secondary focus:border-transparent
+                  className="w-full px-3 py-2 border border-surface-border rounded-md text-sm 
+                           focus:outline-none focus:ring-2 focus:ring-text-secondary focus:border-transparent
                            transition-all duration-200"
                   placeholder="開始日"
                 />
               </div>
-              <span className="text-shirogane-text-secondary">-</span>
+              <span className="text-text-secondary">-</span>
               <div className="flex-1">
                 <input
                   type="date"
                   value={filters.endDate || ''}
                   onChange={(e) => handleDateChange('endDate', e.target.value)}
-                  className="w-full px-3 py-2 border border-shirogane-surface-border rounded-md text-sm 
-                           focus:outline-none focus:ring-2 focus:ring-shirogane-text-secondary focus:border-transparent
+                  className="w-full px-3 py-2 border border-surface-border rounded-md text-sm 
+                           focus:outline-none focus:ring-2 focus:ring-text-secondary focus:border-transparent
                            transition-all duration-200"
                   placeholder="終了日"
                 />

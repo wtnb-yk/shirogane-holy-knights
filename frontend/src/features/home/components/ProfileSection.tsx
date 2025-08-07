@@ -17,24 +17,24 @@ export default function ProfileSection() {
   };
 
   return (
-    <section id="profile" className="py-16 bg-shirogane-bg-primary">
+    <section id="profile" className="py-16 bg-bg-primary">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-shirogane-text-primary mb-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
             Profile
           </h2>
-          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full"></div>
+          <div className="w-20 h-1 bg-text-secondary mx-auto rounded-full"></div>
         </div>
         
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* 画像エリア */}
           <div>
-            <div className="bg-shirogane-bg-accent/30 rounded-xl p-4">
-              <div className="w-full h-96 bg-gradient-to-br from-shirogane-bg-accent/30 via-white to-shirogane-text-muted/20 rounded-lg border-2 border-dashed border-shirogane-surface-border flex items-center justify-center">
+            <div className="bg-bg-accent/30 rounded-xl p-4">
+              <div className="w-full h-96 bg-gradient-to-br from-bg-accent/30 via-white to-text-muted/20 rounded-lg border-2 border-dashed border-surface-border flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-6xl mb-4">👑</div>
-                  <p className="text-shirogane-text-secondary font-bold text-sm">ノエル様ポートレート</p>
-                  <p className="text-xs text-shirogane-text-muted">画像は後日追加予定</p>
+                  <p className="text-text-secondary font-bold text-sm">ノエル様ポートレート</p>
+                  <p className="text-xs text-text-muted">画像は後日追加予定</p>
                 </div>
               </div>
             </div>
@@ -42,8 +42,8 @@ export default function ProfileSection() {
 
           {/* プロフィール情報 */}
           <div className="space-y-6">
-            <div className="bg-shirogane-bg-primary rounded-xl border border-shirogane-surface-border p-6">
-              <h3 className="text-xl font-bold text-shirogane-text-primary mb-4">
+            <div className="bg-bg-primary rounded-xl border border-surface-border p-6">
+              <h3 className="text-xl font-bold text-text-primary mb-4">
                 基本情報
               </h3>
               
@@ -55,22 +55,22 @@ export default function ProfileSection() {
                   { label: 'ファンネーム', value: profileData.fanName },
                   { label: '所属', value: profileData.generation }
                 ].map((item, index) => (
-                  <div key={index} className="flex justify-between items-center py-2 border-b border-shirogane-surface-border last:border-0">
-                    <span className="text-shirogane-text-secondary text-sm">{item.label}</span>
-                    <span className="text-shirogane-text-primary font-medium">{item.value}</span>
+                  <div key={index} className="flex justify-between items-center py-2 border-b border-surface-border last:border-0">
+                    <span className="text-text-secondary text-sm">{item.label}</span>
+                    <span className="text-text-primary font-medium">{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-shirogane-bg-accent/30 rounded-xl p-6">
-              <p className="text-shirogane-text-primary leading-relaxed">
+            <div className="bg-bg-accent/30 rounded-xl p-6">
+              <p className="text-text-primary leading-relaxed">
                 {profileData.description}
               </p>
             </div>
 
             <div className="text-center">
-              <p className="text-shirogane-text-secondary font-medium text-lg">
+              <p className="text-text-secondary font-medium text-lg">
                 「{profileData.catchphrase}」
               </p>
             </div>

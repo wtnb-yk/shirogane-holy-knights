@@ -5,7 +5,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center">
       {/* 背景画像 */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-shirogane-text-muted to-shirogane-text-secondary"></div>
+        <div className="w-full h-full bg-gradient-to-br from-text-muted to-text-secondary"></div>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
       
@@ -29,13 +29,13 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="/videos"
-            className="px-8 py-3 bg-shirogane-bg-primary text-shirogane-text-primary rounded-lg font-medium hover:bg-shirogane-bg-accent transition-colors duration-200"
+            className="px-8 py-3 bg-bg-primary text-text-primary rounded-lg font-medium hover:bg-bg-accent transition-colors duration-200"
           >
             配信アーカイブを見る
           </a>
           <a
             href="/news"
-            className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-shirogane-bg-primary hover:text-shirogane-text-primary transition-colors duration-200"
+            className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-bg-primary hover:text-text-primary transition-colors duration-200"
           >
             最新ニュース
           </a>
@@ -46,7 +46,7 @@ export default function HeroSection() {
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <div className="text-white/60 text-sm animate-bounce">
           <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-shirogane-bg-primary/60 rounded-full mt-2"></div>
+            <div className="w-1 h-3 bg-bg-primary/60 rounded-full mt-2"></div>
           </div>
           <p className="mt-2">scroll</p>
         </div>

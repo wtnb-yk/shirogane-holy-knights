@@ -22,7 +22,7 @@ export const StatsSummary = ({
 
   return (
     <div 
-      className="text-center text-sm text-shirogane-text-secondary mt-6 opacity-0 animate-fade-in" 
+      className="text-center text-sm text-text-secondary mt-6 opacity-0 animate-fade-in" 
       style={{ animationDelay: '600ms' }}
     >
       {startIndex} - {endIndex} / {totalCount} 件

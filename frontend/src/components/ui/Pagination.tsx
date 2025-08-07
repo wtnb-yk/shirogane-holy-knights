@@ -76,8 +76,8 @@ export const Pagination = ({
         disabled={currentPage <= 1 || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
-          "disabled:hover:bg-shirogane-bg-primary disabled:hover:text-shirogane-text-secondary"
+          "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
+          "disabled:hover:bg-bg-primary disabled:hover:text-text-secondary"
         )}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -94,14 +94,14 @@ export const Pagination = ({
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
+                "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
               1
             </button>
             {visiblePages[0] > 2 && (
-              <span className="px-2 text-shirogane-text-secondary">...</span>
+              <span className="px-2 text-text-secondary">...</span>
             )}
           </>
         )}
@@ -115,9 +115,9 @@ export const Pagination = ({
             className={cn(
               pageButtonClasses,
               page === currentPage
-                ? "bg-shirogane-text-secondary text-white shadow-lg shadow-shirogane-text-secondary/30"
+                ? "bg-text-secondary text-white shadow-lg shadow-text-secondary/30"
                 : cn(
-                    "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
+                    "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
                     size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
                   )
             )}
@@ -130,14 +130,14 @@ export const Pagination = ({
         {visiblePages[visiblePages.length - 1] < totalPages && (
           <>
             {visiblePages[visiblePages.length - 1] < totalPages - 1 && (
-              <span className="px-2 text-shirogane-text-secondary">...</span>
+              <span className="px-2 text-text-secondary">...</span>
             )}
             <button
               onClick={() => onPageChange(totalPages)}
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
+                "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
@@ -153,8 +153,8 @@ export const Pagination = ({
         disabled={currentPage >= totalPages || !hasMore || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-shirogane-text-secondary bg-shirogane-bg-primary border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-shirogane-text-primary",
-          "disabled:hover:bg-shirogane-bg-primary disabled:hover:text-shirogane-text-secondary"
+          "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
+          "disabled:hover:bg-bg-primary disabled:hover:text-text-secondary"
         )}
       >
         次

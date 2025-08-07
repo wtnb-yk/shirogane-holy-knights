@@ -23,21 +23,21 @@ export default function VideosList() {
   const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
 
   return (
-    <div className="min-h-screen bg-shirogane-bg-primary">
+    <div className="min-h-screen bg-bg-primary">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 opacity-0 animate-slide-up">
-          <h1 className="text-4xl font-bold mb-6 text-shirogane-text-primary">
+          <h1 className="text-4xl font-bold mb-6 text-text-primary">
             配信・動画
           </h1>
           
           {/* タブ切り替えUI */}
-          <div className="flex border-b border-shirogane-surface-border">
+          <div className="flex border-b border-surface-border">
             <button
               onClick={() => setContentType(ContentType.STREAMS)}
               className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
                 contentType === ContentType.STREAMS 
-                  ? 'text-shirogane-text-primary border-shirogane-text-secondary bg-shirogane-bg-accent/30' 
-                  : 'text-shirogane-text-secondary border-transparent hover:text-shirogane-text-primary hover:border-shirogane-surface-border'
+                  ? 'text-text-primary border-text-secondary bg-bg-accent/30' 
+                  : 'text-text-secondary border-transparent hover:text-text-primary hover:border-surface-border'
               }`}
             >
               配信
@@ -46,8 +46,8 @@ export default function VideosList() {
               onClick={() => setContentType(ContentType.VIDEOS)}
               className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
                 contentType === ContentType.VIDEOS 
-                  ? 'text-shirogane-text-primary border-shirogane-text-secondary bg-shirogane-bg-accent/30' 
-                  : 'text-shirogane-text-secondary border-transparent hover:text-shirogane-text-primary hover:border-shirogane-surface-border'
+                  ? 'text-text-primary border-text-secondary bg-bg-accent/30' 
+                  : 'text-text-secondary border-transparent hover:text-text-primary hover:border-surface-border'
               }`}
             >
               動画

@@ -39,7 +39,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
           {Array.from({ length: 5 }).map((_, index) => (
             <div
               key={index}
-              className="px-4 py-2 bg-shirogane-bg-accent rounded-full animate-pulse h-9 w-20"
+              className="px-4 py-2 bg-bg-accent rounded-full animate-pulse h-9 w-20"
             />
           ))}
         </div>
@@ -55,8 +55,8 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
           onClick={handleClearAll}
           className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
             selectedCategoryIds.length === 0
-              ? 'bg-shirogane-text-secondary text-white shadow-md'
-              : 'bg-shirogane-bg-primary text-shirogane-text-secondary border border-shirogane-surface-border hover:bg-shirogane-bg-accent'
+              ? 'bg-text-secondary text-white shadow-md'
+              : 'bg-bg-primary text-text-secondary border border-surface-border hover:bg-bg-accent'
           }`}
         >
           全て
@@ -71,8 +71,8 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
               onClick={() => handleCategoryToggle(category.id)}
               className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
                 isSelected
-                  ? 'bg-shirogane-text-secondary text-white shadow-md ring-2 ring-shirogane-surface-border'
-                  : 'bg-shirogane-bg-primary text-shirogane-text-secondary border border-shirogane-surface-border hover:bg-shirogane-bg-accent'
+                  ? 'bg-text-secondary text-white shadow-md ring-2 ring-surface-border'
+                  : 'bg-bg-primary text-text-secondary border border-surface-border hover:bg-bg-accent'
               }`}
             >
               {category.name}

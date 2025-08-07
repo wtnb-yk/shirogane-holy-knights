@@ -4,20 +4,20 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="bg-shirogane-bg-secondary border-t border-shirogane-surface-border mt-auto">
+    <footer className="bg-bg-secondary border-t border-surface-border mt-auto">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* 左側：サイト情報 */}
           <div>
-            <h3 className="text-lg font-semibold text-shirogane-text-primary mb-2">団員ポータル</h3>
-            <p className="text-sm text-shirogane-text-primary/80">
+            <h3 className="text-lg font-semibold text-text-primary mb-2">団員ポータル</h3>
+            <p className="text-sm text-text-primary/80">
               当サイトはホロライブ3期生白銀ノエル団長を応援する非公式ファンサイトです。ご本人様およびカバー株式会社様、ホロライブプロダクション様は当サイトの運営には一切関わっておりません。
             </p>
             <a 
               href="https://hololivepro.com/terms/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-shirogane-text-primary/80 hover:text-shirogane-text-primary transition-colors inline-block mt-2"
+              className="text-sm text-text-primary/80 hover:text-text-primary transition-colors inline-block mt-2"
             >
               カバー株式会社様　二次創作ガイドライン
             </a>
@@ -25,20 +25,20 @@ export function Footer() {
           
           {/* 中央：リンク */}
           <div>
-            <h4 className="text-sm font-semibold text-shirogane-text-primary mb-3">サイトマップ</h4>
+            <h4 className="text-sm font-semibold text-text-primary mb-3">サイトマップ</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-sm text-shirogane-text-secondary hover:text-shirogane-text-primary transition-colors">
+                <Link href="/" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                   ホーム
                 </Link>
               </li>
               <li>
-                <Link href="/videos" className="text-sm text-shirogane-text-secondary hover:text-shirogane-text-primary transition-colors">
+                <Link href="/videos" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                   配信・動画
                 </Link>
               </li>
               <li>
-                <Link href="/news" className="text-sm text-shirogane-text-secondary hover:text-shirogane-text-primary transition-colors">
+                <Link href="/news" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                   ニュース
                 </Link>
               </li>
@@ -47,14 +47,14 @@ export function Footer() {
           
           {/* 右側：外部リンク */}
           <div>
-            <h4 className="text-sm font-semibold text-shirogane-text-primary mb-3">公式リンク</h4>
+            <h4 className="text-sm font-semibold text-text-primary mb-3">公式リンク</h4>
             <ul className="space-y-2">
               <li>
                 <a 
                   href="https://www.youtube.com/@ShiroganeNoel" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-shirogane-text-secondary hover:text-shirogane-text-primary transition-colors"
+                  className="text-sm text-text-secondary hover:text-text-primary transition-colors"
                 >
                   YouTube チャンネル
                 </a>
@@ -64,7 +64,7 @@ export function Footer() {
                   href="https://twitter.com/shiroganenoel" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-shirogane-text-secondary hover:text-shirogane-text-primary transition-colors"
+                  className="text-sm text-text-secondary hover:text-text-primary transition-colors"
                 >
                   X (Twitter)
                 </a>
@@ -74,8 +74,8 @@ export function Footer() {
         </div>
         
         {/* 下部：コピーライト */}
-        <div className="mt-8 pt-6 border-t border-shirogane-surface-border">
-          <p className="text-center text-sm text-shirogane-text-muted">
+        <div className="mt-8 pt-6 border-t border-surface-border">
+          <p className="text-center text-sm text-text-muted">
             &copy; 2025 団員ポータル
           </p>
         </div>
