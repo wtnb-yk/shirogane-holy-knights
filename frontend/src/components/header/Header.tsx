@@ -12,7 +12,7 @@ export function Header() {
           <div className="flex items-center">
             <Link href="/" className="group">
               <h1 className="text-2xl font-bold text-white group-hover:text-bg-accent transition-colors duration-200">
-                団員ポータル
+                だんいんポータル
               </h1>
             </Link>
           </div>

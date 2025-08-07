@@ -77,7 +77,7 @@ export function Footer() {
         {/* 下部：コピーライト */}
         <div className="mt-8 pt-6 border-t border-surface-border">
           <p className="text-center text-sm text-text-muted">
-            &copy; 2025 団員ポータル
+            &copy; 2025 だんいんポータル
           </p>
         </div>
       </div>
