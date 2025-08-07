@@ -34,34 +34,23 @@ Frontend (Next.js) → API Gateway → Lambda (Spring Boot) → RDS (PostgreSQL)
 
 ### Backend Development
 
-```bash
-# Start backend (http://localhost:8080)
-docker compose up -d --build backend
-
-# Run tests
-# TODO: Test implementation
-```
+**See `backend/README.md` for backend-related details**
 
 ### Frontend Development
 
-```bash
-# Start frontend (http://localhost:3001)
-docker compose up -d --build frontend
-```
-
 **See `frontend/README.md` for frontend-related details**
 
-### Local Environment Setup
+### Quick Start
 
 ```bash
-# Start PostgreSQL + all services
+# Start all services (Frontend + Backend + DB)
 docker-compose up -d
 
-# Start database only
-docker-compose up postgres -d
+# Start backend only (http://localhost:8080)
+docker compose up -d --build backend
 
-# Execute migrations
-docker-compose up liquibase
+# Start frontend only (http://localhost:3001)
+docker compose up -d --build frontend
 ```
 
 ### Data Import Tools
@@ -107,12 +96,7 @@ gh run view --workflow=terraform.yml
 ## Important Project Structure
 
 ### Backend (Kotlin/Spring Boot)
-- `src/main/kotlin/com/shirogane/holy/knights/`
-  - `adapter/` - Controllers & Repository implementations
-  - `application/` - Use cases & DTOs  
-  - `domain/` - Domain models & repository interfaces
-  - `infrastructure/` - Configuration & Lambda handlers
-- `src/main/resources/db/changelog/` - Liquibase migrations
+**See `backend/README.md` for detailed structure**
 
 ### Frontend (Next.js)
 **See `frontend/README.md` for detailed structure**
@@ -128,20 +112,24 @@ gh run view --workflow=terraform.yml
 - Dev: Connect to RDS via Bastion (`make db-dev`)
 - Prd: Connect to RDS via Bastion (`make db-prd`)
 
-### Spring Profiles
-- `default` - For local development (direct DB connection)
-- `lambda` - For AWS Lambda execution environment
-
-### CORS Configuration
-- Dev environment: `dev.noe-room.com` + Amplify preview URLs
-- Prd environment: `www.noe-room.com`
+### Environment-specific Configuration
+- **Backend**: See `backend/README.md` for Spring profiles and Lambda configuration
+- **Frontend**: See `frontend/README.md` for environment variables and deployment settings
 
 ### Performance Considerations
-- Configured with 1024MB/60 seconds to mitigate Lambda Cold Start
-- Throughput optimized using R2DBC (asynchronous DB connection)
-- Static file delivery via CloudFront CDN
+- Lambda: Configured with 1024MB/60 seconds to mitigate Cold Start
+- Backend: R2DBC for asynchronous DB connection
+- Frontend: SWR for optimistic UI updates and caching
+- Static files: CloudFront CDN for global distribution
 
-### Frontend Development Guidelines
+## Development Guidelines
+
+### Backend Development
+- **Always refer to `backend/README.md` for backend-related work**
+- **For API endpoints, refer to the API section in `backend/README.md`**
+- **For database tasks, check the database schema in `backend/docs/database-schema.md`**
+
+### Frontend Development  
 - **Always refer to `frontend/README.md` for frontend-related work**
 - **For UI/design tasks, check the design guidelines in `frontend/docs/ui-design.md`**
 
