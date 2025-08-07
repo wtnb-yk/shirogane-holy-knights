@@ -139,3 +139,7 @@ gh run view --workflow=terraform.yml
 - R2DBC (非同期DB接続) 使用でスループット最適化
 - CloudFront CDN経由で静的ファイル配信
 
+### Frontend Development Guidelines
+- **Always refer to `frontend/README.md` for frontend-related work**
+- **For UI/design tasks, must check `frontend/docs/ui-design.md` design guidelines**
+
