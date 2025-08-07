@@ -4,16 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-だんいんポータル - 白銀ノエルファン向けサービス
+だんいんポータル - Fan service for 白銀ノエル
 
 ### Architecture
 
-この既存のプロジェクトは以下の技術スタックを使用しています：
+This existing project uses the following technology stack:
 - **Backend**: 
-  - ローカル開発: Kotlin + Spring Boot 3.2 (WebFlux) + R2DBC (PostgreSQL)
-  - 本番環境: 同上 + Spring Cloud Function + AWS Lambda
+  - Local development: Kotlin + Spring Boot 3.2 (WebFlux) + R2DBC (PostgreSQL)
+  - Production environment: Same as above + Spring Cloud Function + AWS Lambda
 - **Frontend**: Next.js + TypeScript + SWR + TailwindCSS
-- **Database**: PostgreSQL 14 (Liquibase マイグレーション)
+- **Database**: PostgreSQL 14 (Liquibase migrations)
 - **Infrastructure**: AWS (Lambda, API Gateway, RDS, Amplify, CloudFront) + Terraform
 - **Build Tools**: Gradle (Kotlin), npm
 
@@ -22,7 +22,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 Frontend (Next.js) → API Gateway → Lambda (Spring Boot) → RDS (PostgreSQL)
                                                       ↓
-                              CloudFront (CDN) ← S3 (静的ファイル)
+                              CloudFront (CDN) ← S3 (Static files)
 ```
 
 ## Essential Commands
@@ -30,17 +30,17 @@ Frontend (Next.js) → API Gateway → Lambda (Spring Boot) → RDS (PostgreSQL)
 ### Backend Development
 
 ```bash
-# バックエンド起動 (http://localhost:8080)
+# Start backend (http://localhost:8080)
 docker compose up -d --build backend
 
-# テスト実行
-# TODO: テストの整備
+# Run tests
+# TODO: Test implementation
 ```
 
 ### Frontend Development
 
 ```bash
-# フロントエンド起動 (http://localhost:3001)
+# Start frontend (http://localhost:3001)
 docker compose up -d --build frontend
 ```
 
@@ -49,53 +49,53 @@ docker compose up -d --build frontend
 ### Local Environment Setup
 
 ```bash
-# PostgreSQL + 全サービス起動
+# Start PostgreSQL + all services
 docker-compose up -d
 
-# データベース単体起動
+# Start database only
 docker-compose up postgres -d
 
-# マイグレーション実行
+# Execute migrations
 docker-compose up liquibase
 ```
 
 ### Data Import Tools
 
 ```bash
-# YouTubeデータ取得・DB同期 
+# Fetch YouTube data and sync with DB 
 cd tools && make sync-{local|dev|prd}
 
-# ニュースデータインポート  
+# Import news data  
 cd tools && make news-import-{local|dev|prd}
 
-# データベース接続
+# Connect to database
 cd tools && make db-{dev|prd}
 
-# データベース切断
+# Disconnect from database
 cd tools && make db-{dev|prd}-stop
 
-# データベース接続状態
+# Database connection status
 cd tools && make db-{dev|prd}-status
 ```
 
 ### Infrastructure Operations
 
 ```bash
-# Terraform操作 (インフラ構築・更新)
+# Terraform operations (Infrastructure build/update)
 gh workflow run terraform.yml --field environment=dev --field action=plan
 gh workflow run terraform.yml --field environment=dev --field action=apply
 gh workflow run terraform.yml --field environment=prd --field action=plan
 gh workflow run terraform.yml --field environment=prd --field action=apply
 
-# Backend デプロイ (Lambda関数更新)
+# Backend deployment (Lambda function update)
 gh workflow run temp-deploy-bacnend.yml --field environment=dev
 gh workflow run temp-deploy-bacnend.yml --field environment=prd
 
-# ワークフロー実行状況確認
+# Check workflow execution status
 gh run list --workflow=terraform.yml
 gh run list --workflow=deploy-backend.yml
 
-# 実行中のワークフロー詳細確認
+# Check running workflow details
 gh run view --workflow=terraform.yml
 ```
 
@@ -120,21 +120,21 @@ gh run view --workflow=terraform.yml
 
 ### Database Connection
 - Local: `localhost:5432/shirogane` (postgres/postgres)
-- Dev: Bastion経由でRDS接続 (`make db-dev`)
-- Prd: Bastion経由でRDS接続 (`make db-prd`)
+- Dev: Connect to RDS via Bastion (`make db-dev`)
+- Prd: Connect to RDS via Bastion (`make db-prd`)
 
 ### Spring Profiles
-- `default` - ローカル開発用 (直接DB接続)
-- `lambda` - AWS Lambda実行環境用
+- `default` - For local development (direct DB connection)
+- `lambda` - For AWS Lambda execution environment
 
 ### CORS Configuration
-- Dev環境: `dev.noe-room.com` + Amplify preview URLs
-- Prd環境: `www.noe-room.com`
+- Dev environment: `dev.noe-room.com` + Amplify preview URLs
+- Prd environment: `www.noe-room.com`
 
 ### Performance Considerations
-- Lambda Cold Start対策として1024MB/60秒設定済み
-- R2DBC (非同期DB接続) 使用でスループット最適化
-- CloudFront CDN経由で静的ファイル配信
+- Configured with 1024MB/60 seconds to mitigate Lambda Cold Start
+- Throughput optimized using R2DBC (asynchronous DB connection)
+- Static file delivery via CloudFront CDN
 
 ### Frontend Development Guidelines
 - **Always refer to `frontend/README.md` for frontend-related work**
