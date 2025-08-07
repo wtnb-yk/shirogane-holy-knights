@@ -76,8 +76,8 @@ export const Pagination = ({
         disabled={currentPage <= 1 || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-sage-300 bg-white border border-sage-200 hover:bg-sage-100 hover:text-gray-800",
-          "disabled:hover:bg-white disabled:hover:text-sage-300"
+          "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
+          "disabled:hover:bg-white disabled:hover:text-shirogane-text-secondary"
         )}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -94,14 +94,14 @@ export const Pagination = ({
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-sage-300 bg-white border border-sage-200 hover:bg-sage-100 hover:text-gray-800",
+                "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
               1
             </button>
             {visiblePages[0] > 2 && (
-              <span className="px-2 text-sage-300">...</span>
+              <span className="px-2 text-shirogane-text-secondary">...</span>
             )}
           </>
         )}
@@ -115,9 +115,9 @@ export const Pagination = ({
             className={cn(
               pageButtonClasses,
               page === currentPage
-                ? "bg-sage-300 text-white shadow-lg shadow-sage-300/30"
+                ? "bg-shirogane-text-secondary text-white shadow-lg shadow-shirogane-text-secondary/30"
                 : cn(
-                    "text-sage-300 bg-white border border-sage-200 hover:bg-sage-100 hover:text-gray-800",
+                    "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
                     size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
                   )
             )}
@@ -130,14 +130,14 @@ export const Pagination = ({
         {visiblePages[visiblePages.length - 1] < totalPages && (
           <>
             {visiblePages[visiblePages.length - 1] < totalPages - 1 && (
-              <span className="px-2 text-sage-300">...</span>
+              <span className="px-2 text-shirogane-text-secondary">...</span>
             )}
             <button
               onClick={() => onPageChange(totalPages)}
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-sage-300 bg-white border border-sage-200 hover:bg-sage-100 hover:text-gray-800",
+                "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
@@ -153,8 +153,8 @@ export const Pagination = ({
         disabled={currentPage >= totalPages || !hasMore || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-sage-300 bg-white border border-sage-200 hover:bg-sage-100 hover:text-gray-800",
-          "disabled:hover:bg-white disabled:hover:text-sage-300"
+          "text-shirogane-text-secondary bg-white border border-shirogane-surface-border hover:bg-shirogane-bg-accent hover:text-gray-800",
+          "disabled:hover:bg-white disabled:hover:text-shirogane-text-secondary"
         )}
       >
         次

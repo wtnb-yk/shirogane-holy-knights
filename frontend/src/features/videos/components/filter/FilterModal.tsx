@@ -30,7 +30,7 @@ export const FilterModal = ({
             <h2 className="text-xl font-bold text-gray-800">フィルター設定</h2>
             <button
               onClick={onClose}
-              className="text-sage-300 hover:text-gray-600 transition-colors text-2xl"
+              className="text-shirogane-text-secondary hover:text-gray-600 transition-colors text-2xl"
             >
               ×
             </button>
@@ -40,10 +40,10 @@ export const FilterModal = ({
             onFiltersChange={onFiltersChange}
             availableTags={availableTags}
           />
-          <div className="flex gap-3 mt-6 pt-4 border-t border-sage-200">
+          <div className="flex gap-3 mt-6 pt-4 border-t border-shirogane-surface-border">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-sage-300 text-white rounded-md hover:bg-sage-300/80 transition-colors"
+              className="flex-1 px-4 py-2 bg-shirogane-text-secondary text-white rounded-md hover:bg-shirogane-bg-accent/80 transition-colors"
             >
               適用
             </button>
@@ -52,7 +52,7 @@ export const FilterModal = ({
                 onClearAllFilters();
                 onClose();
               }}
-              className="px-4 py-2 border border-sage-200 text-sage-300 rounded-md hover:bg-sage-100 transition-colors"
+              className="px-4 py-2 border border-shirogane-surface-border text-shirogane-text-secondary rounded-md hover:bg-shirogane-bg-accent transition-colors"
             >
               リセット
             </button>

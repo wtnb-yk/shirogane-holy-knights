@@ -11,13 +11,13 @@ export default function NewsPreviewSection() {
   });
 
   return (
-    <section className="py-16 bg-sage-100/20">
+    <section className="py-16 bg-shirogane-bg-accent/20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             最新ニュース
           </h2>
-          <div className="w-20 h-1 bg-sage-300 mx-auto rounded-full mb-4"></div>
+          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full mb-4"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             白銀ノエルさんに関する最新情報をお届けします
           </p>
@@ -36,8 +36,8 @@ export default function NewsPreviewSection() {
               </p>
             </div>
           ) : news && news.length > 0 ? (
-            news.map((item) => (
-              <NewsCard key={item.id} news={item} />
+            news.map((item, index) => (
+              <NewsCard key={item.id} news={item} index={index} />
             ))
           ) : (
             <div className="col-span-full text-center py-12">
@@ -53,7 +53,7 @@ export default function NewsPreviewSection() {
         <div className="text-center">
           <a
             href="/news"
-            className="inline-flex items-center px-8 py-3 bg-white text-gray-800 border border-sage-200 rounded-lg font-medium hover:bg-sage-100 transition-colors duration-200"
+            className="inline-flex items-center px-8 py-3 bg-white text-gray-800 border border-shirogane-surface-border rounded-lg font-medium hover:bg-shirogane-bg-accent transition-colors duration-200"
           >
             すべてのニュースを見る
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

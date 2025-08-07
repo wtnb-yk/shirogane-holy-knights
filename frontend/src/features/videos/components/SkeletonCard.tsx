@@ -13,16 +13,16 @@ export const SkeletonCard = ({ index }: SkeletonCardProps) => {
     <BaseSkeleton
       index={index}
       contentSlots={[
-        <Skeleton key="title" className="h-6 w-3/4 mb-3 bg-sage-100" />,
-        <Skeleton key="date" className="h-4 w-1/2 mb-3 bg-sage-100" />,
+        <Skeleton key="title" className="h-6 w-3/4 mb-3 bg-shirogane-bg-accent" />,
+        <Skeleton key="date" className="h-4 w-1/2 mb-3 bg-shirogane-bg-accent" />,
         <div key="tags" className="flex gap-2">
-          <Skeleton className="h-6 w-16 bg-sage-100" />
-          <Skeleton className="h-6 w-16 bg-sage-100" />
-          <Skeleton className="h-6 w-16 bg-sage-100" />
+          <Skeleton className="h-6 w-16 bg-shirogane-bg-accent" />
+          <Skeleton className="h-6 w-16 bg-shirogane-bg-accent" />
+          <Skeleton className="h-6 w-16 bg-shirogane-bg-accent" />
         </div>
       ]}
       footerSlots={[
-        <Skeleton key="link" className="h-5 w-32 bg-sage-100" />
+        <Skeleton key="link" className="h-5 w-32 bg-shirogane-bg-accent" />
       ]}
     />
   );

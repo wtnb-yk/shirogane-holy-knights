@@ -22,9 +22,9 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
       className="block h-full group opacity-0 animate-fade-in cursor-pointer" 
       style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}
     >
-      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border border-sage-200 hover:scale-[1.02] hover:-translate-y-1">
+      <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-shirogane-text-secondary/20 bg-white border border-shirogane-surface-border hover:scale-[1.02] hover:-translate-y-1">
         {video.thumbnailUrl && (
-          <div className="relative w-full aspect-video overflow-hidden bg-sage-100">
+          <div className="relative w-full aspect-video overflow-hidden bg-shirogane-bg-accent">
             <Image 
               src={video.thumbnailUrl} 
               alt={video.title} 
@@ -39,10 +39,10 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
           </div>
         )}
         <CardContent className="p-5">
-          <h3 className="text-base font-bold mb-3 line-clamp-3 text-gray-800 group-hover:text-sage-300 transition-colors duration-200">
+          <h3 className="text-base font-bold mb-3 line-clamp-3 text-gray-800 group-hover:text-shirogane-text-secondary transition-colors duration-200">
             {video.title}
           </h3>
-          <div className="flex items-center gap-2 text-sm text-sage-300 mb-3">
+          <div className="flex items-center gap-2 text-sm text-shirogane-text-secondary mb-3">
             <Calendar className="w-4 h-4" />
             <span>{new Date(video.publishedAt).toLocaleDateString('ja-JP')}</span>
           </div>
@@ -51,7 +51,7 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
               <Badge
                 key={tag}
                 variant="secondary"
-                className="bg-sage-100/50 text-gray-700 hover:bg-sage-100/70 transition-colors duration-200 border-sage-200/50"
+                className="bg-shirogane-bg-accent/50 text-gray-700 hover:bg-shirogane-bg-accent/70 transition-colors duration-200 border-shirogane-surface-border/50"
               >
                 <Tag className="w-3 h-3 mr-1" />
                 {tag}
@@ -59,7 +59,7 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
             ))}
             {video.tags && video.tags.length > 3 && (
               <div className="relative group/tooltip">
-                <Badge variant="outline" className="text-xs border-sage-200/50 text-gray-600">
+                <Badge variant="outline" className="text-xs border-shirogane-surface-border/50 text-gray-600">
                   +{video.tags.length - 3}
                 </Badge>
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs">
@@ -68,7 +68,7 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
                       <Badge
                         key={tag}
                         variant="secondary"
-                        className="bg-sage-100/50 text-gray-700 text-xs border-sage-200/50"
+                        className="bg-shirogane-bg-accent/50 text-gray-700 text-xs border-shirogane-surface-border/50"
                       >
                         <Tag className="w-2.5 h-2.5 mr-1" />
                         {tag}

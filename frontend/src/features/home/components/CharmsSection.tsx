@@ -41,13 +41,13 @@ export default function CharmsSection() {
   ];
 
   return (
-    <section className="py-16 bg-sage-100/20">
+    <section className="py-16 bg-shirogane-bg-accent/20">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             白銀ノエルの魅力
           </h2>
-          <div className="w-20 h-1 bg-sage-300 mx-auto rounded-full mb-4"></div>
+          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full mb-4"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             多くの団員に愛される白銀ノエル団長の魅力をご紹介します
           </p>
@@ -57,7 +57,7 @@ export default function CharmsSection() {
           {charms.map((charm) => (
             <div
               key={charm.id}
-              className="bg-white rounded-lg p-6 border border-sage-200 hover:shadow-md transition-shadow duration-200"
+              className="bg-white rounded-lg p-6 border border-shirogane-surface-border hover:shadow-md transition-shadow duration-200"
             >
               <div className="text-center mb-4">
                 <div className="text-3xl mb-3">
@@ -76,7 +76,7 @@ export default function CharmsSection() {
         </div>
 
         <div className="mt-12 text-center">
-          <div className="bg-white rounded-lg border border-sage-200 p-6 max-w-lg mx-auto">
+          <div className="bg-white rounded-lg border border-shirogane-surface-border p-6 max-w-lg mx-auto">
             <p className="text-gray-700 font-medium">
               これからも白銀ノエル団長を応援していきましょう！
             </p>

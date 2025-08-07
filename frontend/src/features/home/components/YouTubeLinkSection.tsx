@@ -9,7 +9,7 @@ export default function YouTubeLinkSection() {
   };
 
   return (
-    <section className="py-16 bg-sage-100/20">
+    <section className="py-16 bg-shirogane-bg-accent/20">
       <div className="max-w-6xl mx-auto px-6 text-center">
         {/* YouTubeアイコン */}
         <div className="mb-8">
@@ -25,14 +25,14 @@ export default function YouTubeLinkSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             公式YouTubeチャンネル
           </h2>
-          <div className="w-20 h-1 bg-sage-300 mx-auto rounded-full mb-4"></div>
+          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full mb-4"></div>
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             {channelInfo.channelName}
           </h3>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             {channelInfo.description}
           </p>
-          <div className="inline-flex items-center bg-white rounded-lg border border-sage-200 px-6 py-3">
+          <div className="inline-flex items-center bg-white rounded-lg border border-shirogane-surface-border px-6 py-3">
             <span className="text-gray-800 font-medium">
               チャンネル登録者数: {channelInfo.subscriberCount}
             </span>
@@ -67,17 +67,17 @@ export default function YouTubeLinkSection() {
 
         {/* 追加情報 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg border border-sage-200 p-6">
+          <div className="bg-white rounded-lg border border-shirogane-surface-border p-6">
             <div className="text-3xl mb-3">🎵</div>
             <h4 className="font-bold text-gray-800 mb-2">歌配信</h4>
             <p className="text-gray-600 text-sm">美しい歌声でお届けする歌配信をお楽しみください</p>
           </div>
-          <div className="bg-white rounded-lg border border-sage-200 p-6">
+          <div className="bg-white rounded-lg border border-shirogane-surface-border p-6">
             <div className="text-3xl mb-3">🎮</div>
             <h4 className="font-bold text-gray-800 mb-2">ゲーム配信</h4>
             <p className="text-gray-600 text-sm">様々なゲームを楽しくプレイする様子をご覧ください</p>
           </div>
-          <div className="bg-white rounded-lg border border-sage-200 p-6">
+          <div className="bg-white rounded-lg border border-shirogane-surface-border p-6">
             <div className="text-3xl mb-3">💬</div>
             <h4 className="font-bold text-gray-800 mb-2">雑談配信</h4>
             <p className="text-gray-600 text-sm">団員との楽しいおしゃべりタイムをお楽しみください</p>

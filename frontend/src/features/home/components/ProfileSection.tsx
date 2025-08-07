@@ -23,18 +23,18 @@ export default function ProfileSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             Profile
           </h2>
-          <div className="w-20 h-1 bg-sage-300 mx-auto rounded-full"></div>
+          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full"></div>
         </div>
         
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* 画像エリア */}
           <div>
-            <div className="bg-sage-100/30 rounded-xl p-4">
-              <div className="w-full h-96 bg-gradient-to-br from-sage-100/30 via-white to-sage-200/20 rounded-lg border-2 border-dashed border-sage-200 flex items-center justify-center">
+            <div className="bg-shirogane-bg-accent/30 rounded-xl p-4">
+              <div className="w-full h-96 bg-gradient-to-br from-shirogane-bg-accent/30 via-white to-shirogane-text-muted/20 rounded-lg border-2 border-dashed border-shirogane-surface-border flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-6xl mb-4">👑</div>
-                  <p className="text-sage-300 font-bold text-sm">ノエル様ポートレート</p>
-                  <p className="text-xs text-sage-200">画像は後日追加予定</p>
+                  <p className="text-shirogane-text-secondary font-bold text-sm">ノエル様ポートレート</p>
+                  <p className="text-xs text-shirogane-text-muted">画像は後日追加予定</p>
                 </div>
               </div>
             </div>
@@ -42,7 +42,7 @@ export default function ProfileSection() {
 
           {/* プロフィール情報 */}
           <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-sage-200 p-6">
+            <div className="bg-white rounded-xl border border-shirogane-surface-border p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">
                 基本情報
               </h3>
@@ -63,14 +63,14 @@ export default function ProfileSection() {
               </div>
             </div>
 
-            <div className="bg-sage-100/30 rounded-xl p-6">
+            <div className="bg-shirogane-bg-accent/30 rounded-xl p-6">
               <p className="text-gray-700 leading-relaxed">
                 {profileData.description}
               </p>
             </div>
 
             <div className="text-center">
-              <p className="text-sage-300 font-medium text-lg">
+              <p className="text-shirogane-text-secondary font-medium text-lg">
                 「{profileData.catchphrase}」
               </p>
             </div>

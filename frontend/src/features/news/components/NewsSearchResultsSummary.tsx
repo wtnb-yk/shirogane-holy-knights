@@ -20,7 +20,7 @@ export const NewsSearchResultsSummary = ({
 }: NewsSearchResultsSummaryProps) => {
   const { categories } = useNewsCategories();
   
-  const hasFilters = Boolean(searchQuery.trim()) || Boolean(filters.categoryId);
+  const hasFilters = Boolean(searchQuery.trim()) || Boolean(filters.categoryIds && filters.categoryIds.length > 0);
   
   const getCategoryName = (categoryId?: number) => {
     if (!categoryId) return null;
@@ -28,8 +28,8 @@ export const NewsSearchResultsSummary = ({
     return category?.name || '';
   };
 
-  const categoryName = getCategoryName(filters.categoryId);
-  const filterSummary = categoryName ? `カテゴリ: ${categoryName}` : undefined;
+  const categoryNames = filters.categoryIds?.map(getCategoryName).filter(Boolean).join(', ');
+  const filterSummary = categoryNames ? `カテゴリ: ${categoryNames}` : undefined;
 
   return (
     <BaseSearchResultsSummary

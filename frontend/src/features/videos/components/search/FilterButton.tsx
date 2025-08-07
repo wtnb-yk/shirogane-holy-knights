@@ -14,12 +14,12 @@ export const FilterButton = ({
 }: FilterButtonProps) => {
   return (
     <button 
-      className="px-6 py-3 bg-white border border-sage-200 rounded-lg flex items-center gap-2 hover:bg-sage-100 transition-all duration-200 shadow-sm" 
+      className="px-6 py-3 bg-white border border-shirogane-surface-border rounded-lg flex items-center gap-2 hover:bg-shirogane-bg-accent transition-all duration-200 shadow-sm" 
       onClick={onFilterClick}
       disabled={disabled}
     >
-      <Filter className="w-5 h-5 text-sage-300" />
-      <span className="text-sage-300">フィルター</span>
+      <Filter className="w-5 h-5 text-shirogane-text-secondary" />
+      <span className="text-shirogane-text-secondary">フィルター</span>
     </button>
   );
 };

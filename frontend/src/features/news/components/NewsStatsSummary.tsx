@@ -22,7 +22,7 @@ export const NewsStatsSummary = ({
 
   return (
     <div className="text-center mt-8 opacity-0 animate-slide-up" style={{ animationDelay: '700ms' }}>
-      <p className="text-sm text-sage-300">
+      <p className="text-sm text-shirogane-text-secondary">
         {startIndex}〜{endIndex}件目 / 全{totalCount.toLocaleString()}件のニュース
       </p>
     </div>

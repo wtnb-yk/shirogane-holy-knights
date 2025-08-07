@@ -24,62 +24,8 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
 
-    /* Noel Theme Colors - 柔軟に調整可能 */
-    --noel-primary-hue: 220;
-    --noel-primary-saturation: 23%;
-    --noel-primary-lightness: 67%;
-    --noel-primary: hsl(var(--noel-primary-hue), var(--noel-primary-saturation), var(--noel-primary-lightness));
-    
-    --noel-secondary-hue: 34;
-    --noel-secondary-saturation: 46%;
-    --noel-secondary-lightness: 71%;
-    --noel-secondary: hsl(var(--noel-secondary-hue), var(--noel-secondary-saturation), var(--noel-secondary-lightness));
-    
-    --noel-bg-light: hsl(210, 20%, 98%);
-    --noel-text-primary: hsl(210, 24%, 16%);
-    --noel-text-secondary: hsl(215, 15%, 47%);
-    
-    /* Accent Colors */
-    --noel-accent-pink: hsl(340, 75%, 75%);
-    --noel-accent-gold: hsl(45, 85%, 65%);
-    --noel-accent-blue: hsl(210, 75%, 65%);
-    --noel-accent-green: hsl(120, 60%, 65%);
-    --noel-accent-purple: hsl(270, 60%, 70%);
-    
-    /* Gradient Stops */
-    --gradient-primary-start: hsl(var(--noel-primary-hue), var(--noel-primary-saturation), calc(var(--noel-primary-lightness) + 10%));
-    --gradient-primary-end: hsl(var(--noel-primary-hue), var(--noel-primary-saturation), calc(var(--noel-primary-lightness) - 10%));
-    --gradient-secondary-start: hsl(var(--noel-secondary-hue), var(--noel-secondary-saturation), calc(var(--noel-secondary-lightness) + 10%));
-    --gradient-secondary-end: hsl(var(--noel-secondary-hue), var(--noel-secondary-saturation), calc(var(--noel-secondary-lightness) - 10%));
   }
 
-  /* テーマ切り替え用（オプション）*/
-  [data-theme="warm"] {
-    --noel-primary-hue: 25;
-    --noel-primary-saturation: 35%;
-    --noel-primary-lightness: 65%;
-    --noel-secondary-hue: 45;
-    --noel-secondary-saturation: 55%;
-    --noel-secondary-lightness: 75%;
-  }
-
-  [data-theme="cool"] {
-    --noel-primary-hue: 200;
-    --noel-primary-saturation: 30%;
-    --noel-primary-lightness: 60%;
-    --noel-secondary-hue: 180;
-    --noel-secondary-saturation: 40%;
-    --noel-secondary-lightness: 70%;
-  }
-
-  [data-theme="elegant"] {
-    --noel-primary-hue: 260;
-    --noel-primary-saturation: 25%;
-    --noel-primary-lightness: 55%;
-    --noel-secondary-hue: 280;
-    --noel-secondary-saturation: 35%;
-    --noel-secondary-lightness: 75%;
-  }
 }
 
 @layer utilities {

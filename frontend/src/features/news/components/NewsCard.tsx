@@ -25,7 +25,7 @@ const getCategoryBadgeStyle = (categoryName: string) => {
     case 'メディア':
       return 'bg-orange-100 text-orange-800 border-orange-200';
     default:
-      return 'bg-sage-100 text-sage-800 border-sage-200';
+      return 'bg-shirogane-bg-accent text-shirogane-text-primary border-shirogane-surface-border';
   }
 };
 
@@ -34,11 +34,11 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   const imageUrl = getImageUrl(news.thumbnailUrl);
   
   const cardContent = (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-sage-300/20 bg-white border-0 hover:scale-[1.01] hover:-translate-y-1">
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-shirogane-text-secondary/20 bg-white border-0 hover:scale-[1.01] hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row">
         {/* 画像部分 */}
         {imageUrl && (
-          <div className="relative w-full sm:w-80 h-52 sm:h-[200px] flex-shrink-0 overflow-hidden bg-sage-100">
+          <div className="relative w-full sm:w-80 h-52 sm:h-[200px] flex-shrink-0 overflow-hidden bg-shirogane-bg-accent">
             <Image 
               src={imageUrl} 
               alt={news.title} 
@@ -83,7 +83,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             </div>
             
             {/* 日付情報 */}
-            <div className="flex items-center gap-1 text-xs text-sage-300 mb-3">
+            <div className="flex items-center gap-1 text-xs text-shirogane-text-secondary mb-3">
               <Calendar className="w-3 h-3" />
               <span>{new Date(news.publishedAt).toLocaleDateString('ja-JP')}</span>
             </div>

@@ -5,7 +5,7 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center">
       {/* 背景画像 */}
       <div className="absolute inset-0 z-0">
-        <div className="w-full h-full bg-gradient-to-br from-sage-200 to-sage-400"></div>
+        <div className="w-full h-full bg-gradient-to-br from-shirogane-text-muted to-shirogane-text-secondary"></div>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
       
@@ -29,7 +29,7 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="/videos"
-            className="px-8 py-3 bg-white text-gray-800 rounded-lg font-medium hover:bg-sage-100 transition-colors duration-200"
+            className="px-8 py-3 bg-white text-gray-800 rounded-lg font-medium hover:bg-shirogane-bg-accent transition-colors duration-200"
           >
             配信アーカイブを見る
           </a>

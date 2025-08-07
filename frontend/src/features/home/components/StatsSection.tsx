@@ -63,7 +63,7 @@ export default function StatsSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
             活動の軌跡
           </h2>
-          <div className="w-20 h-1 bg-sage-300 mx-auto rounded-full mb-4"></div>
+          <div className="w-20 h-1 bg-shirogane-text-secondary mx-auto rounded-full mb-4"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             デビューから現在まで、白銀ノエル団長の配信活動を数字で振り返ります
           </p>
@@ -74,12 +74,12 @@ export default function StatsSection() {
           {stats.map((stat) => (
             <div
               key={stat.id}
-              className="bg-white rounded-lg border border-sage-200 p-6 text-center hover:shadow-md transition-shadow duration-200"
+              className="bg-white rounded-lg border border-shirogane-surface-border p-6 text-center hover:shadow-md transition-shadow duration-200"
             >
               <div className="text-4xl mb-3">
                 {stat.icon}
               </div>
-              <div className="text-2xl font-bold text-sage-300 mb-2">
+              <div className="text-2xl font-bold text-shirogane-text-secondary mb-2">
                 {stat.value}
               </div>
               <div className="text-gray-600 text-sm font-medium">
@@ -90,7 +90,7 @@ export default function StatsSection() {
         </div>
 
         {/* 活動の種類 */}
-        <div className="bg-sage-100/20 rounded-lg p-8 mb-8">
+        <div className="bg-shirogane-bg-accent/20 rounded-lg p-8 mb-8">
           <div className="text-center mb-8">
             <h3 className="text-xl font-bold text-gray-800">
               主な活動内容
@@ -101,7 +101,7 @@ export default function StatsSection() {
             {achievements.map((achievement, index) => (
               <div
                 key={index}
-                className="text-center p-4 rounded-lg bg-white border border-sage-200"
+                className="text-center p-4 rounded-lg bg-white border border-shirogane-surface-border"
               >
                 <div className="text-3xl mb-3">
                   {achievement.icon}
@@ -119,7 +119,7 @@ export default function StatsSection() {
 
         {/* メッセージ */}
         <div className="text-center">
-          <div className="bg-white rounded-lg border border-sage-200 p-6 max-w-lg mx-auto">
+          <div className="bg-white rounded-lg border border-shirogane-surface-border p-6 max-w-lg mx-auto">
             <p className="text-gray-700 font-medium">
               これからも末永く応援をお願いします！
             </p>

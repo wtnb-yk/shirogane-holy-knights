@@ -17,7 +17,7 @@ const SkeletonNewsCardComponent = ({ index }: SkeletonNewsCardProps) => {
       <Card className="overflow-hidden bg-white border-0">
         <div className="flex flex-col sm:flex-row">
           {/* 画像部分 */}
-          <div className="relative w-full sm:w-80 h-48 sm:h-[180px] flex-shrink-0 bg-sage-100">
+          <div className="relative w-full sm:w-80 h-48 sm:h-[180px] flex-shrink-0 bg-shirogane-bg-accent">
             <Skeleton className="w-full h-full" />
           </div>
           

@@ -49,33 +49,33 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // カスタムカラーパレット
-        'sage': {
-          100: '#ACBDC5',
-          200: '#acabb2', 
-          300: '#89939d',
-        },
-        'custom-bg': '#f8f9fa',
-        'custom-card': '#ffffff',
-        // ブランドカラー
-        'brand': {
-          'navy': '#324353',      // ヘッダー背景
-          'gold': '#F6C794',      // アクセントライン
-          'cream': '#F9F7F4',     // フッター背景
-          'charcoal': '#374553',  // テキスト色
-        },
-        // ノエル専用カラーパレット
-        'noel': {
-          'primary': '#8B9DC3',      // ノエルブルー
-          'secondary': '#DDB892',    // ゴールドアクセント  
-          'bg-light': '#F8F9FA',     // 薄い背景
-          'text-primary': '#2D3748', // メインテキスト
-          'text-secondary': '#718096', // サブテキスト
-        },
         'youtube': {
           'red': '#FF0000',          // YouTube公式赤
           'dark': '#282828',         // YouTube暗色
           'light': '#F9F9F9',        // YouTube明色
+        },
+        // 統一カラーパレット（白銀聖騎士団テーマ）
+        'shirogane': {
+          'bg': {
+            'primary': '#F8F9FA',    // メイン背景（現在のnoel-bg-light）
+            'secondary': '#F9F7F4',  // セクション背景（現在のbrand-cream）
+            'accent': '#ACBDC5',     // アクセント背景（現在のsage-100）
+          },
+          'text': {
+            'primary': '#374553',    // メインテキスト（現在のbrand-charcoal）
+            'secondary': '#89939d',  // サブテキスト（現在のsage-300）
+            'muted': '#acabb2',      // 薄いテキスト（現在のsage-200）
+          },
+          'surface': {
+            'primary': '#324353',    // ヘッダーなど（現在のbrand-navy）
+            'secondary': '#8B9DC3',  // カード背景など（現在のnoel-primary）
+            'border': '#acabb2',     // ボーダー色（現在のsage-200）
+          },
+          'accent': {
+            'gold': '#F6C794',       // ゴールド（現在のbrand-gold）
+            'blue': '#8B9DC3',       // ブルー（現在のnoel-primary）
+            'beige': '#DDB892',      // ベージュ（現在のnoel-secondary）
+          },
         },
       },
     },

@@ -31,13 +31,13 @@ export default function VideosList() {
           </h1>
           
           {/* タブ切り替えUI */}
-          <div className="flex border-b border-sage-200">
+          <div className="flex border-b border-shirogane-surface-border">
             <button
               onClick={() => setContentType(ContentType.STREAMS)}
               className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
                 contentType === ContentType.STREAMS 
-                  ? 'text-gray-800 border-sage-300 bg-sage-100/30' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-sage-200'
+                  ? 'text-gray-800 border-shirogane-text-secondary bg-shirogane-bg-accent/30' 
+                  : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-shirogane-surface-border'
               }`}
             >
               配信
@@ -46,8 +46,8 @@ export default function VideosList() {
               onClick={() => setContentType(ContentType.VIDEOS)}
               className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
                 contentType === ContentType.VIDEOS 
-                  ? 'text-gray-800 border-sage-300 bg-sage-100/30' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-sage-200'
+                  ? 'text-gray-800 border-shirogane-text-secondary bg-shirogane-bg-accent/30' 
+                  : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-shirogane-surface-border'
               }`}
             >
               動画

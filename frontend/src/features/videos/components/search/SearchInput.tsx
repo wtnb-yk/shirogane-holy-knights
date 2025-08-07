@@ -41,20 +41,20 @@ export const SearchInput = ({
 
   return (
     <form onSubmit={handleSubmit} className="flex-1 min-w-[300px] relative">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-sage-300 w-5 h-5" />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-shirogane-text-secondary w-5 h-5" />
       <input
         type="text"
         placeholder="タイトルで検索..."
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="w-full pl-10 pr-12 py-3 border border-sage-200 rounded-lg bg-white focus:ring-2 focus:ring-sage-300 focus:border-sage-300 transition-all duration-200 shadow-sm text-gray-800 placeholder-sage-300/70"
+        className="w-full pl-10 pr-12 py-3 border border-shirogane-surface-border rounded-lg bg-white focus:ring-2 focus:ring-shirogane-text-secondary focus:border-shirogane-text-secondary transition-all duration-200 shadow-sm text-gray-800 placeholder-shirogane-text-secondary/70"
         disabled={disabled}
       />
       {inputValue && (
         <button
           type="button"
           onClick={handleClear}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sage-300 hover:text-sage-300 transition-colors"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-shirogane-text-secondary hover:text-shirogane-text-secondary transition-colors"
           disabled={disabled}
         >
           <X className="w-5 h-5" />
