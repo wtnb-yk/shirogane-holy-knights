@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Calendar, ExternalLink } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { NewsDto } from '../types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
 import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
 
@@ -52,12 +53,11 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
               blurDataURL={IMAGE_STYLES.placeholder}
             />
             <div className="image-overlay" />
-            {/* 外部リンクアイコン */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div className="bg-black/50 rounded-full p-3">
-                <ExternalLink className="w-6 h-6 text-white" />
-              </div>
-            </div>
+            <OverlayIcon
+              type="external-link"
+              isVisible={false}
+              className="group-hover:opacity-100"
+            />
           </div>
         )}
         
@@ -138,12 +138,11 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                   blurDataURL={IMAGE_STYLES.placeholder}
                 />
                 <div className="image-overlay" />
-                {/* 外部リンクアイコン */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <div className="bg-black/50 rounded-full p-3">
-                    <ExternalLink className="w-6 h-6 text-white" />
-                  </div>
-                </div>
+                <OverlayIcon
+                  type="external-link"
+                  isVisible={false}
+                  className="group-hover:opacity-100"
+                />
               </div>
             )}
             

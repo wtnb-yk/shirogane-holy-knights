@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Calendar, Tag, Play } from 'lucide-react';
+import { Calendar, Tag } from 'lucide-react';
 import { VideoDto } from '../types/types';
 import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { TEXT_CLAMP, IMAGE_STYLES, BACKGROUND_OPACITY } from '@/constants/styles';
 
 interface VideoCardProps {
@@ -39,12 +40,11 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
               blurDataURL={IMAGE_STYLES.placeholder}
             />
             <div className="image-overlay" />
-            {/* 再生アイコン */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div className="bg-black/50 rounded-full p-3">
-                <Play className="w-6 h-6 text-white fill-white" />
-              </div>
-            </div>
+            <OverlayIcon
+              type="play"
+              isVisible={false}
+              className="group-hover:opacity-100"
+            />
           </div>
         )}
         <CardContent className="p-5">
