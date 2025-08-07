@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useVideos } from '@/features/videos/hooks/useVideos';
-import { VideoCard } from '@/features/videos/components/VideoCard';
-import { SkeletonCard } from '@/features/videos/components/SkeletonCard';
+import { ArchivePreviewCard } from './ArchivePreviewCard';
+import { SkeletonArchivePreviewCard } from './SkeletonArchivePreviewCard';
 
 export default function ArchivePreviewSection() {
   const { videos, loading, error, totalCount } = useVideos({ 
@@ -27,7 +27,7 @@ export default function ArchivePreviewSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {loading ? (
             Array.from({ length: 6 }).map((_, index) => (
-              <SkeletonCard key={index} index={index} />
+              <SkeletonArchivePreviewCard key={index} index={index} />
             ))
           ) : error ? (
             <div className="col-span-full text-center py-12">
@@ -37,7 +37,7 @@ export default function ArchivePreviewSection() {
             </div>
           ) : videos && videos.length > 0 ? (
             videos.map((video, index) => (
-              <VideoCard key={video.id} video={video} index={index} />
+              <ArchivePreviewCard key={video.id} video={video} index={index} />
             ))
           ) : (
             <div className="col-span-full text-center py-12">
