@@ -46,6 +46,7 @@ const config: Config = {
           blue: '#8B9DC3',
           beige: '#DDB892',
           green: '#5BA179',
+          youtube: '#FF4444',
         },
         badge: {
           blue: '#4A90E2',      // 鮮やかなブルー（グッズ用）

@@ -4,10 +4,8 @@ import lyricalImage from '@/assets/lyrical.png';
 
 export default function YouTubeLinkSection() {
   const channelInfo = {
-    channelName: "白銀ノエル Ch. ホロライブ",
+    channelName: "Noel Ch. 白銀ノエル",
     channelUrl: "https://www.youtube.com/@shiroganenoel",
-    description: "配信で会える白い獅子に会いに行こう",
-    subscriberCount: "149万人"
   };
 
   return (
@@ -32,15 +30,6 @@ export default function YouTubeLinkSection() {
 
         {/* 中央のテキストコンテンツ */}
         <div className="relative z-10 text-center">
-          {/* YouTubeアイコン */}
-          <div className="mb-8 animate-stagger-fade" style={{"--animation-delay": "100ms"} as any}>
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-accent-gold rounded-full">
-              <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-              </svg>
-            </div>
-          </div>
-
           {/* タイトル・説明 */}
           <div className="mb-12 animate-stagger-fade" style={{"--animation-delay": "200ms"} as any}>
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">
@@ -51,13 +40,9 @@ export default function YouTubeLinkSection() {
               {channelInfo.channelName}
             </h3>
             <p className="text-text-secondary mb-6 max-w-2xl mx-auto">
-              {channelInfo.description}
+              少しでも興味を持っていただけたら、ぜひチャンネル登録をお願いします！<br />
+              ぜひ一緒に応援しましょう！
             </p>
-            <div className="inline-flex items-center bg-bg-primary rounded-lg border border-surface-border px-6 py-3">
-              <span className="text-text-primary font-medium">
-                チャンネル登録者数: {channelInfo.subscriberCount}
-              </span>
-            </div>
           </div>
 
           {/* ボタン */}
@@ -66,7 +51,7 @@ export default function YouTubeLinkSection() {
               href={channelInfo.channelUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-8 py-3 bg-accent-gold text-white rounded-lg font-medium hover:bg-accent-gold/80 transition-colors duration-200"
+              className="inline-flex items-center px-8 py-3 bg-accent-youtube text-white rounded-lg font-medium hover:bg-accent-youtube/80 transition-colors duration-200"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -77,7 +62,7 @@ export default function YouTubeLinkSection() {
               href={`${channelInfo.channelUrl}?sub_confirmation=1`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-8 py-3 border-2 border-accent-gold text-accent-gold rounded-lg font-medium hover:bg-accent-gold hover:text-white transition-colors duration-200"
+              className="inline-flex items-center px-8 py-3 border-2 border-accent-youtube text-accent-youtube rounded-lg font-medium hover:bg-accent-youtube hover:text-white transition-colors duration-200"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -92,17 +77,17 @@ export default function YouTubeLinkSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-stagger-fade" style={{"--animation-delay": "400ms"} as any}>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">🎵</div>
-              <h4 className="font-bold text-text-primary mb-2">歌配信</h4>
+              <h4 className="font-bold text-text-primary mb-2">歌枠</h4>
               <p className="text-text-secondary text-sm">美しい歌声でお届けする歌配信をお楽しみください</p>
             </div>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">🎮</div>
-              <h4 className="font-bold text-text-primary mb-2">ゲーム配信</h4>
+              <h4 className="font-bold text-text-primary mb-2">ゲーム実況</h4>
               <p className="text-text-secondary text-sm">様々なゲームを楽しくプレイする様子をご覧ください</p>
             </div>
             <div className="bg-bg-primary rounded-lg border border-surface-border p-6">
               <div className="text-3xl mb-3">💬</div>
-              <h4 className="font-bold text-text-primary mb-2">雑談配信</h4>
+              <h4 className="font-bold text-text-primary mb-2">雑談</h4>
               <p className="text-text-secondary text-sm">団員との楽しいおしゃべりタイムをお楽しみください</p>
             </div>
           </div>
