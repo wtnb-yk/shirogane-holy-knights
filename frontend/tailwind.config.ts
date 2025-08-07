@@ -25,6 +25,7 @@ const config: Config = {
           primary: '#374553',    // メインテキスト
           secondary: '#89939d',  // サブテキスト
           muted: '#acabb2',      // 薄いテキスト
+          light: '#e5e7eb',      // 明るいテキスト
         },
         surface: {
           primary: '#324353',    // ヘッダーなど
