@@ -164,11 +164,12 @@ def get_videos_details(youtube, video_ids, channel_id):
             # ライブ配信詳細情報（stream_detailsテーブル用 - 配信のみ）
             if is_stream and 'liveStreamingDetails' in video:
                 live_details = video['liveStreamingDetails']
-                actual_start_time = live_details.get('actualStartTime')
-                if actual_start_time:
+                # actualStartTimeがあればそれを、なければscheduledStartTimeを使用
+                start_time = live_details.get('actualStartTime') or live_details.get('scheduledStartTime')
+                if start_time:
                     stream_detail = {
                         'video_id': video_id,
-                        'started_at': actual_start_time
+                        'started_at': start_time
                     }
                     stream_details.append(stream_detail)
             
