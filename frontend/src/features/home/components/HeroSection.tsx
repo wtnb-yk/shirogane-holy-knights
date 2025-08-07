@@ -1,18 +1,11 @@
 import React from 'react';
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
 
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center">
       {/* 背景画像 */}
       <div className="absolute inset-0 z-0">
-        <ImagePlaceholder 
-          variant="noel-hero-bg" 
-          size="hero"
-          message="白銀ノエル様の背景画像"
-          showDecorations={false}
-          className="w-full h-full object-cover"
-        />
+        <div className="w-full h-full bg-gradient-to-br from-sage-200 to-sage-400"></div>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
       

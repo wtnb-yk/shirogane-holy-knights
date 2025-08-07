@@ -1,5 +1,4 @@
 import React from 'react';
-import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
 
 export default function ProfileSection() {
   const profileData = {
@@ -31,13 +30,13 @@ export default function ProfileSection() {
           {/* 画像エリア */}
           <div>
             <div className="bg-sage-100/30 rounded-xl p-4">
-              <ImagePlaceholder 
-                variant="noel-portrait" 
-                size="2xl" 
-                message="白銀ノエル様のポートレート"
-                showDecorations={false}
-                className="w-full rounded-lg"
-              />
+              <div className="w-full h-96 bg-gradient-to-br from-sage-100/30 via-white to-sage-200/20 rounded-lg border-2 border-dashed border-sage-200 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">👑</div>
+                  <p className="text-sage-300 font-bold text-sm">ノエル様ポートレート</p>
+                  <p className="text-xs text-sage-200">画像は後日追加予定</p>
+                </div>
+              </div>
             </div>
           </div>
 
