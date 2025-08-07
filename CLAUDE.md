@@ -49,24 +49,9 @@ docker compose up -d --build backend
 docker compose up -d --build frontend
 ```
 
-### Data Import Tools
+### Connecting to Database
 
-```bash
-# Fetch YouTube data and sync with DB 
-cd tools && make sync-{local|dev|prd}
-
-# Import news data  
-cd tools && make news-import-{local|dev|prd}
-
-# Connect to database
-cd tools && make db-{dev|prd}
-
-# Disconnect from database
-cd tools && make db-{dev|prd}-stop
-
-# Database connection status
-cd tools && make db-{dev|prd}-status
-```
+**See `tools/README.md` for connecting to the database**
 
 ### Infrastructure Operations
 

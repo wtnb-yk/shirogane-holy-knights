@@ -1,117 +1,141 @@
-# YouTube動画データ取得・インポートツール
+# Tools
 
-白銀ノエルさんのYouTubeチャンネルから動画情報を取得し、データベースにインポートするツールセットです。
+ツール集です。YouTubeデータの取得・インポート、ニュースデータ管理、データベース接続などの機能を提供します。
 
-## ディレクトリ構成
+## 概要
 
-```
-work/
-├── scripts/                    # 実行スクリプト
-│   ├── youtube_data_fetcher.py      # YouTube APIからデータ取得
-│   ├── csv_to_db_importer.py        # CSVからDBインポート
-│   ├── youtube_data_pipeline.py     # 統合実行スクリプト
-│   └── setup-env.sh                 # 環境設定セットアップ
-├── config/                     # 設定ファイル
-│   ├── .env.local                   # ローカル環境設定（Git管理）
-│   ├── .env.dev.template            # 開発環境設定テンプレート
-│   └── .env.prd.template            # 本番環境設定テンプレート
-├── docs/                       # ドキュメント
-└── result/                     # CSV出力先（自動生成）
-```
+このツールセットは以下の機能を提供します：
 
-## セットアップ
+- **YouTube データ管理**: YouTube Data API を使用した動画・配信データの取得とデータベースへのインポート
+- **ニュースデータ管理**: CSV ファイルからのニュースデータインポート  
+- **データベース接続**: 各環境のデータベースへの接続（Bastion経由）
 
-1. 必要なPythonライブラリをインストール
+## 前提条件
+
+### Python環境
 ```bash
-python3 -m pip install google-api-python-client pandas psycopg2-binary python-dotenv
+pip install google-api-python-client pandas psycopg2-binary python-dotenv
 ```
 
-2. 環境に応じた設定ファイルを作成・編集
+### 環境設定ファイル
+各環境用の設定ファイルが必要です：
+- `config/.env.local` - ローカル環境用
+- `config/.env.dev` - 開発環境用  
+- `config/.env.prd` - 本番環境用
 
-ローカル環境用（既に用意済み）:
+## 主要コマンド
+
+### 初回セットアップ
+
 ```bash
-# config/.env.local を直接編集
+# 開発環境のセットアップ
+make setup-dev
+
+# 本番環境のセットアップ
+make setup-prd
 ```
 
-開発環境用:
+### YouTube データ同期（推奨）
+
+データ取得からDBインポートまでを一括実行：
+
 ```bash
-cd scripts
-./setup-env.sh dev
+# ローカル環境
+make sync-local
+
+# 開発環境
+make sync-dev
+
+# 本番環境
+make sync-prd
 ```
 
-本番環境用:
+### データ取得のみ
+
+YouTube Data API からデータを取得してCSVファイルに保存：
+
 ```bash
-cd scripts
-./setup-env.sh prd
+# ローカル環境
+make fetch-local
+
+# 開発環境  
+make fetch-dev
+
+# 本番環境
+make fetch-prd
 ```
 
-3. 環境設定ファイルを編集
-- `YOUTUBE_API_KEY`: YouTube Data API v3のAPIキー
-- `DB_PASSWORD`: データベースのパスワード
-- その他のDB設定は環境に応じて変更
+### データベースインポートのみ
 
-## 使用方法
+最新の取得結果をデータベースにインポート：
 
-**注意: スクリプトは `scripts/` ディレクトリ内で実行してください**
-
-### 一括実行（推奨）
-
-ローカル環境:
 ```bash
-cd scripts
-ENV_FILE=../config/.env.local python3 youtube_data_pipeline.py
+# ローカル環境
+make import-local
+
+# 開発環境
+make import-dev
+
+# 本番環境
+make import-prd
 ```
 
-開発環境:
+### ニュースデータインポート
+
 ```bash
-cd scripts
-ENV_FILE=../config/.env.dev python3 youtube_data_pipeline.py
+# ローカル環境
+make news-import-local
+
+# 開発環境
+make news-import-dev
+
+# 本番環境
+make news-import-prd
 ```
 
-本番環境:
+### データベース接続
+
+#### 開発環境
+
 ```bash
-cd scripts
-ENV_FILE=../config/.env.prd python3 youtube_data_pipeline.py
+# 接続開始
+make db-dev
+
+# 接続状況確認
+make db-dev-status
+
+# 接続終了
+make db-dev-stop
 ```
 
-### 個別実行
+#### 本番環境
 
-1. YouTube動画データ取得のみ
 ```bash
-cd scripts
-ENV_FILE=../config/.env.local python3 youtube_data_fetcher.py
+# 接続開始
+make db-prd
+
+# 接続状況確認
+make db-prd-status
+
+# 接続終了
+make db-prd-stop
 ```
-結果は`result/YYYYMMDD_HHMMSS_XXXXXXXX/`ディレクトリに出力されます。
 
-2. データベースインポートのみ
-```bash
-cd scripts
-ENV_FILE=../config/.env.local python3 csv_to_db_importer.py ../result/YYYYMMDD_HHMMSS_XXXXXXXX
+## ファイル構成
+
 ```
-
-## 出力ファイル
-
-CSVファイルは以下の5種類が生成されます：
-- `channels.csv` - チャンネル基本情報
-- `channel_details.csv` - チャンネル詳細情報
-- `videos.csv` - 動画基本情報
-- `video_details.csv` - 動画詳細情報（URL、時間、サムネイル）
-- `content_details.csv` - コンテンツ詳細情報（説明文）
-
-※動画数が500件を超える場合は自動的に分割されます。
-
-## データベーステーブル
-
-以下のテーブルにデータがインポートされます：
-- `channels`
-- `channel_details`
-- `videos`
-- `video_details`
-- `content_details`
-
-## 注意事項
-
-- YouTube API には利用制限があります（1日あたり10,000ユニット）
-- 大量の動画がある場合、API制限に注意してください
-- データベースへのインポートはUPSERT（既存データは更新）で実行されます
-- 実際の設定ファイル（`.env.dev`, `.env.prd`）はGit管理対象外です
+tools/
+├── Makefile              # 各種ショートカットコマンド
+├── README.md            # このファイル
+├── config/              # 環境設定ファイル（.env.*）
+└── scripts/
+    ├── setup-env.sh               # 環境セットアップスクリプト
+    ├── youtube_data_pipeline.py   # 統合実行スクリプト（取得→インポート）
+    ├── youtube_data_fetcher.py    # YouTubeデータ取得専用
+    ├── csv_to_db_importer.py      # CSVからDBインポート専用
+    ├── news_importer.py           # ニュースデータインポート
+    ├── news.csv                   # ニュースデータファイル
+    ├── db.sh                      # データベース接続スクリプト
+    └── result/                    # データ取得結果の保存先
+        └── YYYYMMDD_HHMMSS_*/     # タイムスタンプ付きディレクトリ
+```
