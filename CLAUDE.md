@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Development Principles
+- **Logging**: Keep logging to a minimum - only essential information for debugging and monitoring
+- **Comments**: Minimize code comments - write self-documenting code with clear naming and structure
+- **Clean Code**: Prioritize readable, maintainable code that doesn't require extensive explanation
+
 ## Project Overview
 
 だんいんポータル - Fan service for 白銀ノエル
