@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { Calendar, ExternalLink, MoreHorizontal } from 'lucide-react';
+import { Calendar, ExternalLink } from 'lucide-react';
 import { NewsDto } from '@/features/news/types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
@@ -19,13 +19,12 @@ interface NewsPreviewCardProps {
 
 
 const NewsPreviewCardComponent = ({ news, index }: NewsPreviewCardProps) => {
-  const [showAllTags, setShowAllTags] = useState(false);
   const imageUrl = getImageUrl(news.thumbnailUrl);
   
   const categories = news.categories || [];
   const maxDisplayTags = 3;
   const hasMoreTags = categories.length > maxDisplayTags;
-  const displayedCategories = showAllTags ? categories : categories.slice(0, maxDisplayTags);
+  const displayedCategories = categories.slice(0, maxDisplayTags);
 
   const cardContent = (
     <div className="h-full flex flex-col">
@@ -73,35 +72,12 @@ const NewsPreviewCardComponent = ({ news, index }: NewsPreviewCardProps) => {
               </Badge>
             ))}
             {hasMoreTags && (
-              <div className="relative">
-                <Badge
-                  variant="outline"
-                  className="text-xs border cursor-pointer bg-badge-gray/20 text-badge-gray border-badge-gray/30"
-                  onMouseEnter={() => setShowAllTags(true)}
-                  onMouseLeave={() => setShowAllTags(false)}
-                >
-                  <MoreHorizontal className="w-3 h-3 mr-1" />
-                  +{categories.length - maxDisplayTags}
-                </Badge>
-                {showAllTags && (
-                  <div className="absolute z-10 mt-1 p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 min-w-[200px]">
-                    <div className="text-xs font-semibold mb-1.5 text-gray-700 dark:text-gray-300">
-                      すべてのタグ ({categories.length}件)
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {categories.map((category) => (
-                        <Badge
-                          key={category.id}
-                          variant="outline"
-                          className={`text-xs border ${getCategoryBadgeStyle(category.name)}`}
-                        >
-                          {getCategoryDisplayName(category.name)}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Badge
+                variant="outline"
+                className="text-xs border bg-badge-gray/20 text-badge-gray border-badge-gray/30"
+              >
+                +{categories.length - maxDisplayTags}
+              </Badge>
             )}
           </div>
         )}
