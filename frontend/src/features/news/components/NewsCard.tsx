@@ -11,30 +11,13 @@ import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
 import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
+import { getCategoryBadgeStyle } from '../utils/categoryStyles';
 
 interface NewsCardProps {
   news: NewsDto;
   index: number;
 }
 
-// カテゴリバッジのスタイル（鮮やかで明るい配色）
-const getCategoryBadgeStyle = (categoryName: string) => {
-  switch (categoryName.toLowerCase()) {
-    case 'goods':
-      return 'bg-badge-blue/20 text-badge-blue border-badge-blue/30 hover:bg-badge-blue/30 transition-all duration-ui';
-    case 'collaboration':
-      return 'bg-badge-green/20 text-badge-green border-badge-green/30 hover:bg-badge-green/30 transition-all duration-ui';
-    case 'event':
-      return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30 hover:bg-badge-orange/30 transition-all duration-ui';
-    case 'media':
-      return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30 hover:bg-badge-purple/30 transition-all duration-ui';
-    case 'campaign':
-      return 'bg-badge-pink/20 text-badge-pink border-badge-pink/30 hover:bg-badge-pink/30 transition-all duration-ui';
-    case 'others':
-    default:
-      return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30 hover:bg-badge-gray/30 transition-all duration-ui';
-  }
-};
 
 const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   // 画像URLを生成（S3パスまたは外部URL対応）

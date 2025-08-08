@@ -4,6 +4,7 @@ import React from 'react';
 import { NewsFilterOptions } from '../types/types';
 import { useNewsCategories } from '../hooks/useNewsCategories';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
+import { getCategoryButtonStyle } from '../utils/categoryStyles';
 
 interface NewsCategoryFilterProps {
   filters: NewsFilterOptions;
@@ -36,8 +37,8 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
   if (loading) {
     return (
       <div className="mb-6 opacity-0 animate-slide-up" style={{ animationDelay: '150ms' }}>
-        <div className="flex flex-wrap gap-2">
-          {Array.from({ length: 5 }).map((_, index) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          {Array.from({ length: 7 }).map((_, index) => (
             <div
               key={index}
               className="px-4 py-2 bg-bg-accent rounded-full animate-pulse h-9 w-20"
@@ -50,7 +51,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
 
   return (
     <div className="mb-6 opacity-0 animate-slide-up" style={{ animationDelay: '150ms' }}>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {/* 全てクリアボタン */}
         <button
           onClick={handleClearAll}
@@ -70,11 +71,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
             <button
               key={category.id}
               onClick={() => handleCategoryToggle(category.id)}
-              className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
-                isSelected
-                  ? 'bg-text-secondary text-white shadow-md ring-2 ring-surface-border'
-                  : 'bg-bg-primary text-text-secondary border border-surface-border hover:bg-bg-accent'
-              }`}
+              className={getCategoryButtonStyle(category.name, isSelected)}
             >
               {getCategoryDisplayName(category.name)}
             </button>
