@@ -53,8 +53,8 @@ const config: Config = {
           green: '#7ED321',
           orange: '#F5A623',
           purple: '#9013FE',
-          pink: '#FF69B4',      // キャンペーン用ピンク
-          gray: '#9B9B9B',      // デフォルト用グレー
+          pink: '#FF69B4',
+          gray: '#9B9B9B',
         },
         error: {
           DEFAULT: '#ef4444',
