@@ -1,27 +1,20 @@
 import { NewsCategory } from '@/constants/newsCategories';
 
 export const getCategoryBadgeStyle = (categoryName: string, includeHover: boolean = true) => {
-  const baseStyle = (bgColor: string, textColor: string, borderColor: string) => {
-    const base = `bg-${bgColor}/20 text-${textColor} border-${borderColor}/30`;
-    return includeHover 
-      ? `${base} hover:bg-${bgColor}/30 transition-all duration-ui`
-      : base;
-  };
-
   switch (categoryName.toLowerCase() as NewsCategory) {
     case NewsCategory.GOODS:
-      return baseStyle('badge-blue', 'badge-blue', 'badge-blue');
+      return `bg-badge-blue/20 text-badge-blue border-badge-blue/30${includeHover ? ' hover:bg-badge-blue/30 transition-all duration-ui' : ''}`;
     case NewsCategory.COLLABORATION:
-      return baseStyle('badge-green', 'badge-green', 'badge-green');
+      return `bg-badge-green/20 text-badge-green border-badge-green/30${includeHover ? ' hover:bg-badge-green/30 transition-all duration-ui' : ''}`;
     case NewsCategory.EVENT:
-      return baseStyle('badge-orange', 'badge-orange', 'badge-orange');
+      return `bg-badge-orange/20 text-badge-orange border-badge-orange/30${includeHover ? ' hover:bg-badge-orange/30 transition-all duration-ui' : ''}`;
     case NewsCategory.MEDIA:
-      return baseStyle('badge-purple', 'badge-purple', 'badge-purple');
+      return `bg-badge-purple/20 text-badge-purple border-badge-purple/30${includeHover ? ' hover:bg-badge-purple/30 transition-all duration-ui' : ''}`;
     case NewsCategory.CAMPAIGN:
-      return baseStyle('badge-pink', 'badge-pink', 'badge-pink');
+      return `bg-badge-pink/20 text-badge-pink border-badge-pink/30${includeHover ? ' hover:bg-badge-pink/30 transition-all duration-ui' : ''}`;
     case NewsCategory.OTHERS:
     default:
-      return baseStyle('badge-gray', 'badge-gray', 'badge-gray');
+      return `bg-badge-gray/20 text-badge-gray border-badge-gray/30${includeHover ? ' hover:bg-badge-gray/30 transition-all duration-ui' : ''}`;
   }
 };
 
