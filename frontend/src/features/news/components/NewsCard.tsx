@@ -10,6 +10,7 @@ import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
 import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
+import { getCategoryDisplayName } from '@/constants/newsCategories';
 
 interface NewsCardProps {
   news: NewsDto;
@@ -18,15 +19,18 @@ interface NewsCardProps {
 
 // カテゴリバッジのスタイル（鮮やかで明るい配色）
 const getCategoryBadgeStyle = (categoryName: string) => {
-  switch (categoryName) {
-    case 'グッズ':
+  switch (categoryName.toLowerCase()) {
+    case 'goods':
       return 'bg-badge-blue/20 text-badge-blue border-badge-blue/30 hover:bg-badge-blue/30 transition-all duration-ui';
-    case 'コラボ':
+    case 'collaboration':
       return 'bg-badge-green/20 text-badge-green border-badge-green/30 hover:bg-badge-green/30 transition-all duration-ui';
-    case 'イベント':
+    case 'event':
       return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30 hover:bg-badge-orange/30 transition-all duration-ui';
-    case 'メディア':
+    case 'media':
       return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30 hover:bg-badge-purple/30 transition-all duration-ui';
+    case 'campaign':
+      return 'bg-badge-pink/20 text-badge-pink border-badge-pink/30 hover:bg-badge-pink/30 transition-all duration-ui';
+    case 'others':
     default:
       return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30 hover:bg-badge-gray/30 transition-all duration-ui';
   }
@@ -74,7 +78,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                     variant="outline"
                     className={`text-xs border ${getCategoryBadgeStyle(category.name)}`}
                   >
-                    {category.name}
+                    {getCategoryDisplayName(category.name)}
                   </Badge>
                 ))
               ) : (
@@ -84,7 +88,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                     variant="outline"
                     className={`text-xs border ${getCategoryBadgeStyle(news.categoryName)}`}
                   >
-                    {news.categoryName}
+                    {getCategoryDisplayName(news.categoryName)}
                   </Badge>
                 )
               )}
@@ -159,7 +163,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                         variant="outline"
                         className={`text-xs border ${getCategoryBadgeStyle(category.name)}`}
                       >
-                        {category.name}
+                        {getCategoryDisplayName(category.name)}
                       </Badge>
                     ))
                   ) : (
@@ -169,7 +173,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                         variant="outline"
                         className={`text-xs border ${getCategoryBadgeStyle(news.categoryName)}`}
                       >
-                        {news.categoryName}
+                        {getCategoryDisplayName(news.categoryName)}
                       </Badge>
                     )
                   )}

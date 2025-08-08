@@ -9,6 +9,7 @@ import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
 import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
+import { getCategoryDisplayName } from '@/constants/newsCategories';
 
 interface NewsPreviewCardProps {
   news: NewsDto;
@@ -16,15 +17,18 @@ interface NewsPreviewCardProps {
 }
 
 const getCategoryBadgeStyle = (categoryName: string) => {
-  switch (categoryName) {
-    case 'グッズ':
+  switch (categoryName.toLowerCase()) {
+    case 'goods':
       return 'bg-badge-blue/20 text-badge-blue border-badge-blue/30';
-    case 'コラボ':
+    case 'collaboration':
       return 'bg-badge-green/20 text-badge-green border-badge-green/30';
-    case 'イベント':
+    case 'event':
       return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30';
-    case 'メディア':
+    case 'media':
       return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30';
+    case 'campaign':
+      return 'bg-badge-pink/20 text-badge-pink border-badge-pink/30';
+    case 'others':
     default:
       return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30';
   }
@@ -85,7 +89,7 @@ const NewsPreviewCardComponent = ({ news, index }: NewsPreviewCardProps) => {
               variant="outline"
               className={`text-xs border ${getCategoryBadgeStyle(primaryCategory.name)}`}
             >
-              {primaryCategory.name}
+              {getCategoryDisplayName(primaryCategory.name)}
             </Badge>
           </div>
         )}

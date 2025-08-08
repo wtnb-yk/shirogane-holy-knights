@@ -3,6 +3,7 @@
 import React from 'react';
 import { NewsFilterOptions } from '../types/types';
 import { useNewsCategories } from '../hooks/useNewsCategories';
+import { getCategoryDisplayName } from '@/constants/newsCategories';
 
 interface NewsCategoryFilterProps {
   filters: NewsFilterOptions;
@@ -75,7 +76,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
                   : 'bg-bg-primary text-text-secondary border border-surface-border hover:bg-bg-accent'
               }`}
             >
-              {category.name}
+              {getCategoryDisplayName(category.name)}
             </button>
           );
         })}

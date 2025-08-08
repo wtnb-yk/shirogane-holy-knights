@@ -49,10 +49,10 @@ const config: Config = {
           youtube: '#FF4444',
         },
         badge: {
-          blue: '#4A90E2',      // 鮮やかなブルー（グッズ用）
-          green: '#7ED321',     // 鮮やかなグリーン（コラボ用）
-          orange: '#F5A623',    // 鮮やかなオレンジ（イベント用）
-          purple: '#9013FE',    // 鮮やかなパープル（メディア用）
+          blue: '#4A90E2',
+          green: '#7ED321',
+          orange: '#F5A623',
+          purple: '#9013FE',
           gray: '#9B9B9B',      // デフォルト用グレー
         },
         error: {
