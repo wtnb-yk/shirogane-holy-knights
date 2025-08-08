@@ -16,20 +16,6 @@ interface ArchivePreviewCardProps {
   index: number;
 }
 
-const getTagBadgeStyle = (tag: string) => {
-  const tagLower = tag.toLowerCase();
-  if (tagLower.includes('minecraft') || tagLower.includes('マイクラ')) {
-    return 'bg-badge-green/20 text-badge-green border-badge-green/30';
-  } else if (tagLower.includes('apex') || tagLower.includes('エーペックス')) {
-    return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30';
-  } else if (tagLower.includes('歌') || tagLower.includes('singing')) {
-    return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30';
-  } else if (tagLower.includes('雑談') || tagLower.includes('chat')) {
-    return 'bg-badge-blue/20 text-badge-blue border-badge-blue/30';
-  }
-  return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30';
-};
-
 const ArchivePreviewCardComponent = ({ stream, index }: ArchivePreviewCardProps) => {
   const imageUrl = getImageUrl(stream.thumbnailUrl);
   
@@ -79,7 +65,7 @@ const ArchivePreviewCardComponent = ({ stream, index }: ArchivePreviewCardProps)
           <div className="mb-2">
             <Badge
               variant="outline"
-              className={`text-xs border ${getTagBadgeStyle(primaryTag)}`}
+              className={`text-xs border`}
             >
               {primaryTag}
             </Badge>
