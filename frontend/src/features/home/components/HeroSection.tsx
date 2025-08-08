@@ -1,19 +1,72 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import headerImage from '@/assets/header_1.png';
+import hero1 from '@/assets/hero/hero_1.png';
+import hero2 from '@/assets/hero/hero_2.png';
+import hero3 from '@/assets/hero/hero_3.png';
+import hero4 from '@/assets/hero/hero_4.png';
+import hero5 from '@/assets/hero/hero_5.png';
+import hero6 from '@/assets/hero/hero_6.png';
+
+const heroImages = [hero1, hero2, hero3, hero4, hero5, hero6];
 
 export default function HeroSection() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => prevIndex + 1);
+    }, 5000); // 5秒ごとに切り替え
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (currentImageIndex === heroImages.length) {
+      // アニメーション完了後に最初の位置にリセット
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentImageIndex(0);
+        // 次のフレームでトランジションを再有効化
+        setTimeout(() => setIsTransitioning(true), 50);
+      }, 1000);
+    }
+  }, [currentImageIndex]);
+
   return (
     <section className="relative h-[70vh] flex items-center justify-center">
       {/* 背景画像 */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src={headerImage}
-          alt="ヒーロー背景"
-          fill
-          className="object-cover"
-          priority
-        />
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div 
+          className={`flex h-full ${isTransitioning ? 'transition-transform duration-1000 ease-in-out' : ''}`}
+          style={{
+            width: `${(heroImages.length + 1) * 100}vw`,
+            transform: `translateX(-${currentImageIndex * 100}vw)`
+          }}
+        >
+          {heroImages.map((image, index) => (
+            <div key={index} className="relative w-screen h-full flex-shrink-0">
+              <Image
+                src={image}
+                alt={`ヒーロー背景 ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+              />
+            </div>
+          ))}
+          {/* 無限ループ用の最初の画像の複製 */}
+          <div className="relative w-screen h-full flex-shrink-0">
+            <Image
+              src={heroImages[0]}
+              alt="ヒーロー背景 1（ループ用）"
+              fill
+              className="object-cover"
+            />
+          </div>
+        </div>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
       
