@@ -39,13 +39,13 @@ import-prd:
 
 ## ニュースデータインポート
 news-import-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 news_importer.py news.csv
+	cd scripts && ENV_FILE=../config/.env.local python3 news_importer.py
 
 news-import-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 news_importer.py news.csv
+	cd scripts && ENV_FILE=../config/.env.dev python3 news_importer.py
 
 news-import-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py news.csv
+	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py
 
 # データベース接続（Bastion経由）
 

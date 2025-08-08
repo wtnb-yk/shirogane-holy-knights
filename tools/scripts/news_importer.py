@@ -8,8 +8,9 @@ news.csvファイルからPostgreSQLのnewsテーブルへデータをインポ�
 1. 必要なライブラリをインストール
    pip install pandas psycopg2-binary
 2. .envファイルにデータベース接続情報を設定
-3. news.csvファイルを指定して実行
-   python news_importer.py news.csv
+3. 実行方法:
+   - デフォルトパス (csv/news.csv) を使用: python news_importer.py
+   - カスタムパスを指定: python news_importer.py <csvファイルパス>
 """
 
 import os
@@ -67,10 +68,8 @@ CATEGORY_MAPPING = {
     'コラボ': 2,
     'イベント': 3,
     'メディア': 4,
-    'GOODS': 1,
-    'COLLABORATION': 2,
-    'EVENT': 3,
-    'MEDIA': 4
+    'キャンペーン': 5,
+    'その他': 6,
 }
 
 def get_db_connection():
@@ -482,11 +481,11 @@ def verify_import(conn):
 def main():
     """メイン処理"""
     if len(sys.argv) < 2:
-        print("使用方法: python news_importer.py <news.csvファイルパス>")
-        print("例: python news_importer.py news.csv")
-        sys.exit(1)
-    
-    csv_file_path = sys.argv[1]
+        # デフォルトのCSVファイルパスを使用
+        csv_file_path = os.path.join(os.path.dirname(__file__), 'csv', 'news.csv')
+        print(f"CSVファイルパスが指定されていません。デフォルトパスを使用: {csv_file_path}")
+    else:
+        csv_file_path = sys.argv[1]
     
     print(f"news.csvファイル: {csv_file_path}")
     
