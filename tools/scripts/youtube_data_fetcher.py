@@ -196,9 +196,9 @@ def convert_duration_to_hhmmss(duration_str):
 
 def create_output_directory():
     """出力ディレクトリを作成"""
-    # メインのresultディレクトリを作成
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    result_dir = os.path.join(base_dir, "result")
+    # メインの出力ディレクトリを作成
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    result_dir = os.path.join(base_dir, "output", "youtube_data")
     
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)

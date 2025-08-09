@@ -5,9 +5,8 @@ config/.env.dev
 config/.env.prd
 !config/*.template
 
-# CSVファイル出力ディレクトリ
-result/
-scripts/result/
+# 出力ディレクトリ
+output/
 
 scripts/.db-session
 

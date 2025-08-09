@@ -29,13 +29,13 @@ fetch-prd:
 
 ## DBインポートのみ（最新の結果ディレクトリを自動選択）
 import-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
+	cd scripts && ENV_FILE=../config/.env.local python3 csv_to_db_importer.py $$(ls -1d ../output/youtube_data/20*/ | tail -1)
 
 import-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
+	cd scripts && ENV_FILE=../config/.env.dev python3 csv_to_db_importer.py $$(ls -1d ../output/youtube_data/20*/ | tail -1)
 
 import-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 csv_to_db_importer.py $$(ls -1d ../result/20*/ | tail -1)
+	cd scripts && ENV_FILE=../config/.env.prd python3 csv_to_db_importer.py $$(ls -1d ../output/youtube_data/20*/ | tail -1)
 
 ## ニュースデータインポート
 news-import-local:
@@ -46,6 +46,10 @@ news-import-dev:
 
 news-import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py
+
+## ストリームタグ抽出
+stream-tags-extract-local:
+	cd scripts && python3 stream_tag_extractor.py
 
 # データベース接続（Bastion経由）
 
@@ -69,4 +73,4 @@ db-prd-status:
 db-prd-stop:
 	./scripts/db.sh prd stop
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-show stream-tags-stats db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
