@@ -20,13 +20,14 @@ def get_stream_tags(conn) -> Dict[int, str]:
     cursor.execute("SELECT id, name FROM stream_tags")
     return {tag_id: name for tag_id, name in cursor.fetchall()}
 
-def get_stream_data(conn) -> List[Tuple[str, str]]:
-    """配信データ（video_id, title）を取得"""
+def get_stream_data(conn) -> List[Tuple[str, str, str]]:
+    """配信データ（video_id, title, started_at）を取得（started_at降順でソート）"""
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT v.id, v.title 
+        SELECT v.id, v.title, sd.started_at
         FROM videos v 
         JOIN stream_details sd ON v.id = sd.video_id
+        ORDER BY sd.started_at DESC
     """)
     return cursor.fetchall()
 
@@ -112,19 +113,19 @@ def main():
         # CSV出力用データを準備
         csv_data = []
         
-        for video_id, title in stream_data:
+        for video_id, title, started_at in stream_data:
             matched_tag_ids = extract_tags_from_title(title, stream_tags)
             
-            if matched_tag_ids:
-                # タグ名のリストを作成
-                tag_names = [stream_tags[tag_id] for tag_id in matched_tag_ids]
-                
-                csv_data.append([
-                    video_id,
-                    title,
-                    ' '.join(map(str, matched_tag_ids)),  # tag_idsを半角スペース区切り
-                    ' '.join(tag_names)  # tag_namesを半角スペース区切り
-                ])
+            # タグ名のリストを作成（マッチしない場合は空のリスト）
+            tag_names = [stream_tags[tag_id] for tag_id in matched_tag_ids] if matched_tag_ids else []
+            
+            csv_data.append([
+                video_id,
+                title,
+                str(started_at),  # started_atを追加
+                ' '.join(map(str, matched_tag_ids)) if matched_tag_ids else '',  # tag_idsを半角スペース区切り（空の場合は空文字）
+                ' '.join(tag_names) if tag_names else ''  # tag_namesを半角スペース区切り（空の場合は空文字）
+            ])
         
         # 出力ディレクトリの設定
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -141,7 +142,7 @@ def main():
         # CSV出力
         with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['stream_id', 'title', 'stream_tag_id', 'stream_tag_names'])
+            writer.writerow(['stream_id', 'title', 'started_at', 'stream_tag_id', 'stream_tag_names'])
             writer.writerows(csv_data)
         
         # 最新ファイルへのシンボリックリンク作成
