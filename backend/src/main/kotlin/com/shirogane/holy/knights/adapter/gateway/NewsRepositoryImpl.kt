@@ -2,12 +2,11 @@ package com.shirogane.holy.knights.adapter.gateway
 
 import com.shirogane.holy.knights.domain.model.*
 import com.shirogane.holy.knights.domain.repository.NewsRepository
+import com.shirogane.holy.knights.adapter.gateway.entity.*
 import io.r2dbc.spi.Row
 import kotlinx.coroutines.reactor.awaitSingle
-import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.slf4j.LoggerFactory
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
-import org.springframework.data.relational.core.query.Criteria
 import org.springframework.data.relational.core.query.Query
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
@@ -92,7 +91,7 @@ class NewsRepositoryImpl(
             FROM news n
             INNER JOIN news_news_categories nnc ON n.id = nnc.news_id
             INNER JOIN news_categories nc ON nnc.news_category_id = nc.id
-            $whereClause
+            `$whereClause`
             GROUP BY n.id, n.title, n.content, n.thumbnail_url, n.external_url, n.published_at
             ORDER BY n.published_at DESC
             LIMIT :limit OFFSET :offset
@@ -258,31 +257,3 @@ class NewsRepositoryImpl(
         )
     }
 }
-
-/**
- * ニュースエンティティ（R2DBC用）
- */
-@org.springframework.data.relational.core.mapping.Table("news")
-data class NewsEntity(
-    @org.springframework.data.annotation.Id
-    val id: String,
-    val title: String,
-    val categoryId: Int,
-    val content: String,
-    val thumbnailUrl: String?,
-    val externalUrl: String?,
-    val publishedAt: Instant,
-    val createdAt: Instant
-)
-
-/**
- * ニュースカテゴリエンティティ（R2DBC用）
- */
-@org.springframework.data.relational.core.mapping.Table("news_categories")
-data class NewsCategoryEntity(
-    @org.springframework.data.annotation.Id
-    val id: Int,
-    val name: String,
-    val sortOrder: Int,
-    val createdAt: Instant
-)

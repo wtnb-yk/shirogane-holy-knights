@@ -183,8 +183,8 @@ class VideoRepositoryImpl(
             }
 
             val whereClause = if (conditions.isNotEmpty()) {
-                "vt.type = 'video' AND " + conditions.joinToString(" AND ")
-            } else "vt.type = 'video'"
+                "WHERE vt.type = 'video' AND " + conditions.joinToString(" AND ")
+            } else "WHERE vt.type = 'video'"
 
             val sql = """
                 SELECT 
@@ -196,7 +196,7 @@ class VideoRepositoryImpl(
                 JOIN video_types vt ON vvt.video_type_id = vt.id
                 LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
                 LEFT JOIN video_tags t ON vtg.tag_id = t.id
-                WHERE $whereClause
+                `$whereClause`
                 GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
                          v.duration, v.channel_id, v.created_at, v.published_at
                 ORDER BY v.published_at DESC NULLS LAST, v.created_at DESC
@@ -254,8 +254,8 @@ class VideoRepositoryImpl(
             }
 
             val whereClause = if (conditions.isNotEmpty()) {
-                "vt.type = 'stream' AND " + conditions.joinToString(" AND ")
-            } else "vt.type = 'stream'"
+                "WHERE vt.type = 'stream' AND " + conditions.joinToString(" AND ")
+            } else "WHERE vt.type = 'stream'"
 
             val sql = """
                 SELECT 
@@ -268,7 +268,7 @@ class VideoRepositoryImpl(
                 LEFT JOIN stream_details sd ON v.id = sd.video_id
                 LEFT JOIN video_stream_tags vst ON v.id = vst.video_id
                 LEFT JOIN stream_tags t ON vst.tag_id = t.id
-                WHERE $whereClause
+                `$whereClause`
                 GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
                          v.duration, v.channel_id, v.published_at, sd.started_at
                 ORDER BY sd.started_at DESC NULLS LAST, v.published_at DESC
@@ -384,76 +384,3 @@ class VideoRepositoryImpl(
             .awaitSingle()
     }
 }
-
-/**
- * データベーステーブルマッピング用エンティティ
- */
-@org.springframework.data.relational.core.mapping.Table("videos")
-data class VideoEntity(
-    @org.springframework.data.annotation.Id
-    val id: String,
-    val title: String,
-    val description: String?,
-    val url: String?,
-    val thumbnailUrl: String?,
-    val duration: String?,
-    val channelId: String,
-    val publishedAt: Instant?,
-    val createdAt: Instant?
-)
-
-@org.springframework.data.relational.core.mapping.Table("stream_details")
-data class StreamDetailsEntity(
-    @org.springframework.data.annotation.Id
-    val videoId: String,
-    val startedAt: Instant?,
-    val createdAt: Instant?
-)
-
-@org.springframework.data.relational.core.mapping.Table("video_video_tags")
-data class VideoTagEntity(
-    @org.springframework.data.annotation.Id
-    val id: Long? = null,
-    val videoId: String,
-    val tagId: Long
-)
-
-@org.springframework.data.relational.core.mapping.Table("video_tags")
-data class TagEntity(
-    @org.springframework.data.annotation.Id
-    val id: Long? = null,
-    val name: String,
-    val description: String?,
-    val createdAt: Instant?
-)
-
-@org.springframework.data.relational.core.mapping.Table("video_types")
-data class VideoTypeEntity(
-    @org.springframework.data.annotation.Id
-    val id: Int,
-    val type: String
-)
-
-@org.springframework.data.relational.core.mapping.Table("video_video_types")
-data class VideoVideoTypeEntity(
-    val videoId: String,
-    val videoTypeId: Int,
-    val createdAt: Instant?
-)
-
-@org.springframework.data.relational.core.mapping.Table("stream_tags")
-data class StreamTagEntity(
-    @org.springframework.data.annotation.Id
-    val id: Long? = null,
-    val name: String,
-    val description: String?,
-    val createdAt: Instant?
-)
-
-@org.springframework.data.relational.core.mapping.Table("video_stream_tags")
-data class VideoStreamTagEntity(
-    @org.springframework.data.annotation.Id
-    val id: Long? = null,
-    val videoId: String,
-    val tagId: Long
-)
