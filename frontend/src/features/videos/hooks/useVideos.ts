@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 import { usePagination } from './usePagination';
 import { useVideoSearch } from './useVideoSearch';
 import { useVideoFilters } from './useVideoFilters';
-import { useAvailableTags } from './useAvailableTags';
+import { useAllVideoTags } from './useAllVideoTags';
 import { useVideoQuery } from './useVideoQuery';
 import { VideoDto } from '../types/types';
 import { FilterOptions } from '../components/filter/FilterBar';
@@ -64,8 +64,8 @@ export const useVideos = (options: UseVideosOptions = {}): UseVideosResult => {
     setTotalCount(newTotalCount);
   }, [newTotalCount]);
   
-  // 利用可能なタグ抽出
-  const { availableTags } = useAvailableTags(videos);
+  // 全ての動画タグを取得
+  const { tags: availableTags } = useAllVideoTags();
 
   // ページリセット機能付きのハンドラー（useCallbackで安定化）
   const handleSearchWithReset = useCallback((query: string) => {

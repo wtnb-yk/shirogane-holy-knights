@@ -107,6 +107,28 @@ class VideoUseCaseImpl(
         }
     }
 
+    override suspend fun getAllStreamTags(): List<String> {
+        logger.info("全配信タグ取得実行")
+        
+        return try {
+            videoRepository.getAllStreamTags()
+        } catch (e: Exception) {
+            logger.error("全配信タグ取得エラー", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun getAllVideoTags(): List<String> {
+        logger.info("全動画タグ取得実行")
+        
+        return try {
+            videoRepository.getAllVideoTags()
+        } catch (e: Exception) {
+            logger.error("全動画タグ取得エラー", e)
+            emptyList()
+        }
+    }
+
     private fun convertToDto(video: com.shirogane.holy.knights.domain.model.Video): VideoDto {
         return VideoDto(
             id = video.id.value,

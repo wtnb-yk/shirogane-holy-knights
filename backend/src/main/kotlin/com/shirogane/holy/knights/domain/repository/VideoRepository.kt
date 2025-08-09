@@ -71,4 +71,16 @@ interface VideoRepository {
         startDate: Instant? = null,
         endDate: Instant? = null
     ): Int
+    
+    /**
+     * 全ての配信タグを取得
+     * @return 配信タグ名のリスト
+     */
+    suspend fun getAllStreamTags(): List<String>
+    
+    /**
+     * 全ての動画タグを取得
+     * @return 動画タグ名のリスト
+     */
+    suspend fun getAllVideoTags(): List<String>
 }

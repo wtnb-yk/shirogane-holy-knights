@@ -353,6 +353,38 @@ class VideoRepositoryImpl(
             streamTags = streamTags
         )
     }
+
+    override suspend fun getAllStreamTags(): List<String> {
+        logger.info("全配信タグ取得")
+
+        val sql = """
+                SELECT name
+                FROM stream_tags
+                ORDER BY name
+            """.trimIndent()
+
+        return template.databaseClient.sql(sql)
+            .map { row -> row.get("name", String::class.java)!! }
+            .all()
+            .collectList()
+            .awaitSingle()
+    }
+
+    override suspend fun getAllVideoTags(): List<String> {
+        logger.info("全動画タグ取得")
+
+        val sql = """
+                SELECT name
+                FROM video_tags
+                ORDER BY name
+            """.trimIndent()
+
+        return template.databaseClient.sql(sql)
+            .map { row -> row.get("name", String::class.java)!! }
+            .all()
+            .collectList()
+            .awaitSingle()
+    }
 }
 
 /**

@@ -35,7 +35,7 @@ class ApiGatewayFunction(
         
         // OPTIONSリクエストの処理（プリフライト）
         if (request.httpMethod == "OPTIONS") {
-            return createCorsResponse(request, 200, "")
+            return createCorsResponse(request)
         }
         
         return try {
@@ -43,8 +43,10 @@ class ApiGatewayFunction(
                 request.path == "/health" && request.httpMethod == "GET" -> handleHealth()
                 request.path == "/videos" && request.httpMethod == "POST" -> handleVideoSearch(request)
                 request.path == "/streams" && request.httpMethod == "POST" -> handleStreamSearch(request)
+                request.path == "/stream-tags" && request.httpMethod == "GET" -> handleStreamTags()
+                request.path == "/video-tags" && request.httpMethod == "GET" -> handleVideoTags()
                 request.path == "/news" && request.httpMethod == "POST" -> handleNewsSearch(request)
-                request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories(request)
+                request.path == "/news/categories" && request.httpMethod == "GET" -> handleNewsCategories()
                 else -> {
                     logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
                     APIGatewayProxyResponseEvent()
@@ -118,6 +120,30 @@ class ApiGatewayFunction(
             .withBody(objectMapper.writeValueAsString(result))
     }
     
+    private fun handleStreamTags(): APIGatewayProxyResponseEvent {
+        logger.info("Stream tags requested")
+        
+        val tags = runBlocking { videoUseCase.getAllStreamTags() }
+        logger.info("Stream tags returning ${tags.size} tags")
+        
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(tags))
+    }
+    
+    private fun handleVideoTags(): APIGatewayProxyResponseEvent {
+        logger.info("Video tags requested")
+        
+        val tags = runBlocking { videoUseCase.getAllVideoTags() }
+        logger.info("Video tags returning ${tags.size} tags")
+        
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(200)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(tags))
+    }
+    
     /**
      * CORSヘッダーをレスポンスに追加
      */
@@ -159,7 +185,7 @@ class ApiGatewayFunction(
     }
     
     
-    private fun handleNewsCategories(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
+    private fun handleNewsCategories(): APIGatewayProxyResponseEvent {
         logger.info("News categories requested")
         
         val categories = runBlocking { newsUseCase.getNewsCategories() }
@@ -174,10 +200,10 @@ class ApiGatewayFunction(
     /**
      * OPTIONSリクエスト用のCORSレスポンスを作成
      */
-    private fun createCorsResponse(request: APIGatewayProxyRequestEvent, statusCode: Int, body: String): APIGatewayProxyResponseEvent {
+    private fun createCorsResponse(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
         val response = APIGatewayProxyResponseEvent()
-            .withStatusCode(statusCode)
-            .withBody(body)
+            .withStatusCode(200)
+            .withBody("")
         return addCorsHeaders(request, response)
     }
     

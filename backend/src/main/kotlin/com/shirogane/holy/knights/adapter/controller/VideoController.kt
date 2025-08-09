@@ -1,6 +1,5 @@
 package com.shirogane.holy.knights.adapter.controller
 
-import com.shirogane.holy.knights.application.dto.VideoDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchResultDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
@@ -65,6 +64,40 @@ class VideoController(private val videoUseCase: VideoUseCasePort) {
                     hasMore = false
                 )
             )
+        }
+    }
+
+    /**
+     * 配信タグ一覧取得
+     */
+    @GetMapping("/stream-tags")
+    suspend fun getStreamTags(): ResponseEntity<List<String>> {
+        logger.info("getStreamTags called")
+        
+        return try {
+            val tags = videoUseCase.getAllStreamTags()
+            logger.info("getStreamTags returning ${tags.size} tags")
+            ResponseEntity.ok(tags)
+        } catch (error: Exception) {
+            logger.error("Error in getStreamTags", error)
+            ResponseEntity.internalServerError().body(emptyList())
+        }
+    }
+
+    /**
+     * 動画タグ一覧取得
+     */
+    @GetMapping("/video-tags")
+    suspend fun getVideoTags(): ResponseEntity<List<String>> {
+        logger.info("getVideoTags called")
+        
+        return try {
+            val tags = videoUseCase.getAllVideoTags()
+            logger.info("getVideoTags returning ${tags.size} tags")
+            ResponseEntity.ok(tags)
+        } catch (error: Exception) {
+            logger.error("Error in getVideoTags", error)
+            ResponseEntity.internalServerError().body(emptyList())
         }
     }
 }

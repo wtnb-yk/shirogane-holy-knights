@@ -22,4 +22,16 @@ interface VideoUseCasePort {
      * @return 配信検索結果DTO
      */
     suspend fun searchStreams(searchParams: StreamSearchParamsDto): StreamSearchResultDto
+    
+    /**
+     * 全ての配信タグを取得
+     * @return 配信タグ名のリスト
+     */
+    suspend fun getAllStreamTags(): List<String>
+    
+    /**
+     * 全ての動画タグを取得
+     * @return 動画タグ名のリスト
+     */
+    suspend fun getAllVideoTags(): List<String>
 }

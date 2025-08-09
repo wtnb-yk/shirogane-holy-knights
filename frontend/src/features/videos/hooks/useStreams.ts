@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 import { usePagination } from './usePagination';
 import { useVideoSearch } from './useVideoSearch';
 import { useVideoFilters } from './useVideoFilters';
-import { useAvailableTags } from './useAvailableTags';
+import { useAllStreamTags } from './useAllStreamTags';
 import { useStreamQuery } from './useStreamQuery';
 import { StreamDto } from '../types/types';
 import { FilterOptions } from '../components/filter/FilterBar';
@@ -64,8 +64,8 @@ export const useStreams = (options: UseStreamsOptions = {}): UseStreamsResult =>
     setTotalCount(newTotalCount);
   }, [newTotalCount]);
   
-  // 利用可能なタグ抽出（StreamDtoも同じタグ構造なので同じフックを使用）
-  const { availableTags } = useAvailableTags(streams.map(stream => ({ ...stream })));
+  // 全ての配信タグを取得
+  const { tags: availableTags } = useAllStreamTags();
 
   // ページリセット機能付きのハンドラー（useCallbackで安定化）
   const handleSearchWithReset = useCallback((query: string) => {
