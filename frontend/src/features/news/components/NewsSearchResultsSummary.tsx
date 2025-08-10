@@ -4,6 +4,7 @@ import React from 'react';
 import { SearchResultsSummary as BaseSearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { NewsFilterOptions } from '../types/types';
 import { useNewsCategories } from '../hooks/useNewsCategories';
+import {getCategoryDisplayName} from "@/constants/newsCategories";
 
 interface NewsSearchResultsSummaryProps {
   searchQuery: string;
@@ -25,7 +26,7 @@ export const NewsSearchResultsSummary = ({
   const getCategoryName = (categoryId?: number) => {
     if (!categoryId) return null;
     const category = categories.find(c => c.id === categoryId);
-    return category?.name || '';
+    return category ? getCategoryDisplayName(category.name) : '';
   };
 
   const categoryNames = filters.categoryIds?.map(getCategoryName).filter(Boolean).join(', ');
