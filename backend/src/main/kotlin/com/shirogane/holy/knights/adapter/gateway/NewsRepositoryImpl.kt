@@ -91,7 +91,7 @@ class NewsRepositoryImpl(
             FROM news n
             INNER JOIN news_news_categories nnc ON n.id = nnc.news_id
             INNER JOIN news_categories nc ON nnc.news_category_id = nc.id
-            `$whereClause`
+            $whereClause
             GROUP BY n.id, n.title, n.content, n.thumbnail_url, n.external_url, n.published_at
             ORDER BY n.published_at DESC
             LIMIT :limit OFFSET :offset
