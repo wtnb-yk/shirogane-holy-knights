@@ -2,7 +2,9 @@
 import psycopg2
 import csv
 import re
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
+from datetime import datetime, time
+import json
 
 def connect_db():
     """ローカルPostgreSQLデータベースに接続"""
@@ -20,80 +22,160 @@ def get_stream_tags(conn) -> Dict[int, str]:
     cursor.execute("SELECT id, name FROM stream_tags")
     return {tag_id: name for tag_id, name in cursor.fetchall()}
 
-def get_stream_data(conn) -> List[Tuple[str, str, str]]:
-    """配信データ（video_id, title, started_at）を取得（started_at降順でソート）"""
+def get_stream_data(conn) -> List[Tuple[str, str, str, Optional[str], Optional[str], Optional[str]]]:
+    """配信データを取得（多次元特徴量を含む）"""
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT v.id, v.title, sd.started_at
+        SELECT v.id, v.title, v.description, v.duration, sd.started_at, v.published_at
         FROM videos v 
         JOIN stream_details sd ON v.id = sd.video_id
         ORDER BY sd.started_at DESC
     """)
     return cursor.fetchall()
 
-def extract_tags_from_title(title: str, available_tags: Dict[int, str]) -> List[int]:
-    """タイトルからタグを導出"""
+def extract_time_features(started_at: Optional[str]) -> Dict[str, any]:
+    """時間的特徴量を抽出"""
+    if not started_at:
+        return {}
+    
+    try:
+        dt = datetime.fromisoformat(str(started_at).replace('Z', '+00:00'))
+        return {
+            'hour': dt.hour,
+            'weekday': dt.weekday(),
+            'is_morning': 0 <= dt.hour < 12,
+            'is_late_night': 22 <= dt.hour or dt.hour < 6
+        }
+    except:
+        return {}
+
+def parse_duration(duration: Optional[str]) -> int:
+    """配信時間（分）を抽出"""
+    if not duration or duration == '00:00:00':
+        return 0
+    
+    try:
+        # HH:MM:SS 形式をパース
+        parts = duration.split(':')
+        if len(parts) == 3:
+            hours, minutes, seconds = map(int, parts)
+            return hours * 60 + minutes + (1 if seconds > 30 else 0)
+        return 0
+    except:
+        return 0
+
+def extract_tags_from_multi_features(title: str, description: Optional[str], duration: Optional[str], 
+                                    started_at: Optional[str], available_tags: Dict[int, str]) -> List[int]:
+    """多次元特徴量からタグを導出"""
     matched_tags = []
     
-    # タイトルを小文字に変換して検索
+    # テキスト特徴量の準備
     title_lower = title.lower()
+    description_lower = (description or '').lower()
+    combined_text = f"{title} {description or ''}".lower()
+    
+    # 時間的特徴量
+    time_features = extract_time_features(started_at)
+    duration_minutes = parse_duration(duration)
     
     # 各タグがタイトルに含まれるかチェック
     for tag_id, tag_name in available_tags.items():
-        # 基本的なキーワードマッチング
+        # 基本的なキーワードマッチング（タイトルのみ）
         if tag_name in title:
             matched_tags.append(tag_id)
             continue
             
-        # より詳細なルールベースマッチング
+        # より詳細なルールベースマッチング（多次元判定）
         if tag_name == "雑談":
-            keywords = ["雑談", "朝活", "おは", "まっする", "話", "どうよ"]
-            if any(keyword in title for keyword in keywords):
+            keywords = ["雑談", "朝活"]
+            morning_keywords = ["おは", "まっする"]
+            is_morning_stream = time_features.get('is_morning', False) and any(k in title for k in morning_keywords)
+            
+            # より厳密な条件：明示的なキーワードまたは朝活配信のみ
+            if any(keyword in title for keyword in keywords) or is_morning_stream:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "ゲーム":
-            keywords = ["ゲーム", "ARK", "参加型", "荒野", "杯", "労働", "ホラー"]
-            if any(keyword in title for keyword in keywords):
+            keywords = [
+                # 既存キーワード
+                "ゲーム", "ARK", "荒野", "杯", "労働", "ホラー", "プレイ", "クリア", "挑戦",
+                # 頻出ゲームタイトル
+                "ポケモン", "ポケットモンスター", 
+                "Minecraft", "マイクラ", "マインクラフト",
+                "モンハン", "モンスターハンター", "ワイルズ", "MonHun",
+                "エルデンリング", "ELDEN RING", "ナイトレイン",
+                "R.E.P.O.", "Backrooms", "バックルーム", "Escape the",
+                "RUST", "ラスト", "holoRUST",
+                "HoloCure", "ホロキュア",
+                "パワプロ", "甲子園", "野球", "ミリしら",
+                "FF14", "FINAL FANTASY", "ファイナルファンタジー",
+                "ドンキーコング", "首都高バトル",
+                "TCG Card Shop", "Liar's Bar", "Liar",
+                "空気読み", "心霊物件", "お宝マウンテン",
+                "白猫プロジェクト", "FORK ROAD", "Among", "AmongUs",
+                "ゴブリン", "呪われたデジカメ",
+                "デュエルマスターズ", "デュエマ",
+                "あつまれ どうぶつの森", "どうぶつの森", "あつ森",
+                "ネタバレが激しすぎる", "RPG", "OBT", "ベータ",
+                "麻雀", "格闘倶楽部", "視聴者対局", "対戦", "競技"
+            ]
+            # ゲームタイトルが含まれるか、ゲーム関連の番号表記があるか
+            has_game_number = bool(re.search(r'#\d+', title))  # #01, #02 etc.
+            
+            # ゲーム判定：タイトルにキーワード または 番号表記
+            if any(keyword in title for keyword in keywords) or has_game_number:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "歌枠":
-            keywords = ["歌枠", "歌", "🎤", "🎶"]
+            keywords = ["歌枠", "歌", "🎤", "🎶", "歌う", "song", "sing", "リレー", "cover", "歌ってみた"]
+            # 歌枠は明示的なキーワードのみで判定
             if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
                 
         elif tag_name == "ASMR":
-            keywords = ["ASMR", "囁き", "癒し"]
+            keywords = ["ASMR", "囁き", "癒し", "耳かき", "マッサージ", "安眠", "夢の世界", "お耳", "ぐっすり"]
+            # ASMRは明示的なキーワードのみで判定
             if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
                 
         elif tag_name == "企画":
-            keywords = ["企画", "配信", "特別", "記念", "周年", "カウントダウン"]
-            if any(keyword in title for keyword in keywords):
+            keywords = ["企画", "記念", "周年", "カウントダウン", "イベント", "祭", "大会", "杯"]
+            # 企画判定：ハッシュタグ（番号以外）または明示的キーワード
+            has_hashtag = "#" in title and not re.search(r'^#\d+', title)  # 番号のハッシュタグは除外
+            has_explicit_keywords = any(keyword in title for keyword in keywords)
+            
+            if has_hashtag or has_explicit_keywords:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "コラボ":
-            keywords = ["コラボ", "やかまし", "食事会", "ホロメン"]
-            if any(keyword in title for keyword in keywords):
+            # コラボ判定：非常に明示的なキーワードのみ
+            if any(keyword in title for keyword in ["コラボ", "やかまし", "オフコラボ", "BIG3"]):
                 matched_tags.append(tag_id)
                 
-        elif tag_name == "3D":
-            keywords = ["3D", "立体"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
                 
         elif tag_name == "記念":
-            keywords = ["記念", "周年", "お祝い", "祝"]
-            if any(keyword in title for keyword in keywords):
+            keywords = ["記念", "周年", "お祝い", "祝", "生誕", "誕生日", "万人", "2000日", "カウントダウン"]
+            # 記念判定：明示的なキーワードまたは記念数字
+            has_milestone = bool(re.search(r'\d+周年|\d+万人|\d+日記念', title))
+            
+            if any(keyword in title for keyword in keywords) or has_milestone:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "同時視聴":
-            keywords = ["同時視聴", "一緒に見る", "みんなで"]
-            if any(keyword in title for keyword in keywords):
+            # 同時視聴：明示的なキーワードのみ
+            if any(keyword in title for keyword in ["同時視聴", "watchalong"]):
                 matched_tags.append(tag_id)
                 
-        elif tag_name == "耐久":
-            keywords = ["耐久", "長時間", "マラソン"]
-            if any(keyword in title for keyword in keywords):
+                
+        elif tag_name == "参加型":
+            # 参加型判定：非常に明示的なキーワードのみ
+            if any(keyword in title for keyword in ["参加型", "視聴者参加", "視聴者対局"]):
+                matched_tags.append(tag_id)
+                
+                
+        elif tag_name == "ライブ":
+            # ライブ判定：明示的なキーワードのみ
+            if any(keyword in title for keyword in ["LIVE", "ライブ", "Live", "生誕祭"]):
                 matched_tags.append(tag_id)
     
     return list(set(matched_tags))  # 重複除去
@@ -113,8 +195,8 @@ def main():
         # CSV出力用データを準備
         csv_data = []
         
-        for video_id, title, started_at in stream_data:
-            matched_tag_ids = extract_tags_from_title(title, stream_tags)
+        for video_id, title, description, duration, started_at, published_at in stream_data:
+            matched_tag_ids = extract_tags_from_multi_features(title, description, duration, started_at, stream_tags)
             
             # タグ名のリストを作成（マッチしない場合は空のリスト）
             tag_names = [stream_tags[tag_id] for tag_id in matched_tag_ids] if matched_tag_ids else []
