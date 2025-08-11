@@ -22,7 +22,7 @@ export const SearchBar = ({
   onClearSearch
 }: SearchBarProps) => {
   return (
-    <div className="mb-8 flex flex-wrap gap-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
+    <div className="mb-4 md:mb-8 flex flex-wrap gap-2 md:gap-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
       <SearchInput
         searchValue={searchValue}
         onSearchChange={onSearchChange}

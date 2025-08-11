@@ -47,23 +47,23 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
             />
           </div>
         )}
-        <CardContent className="p-5">
-          <h3 className={`text-lg font-bold mb-3 ${TEXT_CLAMP[2]} text-text-primary group-hover:text-accent-blue transition-colors duration-ui`}>
+        <CardContent className="p-3 md:p-5">
+          <h3 className={`text-base md:text-lg font-bold mb-2 md:mb-3 ${TEXT_CLAMP[2]} text-text-primary group-hover:text-accent-blue transition-colors duration-ui`}>
             {video.title}
           </h3>
-          <div className="flex items-center gap-2 text-sm text-text-secondary mb-3">
+          <div className="flex items-center gap-2 text-sm text-text-secondary mb-2 md:mb-3">
             <Calendar className="w-4 h-4 text-accent-gold" />
             <span className="font-medium">{new Date(video.publishedAt).toLocaleDateString('ja-JP')}</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 md:gap-2">
             {video.tags?.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"
-                className="bg-gradient-to-r from-accent-gold/20 to-accent-beige/20 text-text-primary hover:from-accent-gold/30 hover:to-accent-beige/30 transition-all duration-ui border border-accent-gold/30"
+                className="bg-gradient-to-r from-accent-gold/20 to-accent-beige/20 text-text-primary hover:from-accent-gold/30 hover:to-accent-beige/30 transition-all duration-ui border border-accent-gold/30 text-xs px-2 py-1"
               >
-                <Tag className="w-3 h-3 mr-1 text-accent-gold" />
-                <span className="font-medium text-xs">{tag}</span>
+                <Tag className="w-2.5 h-2.5 mr-1 text-accent-gold" />
+                <span className="font-medium">{tag}</span>
               </Badge>
             ))}
             {video.tags && video.tags.length > 3 && (

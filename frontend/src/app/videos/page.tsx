@@ -26,8 +26,8 @@ export default function VideosList() {
     <div className="min-h-screen bg-bg-primary">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="mb-4 opacity-0 animate-slide-up">
-          <div className="mb-6">
-            <h1 className="text-4xl font-bold text-text-primary">
+          <div className="mb-4 md:mb-6">
+            <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
               配信・動画
             </h1>
           </div>
@@ -36,7 +36,7 @@ export default function VideosList() {
           <div className="flex border-b border-surface-border">
             <button
               onClick={() => setContentType(ContentType.STREAMS)}
-              className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
+              className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-all duration-200 border-b-2 text-sm md:text-base ${
                 contentType === ContentType.STREAMS 
                   ? 'text-text-primary border-text-secondary bg-bg-accent/30' 
                   : 'text-text-secondary border-transparent hover:text-text-primary hover:border-surface-border'
@@ -46,7 +46,7 @@ export default function VideosList() {
             </button>
             <button
               onClick={() => setContentType(ContentType.VIDEOS)}
-              className={`px-6 py-3 font-medium transition-all duration-200 border-b-2 ${
+              className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-all duration-200 border-b-2 text-sm md:text-base ${
                 contentType === ContentType.VIDEOS 
                   ? 'text-text-primary border-text-secondary bg-bg-accent/30' 
                   : 'text-text-secondary border-transparent hover:text-text-primary hover:border-surface-border'

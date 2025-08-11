@@ -47,11 +47,11 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
             />
           </div>
         )}
-        <CardContent className="p-5">
-          <h3 className={`text-base font-bold mb-3 ${TEXT_CLAMP[3]} text-text-primary group-hover:text-text-secondary transition-colors duration-ui`}>
+        <CardContent className="p-3 md:p-5">
+          <h3 className={`text-base md:text-lg font-bold mb-2 md:mb-3 ${TEXT_CLAMP[3]} text-text-primary group-hover:text-text-secondary transition-colors duration-ui`}>
             {stream.title}
           </h3>
-          <div className="flex items-center gap-2 text-sm text-text-secondary mb-3">
+          <div className="flex items-center gap-2 text-sm text-text-secondary mb-2 md:mb-3">
             <Radio className="w-4 h-4" />
             <span>
               {stream.startedAt 
@@ -60,14 +60,14 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
               }
             </span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 md:gap-2">
             {stream.tags?.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
                 variant="secondary"
-                className={`${BACKGROUND_OPACITY.accent.strong} text-text-primary hover:bg-bg-accent/70 transition-colors duration-ui ${BACKGROUND_OPACITY.surface.light}`}
+                className={`${BACKGROUND_OPACITY.accent.strong} text-text-primary hover:bg-bg-accent/70 transition-colors duration-ui ${BACKGROUND_OPACITY.surface.light} text-xs px-2 py-1`}
               >
-                <Tag className="w-3 h-3 mr-1" />
+                <Tag className="w-2.5 h-2.5 mr-1" />
                 {tag}
               </Badge>
             ))}

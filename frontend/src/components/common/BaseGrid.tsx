@@ -42,7 +42,7 @@ export function BaseGrid<T>({
 
   if (loading) {
     return (
-      <div className={`grid ${gridClassName} gap-5 mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
+      <div className={`grid ${gridClassName} gap-3 md:gap-5 mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
         {Array.from({ length: skeletonCount }).map((_, index) => (
           <React.Fragment key={index}>
             {renderSkeleton(index)}
@@ -64,7 +64,7 @@ export function BaseGrid<T>({
   }
 
   return (
-    <div className={`grid ${gridClassName} gap-5 mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
+    <div className={`grid ${gridClassName} gap-3 md:gap-5 mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {renderItem(item, index)}

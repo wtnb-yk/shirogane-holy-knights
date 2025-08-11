@@ -43,13 +43,13 @@ export const SearchInput = ({
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl relative">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-5 h-5" />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-secondary w-4 h-4 md:w-5 md:h-5" />
       <input
         type="text"
         placeholder={placeholder}
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="w-full pl-10 pr-12 py-3 border border-surface-border rounded-lg bg-bg-primary focus:ring-2 focus:ring-text-secondary focus:border-text-secondary transition-all duration-ui shadow-sm text-text-primary placeholder-text-secondary/70"
+        className="w-full pl-10 pr-12 py-2 md:py-3 border border-surface-border rounded-lg bg-bg-primary focus:ring-2 focus:ring-text-secondary focus:border-text-secondary transition-all duration-ui shadow-sm text-text-primary placeholder-text-secondary/70 text-sm md:text-base"
         disabled={disabled}
       />
       {inputValue && (
@@ -59,7 +59,7 @@ export const SearchInput = ({
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors duration-ui"
           disabled={disabled}
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4 md:w-5 md:h-5" />
         </button>
       )}
     </form>
