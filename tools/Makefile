@@ -1,3 +1,25 @@
+# データベース接続（Bastion経由）
+
+## dev環境データベース接続
+db-dev:
+	./scripts/db.sh
+
+db-dev-status:
+	./scripts/db.sh status
+
+db-dev-stop:
+	./scripts/db.sh stop
+
+## prd環境データベース接続
+db-prd:
+	./scripts/db.sh prd
+
+db-prd-status:
+	./scripts/db.sh prd status
+
+db-prd-stop:
+	./scripts/db.sh prd stop
+
 # YouTube動画データ取得・インポートツール ショートカット
 
 ## セットアップコマンド
@@ -50,27 +72,5 @@ news-import-prd:
 ## ストリームタグ抽出
 stream-tags-extract-local:
 	cd scripts && python3 stream_tag_extractor.py
-
-# データベース接続（Bastion経由）
-
-## dev環境データベース接続
-db-dev:
-	./scripts/db.sh
-
-db-dev-status:
-	./scripts/db.sh status
-
-db-dev-stop:
-	./scripts/db.sh stop
-
-## prd環境データベース接続
-db-prd:
-	./scripts/db.sh prd
-
-db-prd-status:
-	./scripts/db.sh prd status
-
-db-prd-stop:
-	./scripts/db.sh prd stop
 
 .PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-show stream-tags-stats db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
