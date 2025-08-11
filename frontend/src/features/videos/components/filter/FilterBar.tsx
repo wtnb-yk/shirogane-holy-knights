@@ -47,10 +47,10 @@ export function FilterBar({
                   <Badge
                     key={tag}
                     variant={filters.selectedTags.includes(tag) ? "default" : "outline"}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 text-sm px-3 py-2 ${
                       filters.selectedTags.includes(tag)
-                        ? 'bg-text-secondary text-white hover:bg-bg-accent/80'
-                        : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-secondary'
+                        ? 'bg-text-secondary text-white hover:bg-text-secondary/80'
+                        : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-primary hover:bg-bg-accent/20'
                     }`}
                     onClick={() => handleTagToggle(tag)}
                   >
