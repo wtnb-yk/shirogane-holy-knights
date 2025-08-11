@@ -139,3 +139,13 @@ tools/
     └── result/                    # データ取得結果の保存先
         └── YYYYMMDD_HHMMSS_*/     # タイムスタンプ付きディレクトリ
 ```
+## 運用
+
+### 配信タグ
+
+1. make sync-local 
+2. make stream-tags-extract-local
+3. tools/data/stream_tags.csv を編集 
+4. make stream-tags-import-local
+5. make sync-prd
+6. make stream-tags-import-prd
