@@ -6,13 +6,31 @@ interface NavigationItemProps {
   href: string;
   label: string;
   isActive: boolean;
+  isMobile: boolean;
+  onClick?: () => void;
 }
 
-export function NavigationItem({ href, label, isActive }: NavigationItemProps) {
+export function NavigationItem({ href, label, isActive, isMobile, onClick }: NavigationItemProps) {
+  if (isMobile) {
+    return (
+      <Link
+        href={href}
+        onClick={onClick}
+        className={`block px-4 py-3 text-base font-medium border-b border-surface-border/50 transition-colors duration-ui ${
+          isActive
+            ? 'text-bg-primary bg-accent-gold'
+            : 'text-text-light hover:text-white hover:bg-bg-primary/10'
+        }`}
+      >
+        {label}
+      </Link>
+    );
+  }
+
   return (
     <Link
       href={href}
-      className={`px-3 py-2 rounded-md text-base font-medium transition-all duration-ui hover:scale-105 hover:-translate-y-0.5 ${
+      className={`px-3 py-2 rounded-md text-sm sm:text-base font-medium transition-all duration-ui hover:scale-105 hover:-translate-y-0.5 ${
         isActive
           ? 'text-surface-primary bg-bg-primary shadow-sm'
           : 'text-text-light hover:text-white hover:bg-bg-primary/20'
