@@ -37,6 +37,26 @@ def get_youtube_service():
     """YouTube Data API サービスを初期化"""
     return build('youtube', 'v3', developerKey=API_KEY)
 
+def load_premiere_video_ids():
+    """プレミアム公開動画IDのリストを読み込み"""
+    premiere_ids = set()
+    csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'premiere_videos.csv')
+    
+    if os.path.exists(csv_path):
+        try:
+            with open(csv_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if 'video_id' in row and row['video_id'].strip():
+                        premiere_ids.add(row['video_id'].strip())
+            print(f"プレミアム公開動画 {len(premiere_ids)} 件を読み込みました")
+        except Exception as e:
+            print(f"警告: プレミアム動画CSVファイルの読み込みに失敗しました: {e}")
+    else:
+        print(f"警告: プレミアム動画CSVファイルが見つかりません: {csv_path}")
+    
+    return premiere_ids
+
 def get_channel_info(youtube, channel_id):
     """チャンネル情報を取得"""
     print(f"チャンネル {channel_id} の情報を取得中...")
@@ -117,6 +137,9 @@ def get_videos_details(youtube, video_ids, channel_id):
     videos = []
     stream_details = []
     
+    # プレミアム公開動画IDのリストを読み込み
+    premiere_video_ids = load_premiere_video_ids()
+    
     # YouTube APIは一度に50件までしか取得できないため、50件ずつ処理
     for i in range(0, len(video_ids), 50):
         batch_ids = video_ids[i:i+50]
@@ -132,8 +155,17 @@ def get_videos_details(youtube, video_ids, channel_id):
         for video in response['items']:
             video_id = video['id']
             
-            # 動画か配信かを判定
-            is_stream = 'liveStreamingDetails' in video
+            # プレミアム公開動画の判定を最優先で実行
+            if video_id in premiere_video_ids:
+                # プレミアム公開動画は強制的に動画として分類
+                is_stream = False
+            else:
+                # 動画か配信かを判定
+                is_stream = False
+                if 'liveStreamingDetails' in video:
+                    # liveStreamingDetailsがある場合、基本的に配信として判定
+                    # ただし、プレミア公開は除外済みなので、ここに来るのは実際の配信
+                    is_stream = True
             
             # published_atの決定
             if is_stream:
@@ -143,7 +175,7 @@ def get_videos_details(youtube, video_ids, channel_id):
                 published_at = live_details.get('actualStartTime', live_details.get('scheduledStartTime', video['snippet']['publishedAt']))
                 video_type = 'stream'
             else:
-                # 動画の場合
+                # 動画の場合（プレミア公開含む）
                 published_at = video['snippet']['publishedAt']
                 video_type = 'video'
             
@@ -162,6 +194,7 @@ def get_videos_details(youtube, video_ids, channel_id):
             videos.append(video_data)
             
             # ライブ配信詳細情報（stream_detailsテーブル用 - 配信のみ）
+            # is_streamがTrueの場合のみ（プレミア公開は除外される）
             if is_stream and 'liveStreamingDetails' in video:
                 live_details = video['liveStreamingDetails']
                 # actualStartTimeがあればそれを、なければscheduledStartTimeを使用
