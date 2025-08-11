@@ -40,7 +40,7 @@ export function NewsListGrid<T>({
 
   if (loading) {
     return (
-      <div className="space-y-4 mb-8 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
+      <div className="space-y-3 md:space-y-4 mb-8 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
         {Array.from({ length: skeletonCount }).map((_, index) => (
           <React.Fragment key={index}>
             {renderSkeleton(index)}
@@ -62,7 +62,7 @@ export function NewsListGrid<T>({
   }
 
   return (
-    <div className="space-y-4 mb-8 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
+    <div className="space-y-3 md:space-y-4 mb-8 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {renderItem(item, index)}

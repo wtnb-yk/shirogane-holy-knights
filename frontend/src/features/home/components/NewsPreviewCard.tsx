@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
-import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
+import { IMAGE_STYLES } from '@/constants/styles';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { getCategoryBadgeStyle } from '@/features/news/utils/categoryStyles';
 
@@ -83,7 +83,7 @@ const NewsPreviewCardComponent = ({ news, index }: NewsPreviewCardProps) => {
         )}
         
         {/* タイトル */}
-        <h3 className={`text-base font-semibold mb-2 ${TEXT_CLAMP[2]} text-text-primary flex-1`}>
+        <h3 className="text-base font-semibold mb-2 text-text-primary flex-1">
           {news.title}
         </h3>
         

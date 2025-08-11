@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { OverlayIcon } from '@/components/ui/OverlayIcon';
-import { TEXT_CLAMP, IMAGE_STYLES, BACKGROUND_OPACITY } from '@/constants/styles';
+import { IMAGE_STYLES, BACKGROUND_OPACITY } from '@/constants/styles';
 
 interface VideoCardProps {
   video: VideoDto;
@@ -48,7 +48,7 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
           </div>
         )}
         <CardContent className="p-3 md:p-5">
-          <h3 className={`text-base md:text-lg font-bold mb-2 md:mb-3 ${TEXT_CLAMP[2]} text-text-primary group-hover:text-accent-blue transition-colors duration-ui`}>
+          <h3 className={`text-base md:text-lg font-bold mb-2 md:mb-3 text-text-primary group-hover:text-accent-blue transition-colors duration-ui`}>
             {video.title}
           </h3>
           <div className="flex items-center gap-2 text-sm text-text-secondary mb-2 md:mb-3">

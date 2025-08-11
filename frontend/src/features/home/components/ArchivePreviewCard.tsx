@@ -9,7 +9,7 @@ import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
-import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
+import { IMAGE_STYLES } from '@/constants/styles';
 
 interface ArchivePreviewCardProps {
   stream: StreamDto;
@@ -73,7 +73,7 @@ const ArchivePreviewCardComponent = ({ stream, index }: ArchivePreviewCardProps)
         )}
         
         {/* タイトル */}
-        <h3 className={`text-base font-semibold mb-2 ${TEXT_CLAMP[2]} text-text-primary flex-1`}>
+        <h3 className={`text-base font-semibold mb-2 text-text-primary flex-1`}>
           {stream.title}
         </h3>
         

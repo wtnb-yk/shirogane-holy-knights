@@ -31,16 +31,16 @@ export default function NewsPage() {
     <div className="min-h-screen bg-bg-primary">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* ページタイトル */}
-        <div className="mb-8 opacity-0 animate-slide-up">
-          <div className="mb-3">
-            <h1 className="text-4xl font-bold text-text-primary">
+        <div className="mb-4 md:mb-8 opacity-0 animate-slide-up">
+          <div className="mb-2 md:mb-3">
+            <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
               ニュース
             </h1>
           </div>
         </div>
 
         {/* 検索バー */}
-        <div className="mb-8 flex flex-wrap gap-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
+        <div className="mb-4 md:mb-8 flex flex-wrap gap-2 md:gap-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
           <SearchInput 
             searchValue={searchQuery}
             onSearch={handleSearch}

@@ -9,7 +9,7 @@ import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
-import { TEXT_CLAMP, IMAGE_STYLES } from '@/constants/styles';
+import { IMAGE_STYLES } from '@/constants/styles';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { getCategoryBadgeStyle } from '../utils/categoryStyles';
 
@@ -49,7 +49,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
         )}
         
         {/* コンテンツ部分 */}
-        <div className="flex-1 p-5 flex flex-col justify-between">
+        <div className="flex-1 min-w-0 p-3 md:p-5 flex flex-col justify-between">
           <div>
             {/* カテゴリバッジ */}
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -78,19 +78,19 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             </div>
             
             {/* 日付情報 */}
-            <div className="flex items-center gap-1.5 text-xs text-text-secondary mb-3">
+            <div className="flex items-center gap-1.5 text-xs text-text-secondary mb-2 md:mb-3">
               <Calendar className="w-3.5 h-3.5 text-accent-gold" />
               <span className="font-medium">{new Date(news.publishedAt).toLocaleDateString('ja-JP')}</span>
             </div>
             
             {/* タイトル */}
-            <h3 className={`text-lg font-semibold mb-2 ${TEXT_CLAMP[2]} text-text-primary hover:text-accent-blue transition-colors duration-ui`}>
+            <h3 className="text-base md:text-lg font-semibold mb-2 text-text-primary hover:text-accent-blue transition-colors duration-ui">
               {news.title}
             </h3>
             
             {/* コンテンツ */}
             {news.content && (
-              <p className={`text-sm text-text-secondary ${TEXT_CLAMP[3]} mb-2 leading-relaxed`}>
+              <p className="text-sm text-text-secondary mb-1 leading-normal">
                 {news.content}
               </p>
             )}
@@ -134,7 +134,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             )}
             
             {/* コンテンツ部分 */}
-            <div className="flex-1 p-5 flex flex-col justify-between">
+            <div className="flex-1 min-w-0 p-3 md:p-5 flex flex-col justify-between">
               <div>
                 {/* カテゴリバッジ */}
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -163,19 +163,19 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
                 </div>
                 
                 {/* 日付情報 */}
-                <div className="flex items-center gap-1 text-xs text-text-secondary mb-3">
+                <div className="flex items-center gap-1 text-xs text-text-secondary mb-2 md:mb-3">
                   <Calendar className="w-3 h-3" />
                   <span>{new Date(news.publishedAt).toLocaleDateString('ja-JP')}</span>
                 </div>
                 
                 {/* タイトル */}
-                <h3 className={`text-base font-bold mb-2 ${TEXT_CLAMP[2]} text-text-primary`}>
+                <h3 className="text-sm md:text-base font-bold mb-2 text-text-primary">
                   {news.title}
                 </h3>
                 
                 {/* コンテンツ */}
                 {news.content && (
-                  <p className={`text-sm text-text-secondary ${TEXT_CLAMP[3]} mb-2`}>
+                  <p className="text-sm text-text-secondary mb-1 leading-normal">
                     {news.content}
                   </p>
                 )}

@@ -36,12 +36,6 @@ export const BACKGROUND_OPACITY = {
   },
 } as const;
 
-export const TEXT_CLAMP = {
-  2: 'line-clamp-2',
-  3: 'line-clamp-3',
-  4: 'line-clamp-4',
-} as const;
-
 export const INTERACTIVE_STYLES = {
   button: {
     primary: 'px-8 py-3 bg-bg-primary text-text-primary border border-surface-border rounded-lg font-medium hover:bg-bg-accent transition-colors duration-200',

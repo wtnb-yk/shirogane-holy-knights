@@ -19,7 +19,7 @@ export const getCategoryBadgeStyle = (categoryName: string, includeHover: boolea
 };
 
 export const getCategoryButtonStyle = (categoryName: string, isSelected: boolean) => {
-  const baseStyle = 'px-4 py-2 rounded-full font-medium transition-all duration-200';
+  const baseStyle = 'px-3 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 text-sm md:text-base';
   
   if (isSelected) {
     switch (categoryName.toLowerCase() as NewsCategory) {

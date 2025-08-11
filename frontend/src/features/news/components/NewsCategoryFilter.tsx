@@ -38,7 +38,7 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
   if (loading) {
     return (
       <div className="mb-6 opacity-0 animate-slide-up" style={{ animationDelay: '150ms' }}>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
           {Array.from({ length: 7 }).map((_, index) => (
             <div
               key={index}
@@ -76,11 +76,11 @@ export const NewsCategoryFilter = ({ filters, onFiltersChange }: NewsCategoryFil
         ${isExpanded ? 'block' : 'hidden'}
         transition-all duration-300
       `}>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
           {/* 全てクリアボタン */}
           <button
             onClick={handleClearAll}
-            className={`px-4 py-2 rounded-full font-medium transition-all duration-200 ${
+            className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 text-sm md:text-base ${
               selectedCategoryIds.length === 0
                 ? 'bg-text-secondary text-white shadow-md'
                 : 'bg-bg-primary text-text-secondary border border-surface-border hover:bg-bg-accent'
