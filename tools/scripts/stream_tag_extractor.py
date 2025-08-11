@@ -205,7 +205,6 @@ def main():
                 video_id,
                 title,
                 str(started_at),  # started_atを追加
-                ' '.join(map(str, matched_tag_ids)) if matched_tag_ids else '',  # tag_idsを半角スペース区切り（空の場合は空文字）
                 ' '.join(tag_names) if tag_names else ''  # tag_namesを半角スペース区切り（空の場合は空文字）
             ])
         
@@ -224,7 +223,7 @@ def main():
         # CSV出力
         with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['stream_id', 'title', 'started_at', 'stream_tag_id', 'stream_tag_names'])
+            writer.writerow(['stream_id', 'title', 'started_at', 'stream_tag_names'])
             writer.writerows(csv_data)
         
         # 最新ファイルへのシンボリックリンク作成
