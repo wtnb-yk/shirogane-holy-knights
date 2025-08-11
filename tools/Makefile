@@ -73,4 +73,14 @@ news-import-prd:
 stream-tags-extract-local:
 	cd scripts && python3 stream_tag_extractor.py
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-show stream-tags-stats db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+## ストリームタグインポート
+stream-tags-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 stream_tags_importer.py
+
+stream-tags-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 stream_tags_importer.py
+
+stream-tags-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 stream_tags_importer.py
+
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
