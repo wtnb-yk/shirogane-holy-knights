@@ -228,7 +228,7 @@ def main():
         
         # 最新ファイルへのシンボリックリンク作成
         latest_link = os.path.join(output_dir, 'latest.csv')
-        if os.path.exists(latest_link):
+        if os.path.lexists(latest_link):
             os.remove(latest_link)
         os.symlink(os.path.basename(output_file), latest_link)
         
