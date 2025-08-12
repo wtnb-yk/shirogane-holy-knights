@@ -74,7 +74,8 @@ export default function HeroSection() {
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         <div className="text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
-            だんいんポータル
+            <span className="inline-block">だんいん</span>
+            <span className="inline-block">ポータル</span>
           </h1>
           
           <p className="text-xl md:text-2xl mb-2 opacity-90">
