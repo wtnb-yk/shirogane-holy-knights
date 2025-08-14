@@ -385,14 +385,3 @@ module "batch_scheduler" {
   lambda_zip_path = "../../../lambda/sync-batch/function.zip"
   layer_zip_path  = "../../../lambda/layers/python-deps/layer.zip"
 }
-
-# Allow batch scheduler Lambda to access database
-resource "aws_security_group_rule" "batch_scheduler_to_database" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = module.network.lambda_security_group_id
-  security_group_id        = module.network.database_security_group_id
-  description              = "Database access from batch scheduler Lambda"
-}
