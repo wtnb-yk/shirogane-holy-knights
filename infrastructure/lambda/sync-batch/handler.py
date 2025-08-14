@@ -14,7 +14,7 @@ from googleapiclient.discovery import build
 import pandas as pd
 from io import StringIO
 
-def get_secret(secret_name, region_name="ap-northeast-1"):
+def get_secret(secret_name, region_name="ap-northeast-1", as_json=True):
     """AWS Secrets Managerから認証情報を取得"""
     session = boto3.session.Session()
     client = session.client(
@@ -24,7 +24,10 @@ def get_secret(secret_name, region_name="ap-northeast-1"):
     
     try:
         response = client.get_secret_value(SecretId=secret_name)
-        return json.loads(response['SecretString'])
+        if as_json:
+            return json.loads(response['SecretString'])
+        else:
+            return response['SecretString']
     except Exception as e:
         print(f"Error getting secret {secret_name}: {str(e)}")
         raise
@@ -50,8 +53,7 @@ def load_environment():
     
     # YouTube API キーを取得
     if os.environ.get('USE_SECRETS_MANAGER', 'true').lower() == 'true':
-        youtube_secret = get_secret(os.environ.get('YOUTUBE_SECRET_NAME', 'shirogane-holy-knights-youtube-api-key'))
-        config['YOUTUBE_API_KEY'] = youtube_secret.get('api_key', '')
+        config['YOUTUBE_API_KEY'] = get_secret(os.environ.get('YOUTUBE_SECRET_NAME', 'shirogane-holy-knights-youtube-api-key'), as_json=False)
     else:
         config['YOUTUBE_API_KEY'] = os.environ.get('YOUTUBE_API_KEY', '')
     
