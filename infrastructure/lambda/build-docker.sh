@@ -25,6 +25,7 @@ fi
 docker run --rm -v "$PWD":/var/task --entrypoint /bin/bash public.ecr.aws/lambda/python:3.11 -c "
     pip install --target /var/task/python/lib/python3.11/site-packages \
         google-api-python-client==2.108.0 \
+        pandas==2.1.4 \
         psycopg2-binary==2.9.9 \
         python-dotenv==1.0.0 \
         --no-cache-dir
