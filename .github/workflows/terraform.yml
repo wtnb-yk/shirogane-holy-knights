@@ -47,6 +47,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Build Lambda JAR
         working-directory: ./
         run: |
@@ -54,6 +59,20 @@ jobs:
           cd backend
           ./gradlew springCloudFunctionLambdaJar
           ls -la build/libs/
+
+      - name: Package Lambda Functions
+        working-directory: ./
+        run: |
+          echo "Packaging sync-batch Lambda function..."
+          cd infrastructure/lambda/sync-batch
+          zip function.zip handler.py
+          ls -la function.zip
+          
+          echo "Building Python dependencies layer..."
+          cd ../layers/python-deps
+          pip install -r requirements.txt -t python/lib/python3.11/site-packages/
+          zip -r layer.zip python/
+          ls -la layer.zip
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
