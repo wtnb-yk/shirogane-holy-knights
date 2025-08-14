@@ -10,8 +10,16 @@ echo "Building Lambda deployment packages using Docker..."
 echo "Building Lambda Layer..."
 cd layers/python-deps
 
-# Clean up
-rm -rf python layer.zip
+# Clean up with error handling
+echo "Cleaning up existing files..."
+if [ -d "python" ]; then
+    chmod -R u+w python 2>/dev/null || true
+    rm -rf python || {
+        echo "Warning: Could not remove python directory cleanly. Using sudo..."
+        sudo rm -rf python
+    }
+fi
+[ -f layer.zip ] && rm -f layer.zip
 
 # Use Docker to build for Lambda environment
 docker run --rm -v "$PWD":/var/task --entrypoint /bin/bash public.ecr.aws/lambda/python:3.11 -c "
@@ -20,14 +28,34 @@ docker run --rm -v "$PWD":/var/task --entrypoint /bin/bash public.ecr.aws/lambda
         psycopg2-binary==2.9.9 \
         python-dotenv==1.0.0 \
         --no-cache-dir
+    
+    # Clean up unnecessary files in Docker context (with proper permissions)
+    find /var/task/python/lib/python3.11/site-packages -name '*.pyc' -delete 2>/dev/null || true
+    find /var/task/python/lib/python3.11/site-packages -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true
+    find /var/task/python/lib/python3.11/site-packages -name '*.dist-info' -type d -exec rm -rf {} + 2>/dev/null || true
+    find /var/task/python/lib/python3.11/site-packages/googleapiclient/discovery_cache -name '*.json' -delete 2>/dev/null || true
+    
+    # Fix permissions for host access
+    chown -R $(id -u):$(id -g) /var/task/python 2>/dev/null || true
 "
 
 # Create layer zip
-zip -r9 layer.zip python/
-echo "Layer size: $(du -h layer.zip | cut -f1)"
-
-# Clean up
-rm -rf python
+echo "Creating layer zip file..."
+if [ -d "python" ]; then
+    zip -r9 layer.zip python/
+    echo "Layer size: $(du -h layer.zip | cut -f1)"
+    
+    # Clean up with improved error handling
+    echo "Cleaning up temporary files..."
+    chmod -R u+w python 2>/dev/null || true
+    rm -rf python || {
+        echo "Warning: Could not remove python directory cleanly. Using sudo..."
+        sudo rm -rf python
+    }
+else
+    echo "Error: Python directory not found after Docker build"
+    exit 1
+fi
 
 cd "$SCRIPT_DIR"
 
