@@ -63,16 +63,10 @@ jobs:
       - name: Package Lambda Functions
         working-directory: ./
         run: |
-          echo "Packaging sync-batch Lambda function..."
-          cd infrastructure/lambda/sync-batch
-          zip function.zip handler.py
-          ls -la function.zip
-          
-          echo "Building Python dependencies layer..."
-          cd ../layers/python-deps
-          pip install -r requirements.txt -t python/lib/python3.11/site-packages/
-          zip -r layer.zip python/
-          ls -la layer.zip
+          echo "Building Lambda packages using Docker..."
+          cd infrastructure/lambda
+          chmod +x build-docker.sh
+          ./build-docker.sh
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

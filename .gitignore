@@ -8,3 +8,8 @@ work/config/.env*
 .env.local
 .env.dev
 .env.prod
+
+# Lambda deployment packages
+*.zip
+infrastructure/lambda/**/function.zip
+infrastructure/lambda/**/layer.zip
