@@ -2,14 +2,14 @@
 
 ## 概要
 
-日本時間0:00に`make sync-prd`を自動実行するAWS EventBridge + Lambda構成のバッチスケジューラ
+日本時間12:00, 18:00に`make sync-prd`を自動実行するAWS EventBridge + Lambda構成のバッチスケジューラ
 
 ## システム構成
 
 ### アーキテクチャ
 
 ```
-EventBridge Schedule Rule(日本時間 12:00, 18:00)
+EventBridge Schedule Rule
         ↓
 Lambda Function (sync-batch)
         ↓
