@@ -9,7 +9,7 @@
 ### アーキテクチャ
 
 ```
-EventBridge Schedule Rule (日本時間 0:00)
+EventBridge Schedule Rule(日本時間 12:00, 18:00)
         ↓
 Lambda Function (sync-batch)
         ↓
