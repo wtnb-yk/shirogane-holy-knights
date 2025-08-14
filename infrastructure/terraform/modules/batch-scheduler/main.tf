@@ -93,7 +93,7 @@ resource "aws_lambda_function" "sync_batch" {
       DB_HOST              = var.db_host
       DB_PORT              = var.db_port
       DB_NAME              = var.db_name
-      DB_SECRET_NAME       = "${var.project_name}-${var.environment}-db-credentials"
+      DB_SECRET_NAME       = var.db_secret_name
       YOUTUBE_SECRET_NAME  = "${var.project_name}-youtube-api-key"
       YOUTUBE_CHANNEL_ID   = var.youtube_channel_id
       USE_SECRETS_MANAGER  = "true"

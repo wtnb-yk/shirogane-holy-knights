@@ -374,6 +374,7 @@ module "batch_scheduler" {
   db_port            = "5432"
   db_name            = var.db_name
   db_secret_arn      = module.secrets.secret_arn
+  db_secret_name     = module.secrets.secret_name
   youtube_secret_arn = aws_secretsmanager_secret.youtube_api_key.arn
   
   # Lambda configuration

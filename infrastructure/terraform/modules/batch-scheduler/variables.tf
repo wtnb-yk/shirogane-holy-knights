@@ -39,6 +39,11 @@ variable "db_secret_arn" {
   type        = string
 }
 
+variable "db_secret_name" {
+  description = "Name of the database credentials secret"
+  type        = string
+}
+
 variable "youtube_secret_arn" {
   description = "ARN of the YouTube API key secret in Secrets Manager"
   type        = string
