@@ -103,28 +103,31 @@ resource "aws_ecr_repository" "batch" {
     scan_on_push = true
   }
 
-  lifecycle_policy {
-    policy = jsonencode({
-      rules = [
-        {
-          rulePriority = 1
-          description  = "Keep last 5 images"
-          selection = {
-            tagStatus   = "any"
-            countType   = "imageCountMoreThan"
-            countNumber = 5
-          }
-          action = {
-            type = "expire"
-          }
-        }
-      ]
-    })
-  }
-
   tags = {
     Name = "${var.project_name}-${var.environment}-batch-repository"
   }
+}
+
+# ECR Lifecycle Policy
+resource "aws_ecr_lifecycle_policy" "batch" {
+  repository = aws_ecr_repository.batch.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 5 images"
+        selection = {
+          tagStatus   = "any"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
 }
 
 # ECS Task Definition
