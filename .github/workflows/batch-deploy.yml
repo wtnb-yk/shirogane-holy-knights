@@ -1,10 +1,6 @@
 name: Deploy Batch Scheduler
 
 on:
-  push:
-    branches: [main]
-    paths: 
-      - 'tools/**'
   workflow_dispatch:
 
 env:
