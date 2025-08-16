@@ -78,20 +78,14 @@ def extract_tags_from_multi_features(title: str, description: Optional[str], dur
     time_features = extract_time_features(started_at)
     duration_minutes = parse_duration(duration)
     
-    # 各タグがタイトルに含まれるかチェック
+    # 各タグを個別に判定
     for tag_id, tag_name in available_tags.items():
-        # 基本的なキーワードマッチング（タイトルのみ）
-        if tag_name in title:
-            matched_tags.append(tag_id)
-            continue
-            
-        # より詳細なルールベースマッチング（多次元判定）
+        
         if tag_name == "雑談":
             keywords = ["雑談", "朝活"]
             morning_keywords = ["おは", "まっする"]
             is_morning_stream = time_features.get('is_morning', False) and any(k in title for k in morning_keywords)
             
-            # より厳密な条件：明示的なキーワードまたは朝活配信のみ
             if any(keyword in title for keyword in keywords) or is_morning_stream:
                 matched_tags.append(tag_id)
                 
@@ -119,64 +113,82 @@ def extract_tags_from_multi_features(title: str, description: Optional[str], dur
                 "ネタバレが激しすぎる", "RPG", "OBT", "ベータ",
                 "麻雀", "格闘倶楽部", "視聴者対局", "対戦", "競技"
             ]
-            # ゲームタイトルが含まれるか、ゲーム関連の番号表記があるか
-            has_game_number = bool(re.search(r'#\d+', title))  # #01, #02 etc.
+            has_game_number = bool(re.search(r'#\d+', title))
             
-            # ゲーム判定：タイトルにキーワード または 番号表記
             if any(keyword in title for keyword in keywords) or has_game_number:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "歌枠":
-            keywords = ["歌枠", "歌", "🎤", "🎶", "歌う", "song", "sing", "リレー", "cover", "歌ってみた"]
-            # 歌枠は明示的なキーワードのみで判定
+            keywords = ["歌枠", "歌ってみた", "singing", "カラオケ", "うたう"]
+            # 「歌」単体は誤検知が多いので除外
             if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
                 
         elif tag_name == "ASMR":
             keywords = ["ASMR", "囁き", "癒し", "耳かき", "マッサージ", "安眠", "夢の世界", "お耳", "ぐっすり"]
-            # ASMRは明示的なキーワードのみで判定
             if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
                 
         elif tag_name == "企画":
-            keywords = ["企画", "記念", "周年", "カウントダウン", "イベント", "祭", "大会", "杯"]
-            # 企画判定：ハッシュタグ（番号以外）または明示的キーワード
-            has_hashtag = "#" in title and not re.search(r'^#\d+', title)  # 番号のハッシュタグは除外
-            has_explicit_keywords = any(keyword in title for keyword in keywords)
+            keywords = ["企画", "イベント", "祭", "大会"]
+            # ハッシュタグがある（ただし番号付きタグは除外）
+            has_special_hashtag = "#" in title and not bool(re.search(r'^#\d+', title))
             
-            if has_hashtag or has_explicit_keywords:
+            if any(keyword in title for keyword in keywords) or has_special_hashtag:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "コラボ":
-            # コラボ判定：非常に明示的なキーワードのみ
-            if any(keyword in title for keyword in ["コラボ", "やかまし", "オフコラボ", "BIG3"]):
+            keywords = ["コラボ", "やかまし", "オフコラボ", "BIG3", "合同", "共同"]
+            if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
                 
-                
         elif tag_name == "記念":
-            keywords = ["記念", "周年", "お祝い", "祝", "生誕", "誕生日", "万人", "2000日", "カウントダウン"]
-            # 記念判定：明示的なキーワードまたは記念数字
+            keywords = ["記念", "周年", "お祝い", "祝", "生誕", "誕生日", "万人", "カウントダウン"]
             has_milestone = bool(re.search(r'\d+周年|\d+万人|\d+日記念', title))
             
             if any(keyword in title for keyword in keywords) or has_milestone:
                 matched_tags.append(tag_id)
                 
         elif tag_name == "同時視聴":
-            # 同時視聴：明示的なキーワードのみ
-            if any(keyword in title for keyword in ["同時視聴", "watchalong"]):
+            keywords = ["同時視聴", "watchalong", "一緒に見", "ウォッチパーティ"]
+            if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
-                
                 
         elif tag_name == "参加型":
-            # 参加型判定：非常に明示的なキーワードのみ
-            if any(keyword in title for keyword in ["参加型", "視聴者参加", "視聴者対局"]):
+            keywords = ["参加型", "視聴者参加", "視聴者対局", "みんなで", "募集"]
+            if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
-                
                 
         elif tag_name == "ライブ":
-            # ライブ判定：明示的なキーワードのみ
-            if any(keyword in title for keyword in ["LIVE", "ライブ", "Live", "生誕祭"]):
+            # 本当の音楽ライブイベントのみ（実際にライブを行う配信）
+            # タイトルに【】内に3D LIVEなどが含まれる場合のみ
+            
+            # 【】内にライブ関連キーワードがあるかチェック
+            bracket_pattern = r'【[^】]*(?:3D\s*LIVE|3D\s*ライブ|3DLIVE)[^】]*】'
+            if re.search(bracket_pattern, title, re.IGNORECASE):
+                # ただし、雑談・お礼・告知系は除外
+                exclude_keywords = ["雑談", "お礼", "スパチャ", "告知", "お知らせ", "朝活"]
+                if not any(keyword in title for keyword in exclude_keywords):
+                    matched_tags.append(tag_id)
+                
+        elif tag_name == "新衣装":
+            keywords = ["新衣装", "お披露目", "新コスチューム", "新outfit"]
+            if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
+                
+        elif tag_name == "料理":
+            keywords = ["料理", "クッキング", "調理", "レシピ", "作ってみた", "食べ"]
+            if any(keyword in title for keyword in keywords):
+                matched_tags.append(tag_id)
+                
+        elif tag_name == "お知らせ":
+            keywords = ["お知らせ", "告知", "報告", "重大発表", "announcement"]
+            if any(keyword in title for keyword in keywords):
+                matched_tags.append(tag_id)
+                
+        # その他のタグは単純マッチング（ただしライブは除外済み）
+        elif tag_name in title:
+            matched_tags.append(tag_id)
     
     return list(set(matched_tags))  # 重複除去
 
