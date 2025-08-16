@@ -5,6 +5,7 @@ on:
 
 env:
   AWS_REGION: ap-northeast-1
+  ECR_URL: 975069893654.dkr.ecr.ap-northeast-1.amazonaws.com/shirogane-holy-knights-prd-batch
 
 jobs:
   deploy-batch:
@@ -26,16 +27,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Get ECR repository URL from Terraform output
-        id: terraform-output
-        run: |
-          cd infrastructure/terraform/environments/prd
-          terraform init
-          ECR_URL=$(terraform output -raw batch_ecr_repository_url)
-          echo "ecr_url=$ECR_URL" >> $GITHUB_OUTPUT
-
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push Docker image
@@ -45,12 +37,12 @@ jobs:
           docker build -t shirogane-batch .
           
           # Tag for ECR
-          docker tag shirogane-batch:latest ${{ steps.terraform-output.outputs.ecr_url }}:latest
-          docker tag shirogane-batch:latest ${{ steps.terraform-output.outputs.ecr_url }}:${{ github.sha }}
+          docker tag shirogane-batch:latest ${{ env.ECR_URL }}:latest
+          docker tag shirogane-batch:latest ${{ env.ECR_URL }}:${{ github.sha }}
           
           # Push to ECR
-          docker push ${{ steps.terraform-output.outputs.ecr_url }}:latest
-          docker push ${{ steps.terraform-output.outputs.ecr_url }}:${{ github.sha }}
+          docker push ${{ env.ECR_URL }}:latest
+          docker push ${{ env.ECR_URL }}:${{ github.sha }}
 
       - name: Update ECS task definition
         run: |
