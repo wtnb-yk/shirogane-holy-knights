@@ -355,34 +355,3 @@ data "aws_route53_zone" "main" {
   name = "noe-room.com"
 }
 
-# YouTube API Key Secret
-resource "aws_secretsmanager_secret" "youtube_api_key" {
-  name = "${var.project_name}-youtube-api-key"
-  description = "YouTube Data API key for sync batch"
-}
-
-# Batch Scheduler
-module "batch_scheduler" {
-  source = "../../modules/batch-scheduler"
-
-  environment     = var.environment
-  project_name    = var.project_name
-  subnet_ids      = module.network.private_subnet_ids
-  security_group_ids = [module.network.lambda_security_group_id]
-  
-  db_host            = replace(module.database.db_endpoint, ":5432", "")
-  db_port            = "5432"
-  db_name            = var.db_name
-  db_secret_arn      = module.secrets.secret_arn
-  db_secret_name     = module.secrets.secret_name
-  youtube_secret_arn = aws_secretsmanager_secret.youtube_api_key.arn
-  
-  # Lambda configuration
-  lambda_timeout     = 600  # 10 minutes
-  lambda_memory_size = 512
-  log_retention_days = 1    # 1 day retention as requested
-  
-  # Pre-built ZIP paths (these need to be created before terraform apply)
-  lambda_zip_path = "../../../lambda/sync-batch/function.zip"
-  layer_zip_path  = "../../../lambda/layers/python-deps/layer.zip"
-}

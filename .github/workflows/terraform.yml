@@ -60,13 +60,6 @@ jobs:
           ./gradlew springCloudFunctionLambdaJar
           ls -la build/libs/
 
-      - name: Package Lambda Functions
-        working-directory: ./
-        run: |
-          echo "Building Lambda packages using Docker..."
-          cd infrastructure/lambda
-          chmod +x build-docker.sh
-          ./build-docker.sh
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
