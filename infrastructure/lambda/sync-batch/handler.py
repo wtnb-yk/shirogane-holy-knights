@@ -63,7 +63,7 @@ def fetch_youtube_data(api_key, channel_id='UCdBK1mJKjm0B7ykJPsFQO6A'):
     """YouTube Data APIを使用して動画データを取得"""
     print(f"Fetching YouTube data for channel: {channel_id}")
     
-    youtube = build('youtube', 'v3', developerKey=api_key)
+    youtube = build('youtube', 'v3', developerKey=api_key, static_discovery=False)
     
     all_videos = []
     next_page_token = None
