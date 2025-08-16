@@ -52,7 +52,7 @@ variable "youtube_secret_arn" {
 variable "youtube_channel_id" {
   description = "YouTube channel ID to sync"
   type        = string
-  default     = "UCdBK1mJKjm0B7ykJPsFQO6A"
+  default     = "UCdyqAaZDKHXg4Ahi7VENThQ"
 }
 
 variable "lambda_timeout" {

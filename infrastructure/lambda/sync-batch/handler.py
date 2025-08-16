@@ -59,7 +59,7 @@ def load_environment():
     
     return config
 
-def fetch_youtube_data(api_key, channel_id='UCdBK1mJKjm0B7ykJPsFQO6A'):
+def fetch_youtube_data(api_key, channel_id='UCdyqAaZDKHXg4Ahi7VENThQ'):
     """YouTube Data APIを使用して動画データを取得"""
     print(f"Fetching YouTube data for channel: {channel_id}")
     
@@ -200,7 +200,7 @@ def lambda_handler(event, context):
         # YouTubeデータを取得
         videos = fetch_youtube_data(
             api_key=config['YOUTUBE_API_KEY'],
-            channel_id=os.environ.get('YOUTUBE_CHANNEL_ID', 'UCdBK1mJKjm0B7ykJPsFQO6A')
+            channel_id=os.environ.get('YOUTUBE_CHANNEL_ID', 'UCdyqAaZDKHXg4Ahi7VENThQ')
         )
         
         if not videos:
