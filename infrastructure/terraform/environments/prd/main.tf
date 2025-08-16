@@ -347,11 +347,50 @@ resource "aws_security_group_rule" "lambda_to_database" {
   description              = "Database access from Lambda"
 }
 
+# Batch scheduler -> database access
+resource "aws_security_group_rule" "batch_to_database" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = module.network.lambda_security_group_id
+  security_group_id        = module.network.database_security_group_id
+  description              = "Database access from batch scheduler"
+}
+
 # Current account data
 data "aws_caller_identity" "current" {}
 
 # Existing Route53 hosted zone
 data "aws_route53_zone" "main" {
   name = "noe-room.com"
+}
+
+# Batch Scheduler
+module "batch_scheduler" {
+  source = "../../modules/batch-scheduler"
+
+  environment    = var.environment
+  project_name   = var.project_name
+  
+  # Resource configuration
+  cpu    = 256    # 0.25 vCPU
+  memory = 512    # 512 MB
+  
+  # Schedule: 4 times daily (00:00, 06:00, 12:00, 18:00 JST)
+  schedule_expressions = [
+    "cron(0 15 * * ? *)",  # 00:00 JST (15:00 UTC)
+    "cron(0 21 * * ? *)",  # 06:00 JST (21:00 UTC) 
+    "cron(0 3 * * ? *)",   # 12:00 JST (03:00 UTC)
+    "cron(0 9 * * ? *)"    # 18:00 JST (09:00 UTC)
+  ]
+  
+  # Network configuration
+  subnet_ids        = module.network.private_subnet_ids
+  security_group_id = module.network.lambda_security_group_id
+  
+  # Secrets
+  youtube_api_secret_arn = module.secrets.youtube_api_secret_arn
+  db_secret_arn         = module.secrets.secret_arn
 }
 

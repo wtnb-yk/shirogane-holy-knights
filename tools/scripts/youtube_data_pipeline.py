@@ -225,14 +225,19 @@ def main():
     print(f"データベース: {DB_CONFIG['database']}")
     
     # オプション: 古いCSVファイルを削除するか確認
-    response = input("\nCSVファイルを削除しますか？ (y/N): ")
-    if response.lower() == 'y':
-        try:
-            import shutil
-            shutil.rmtree(output_dir)
-            print("CSVファイルを削除しました")
-        except Exception as e:
-            print(f"CSVファイル削除エラー: {str(e)}")
+    # バッチ実行時は自動的にCSVファイルを保持
+    import sys
+    if sys.stdin.isatty():
+        response = input("\nCSVファイルを削除しますか？ (y/N): ")
+        if response.lower() == 'y':
+            try:
+                import shutil
+                shutil.rmtree(output_dir)
+                print("CSVファイルを削除しました")
+            except Exception as e:
+                print(f"CSVファイル削除エラー: {str(e)}")
+    else:
+        print("\nバッチモード実行: CSVファイルを保持します")
 
 if __name__ == "__main__":
     main()

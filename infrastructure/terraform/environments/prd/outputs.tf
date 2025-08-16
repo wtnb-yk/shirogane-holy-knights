@@ -105,3 +105,24 @@ output "cdn_cloudfront_domain" {
   description = "CloudFront distribution domain name (shared)"
   value       = aws_cloudfront_distribution.images.domain_name
 }
+
+# Batch Scheduler Outputs
+output "batch_cluster_name" {
+  description = "Name of the ECS cluster for batch processing"
+  value       = module.batch_scheduler.cluster_name
+}
+
+output "batch_ecr_repository_url" {
+  description = "URL of the ECR repository for batch container"
+  value       = module.batch_scheduler.ecr_repository_url
+}
+
+output "batch_log_group_name" {
+  description = "Name of the CloudWatch log group for batch processing"
+  value       = module.batch_scheduler.log_group_name
+}
+
+output "batch_schedule_rule_names" {
+  description = "Names of the EventBridge schedule rules"
+  value       = module.batch_scheduler.schedule_rule_names
+}

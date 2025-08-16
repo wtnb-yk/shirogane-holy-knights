@@ -1,0 +1,100 @@
+name: Deploy Batch Scheduler
+
+on:
+  push:
+    branches: [main]
+    paths: 
+      - 'tools/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-northeast-1
+
+jobs:
+  deploy-batch:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get ECR repository URL from Terraform output
+        id: terraform-output
+        run: |
+          cd infrastructure/terraform/environments/prd
+          terraform init
+          ECR_URL=$(terraform output -raw batch_ecr_repository_url)
+          echo "ecr_url=$ECR_URL" >> $GITHUB_OUTPUT
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        working-directory: tools
+        run: |
+          # Build image
+          docker build -t shirogane-batch .
+          
+          # Tag for ECR
+          docker tag shirogane-batch:latest ${{ steps.terraform-output.outputs.ecr_url }}:latest
+          docker tag shirogane-batch:latest ${{ steps.terraform-output.outputs.ecr_url }}:${{ github.sha }}
+          
+          # Push to ECR
+          docker push ${{ steps.terraform-output.outputs.ecr_url }}:latest
+          docker push ${{ steps.terraform-output.outputs.ecr_url }}:${{ github.sha }}
+
+      - name: Update ECS task definition
+        run: |
+          # Get current task definition
+          TASK_DEF_ARN=$(aws ecs describe-task-definition \
+            --task-definition shirogane-holy-knights-prd-batch \
+            --query 'taskDefinition.taskDefinitionArn' --output text)
+          
+          # Update task definition with new image
+          aws ecs register-task-definition \
+            --family shirogane-holy-knights-prd-batch \
+            --task-role-arn $(aws ecs describe-task-definition \
+              --task-definition shirogane-holy-knights-prd-batch \
+              --query 'taskDefinition.taskRoleArn' --output text) \
+            --execution-role-arn $(aws ecs describe-task-definition \
+              --task-definition shirogane-holy-knights-prd-batch \
+              --query 'taskDefinition.executionRoleArn' --output text) \
+            --network-mode awsvpc \
+            --requires-compatibilities FARGATE \
+            --cpu 256 \
+            --memory 512 \
+            --container-definitions '[{
+              "name": "batch-processor",
+              "image": "${{ steps.terraform-output.outputs.ecr_url }}:latest",
+              "essential": true,
+              "environment": [{"name": "AWS_DEFAULT_REGION", "value": "ap-northeast-1"}],
+              "secrets": [
+                {"name": "YOUTUBE_API_KEY", "valueFrom": "'$(aws secretsmanager describe-secret --secret-id /shirogane-holy-knights/prd/youtube/api-key --query ARN --output text)'"},
+                {"name": "DB_PASSWORD", "valueFrom": "'$(aws secretsmanager describe-secret --secret-id /shirogane-holy-knights/prd/rds/credentials --query ARN --output text)':password::"},
+                {"name": "DB_HOST", "valueFrom": "'$(aws secretsmanager describe-secret --secret-id /shirogane-holy-knights/prd/rds/credentials --query ARN --output text)':host::"},
+                {"name": "DB_USERNAME", "valueFrom": "'$(aws secretsmanager describe-secret --secret-id /shirogane-holy-knights/prd/rds/credentials --query ARN --output text)':username::"}
+              ],
+              "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                  "awslogs-group": "/ecs/shirogane-holy-knights-prd-batch",
+                  "awslogs-region": "ap-northeast-1",
+                  "awslogs-stream-prefix": "ecs"
+                }
+              }
+            }]'
+
+      - name: Deployment completed
+        run: |
+          echo "✅ Batch scheduler deployed successfully"
+          echo "🔄 Next automatic execution: 0:00, 6:00, 12:00, 18:00 JST"
+          echo "💰 Monthly cost: ~$0.012 (Fargate) / ~$0.004 (Fargate Spot)"
