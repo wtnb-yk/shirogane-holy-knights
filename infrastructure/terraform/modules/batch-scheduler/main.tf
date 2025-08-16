@@ -72,6 +72,28 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# Policy for execution role to access Secrets Manager
+resource "aws_iam_role_policy" "ecs_execution_secrets" {
+  name = "${var.project_name}-${var.environment}-batch-execution-secrets-policy"
+  role = aws_iam_role.ecs_task_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          var.youtube_api_secret_arn,
+          var.db_secret_arn
+        ]
+      }
+    ]
+  })
+}
+
 # Policy for task to access Secrets Manager
 resource "aws_iam_role_policy" "ecs_task_secrets" {
   name = "${var.project_name}-${var.environment}-batch-secrets-policy"
