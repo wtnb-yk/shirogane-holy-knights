@@ -79,6 +79,12 @@ def fetch_youtube_data(api_key, channel_id='UCdBK1mJKjm0B7ykJPsFQO6A'):
             type='video'
         ).execute()
         
+        # デバッグログ追加
+        print(f"Search API response: totalResults={search_response.get('pageInfo', {}).get('totalResults', 0)}, resultsPerPage={search_response.get('pageInfo', {}).get('resultsPerPage', 0)}")
+        print(f"Items count: {len(search_response.get('items', []))}")
+        if not search_response.get('items'):
+            print(f"Full search response: {json.dumps(search_response, indent=2)}")
+        
         video_ids = [item['id']['videoId'] for item in search_response.get('items', [])]
         
         if video_ids:
