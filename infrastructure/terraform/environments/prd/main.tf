@@ -347,16 +347,8 @@ resource "aws_security_group_rule" "lambda_to_database" {
   description              = "Database access from Lambda"
 }
 
-# Batch scheduler -> database access
-resource "aws_security_group_rule" "batch_to_database" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = module.network.lambda_security_group_id
-  security_group_id        = module.network.database_security_group_id
-  description              = "Database access from batch scheduler"
-}
+# Note: Batch scheduler uses the same security group as Lambda
+# so batch_to_database rule is not needed (covered by lambda_to_database)
 
 # Current account data
 data "aws_caller_identity" "current" {}

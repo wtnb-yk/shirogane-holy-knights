@@ -32,8 +32,8 @@ resource "aws_secretsmanager_secret" "youtube_api" {
 
 # IAM policy for accessing the secret
 resource "aws_iam_policy" "secrets_access" {
-  name        = "${var.project_name}-${var.environment}-rds-secrets-access"
-  description = "Policy to access RDS credentials from Secrets Manager for ${var.environment} environment"
+  name        = "${var.project_name}-${var.environment}-secrets-access"
+  description = "Policy to access secrets from Secrets Manager for ${var.environment} environment"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -51,4 +51,8 @@ resource "aws_iam_policy" "secrets_access" {
       }
     ]
   })
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
