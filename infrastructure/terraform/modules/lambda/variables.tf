@@ -26,7 +26,7 @@ variable "lambda_jar_path" {
 variable "memory_size" {
   description = "Lambda memory size in MB"
   type        = number
-  default     = 512
+  default     = 2048
 }
 
 variable "timeout" {

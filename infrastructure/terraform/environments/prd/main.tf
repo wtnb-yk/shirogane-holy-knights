@@ -89,7 +89,7 @@ module "lambda" {
   secrets_access_policy_arn = module.secrets.secrets_access_policy_arn
   
   # Lambda performance settings for Spring Boot + R2DBC
-  memory_size = 1024
+  memory_size = 2048
   timeout     = 30  # 本番環境では30秒に短縮
   
   # CORS設定（本番環境専用Origin設定）
