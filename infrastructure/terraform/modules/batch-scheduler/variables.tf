@@ -50,3 +50,8 @@ variable "db_secret_arn" {
   description = "ARN of the database credentials secret in Secrets Manager"
   type        = string
 }
+
+variable "db_host" {
+  description = "Database host endpoint"
+  type        = string
+}

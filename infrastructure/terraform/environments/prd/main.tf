@@ -384,5 +384,8 @@ module "batch_scheduler" {
   # Secrets
   youtube_api_secret_arn = module.secrets.youtube_api_secret_arn
   db_secret_arn         = module.secrets.secret_arn
+  
+  # Database
+  db_host = replace(module.database.db_endpoint, ":5432", "")
 }
 
