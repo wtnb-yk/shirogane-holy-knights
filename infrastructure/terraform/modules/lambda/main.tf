@@ -81,6 +81,7 @@ resource "aws_lambda_function" "api" {
   runtime     = "java17"
   memory_size = var.memory_size
   timeout     = var.timeout
+  publish     = true  # Publish version for SnapStart
 
   environment {
     variables = {
@@ -98,6 +99,11 @@ resource "aws_lambda_function" "api" {
   vpc_config {
     subnet_ids         = var.subnet_ids
     security_group_ids = var.security_group_ids
+  }
+
+  # SnapStart configuration for faster cold starts
+  snap_start {
+    apply_on = "PublishedVersions"
   }
 
   depends_on = [
