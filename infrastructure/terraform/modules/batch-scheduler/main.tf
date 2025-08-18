@@ -175,6 +175,18 @@ resource "aws_ecs_task_definition" "batch" {
         {
           name  = "AWS_DEFAULT_REGION"
           value = "ap-northeast-1"
+        },
+        {
+          name  = "DB_HOST"
+          value = var.db_host
+        },
+        {
+          name  = "DB_NAME"
+          value = "shirogane"
+        },
+        {
+          name  = "DB_PORT"
+          value = "5432"
         }
       ]
       
@@ -186,10 +198,6 @@ resource "aws_ecs_task_definition" "batch" {
         {
           name      = "DB_PASSWORD"
           valueFrom = "${var.db_secret_arn}:password::"
-        },
-        {
-          name      = "DB_HOST"
-          valueFrom = "${var.db_secret_arn}:host::"
         },
         {
           name      = "DB_USERNAME"
