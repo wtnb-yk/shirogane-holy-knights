@@ -4,6 +4,8 @@
 
 ## 技術スタック
 
+- **Runtime**: Node.js 20 LTS
+- **Package Manager**: pnpm 8+
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS + tailwindcss-animate
