@@ -6,8 +6,10 @@ spring:
     name: shirogane-holy-knights-api
   main:
     web-application-type: reactive
+    lazy-initialization: true  # Lazy Initialization有効化
   autoconfigure:
-    exclude: []
+    exclude: 
+      - org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
   jackson:
     serialization:
       indent-output: true
@@ -69,6 +71,7 @@ spring:
       on-profile: lambda
   main:
     web-application-type: reactive
+    lazy-initialization: true  # Lambda環境でもLazy Initialization有効化
 
 # Lambda専用のロギング設定
 logging:

@@ -38,22 +38,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     
     
     // Spring Cloud Function - AWS Lambda統合
     implementation("org.springframework.cloud:spring-cloud-function-context")
     implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
-    implementation("org.springframework.cloud:spring-cloud-function-web")
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
     
     // Database
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
-    implementation("org.postgresql:postgresql:$postgresqlVersion")
-    
-    // Liquibase Migration
-    implementation("org.liquibase:liquibase-core:4.24.0")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -67,11 +61,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinxCoroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
     
-    // Spring Test (for reactive testing)
-    implementation("org.springframework:spring-test")
-    
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework:spring-test")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
 }
