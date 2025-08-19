@@ -1,11 +1,7 @@
-server:
-  port: 8080
-  
 spring:
   application:
     name: shirogane-holy-knights-api
   main:
-    web-application-type: reactive
     lazy-initialization: true  # Lazy Initialization有効化
   autoconfigure:
     exclude: 
@@ -16,13 +12,6 @@ spring:
       write-dates-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
-  webflux:
-    cors:
-      allowed-origins: "http://localhost:*"
-      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-      allowed-headers: "*"
-      allow-credentials: true
-      max-age: 3600
 
 # R2DBC Migration設定
 r2dbc:
@@ -70,7 +59,6 @@ spring:
     activate:
       on-profile: lambda
   main:
-    web-application-type: reactive
     lazy-initialization: true  # Lambda環境でもLazy Initialization有効化
 
 # Lambda専用のロギング設定

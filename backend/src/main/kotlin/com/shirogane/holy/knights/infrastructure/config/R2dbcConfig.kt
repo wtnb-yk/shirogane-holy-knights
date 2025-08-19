@@ -1,9 +1,5 @@
 package com.shirogane.holy.knights.infrastructure.config
 
-import com.shirogane.holy.knights.adapter.gateway.VideoRepositoryImpl
-import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
-import com.shirogane.holy.knights.application.usecase.VideoUseCaseImpl
-import com.shirogane.holy.knights.domain.repository.VideoRepository
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
 import io.r2dbc.spi.ConnectionFactory
@@ -17,12 +13,10 @@ import org.springframework.data.r2dbc.dialect.PostgresDialect
 import org.springframework.r2dbc.core.DatabaseClient
 
 @Configuration
-class R2dbcConfig(
-    private val environment: Environment
-) {
-    
+class R2dbcConfig() {
+
     private val logger = LoggerFactory.getLogger(R2dbcConfig::class.java)
-    
+
     @Bean
     @Primary
     fun connectionFactory(): ConnectionFactory {
@@ -41,7 +35,7 @@ class R2dbcConfig(
 
         // ローカル開発環境かLambda+LocalStack環境を判定
         val isLocalStack = host.contains("localstack") || host == "postgres"
-        
+
         if (isLocalStack) {
             logger.info("LocalStack environment detected, SSL disabled for database connection")
             // LocalStackの場合はSSLを無効にする
@@ -52,7 +46,7 @@ class R2dbcConfig(
 
         return PostgresqlConnectionFactory(configuration.build())
     }
-    
+
     @Bean
     fun r2dbcEntityTemplate(connectionFactory: ConnectionFactory): R2dbcEntityTemplate {
         val databaseClient = DatabaseClient.builder()
@@ -61,16 +55,4 @@ class R2dbcConfig(
             .build()
         return R2dbcEntityTemplate(databaseClient, PostgresDialect.INSTANCE)
     }
-    
-    @Bean
-    fun videoRepositoryImpl(template: R2dbcEntityTemplate): VideoRepository {
-        return VideoRepositoryImpl(template)
-    }
-    
-    @Bean 
-    fun videoUseCaseImpl(repository: VideoRepository): VideoUseCasePort {
-        return VideoUseCaseImpl(repository)
-    }
-    
-
 }

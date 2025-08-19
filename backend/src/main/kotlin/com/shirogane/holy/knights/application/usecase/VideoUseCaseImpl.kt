@@ -9,8 +9,10 @@ import com.shirogane.holy.knights.application.dto.StreamSearchResultDto
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
 import com.shirogane.holy.knights.domain.repository.VideoRepository
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
 import java.time.Instant
 
+@Service
 class VideoUseCaseImpl(
     private val videoRepository: VideoRepository
 ) : VideoUseCasePort {

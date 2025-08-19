@@ -5,10 +5,12 @@ import com.shirogane.holy.knights.domain.repository.VideoRepository
 import kotlinx.coroutines.reactor.awaitSingle
 import org.slf4j.LoggerFactory
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
+import org.springframework.stereotype.Repository
 import io.r2dbc.spi.Row
 import org.springframework.r2dbc.core.awaitSingle
 import java.time.Instant
 
+@Repository
 class VideoRepositoryImpl(
     private val template: R2dbcEntityTemplate
 ) : VideoRepository {

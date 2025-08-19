@@ -28,14 +28,12 @@ repositories {
 
 val springCloudVersion = "2023.0.0"
 val logbackVersion = "1.4.11"
-val postgresqlVersion = "42.7.2"
 val kotlinxCoroutinesVersion = "1.7.3"
 val kotlinxSerializationVersion = "1.6.2"
 val kotestVersion = "5.8.0"
 
 dependencies {
-    // Spring Boot
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    // Spring Boot (Web層削除、Lambda専用構成)
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     
@@ -131,22 +129,6 @@ val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradl
     exclude("META-INF/*.RSA")
 }
 
-// Liquibaseマイグレーション実行タスク（CI/CD用）
-val liquibaseUpdate by tasks.registering(JavaExec::class) {
-    group = "database"
-    description = "Run Liquibase database migration"
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("liquibase.integration.commandline.Main")
-    
-    args = listOf(
-        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane"}",
-        "--username=${System.getenv("DB_USER") ?: "postgres"}",
-        "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
-        "--changeLogFile=src/main/resources/db/changelog/changelog.xml",
-        "update"
-    )
-}
-
 graalvmNative {
     binaries {
         named("main") {
@@ -161,7 +143,6 @@ graalvmNative {
 // LocalStack環境用タスク
 val localstackEndpoint = System.getenv("LOCALSTACK_ENDPOINT") ?: "http://localstack:4566"
 val functionName = "shirogane-holy-knights-api"
-val apiName = "shirogane-api"
 
 // LocalStackの準備確認
 val checkLocalStack by tasks.registering(Exec::class) {
@@ -193,58 +174,30 @@ val cleanLocalStackLambda by tasks.registering(Exec::class) {
     isIgnoreExitValue = true
 }
 
-// クラスファイル展開用ディレクトリの準備
-val prepareHotReloadDir by tasks.registering {
-    group = "localstack"
-    description = "Prepare hot reload directory"
-    
-    doLast {
-        val hotDir = file("build/hot")
-        hotDir.mkdirs()
-        println("ホットリロード用ディレクトリ準備完了: ${hotDir.absolutePath}")
-    }
-}
 
-// JAR展開タスク（ホットリロード用）
-val extractJarForHotReload by tasks.registering(Copy::class) {
-    group = "localstack"
-    description = "Extract JAR for hot reload"
-    dependsOn(springCloudFunctionLambdaJar, prepareHotReloadDir)
-    
-    from(zipTree(springCloudFunctionLambdaJar.get().archiveFile))
-    into("build/hot")
-    
-    doLast {
-        println("JAR展開完了: build/hot/")
-    }
-}
-
-// Lambda関数の作成（ホットリロード対応）
+// Lambda関数の作成（通常JAR配置方式）
 val deployLocalStackLambda by tasks.registering(Exec::class) {
     group = "localstack"
-    description = "Deploy Lambda function to LocalStack with hot reload"
-    dependsOn(cleanLocalStackLambda, extractJarForHotReload)
+    description = "Deploy Lambda function to LocalStack"
+    dependsOn(cleanLocalStackLambda, springCloudFunctionLambdaJar)
     
     environment("AWS_ACCESS_KEY_ID", "test")
     environment("AWS_SECRET_ACCESS_KEY", "test") 
     environment("AWS_DEFAULT_REGION", "ap-northeast-1")
-    
-    val hotReloadDir = file("build/hot").absolutePath
     
     commandLine("aws", "lambda", "create-function",
         "--function-name", functionName,
         "--runtime", "java17",
         "--role", "arn:aws:iam::000000000000:role/lambda-role",
         "--handler", "org.springframework.cloud.function.adapter.aws.FunctionInvoker",
-        "--code", "S3Bucket=hot-reload,S3Key=${hotReloadDir}",
+        "--zip-file", "fileb://${springCloudFunctionLambdaJar.get().archiveFile.get().asFile.absolutePath}",
         "--timeout", "300",
         "--memory-size", "512",
         "--environment", "Variables={SPRING_PROFILES_ACTIVE=lambda,DATABASE_HOST=host.docker.internal,DATABASE_PORT=5432,DATABASE_NAME=shirogane,DATABASE_USERNAME=postgres,DATABASE_PASSWORD=postgres,SPRING_CLOUD_FUNCTION_DEFINITION=apiGatewayFunction}",
         "--endpoint-url", localstackEndpoint)
     
     doLast {
-        println("Lambda関数のホットリロードデプロイ完了: $functionName")
-        println("監視対象ディレクトリ: $hotReloadDir")
+        println("Lambda関数のデプロイ完了: $functionName")
     }
 }
 
@@ -265,139 +218,6 @@ val deployLocalStackApiGateway by tasks.registering(Exec::class) {
             commandLine("bash", createApiScript.absolutePath)
             environment("FUNCTION_NAME", functionName)
             environment("LOCALSTACK_ENDPOINT", localstackEndpoint)
-        }
-    }
-}
-
-// LocalStack環境全体のセットアップ
-val localStackDeploy by tasks.registering {
-    group = "localstack"
-    description = "Deploy complete Lambda environment to LocalStack"
-    dependsOn(deployLocalStackApiGateway)
-    
-    doLast {
-        println("========================================")
-        println("LocalStack Lambda環境のデプロイ完了！")
-        println("========================================")
-        println("APIエンドポイント確認:")
-        println("curl $localstackEndpoint/restapis/\$(aws apigateway get-rest-apis --endpoint-url=$localstackEndpoint --query 'items[0].id' --output text)/dev/_user_request_/health")
-        println("")
-        println("詳細は ./gradlew localStackInfo で確認できます")
-    }
-}
-
-// 自動リビルド・展開タスク（ホットリロード用）
-val autoRebuildForHotReload by tasks.registering {
-    group = "localstack"
-    description = "Auto rebuild and extract for hot reload"
-    
-    doLast {
-        // コンパイル
-        project.tasks.getByName("compileKotlin").actions.forEach { action ->
-            action.execute(project.tasks.getByName("compileKotlin"))
-        }
-        
-        // クラスファイルをホットリロードディレクトリにコピー
-        val classesDir = file("build/classes/kotlin/main")
-        val hotDir = file("build/hot")
-        
-        if (classesDir.exists()) {
-            copy {
-                from(classesDir)
-                into("$hotDir/BOOT-INF/classes")
-            }
-            println("クラスファイル更新完了: ${hotDir.absolutePath}")
-        }
-    }
-}
-
-// ファイル監視とホットリロード
-val watchAndHotReload by tasks.registering {
-    group = "localstack"
-    description = "Watch source files and hot reload Lambda"
-    dependsOn(localStackDeploy)
-    
-    doLast {
-        println("========================================")
-        println("ホットリロード監視開始")
-        println("========================================")
-        println("Kotlinファイルの変更を監視中...")
-        println("変更検知時に自動的にLambda関数を更新します")
-        println("停止するには Ctrl+C を押してください")
-        println("")
-        
-        // 簡易ファイル監視（実用的にはGradle continuous buildを使用）
-        exec {
-            commandLine("bash", "-c", """
-                while true; do
-                    if find src/main/kotlin -name "*.kt" -newer build/hot/BOOT-INF/classes 2>/dev/null | grep -q .; then
-                        echo "\$(date): Kotlinファイルの変更を検知しました"
-                        ./gradlew autoRebuildForHotReload --quiet
-                        echo "\$(date): ホットリロード完了"
-                    fi
-                    sleep 2
-                done
-            """)
-        }
-    }
-}
-
-// Gradle Continuous Build統合
-val hotReloadDev by tasks.registering {
-    group = "localstack"
-    description = "Start hot reload development mode"
-    dependsOn(localStackDeploy)
-    
-    doLast {
-        println("========================================")
-        println("ホットリロード開発モード開始")
-        println("========================================")
-        println("別ターミナルで以下を実行してください:")
-        println("cd backend && ./gradlew classes --continuous")
-        println("")
-        println("ファイル変更時に自動的にLambda関数が更新されます")
-    }
-}
-
-// デプロイ情報の表示と環境変数ファイル生成
-val localStackInfo by tasks.registering(Exec::class) {
-    group = "localstack"
-    description = "Show LocalStack deployment information and create env file"
-    dependsOn(checkLocalStack)
-    
-    environment("AWS_ACCESS_KEY_ID", "test")
-    environment("AWS_SECRET_ACCESS_KEY", "test")
-    environment("AWS_DEFAULT_REGION", "ap-northeast-1")
-    
-    doLast {
-        exec {
-            commandLine("bash", "-c", """
-                # シンプルなURLを使用（ベースパスマッピング設定済み）
-                API_URL="$localstackEndpoint"
-                
-                # フロントエンド用の環境変数ファイルを生成
-                echo "NEXT_PUBLIC_API_URL=${'$'}API_URL" > ../frontend/.env.local
-                
-                echo "========================================="
-                echo "LocalStack Lambda環境情報"
-                echo "========================================="
-                echo "Lambda関数: $functionName"
-                echo "API URL: ${'$'}API_URL"
-                echo ""
-                echo "利用可能なエンドポイント:"
-                echo "  GET  ${'$'}API_URL/health"
-                echo "  GET  ${'$'}API_URL/video-tags"
-                echo "  GET  ${'$'}API_URL/stream-tags" 
-                echo "  POST ${'$'}API_URL/videos" 
-                echo "  POST ${'$'}API_URL/streams"
-                echo "  POST ${'$'}API_URL/news"
-                echo "  GET  ${'$'}API_URL/news/categories"
-                echo ""
-                echo "テスト例:"
-                echo "curl ${'$'}API_URL/health"
-                echo ""
-                echo "フロントエンド用環境変数ファイル生成: frontend/.env.local"
-            """)
         }
     }
 }
