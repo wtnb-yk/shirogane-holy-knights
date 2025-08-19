@@ -18,9 +18,10 @@ aws apigateway get-rest-apis --endpoint-url=$LOCALSTACK_ENDPOINT --query 'items[
     fi
 done
 
-# API Gatewayを作成
+# API Gatewayを作成（カスタムIDを指定）
 API_ID=$(aws apigateway create-rest-api \
     --name "shirogane-api" \
+    --tags "_custom_id_=shirogane-api" \
     --endpoint-url=$LOCALSTACK_ENDPOINT \
     --query 'id' --output text)
 
@@ -124,16 +125,15 @@ DEPLOYMENT_ID=$(aws apigateway create-deployment \
 echo "API Gateway作成完了: $API_ID"
 echo "Deployment ID: $DEPLOYMENT_ID"
 
-# LocalStackではカスタムドメインマッピングは完全にサポートされていないため
+
 # 固定のAPI IDを使用して予測可能なURLを提供
 
 echo ""
 echo "========================================="
 echo "API Gateway設定完了"
 echo "========================================="
-echo "通常URL: http://localhost:4566/restapis/$API_ID/dev/_user_request_"
-echo "LocalStack URL: http://shirogane-api.execute-api.localhost.localstack.cloud:4566"
+echo "API URL: http://localhost:4566/restapis/$API_ID/dev/_user_request_"
 echo ""
 echo "テスト:"
-echo "  curl http://localhost:4566/health"
-echo "  curl http://localhost:4566/video-tags"
+echo "  curl http://localhost:4566/restapis/$API_ID/dev/_user_request_/health"
+echo "  curl http://localhost:4566/restapis/$API_ID/dev/_user_request_/video-tags"
