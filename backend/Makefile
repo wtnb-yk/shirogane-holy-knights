@@ -2,7 +2,7 @@
 
 # LocalStack Lambda環境のデプロイ
 deploy:
-	./gradlew localStackDeploy
+	./gradlew deployLocalStackLambda
 
 # デプロイ情報の表示  
 info:

@@ -34,7 +34,7 @@ class R2dbcConfig() {
             .password(password)
 
         // ローカル開発環境かLambda+LocalStack環境を判定
-        val isLocalStack = host.contains("localstack") || host == "postgres"
+        val isLocalStack = host == "host.docker.internal"
 
         if (isLocalStack) {
             logger.info("LocalStack environment detected, SSL disabled for database connection")
