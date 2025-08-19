@@ -4,7 +4,7 @@
 
 ## 技術スタック
 
-- **Framework**: Spring Boot 3.2 (WebFlux)
+- **Framework**: Spring Boot 3.2 + Spring Cloud Function
 - **Language**: Kotlin
 - **Database**: PostgreSQL 14 (R2DBC)
 - **Migration**: Liquibase
