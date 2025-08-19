@@ -1,4 +1,28 @@
 services:
+  # LocalStack - AWS サービスのローカル環境
+  localstack:
+    image: localstack/localstack:latest
+    container_name: shirogane-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - DEBUG=1
+      - LAMBDA_EXECUTOR=local
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR:-/tmp}/localstack
+      - EXTRA_CORS_ALLOWED_ORIGINS=http://localhost:3001
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "${TMPDIR:-/tmp}/localstack:/var/lib/localstack"
+    networks:
+      - shirogane-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localstack:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   # PostgreSQLデータベース
   postgres:
     image: postgres:14
@@ -38,33 +62,33 @@ services:
     networks:
       - shirogane-network
 
-  # バックエンドサービス (Lambda モード)
-  backend:
+  # Lambda環境 (LocalStack)
+  backend-lambda:
     build:
       context: ./backend
-    container_name: shirogane-backend
+    container_name: shirogane-backend-lambda
     depends_on:
+      localstack:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       liquibase:
         condition: service_completed_successfully
     environment:
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: shirogane
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: postgres
-      FRONTEND_URL: http://localhost:3001 # ブラウザからのアクセスURLに変更
-    ports:
-      - "8080:8080" # ホスト側からアクセス可能に
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      - LOCALSTACK_ENDPOINT=http://localstack:4566
+    volumes:
+      - ./backend/build/libs:/app/build/libs
+      - ./backend/build/hot:/app/build/hot
+      - ./backend/src:/app/src
+      - ./backend/build.gradle.kts:/app/build.gradle.kts
+      - ./scripts:/scripts
+      - ./frontend:/frontend
+    command: ["bash", "-c", "cd /app && bash /scripts/setup-lambda.sh && bash /scripts/create-api-gateway.sh && tail -f /dev/null"]
     networks:
       - shirogane-network
-    healthcheck:
-      test: curl -f http://localhost:8080/actuator/health || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
 
   # フロントエンドサービス
   frontend:
@@ -80,10 +104,27 @@ services:
       - "3001:3000"
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=ap-northeast-1
     depends_on:
-      backend:
-        condition: service_healthy
+      backend-lambda:
+        condition: service_started
+    command: >
+      sh -c "
+        echo 'API Gateway設定完了を待機中...' &&
+        sleep 15 &&
+        echo 'API IDを取得中...' &&
+        API_ID=\$$(aws --endpoint-url=http://localstack:4566 apigateway get-rest-apis --query 'items[0].id' --output text 2>/dev/null) &&
+        if [ -z \"\$$API_ID\" ] || [ \"\$$API_ID\" = \"None\" ]; then
+          echo 'API ID取得に失敗しました。デフォルトURLを使用します。' &&
+          export NEXT_PUBLIC_API_URL=http://localhost:4566
+        else
+          export NEXT_PUBLIC_API_URL=http://localhost:4566/restapis/\$$API_ID/dev/_user_request_ &&
+          echo \"フロントエンドAPI URL: \$$NEXT_PUBLIC_API_URL\"
+        fi &&
+        pnpm run dev
+      "
     networks:
       - shirogane-network
     healthcheck:

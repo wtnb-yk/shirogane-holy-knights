@@ -9,7 +9,7 @@ interface UseAllVideoTagsResult {
 }
 
 const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
 };
 
 const fetcher = async (url: string): Promise<string[]> => {

@@ -5,7 +5,7 @@ import { VideoSearchParams, VideoSearchResult, StreamSearchParams, StreamSearchR
  */
 const API_CONFIG = {
   // 環境変数から取得するか、デフォルトとしてlocalhostを使用
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
 };
 
 /**

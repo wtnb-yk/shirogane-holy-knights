@@ -1,7 +1,7 @@
 FROM node:20-alpine
 
-# ヘルスチェック用のcurlとその他の必要なツールをインストール
-RUN apk add --no-cache curl
+# ヘルスチェック用のcurlとAWS CLIをインストール
+RUN apk add --no-cache curl aws-cli
 
 # pnpmを有効化
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -20,7 +20,7 @@ COPY . .
 
 # 環境変数
 ENV NODE_ENV=development
-ENV NEXT_PUBLIC_API_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=http://localhost:4566
 
 # ポート
 EXPOSE 3000

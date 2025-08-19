@@ -23,7 +23,7 @@ export const useNewsCategories = (): UseNewsCategoriesResult => {
         setLoading(true);
         setError(null);
 
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(`${baseUrl}/news/categories`);
         
         if (!response.ok) {

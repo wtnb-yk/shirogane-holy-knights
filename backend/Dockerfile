@@ -3,8 +3,8 @@ FROM amazoncorretto:17-alpine
 # 作業ディレクトリ
 WORKDIR /app
 
-# アプリケーションの依存関係をインストール
-RUN apk add --no-cache curl bash
+# AWS CLI、curl、bashをインストール
+RUN apk add --no-cache curl bash aws-cli
 
 # GradleラッパーとビルドファイルをコピーしてGradleの依存関係をキャッシュ
 COPY gradlew ./
@@ -16,13 +16,5 @@ RUN chmod +x ./gradlew
 # ソースコードをコピー
 COPY src ./src
 
-# アプリケーションをビルド
-RUN ./gradlew build -x processAot --no-daemon
-
-
-# メインクラスを直接実行する
-# 起動コマンド
-ENTRYPOINT ["java", "-jar", "/app/build/libs/shirogane-holy-knights-0.1.0.jar"]
-
-# コンテナがリッスンするポート
-EXPOSE 8080
+# Lambda用JARをビルド
+RUN ./gradlew springCloudFunctionLambdaJar --no-daemon

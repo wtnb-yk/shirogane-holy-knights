@@ -39,15 +39,15 @@ class R2dbcConfig(
             .username(username)
             .password(password)
 
-        // Springプロファイルまたは環境変数でLambda環境を判定
-        val isLambda = environment.activeProfiles.contains("lambda") ||
-                       System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null
+        // ローカル開発環境かLambda+LocalStack環境を判定
+        val isLocalStack = host.contains("localstack") || host == "postgres"
         
-        if (isLambda) {
-            logger.info("Lambda environment detected, enabling SSL for database connection")
-            configuration.enableSsl()
+        if (isLocalStack) {
+            logger.info("LocalStack environment detected, SSL disabled for database connection")
+            // LocalStackの場合はSSLを無効にする
         } else {
-            logger.info("Non-Lambda environment, SSL not enabled for database connection")
+            logger.info("Production environment detected, enabling SSL for database connection")
+            configuration.enableSsl()
         }
 
         return PostgresqlConnectionFactory(configuration.build())

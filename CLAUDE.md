@@ -15,12 +15,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This existing project uses the following technology stack:
 - **Backend**: 
-  - Local development: Kotlin + Spring Boot 3.2 (WebFlux) + R2DBC (PostgreSQL)
-  - Production environment: Same as above + Spring Cloud Function + AWS Lambda
+  - Local development: Kotlin + Spring Boot 3.2 + Spring Cloud Function + LocalStack Lambda (ホットリロード対応)
+  - Production environment: Same as above + AWS Lambda
 - **Frontend**: Next.js + TypeScript + SWR + TailwindCSS
 - **Database**: PostgreSQL 14 (Liquibase migrations)
 - **Infrastructure**: AWS (Lambda, API Gateway, RDS, Amplify, CloudFront) + Terraform
 - **Build Tools**: Gradle (Kotlin), npm
+- **Local AWS**: LocalStack (Lambda + API Gateway シミュレート)
 
 ### System Architecture
 
@@ -39,14 +40,13 @@ This existing project uses the following technology stack:
 ### Quick Start
 
 ```bash
-# Start all services (Frontend + Backend + DB)
-docker-compose up -d
+# 開発環境起動（ホットリロード自動有効）
+make dev
 
-# Start backend only (http://localhost:8080)
-docker compose up -d --build backend
+# コード編集すると自動的にLambda関数が更新される
 
-# Start frontend only (http://localhost:3001)
-docker compose up -d --build frontend
+# 環境停止
+make stop
 ```
 
 ### Connecting to Database
