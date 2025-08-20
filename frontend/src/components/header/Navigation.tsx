@@ -11,6 +11,7 @@ interface NavigationMenuItems {
 
 const navigationItems: NavigationMenuItems[] = [
   { href: '/videos', label: '配信・動画' },
+  { href: '/songs', label: '歌' },
   { href: '/news', label: 'ニュース' },
 ];
 

@@ -39,7 +39,7 @@ aws lambda create-function \
     --runtime java17 \
     --role arn:aws:iam::000000000000:role/lambda-role \
     --handler org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest \
-    --zip-file fileb:///app/build/libs/shirogane-holy-knights-0.1.0-all.jar \
+    --zip-file fileb:///app/build/libs/shirogane-holy-knights-0.1.0-aws-lambda.jar \
     --environment "Variables={SPRING_CLOUD_FUNCTION_DEFINITION=apiGatewayFunction,SPRING_PROFILES_ACTIVE=lambda,DATABASE_HOST=postgres,DATABASE_PORT=5432,DATABASE_NAME=shirogane,DATABASE_USERNAME=postgres,DATABASE_PASSWORD=postgres}" \
     --timeout 60 \
     --memory-size 1024 \

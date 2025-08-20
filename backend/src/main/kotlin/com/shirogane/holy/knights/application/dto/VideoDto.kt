@@ -3,7 +3,6 @@ package com.shirogane.holy.knights.application.dto
 import com.shirogane.holy.knights.domain.model.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 /**
  * 動画DTO（データ転送オブジェクト）
@@ -166,3 +165,159 @@ data class StreamSearchResultDto(
     val pageSize: Int,
     val hasMore: Boolean
 )
+
+/**
+ * 楽曲検索パラメータDTO
+ */
+data class PerformedSongSearchParamsDto(
+    val query: String? = null,
+    val sortBy: String? = "singCount", // singCount|latestSingDate|title
+    val sortOrder: String? = "DESC", // DESC|ASC
+    val page: Int = 0,
+    val size: Int = 20
+) {
+    /**
+     * オフセットを計算
+     */
+    fun getOffset(): Int {
+        return page * size
+    }
+}
+
+/**
+ * 楽曲DTO（データ転送オブジェクト）
+ */
+@Serializable
+data class PerformedSongDto(
+    val id: String,
+    val title: String,
+    val artist: String,
+    val singCount: Int,
+    val latestSingDate: String?, // ISO 8601形式の日時文字列
+    val performances: List<PerformanceDto> = emptyList()
+) {
+    companion object {
+        /**
+         * ドメインモデルからDTOへの変換
+         */
+        fun fromDomain(song: Song): PerformedSongDto {
+            return PerformedSongDto(
+                id = song.id.value.toString(),
+                title = song.title,
+                artist = song.artist,
+                singCount = song.singCount,
+                latestSingDate = song.latestSingDate?.toString(),
+                performances = song.performances.map { PerformanceDto.fromDomain(it) }
+            )
+        }
+    }
+}
+
+/**
+ * パフォーマンスDTO
+ */
+@Serializable
+data class PerformanceDto(
+    val videoId: String,
+    val videoTitle: String,
+    val performanceType: String, // STREAM|CONCERT
+    val url: String,
+    val startSeconds: Int,
+    val performedAt: String // ISO 8601形式の日時文字列
+) {
+    companion object {
+        fun fromDomain(performance: Performance): PerformanceDto {
+            return PerformanceDto(
+                videoId = performance.videoId.value,
+                videoTitle = performance.videoTitle,
+                performanceType = performance.performanceType.name,
+                url = performance.url,
+                startSeconds = performance.startSeconds,
+                performedAt = performance.performedAt.toString()
+            )
+        }
+    }
+}
+
+/**
+ * 楽曲検索結果DTO
+ */
+@Serializable
+data class PerformedSongSearchResultDto(
+    val songs: List<PerformedSongDto>,
+    val totalCount: Int,
+    val totalPages: Int,
+    val currentPage: Int
+)
+
+/**
+ * 楽曲統計情報DTO
+ */
+@Serializable
+data class PerformedSongStatsDto(
+    val totalSongs: Int,
+    val totalPerformances: Int,
+    val topSongs: List<TopSongStatsDto>,
+    val recentPerformances: List<RecentPerformanceStatsDto>
+) {
+    companion object {
+        fun fromDomain(stats: SongStats): PerformedSongStatsDto {
+            return PerformedSongStatsDto(
+                totalSongs = stats.totalSongs,
+                totalPerformances = stats.totalPerformances,
+                topSongs = stats.topSongs.map { TopSongStatsDto.fromDomain(it) },
+                recentPerformances = stats.recentPerformances.map { RecentPerformanceStatsDto.fromDomain(it) }
+            )
+        }
+    }
+}
+
+/**
+ * 上位楽曲統計DTO
+ */
+@Serializable
+data class TopSongStatsDto(
+    val songId: String,
+    val title: String,
+    val artist: String,
+    val singCount: Int
+) {
+    companion object {
+        fun fromDomain(topSong: TopSongStats): TopSongStatsDto {
+            return TopSongStatsDto(
+                songId = topSong.songId.value.toString(),
+                title = topSong.title,
+                artist = topSong.artist,
+                singCount = topSong.singCount
+            )
+        }
+    }
+}
+
+/**
+ * 最新歌唱統計DTO
+ */
+@Serializable
+data class RecentPerformanceStatsDto(
+    val songId: String,
+    val title: String,
+    val artist: String,
+    val latestPerformance: String, // ISO 8601形式の日時文字列
+    val latestVideoId: String,
+    val latestVideoTitle: String,
+    val latestVideoUrl: String
+) {
+    companion object {
+        fun fromDomain(recentPerformance: RecentPerformanceStats): RecentPerformanceStatsDto {
+            return RecentPerformanceStatsDto(
+                songId = recentPerformance.songId.value.toString(),
+                title = recentPerformance.title,
+                artist = recentPerformance.artist,
+                latestPerformance = recentPerformance.latestPerformance.toString(),
+                latestVideoId = recentPerformance.latestVideoId.value,
+                latestVideoTitle = recentPerformance.latestVideoTitle,
+                latestVideoUrl = recentPerformance.latestVideoUrl
+            )
+        }
+    }
+}

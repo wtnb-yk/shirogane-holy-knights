@@ -1,0 +1,82 @@
+// 楽曲検索の並び替え項目
+export enum SortBy {
+  SING_COUNT = 'singCount',
+  LATEST_SING_DATE = 'latestSingDate',
+  TITLE = 'title'
+}
+
+// 楽曲検索の並び替え順
+export enum SortOrder {
+  ASC = 'ASC',
+  DESC = 'DESC'
+}
+
+// パフォーマンス種別
+export enum PerformanceType {
+  STREAM = 'STREAM',
+  CONCERT = 'CONCERT'
+}
+
+// パフォーマンス情報
+export interface Performance {
+  videoId: string;
+  videoTitle: string;
+  performanceType: PerformanceType;
+  url: string;
+  startSeconds: number;
+  performedAt: string;
+}
+
+// 楽曲情報
+export interface PerformedSong {
+  id: string;
+  title: string;
+  artist: string;
+  singCount: number;
+  latestSingDate: string | null;
+  performances: Performance[];
+}
+
+// 楽曲検索パラメータ
+export interface PerformedSongSearchParams {
+  query?: string;
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
+  page?: number;
+  size?: number;
+}
+
+// 楽曲検索結果
+export interface PerformedSongSearchResult {
+  songs: PerformedSong[];
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+// 上位楽曲統計
+export interface TopSongStats {
+  songId: string;
+  title: string;
+  artist: string;
+  singCount: number;
+}
+
+// 最新歌唱統計
+export interface RecentPerformanceStats {
+  songId: string;
+  title: string;
+  artist: string;
+  latestPerformance: string;
+  latestVideoId: string;
+  latestVideoTitle: string;
+  latestVideoUrl: string;
+}
+
+// 楽曲統計情報
+export interface PerformedSongStats {
+  totalSongs: number;
+  totalPerformances: number;
+  topSongs: TopSongStats[];
+  recentPerformances: RecentPerformanceStats[];
+}

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.springframework.core.env.Environment
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.r2dbc.dialect.PostgresDialect
 import org.springframework.r2dbc.core.DatabaseClient
@@ -25,6 +24,8 @@ class R2dbcConfig() {
         val database = System.getenv("DATABASE_NAME") ?: "shirogane"
         val username = System.getenv("DATABASE_USERNAME") ?: "postgres"
         val password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
+        
+        logger.info("Database connection config - Host: $host, Port: $port, Database: $database, Username: $username")
 
         val configuration = PostgresqlConnectionConfiguration.builder()
             .host(host)
@@ -34,11 +35,11 @@ class R2dbcConfig() {
             .password(password)
 
         // ローカル開発環境かLambda+LocalStack環境を判定
-        val isLocalStack = host == "host.docker.internal"
+        val isLocalDev = host == "localhost" || host == "host.docker.internal" || host == "postgres"
 
-        if (isLocalStack) {
-            logger.info("LocalStack environment detected, SSL disabled for database connection")
-            // LocalStackの場合はSSLを無効にする
+        if (isLocalDev) {
+            logger.info("Local development environment detected, SSL disabled for database connection")
+            // ローカル開発環境の場合はSSLを無効にする
         } else {
             logger.info("Production environment detected, enabling SSL for database connection")
             configuration.enableSsl()

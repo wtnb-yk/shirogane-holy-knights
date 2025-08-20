@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.shirogane.holy.knights.adapter.controller.HealthController
 import com.shirogane.holy.knights.adapter.controller.NewsController
 import com.shirogane.holy.knights.adapter.controller.VideoController
+import com.shirogane.holy.knights.adapter.controller.SongController
 import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
+import com.shirogane.holy.knights.application.dto.PerformedSongSearchParamsDto
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component
 class ApiGatewayRouter(
     private val videoController: VideoController,
     private val newsController: NewsController,
+    private val songController: SongController,
     private val healthController: HealthController,
     private val objectMapper: ObjectMapper,
     private val responseBuilder: ApiGatewayResponseBuilder
@@ -49,6 +52,13 @@ class ApiGatewayRouter(
         },
         RouteKey("GET", "/news/categories") to { _ ->
             newsController.getNewsCategories()
+        },
+        RouteKey("POST", "/performed-songs") to { request ->
+            val params = parseBody(request.body, PerformedSongSearchParamsDto::class.java) ?: PerformedSongSearchParamsDto()
+            songController.searchPerformedSongs(params)
+        },
+        RouteKey("GET", "/performed-songs/stats") to { _ ->
+            songController.getPerformedSongsStats()
         }
     )
     
