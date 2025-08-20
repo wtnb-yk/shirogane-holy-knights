@@ -36,7 +36,7 @@ CREATE TABLE stream_songs
     PRIMARY KEY (song_id, video_id)
 );
 
-CREATE TABLE live_songs
+CREATE TABLE concert_songs
 (
     song_id    UUID REFERENCES songs (id) ON DELETE CASCADE,
     video_id   VARCHAR(50) REFERENCES videos (id) ON DELETE CASCADE,
@@ -51,17 +51,17 @@ CREATE INDEX idx_songs_artist ON songs(artist);
 CREATE INDEX idx_cover_songs_video_id ON cover_songs(video_id);
 CREATE INDEX idx_stream_songs_video_id ON stream_songs(video_id);
 CREATE INDEX idx_stream_songs_song_id ON stream_songs(song_id);
-CREATE INDEX idx_live_songs_video_id ON live_songs(video_id);
-CREATE INDEX idx_live_songs_song_id ON live_songs(song_id);
+CREATE INDEX idx_concert_songs_video_id ON concert_songs(video_id);
+CREATE INDEX idx_concert_songs_song_id ON concert_songs(song_id);
 
---rollback DROP INDEX IF EXISTS idx_live_songs_song_id;
---rollback DROP INDEX IF EXISTS idx_live_songs_video_id;
+--rollback DROP INDEX IF EXISTS idx_concert_songs_song_id;
+--rollback DROP INDEX IF EXISTS idx_concert_songs_video_id;
 --rollback DROP INDEX IF EXISTS idx_stream_songs_song_id;
 --rollback DROP INDEX IF EXISTS idx_stream_songs_video_id;
 --rollback DROP INDEX IF EXISTS idx_cover_songs_video_id;
 --rollback DROP INDEX IF EXISTS idx_songs_artist;
 --rollback DROP INDEX IF EXISTS idx_songs_title;
---rollback DROP TABLE IF EXISTS live_songs;
+--rollback DROP TABLE IF EXISTS concert_songs;
 --rollback DROP TABLE IF EXISTS stream_songs;
 --rollback DROP TABLE IF EXISTS cover_songs;
 --rollback DROP TABLE IF EXISTS original_songs;
