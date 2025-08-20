@@ -130,8 +130,8 @@ def extract_songs_from_comment(comment_text: str) -> List[Tuple[str, str, int]]:
     
     return songs
 
-def get_singing_streams_from_db() -> List[Tuple[str, str]]:
-    """DBから歌枠・ライブ動画のリストを取得"""
+def get_stream_videos_from_db(tag_name: str) -> List[Tuple[str, str]]:
+    """DBから指定されたタグの動画リストを取得"""
     conn = psycopg2.connect(
         host="localhost",
         port=5432,
@@ -147,11 +147,11 @@ def get_singing_streams_from_db() -> List[Tuple[str, str]]:
         INNER JOIN video_video_types vvt ON vvt.video_id = v.id
         INNER JOIN video_types vt ON vt.id = vvt.video_type_id AND vt.type = 'stream'
         INNER JOIN video_stream_tags vst ON vst.video_id = v.id
-        INNER JOIN stream_tags st ON st.id = vst.tag_id AND (st.name = '歌枠' OR st.name = 'ライブ')
+        INNER JOIN stream_tags st ON st.id = vst.tag_id AND st.name = %s
         ORDER BY published_at DESC
     """
     
-    cur.execute(query)
+    cur.execute(query, (tag_name,))
     videos = cur.fetchall()
     
     cur.close()
@@ -159,27 +159,8 @@ def get_singing_streams_from_db() -> List[Tuple[str, str]]:
     
     return videos
 
-def main():
-    print("YouTube Data APIキーを確認中...")
-    
-    # YouTube APIサービスの初期化
-    try:
-        youtube = get_youtube_service()
-        print("YouTube API接続成功")
-    except ValueError as e:
-        print(f"エラー: {e}")
-        print("環境変数YOUTUBE_API_KEYを設定してください:")
-        print("export YOUTUBE_API_KEY='your-api-key-here'")
-        return
-    
-    # DBから動画リスト取得
-    print("\nDBから歌枠・ライブ動画リストを取得中...")
-    videos = get_singing_streams_from_db()
-    print(f"{len(videos)}件の動画を取得しました")
-    
-    # CSVファイルの準備
-    csv_filename = '/Users/yuki_watanabe/My/shirogane-holy-knights/tools/output/songs/extracted_songs.csv'
-    
+def process_videos_and_save_to_csv(youtube, videos: List[Tuple[str, str]], csv_filename: str, tag_name: str):
+    """動画リストを処理してCSVに保存"""
     with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['video_id', 'video_url_with_timestamp', 'video_title', 'video_url', 'song_title', 'artist', 'start_time', 'start_seconds']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -234,8 +215,44 @@ def main():
             # API制限を避けるため少し待機
             time.sleep(1)
     
-    print(f"\n抽出完了！結果を {csv_filename} に保存しました")
-    print("CSVファイルを確認してください")
+    print(f"\n{tag_name}の抽出完了！結果を {csv_filename} に保存しました")
+
+def main():
+    print("YouTube Data APIキーを確認中...")
+    
+    # YouTube APIサービスの初期化
+    try:
+        youtube = get_youtube_service()
+        print("YouTube API接続成功")
+    except ValueError as e:
+        print(f"エラー: {e}")
+        print("環境変数YOUTUBE_API_KEYを設定してください:")
+        print("export YOUTUBE_API_KEY='your-api-key-here'")
+        return
+    
+    # 歌枠とライブを別々に処理
+    stream_tags = ['歌枠', 'ライブ']
+    
+    for tag in stream_tags:
+        print(f"\nDBから{tag}動画リストを取得中...")
+        videos = get_stream_videos_from_db(tag)
+        print(f"{len(videos)}件の{tag}動画を取得しました")
+        
+        if not videos:
+            print(f"{tag}の動画が見つかりませんでした")
+            continue
+        
+        # CSVファイル名を決定
+        tag_suffix = 'stream' if tag == '歌枠' else 'live'
+        csv_filename = f'/Users/yuki_watanabe/My/shirogane-holy-knights/tools/output/songs/extracted_songs_{tag_suffix}.csv'
+        
+        # 動画を処理してCSVに保存
+        process_videos_and_save_to_csv(youtube, videos, csv_filename, tag)
+    
+    print("\n全ての抽出が完了しました！")
+    print("以下のCSVファイルを確認してください:")
+    print("- extracted_songs_stream.csv (歌枠)")
+    print("- extracted_songs_live.csv (ライブ)")
 
 if __name__ == "__main__":
     main()
