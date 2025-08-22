@@ -29,12 +29,34 @@ Frontend (Next.js) → API Gateway → Lambda (Spring Boot) → RDS (PostgreSQL)
 ```
 infrastructure/
 ├── terraform/
+│   ├── bootstrap/         # Terraform Backend用リソース管理
 │   ├── environments/      # 環境別設定
 │   │   ├── dev/           # 開発環境
 │   │   └── prd/           # 本番環境
 │   └── modules/           # 再利用可能なTerraformモジュール
+├── scripts/               # インフラ管理用スクリプト
 └── README.md
 ```
+
+## 初期セットアップ（プロジェクト開始時のみ）
+
+Terraformのremote state管理に必要なAWSリソースを作成する必要があります。
+
+### 方法1: スクリプトを使用
+```bash
+cd infrastructure
+./scripts/bootstrap-terraform.sh
+```
+
+### 方法2: 手動実行
+```bash
+cd infrastructure/terraform/bootstrap
+terraform init
+terraform plan
+terraform apply
+```
+
+詳細は `terraform/bootstrap/README.md` を参照してください。
 
 ## インフラ操作
 
