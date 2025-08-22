@@ -21,7 +21,7 @@ variable "lambda_invoke_arn" {
 variable "log_retention_days" {
   description = "CloudWatch log retention in days"
   type        = number
-  default     = 7
+  default     = 3
 }
 
 variable "custom_domain_name" {

@@ -38,7 +38,7 @@ logging:
     root: INFO
     com.shirogane.holy.knights: INFO
     org.springframework.web: INFO
-    name.nkonev.r2dbc.migrate: DEBUG
+    name.nkonev.r2dbc.migrate: INFO
     
 # Spring Cloud Function設定
 spring.cloud.function:
@@ -65,11 +65,11 @@ spring:
 logging:
   level:
     root: INFO
-    com.shirogane.holy.knights: DEBUG
-    org.springframework.cloud.function: DEBUG
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql: DEBUG
-    name.nkonev.r2dbc.migrate: DEBUG
+    com.shirogane.holy.knights: INFO
+    org.springframework.cloud.function: INFO
+    org.springframework.r2dbc: INFO
+    io.r2dbc.postgresql: INFO
+    name.nkonev.r2dbc.migrate: INFO
 
 # Lambda環境専用のCORS設定
 cors:

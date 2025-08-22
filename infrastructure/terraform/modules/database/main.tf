@@ -25,12 +25,12 @@ resource "aws_db_parameter_group" "main" {
 
   parameter {
     name  = "log_statement"
-    value = "all"
+    value = "ddl"
   }
 
   parameter {
     name  = "log_duration"
-    value = "1"
+    value = "0"
   }
 
   tags = {
