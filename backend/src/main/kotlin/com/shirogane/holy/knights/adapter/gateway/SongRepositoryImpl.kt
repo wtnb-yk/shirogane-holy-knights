@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.adapter.gateway
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.shirogane.holy.knights.domain.model.*
 import com.shirogane.holy.knights.domain.repository.SongRepository
 import kotlinx.coroutines.flow.toList
@@ -17,6 +18,7 @@ class SongRepositoryImpl(
 ) : SongRepository {
 
     private val logger = LoggerFactory.getLogger(SongRepositoryImpl::class.java)
+    private val objectMapper = ObjectMapper()
 
     override suspend fun searchPerformedSongs(
         query: String?,
@@ -31,7 +33,7 @@ class SongRepositoryImpl(
         val bindings = mutableMapOf<String, Any>()
 
         query?.let {
-            conditions.add("(s.title ILIKE :query OR s.artist ILIKE :query)")
+            conditions.add("(title ILIKE :query OR artist ILIKE :query)")
             bindings["query"] = "%$it%"
         }
 
@@ -56,7 +58,7 @@ class SongRepositoryImpl(
                     s.title,
                     s.artist,
                     COUNT(*) as sing_count,
-                    MAX(COALESCE(ss.created_at, cs.created_at)) as latest_sing_date,
+                    MAX(COALESCE(sd.started_at, cs.created_at)) as latest_sing_date,
                     ARRAY_AGG(
                         JSON_BUILD_OBJECT(
                             'video_id', COALESCE(ss.video_id, cs.video_id),
@@ -64,13 +66,20 @@ class SongRepositoryImpl(
                             'performance_type', CASE WHEN ss.video_id IS NOT NULL THEN 'STREAM' ELSE 'CONCERT' END,
                             'url', v.url,
                             'start_seconds', COALESCE(ss.start_seconds, cs.start_seconds),
-                            'performed_at', COALESCE(ss.created_at, cs.created_at)
-                        ) ORDER BY COALESCE(ss.created_at, cs.created_at) DESC
+                            'performed_at', COALESCE(sd.started_at, cs.created_at),
+                            'stream_song_url', 
+                            CASE 
+                                WHEN COALESCE(ss.start_seconds, cs.start_seconds) > 0 
+                                THEN v.url || '&t=' || COALESCE(ss.start_seconds, cs.start_seconds) || 's'
+                                ELSE v.url 
+                            END
+                        ) ORDER BY COALESCE(sd.started_at, cs.created_at) DESC
                     ) as performances
                 FROM songs s
                 LEFT JOIN stream_songs ss ON s.id = ss.song_id
                 LEFT JOIN concert_songs cs ON s.id = cs.song_id
                 LEFT JOIN videos v ON v.id = COALESCE(ss.video_id, cs.video_id)
+                LEFT JOIN stream_details sd ON v.id = sd.video_id
                 GROUP BY s.id, s.title, s.artist
                 HAVING COUNT(*) > 0
             )
@@ -99,8 +108,25 @@ class SongRepositoryImpl(
             val singCount = (row.get("sing_count") as Number).toInt()
             val latestSingDate = row.get("latest_sing_date", Instant::class.java)
             
-            // パフォーマンス情報のパース（簡略化のため最初の3件のみ取得）
-            val performances = emptyList<Performance>() // JSONパースは複雑なため後で実装
+            // パフォーマンス情報のパース
+            val performancesArray = row.get("performances", Array<String>::class.java) ?: arrayOf()
+            val performances = performancesArray.mapNotNull { jsonString ->
+                try {
+                    val jsonNode = objectMapper.readTree(jsonString)
+                    Performance(
+                        videoId = VideoId(jsonNode.get("video_id").asText()),
+                        videoTitle = jsonNode.get("video_title").asText() ?: "",
+                        performanceType = PerformanceType.valueOf(jsonNode.get("performance_type").asText()),
+                        url = jsonNode.get("url").asText() ?: "",
+                        startSeconds = jsonNode.get("start_seconds").asInt(0),
+                        performedAt = Instant.parse(jsonNode.get("performed_at").asText() + "Z"),
+                        streamSongUrl = jsonNode.get("stream_song_url").asText() ?: ""
+                    )
+                } catch (e: Exception) {
+                    logger.error("パフォーマンス情報のパース失敗: $jsonString", e)
+                    null
+                }
+            }
             
             Song(
                 id = songId,
@@ -120,7 +146,7 @@ class SongRepositoryImpl(
         val bindings = mutableMapOf<String, Any>()
 
         query?.let {
-            conditions.add("(s.title ILIKE :query OR s.artist ILIKE :query)")
+            conditions.add("(title ILIKE :query OR artist ILIKE :query)")
             bindings["query"] = "%$it%"
         }
 

@@ -223,7 +223,8 @@ data class PerformanceDto(
     val performanceType: String, // STREAM|CONCERT
     val url: String,
     val startSeconds: Int,
-    val performedAt: String // ISO 8601形式の日時文字列
+    val performedAt: String, // ISO 8601形式の日時文字列
+    val streamSongUrl: String // YouTubeの特定時間へのリンク
 ) {
     companion object {
         fun fromDomain(performance: Performance): PerformanceDto {
@@ -233,7 +234,8 @@ data class PerformanceDto(
                 performanceType = performance.performanceType.name,
                 url = performance.url,
                 startSeconds = performance.startSeconds,
-                performedAt = performance.performedAt.toString()
+                performedAt = performance.performedAt.toString(),
+                streamSongUrl = performance.streamSongUrl
             )
         }
     }

@@ -7,9 +7,10 @@ interface PerformedSongsGridProps {
   songs: PerformedSong[];
   loading?: boolean;
   error?: string | null;
+  onSongClick: (song: PerformedSong) => void;
 }
 
-export function PerformedSongsGrid({ songs, loading = false, error }: PerformedSongsGridProps) {
+export function PerformedSongsGrid({ songs, loading = false, error, onSongClick }: PerformedSongsGridProps) {
   return (
     <BaseGrid
       items={songs}
@@ -20,6 +21,7 @@ export function PerformedSongsGrid({ songs, loading = false, error }: PerformedS
           key={song.id} 
           song={song}
           index={index}
+          onClick={onSongClick}
         />
       )}
       renderSkeleton={(index) => <SkeletonSongCard key={index} />}

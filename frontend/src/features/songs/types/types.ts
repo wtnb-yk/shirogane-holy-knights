@@ -25,6 +25,7 @@ export interface Performance {
   url: string;
   startSeconds: number;
   performedAt: string;
+  streamSongUrl: string;
 }
 
 // 楽曲情報

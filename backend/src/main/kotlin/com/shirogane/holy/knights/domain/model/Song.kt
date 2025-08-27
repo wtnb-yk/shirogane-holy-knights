@@ -26,7 +26,8 @@ data class Performance(
     val performanceType: PerformanceType,
     val url: String,
     val startSeconds: Int,
-    val performedAt: Instant
+    val performedAt: Instant,
+    val streamSongUrl: String
 )
 
 /**

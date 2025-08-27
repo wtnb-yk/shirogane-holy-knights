@@ -7,10 +7,19 @@ import { PerformedSongsGrid } from '@/features/songs/components/PerformedSongsGr
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
 import { SongSortModal } from '@/features/songs/components/SongSortModal';
+import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { Pagination } from '@/components/ui/Pagination';
+import { PerformedSong } from '@/features/songs/types/types';
 
 export default function SongsList() {
   const [showSortModal, setShowSortModal] = useState(false);
+  const [selectedSong, setSelectedSong] = useState<PerformedSong | null>(null);
+  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  
+  const handleSongClick = (song: PerformedSong) => {
+    setSelectedSong(song);
+    setShowPerformanceModal(true);
+  };
   
   const songsData = usePerformedSongs({ pageSize: 20 });
 
@@ -46,7 +55,8 @@ export default function SongsList() {
         <PerformedSongsGrid 
           songs={songsData.songs} 
           loading={songsData.loading} 
-          error={songsData.error} 
+          error={songsData.error}
+          onSongClick={handleSongClick}
         />
 
         {songsData.totalCount > 20 && (
@@ -72,6 +82,12 @@ export default function SongsList() {
           sortBy={songsData.sortBy}
           sortOrder={songsData.sortOrder}
           onSortChange={songsData.handleSortChange}
+        />
+        
+        <PerformanceListModal 
+          song={selectedSong}
+          open={showPerformanceModal}
+          onOpenChange={setShowPerformanceModal}
         />
       </div>
     </div>
