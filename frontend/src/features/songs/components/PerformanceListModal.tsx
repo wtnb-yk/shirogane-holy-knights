@@ -45,7 +45,7 @@ export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceLi
           <DialogClose onClose={() => onOpenChange(false)} />
         </DialogHeader>
         
-        <div className="p-6">
+        <div className="p-6 pt-0">
           {/* 楽曲統計 */}
           <div className="mb-6 p-4 bg-bg-secondary rounded-lg">
             <div className="flex items-center justify-between text-sm">
