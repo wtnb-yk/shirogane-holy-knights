@@ -109,7 +109,6 @@ export default function VideosList() {
           filters={currentData.filters}
           onFiltersChange={currentData.setFilters}
           availableTags={currentData.availableTags}
-          onClearAllFilters={currentData.clearAllFilters}
         />
       </div>
     </div>
