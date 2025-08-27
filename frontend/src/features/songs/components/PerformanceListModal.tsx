@@ -40,7 +40,8 @@ export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceLi
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {song.title} - {song.artist}
+            {song.title}
+            {/*{song.title} - {song.artist}*/}
           </DialogTitle>
           <DialogClose onClose={() => onOpenChange(false)} />
         </DialogHeader>
