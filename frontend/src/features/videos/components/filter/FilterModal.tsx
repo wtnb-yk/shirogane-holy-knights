@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { FilterBar, FilterOptions } from './FilterBar';
 
 interface FilterModalProps {
@@ -27,11 +28,12 @@ export const FilterModal = ({
     }
   }, [isOpen, filters]);
 
-  if (!isOpen) return null;
 
-  const handleCancel = () => {
-    setTempFilters(filters);
-    onClose();
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setTempFilters(filters);
+      onClose();
+    }
   };
 
   const handleApply = () => {
@@ -48,18 +50,13 @@ export const FilterModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-bg-primary rounded-lg shadow-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-text-primary">フィルター設定</h2>
-            <button
-              onClick={handleCancel}
-              className="text-text-secondary hover:text-text-secondary transition-colors text-2xl"
-            >
-              ×
-            </button>
-          </div>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>フィルター設定</DialogTitle>
+          <DialogClose onClose={() => handleOpenChange(false)} />
+        </DialogHeader>
+        <div className="p-6 pt-0">
           <FilterBar
             filters={tempFilters}
             onFiltersChange={setTempFilters}
@@ -80,7 +77,7 @@ export const FilterModal = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };

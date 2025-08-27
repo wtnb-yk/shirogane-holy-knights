@@ -1,11 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface DialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
+  closeOnOutsideClick?: boolean;
+  closeOnEscape?: boolean;
 }
 
 interface DialogContentProps {
@@ -21,11 +23,48 @@ interface DialogTitleProps {
   children: React.ReactNode;
 }
 
-export const Dialog = ({ open, children }: DialogProps) => {
+export const Dialog = ({ 
+  open, 
+  onOpenChange, 
+  children, 
+  closeOnOutsideClick = true,
+  closeOnEscape = true 
+}: DialogProps) => {
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (closeOnEscape && event.key === 'Escape') {
+        onOpenChange(false);
+      }
+    };
+
+    const handleBodyScroll = () => {
+      document.body.style.overflow = 'hidden';
+    };
+
+    handleBodyScroll();
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, onOpenChange, closeOnEscape]);
+
   if (!open) return null;
 
+  const handleBackdropClick = (event: React.MouseEvent) => {
+    if (closeOnOutsideClick && event.target === event.currentTarget) {
+      onOpenChange(false);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      onClick={handleBackdropClick}
+    >
       {children}
     </div>
   );
@@ -43,7 +82,7 @@ export const DialogContent = ({ className = '', children }: DialogContentProps) 
 
 export const DialogHeader = ({ children }: DialogHeaderProps) => {
   return (
-    <div className="flex items-center justify-between p-6 border-b border-surface-border">
+    <div className="flex items-center justify-between p-6 border-b border-surface-border mb-4">
       {children}
     </div>
   );
@@ -51,7 +90,7 @@ export const DialogHeader = ({ children }: DialogHeaderProps) => {
 
 export const DialogTitle = ({ children }: DialogTitleProps) => {
   return (
-    <h2 className="text-lg font-semibold text-text-primary">
+    <h2 className="text-xl font-semibold text-text-primary">
       {children}
     </h2>
   );
@@ -65,7 +104,7 @@ export const DialogClose = ({ onClose }: DialogCloseProps) => {
   return (
     <button
       onClick={onClose}
-      className="text-text-secondary hover:text-text-secondary transition-colors text-2xl"
+      className="text-text-secondary hover:text-text-secondary transition-colors text-2xl flex items-center justify-center w-8 h-8"
     >
       ×
     </button>

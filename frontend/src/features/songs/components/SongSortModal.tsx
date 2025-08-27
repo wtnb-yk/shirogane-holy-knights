@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, TrendingUp, Calendar } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { SortBy, SortOrder } from '../types/types';
 
 interface SongSortModalProps {
@@ -30,7 +31,6 @@ export const SongSortModal = ({
     }
   }, [isOpen, sortBy, sortOrder]);
 
-  if (!isOpen) return null;
 
   const handleSortByChange = (newSortBy: SortBy) => {
     setTempSortBy(newSortBy);
@@ -45,10 +45,12 @@ export const SongSortModal = ({
     onClose();
   };
 
-  const handleCancel = () => {
-    setTempSortBy(sortBy);
-    setTempSortOrder(sortOrder);
-    onClose();
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setTempSortBy(sortBy);
+      setTempSortOrder(sortOrder);
+      onClose();
+    }
   };
 
   const sortByOptions = [
@@ -70,18 +72,13 @@ export const SongSortModal = ({
   const orderLabels = getSortOrderLabel();
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-bg-primary rounded-lg shadow-lg max-w-md w-full">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-text-primary">並び替え設定</h2>
-            <button
-              onClick={handleCancel}
-              className="text-text-secondary hover:text-text-primary transition-colors text-2xl leading-none"
-            >
-              ×
-            </button>
-          </div>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>並び替え設定</DialogTitle>
+          <DialogClose onClose={() => handleOpenChange(false)} />
+        </DialogHeader>
+        <div className="p-6 pt-0">
           
           <div className="space-y-6">
             <div>
@@ -159,7 +156,7 @@ export const SongSortModal = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
