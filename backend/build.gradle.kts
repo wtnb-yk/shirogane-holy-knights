@@ -46,6 +46,10 @@ dependencies {
     
     // Database
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
+    implementation("org.postgresql:postgresql:42.7.2")
+    
+    // Liquibase Migration
+    implementation("org.liquibase:liquibase-core:4.24.0")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -220,4 +224,22 @@ val deployLocalStackApiGateway by tasks.registering(Exec::class) {
             environment("LOCALSTACK_ENDPOINT", localstackEndpoint)
         }
     }
+}
+
+// Liquibaseマイグレーション実行タスク（CI/CD用）
+val liquibaseUpdate by tasks.registering(JavaExec::class) {
+    group = "database"
+    description = "Run Liquibase database migration"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("liquibase.integration.commandline.Main")
+    
+    dependsOn(tasks.processResources)
+
+    args = listOf(
+        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane"}",
+        "--username=${System.getenv("DB_USER") ?: "postgres"}",
+        "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
+        "--changeLogFile=classpath:db/changelog/changelog.xml",
+        "update"
+    )
 }
