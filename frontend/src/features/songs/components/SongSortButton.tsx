@@ -6,13 +6,11 @@ import { Filter } from 'lucide-react';
 interface SongSortButtonProps {
   onSortClick?: () => void;
   disabled?: boolean;
-  currentSortLabel: string;
 }
 
 export const SongSortButton = ({ 
   onSortClick,
-  disabled = false,
-  currentSortLabel
+  disabled = false
 }: SongSortButtonProps) => {
   return (
     <button 
@@ -21,7 +19,7 @@ export const SongSortButton = ({
       disabled={disabled}
     >
       <Filter className="w-4 h-4 md:w-5 md:h-5 text-text-secondary" />
-      <span className="text-text-secondary text-sm md:text-base">{currentSortLabel}</span>
+      <span className="text-text-secondary text-sm md:text-base">並び替え</span>
     </button>
   );
 };

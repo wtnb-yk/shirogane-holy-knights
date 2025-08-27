@@ -1,8 +1,7 @@
 // 楽曲検索の並び替え項目
 export enum SortBy {
   SING_COUNT = 'singCount',
-  LATEST_SING_DATE = 'latestSingDate',
-  TITLE = 'title'
+  LATEST_SING_DATE = 'latestSingDate'
 }
 
 // 楽曲検索の並び替え順
