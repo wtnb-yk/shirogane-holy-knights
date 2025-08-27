@@ -232,14 +232,12 @@ val liquibaseUpdate by tasks.registering(JavaExec::class) {
     description = "Run Liquibase database migration"
     classpath = sourceSets.main.get().runtimeClasspath
     mainClass.set("liquibase.integration.commandline.Main")
-    
-    dependsOn(tasks.processResources)
 
     args = listOf(
-        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane_db"}",
+        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane"}",
         "--username=${System.getenv("DB_USER") ?: "postgres"}",
         "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
-        "--changeLogFile=classpath:db/changelog/changelog.xml",
+        "--changeLogFile=src/main/resources/db/changelog/changelog.xml",
         "update"
     )
 }
