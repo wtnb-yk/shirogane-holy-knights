@@ -77,9 +77,13 @@ data class NewsSearchParamsDto(
     val categoryIds: List<Int>? = null, // 複数カテゴリ対応
     val startDate: String? = null, // ISO 8601形式の日時文字列
     val endDate: String? = null,   // ISO 8601形式の日時文字列
-    val page: Int = 1,
+    val page: Int = 1,  
     val pageSize: Int = 20
 ) {
+    /**
+     * PageRequestインスタンスを生成
+     */
+    fun toPageRequest() = com.shirogane.holy.knights.application.common.PageRequest(page, pageSize)
     /**
      * startDateをInstantに変換
      */
@@ -94,12 +98,6 @@ data class NewsSearchParamsDto(
         return endDate?.let { Instant.parse(it) }
     }
     
-    /**
-     * オフセットを計算
-     */
-    fun getOffset(): Int {
-        return (page - 1) * pageSize
-    }
 }
 
 /**

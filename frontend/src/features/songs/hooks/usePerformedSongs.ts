@@ -34,7 +34,7 @@ interface UsePerformedSongsOptions {
  * 検索、ページネーション、並び替え機能を統合
  */
 export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePerformedSongsResult => {
-  const { pageSize = 20, initialPage = 0 } = options;
+  const { pageSize = 20, initialPage = 1 } = options;
   
   // 検索機能（動画と同じフックを使用）
   const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useVideoSearch();

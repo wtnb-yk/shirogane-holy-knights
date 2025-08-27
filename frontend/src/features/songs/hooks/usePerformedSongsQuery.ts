@@ -70,7 +70,7 @@ export const usePerformedSongsQuery = (
   }, [currentPage, pageSize, searchQuery, sortBy, sortOrder]);
 
   const totalPages = Math.ceil(totalCount / pageSize);
-  const hasMore = (currentPage + 1) * pageSize < totalCount;
+  const hasMore = currentPage * pageSize < totalCount;
 
   return {
     songs,

@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.application.usecase
 
+import com.shirogane.holy.knights.application.common.PageResponse
 import com.shirogane.holy.knights.application.dto.VideoDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchResultDto
@@ -23,7 +24,7 @@ class VideoUseCaseImpl(
         logger.info("動画検索実行: $searchParams")
         
         return try {
-            val offset = (searchParams.page - 1) * searchParams.pageSize
+            val pageRequest = searchParams.toPageRequest()
             val startDate = searchParams.startDate?.let { Instant.parse(it) }
             val endDate = searchParams.endDate?.let { Instant.parse(it) }
             
@@ -32,8 +33,8 @@ class VideoUseCaseImpl(
                 tags = searchParams.tags,
                 startDate = startDate,
                 endDate = endDate,
-                limit = searchParams.pageSize,
-                offset = offset
+                limit = pageRequest.size,
+                offset = pageRequest.offset
             )
             
             val totalCount = videoRepository.countVideosBySearchCriteria(
@@ -43,14 +44,15 @@ class VideoUseCaseImpl(
                 endDate = endDate
             )
 
-            val hasMore = (searchParams.page * searchParams.pageSize) < totalCount
+            val videosDto = videos.map { convertToDto(it) }
+            val pageResponse = PageResponse.of(videosDto, totalCount, pageRequest)
             
             VideoSearchResultDto(
-                items = videos.map { convertToDto(it) },
-                totalCount = totalCount,
-                page = searchParams.page,
-                pageSize = searchParams.pageSize,
-                hasMore = hasMore
+                items = pageResponse.content,
+                totalCount = pageResponse.totalElements,
+                page = pageResponse.page,
+                pageSize = pageResponse.size,
+                hasMore = pageResponse.hasMore
             )
         } catch (e: Exception) {
             logger.error("動画検索エラー", e)
@@ -68,7 +70,7 @@ class VideoUseCaseImpl(
         logger.info("配信検索実行: $searchParams")
         
         return try {
-            val offset = (searchParams.page - 1) * searchParams.pageSize
+            val pageRequest = searchParams.toPageRequest()
             val startDate = searchParams.startDate?.let { Instant.parse(it) }
             val endDate = searchParams.endDate?.let { Instant.parse(it) }
             
@@ -77,8 +79,8 @@ class VideoUseCaseImpl(
                 tags = searchParams.tags,
                 startDate = startDate,
                 endDate = endDate,
-                limit = searchParams.pageSize,
-                offset = offset
+                limit = pageRequest.size,
+                offset = pageRequest.offset
             )
             
             val totalCount = videoRepository.countStreamsBySearchCriteria(
@@ -88,14 +90,15 @@ class VideoUseCaseImpl(
                 endDate = endDate
             )
 
-            val hasMore = (searchParams.page * searchParams.pageSize) < totalCount
+            val streamsDto = streams.map { convertToStreamDto(it) }
+            val pageResponse = PageResponse.of(streamsDto, totalCount, pageRequest)
             
             StreamSearchResultDto(
-                items = streams.map { convertToStreamDto(it) },
-                totalCount = totalCount,
-                page = searchParams.page,
-                pageSize = searchParams.pageSize,
-                hasMore = hasMore
+                items = pageResponse.content,
+                totalCount = pageResponse.totalElements,
+                page = pageResponse.page,
+                pageSize = pageResponse.size,
+                hasMore = pageResponse.hasMore
             )
         } catch (e: Exception) {
             logger.error("配信検索エラー", e)

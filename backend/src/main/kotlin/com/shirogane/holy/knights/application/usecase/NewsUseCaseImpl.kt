@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.application.usecase
 
+import com.shirogane.holy.knights.application.common.PageResponse
 import com.shirogane.holy.knights.application.dto.*
 import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
 import com.shirogane.holy.knights.domain.repository.NewsRepository
@@ -18,7 +19,7 @@ class NewsUseCaseImpl(
         logger.info("ニュース検索ユースケース実行（統合版）: $params")
         
         try {
-            val offset = (params.page - 1) * params.pageSize
+            val pageRequest = params.toPageRequest()
             val startDate = params.startDate?.let { Instant.parse(it) }
             val endDate = params.endDate?.let { Instant.parse(it) }
             
@@ -27,8 +28,8 @@ class NewsUseCaseImpl(
                 categoryIds = params.categoryIds,
                 startDate = startDate,
                 endDate = endDate,
-                limit = params.pageSize,
-                offset = offset
+                limit = pageRequest.size,
+                offset = pageRequest.offset
             )
             
             val totalCount = newsRepository.countBySearchCriteria(
@@ -38,14 +39,15 @@ class NewsUseCaseImpl(
                 endDate = endDate
             )
             
-            val hasMore = (params.page * params.pageSize) < totalCount
+            val newsDto = newsList.map { NewsDto.fromDomain(it) }
+            val pageResponse = PageResponse.of(newsDto, totalCount, pageRequest)
             
             return NewsSearchResultDto(
-                items = newsList.map { NewsDto.fromDomain(it) },
-                totalCount = totalCount,
-                page = params.page,
-                pageSize = params.pageSize,
-                hasMore = hasMore
+                items = pageResponse.content,
+                totalCount = pageResponse.totalElements,
+                page = pageResponse.page,
+                pageSize = pageResponse.size,
+                hasMore = pageResponse.hasMore
             )
         } catch (e: Exception) {
             logger.error("ニュース検索エラー", e)

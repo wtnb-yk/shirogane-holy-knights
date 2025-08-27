@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.application.usecase
 
+import com.shirogane.holy.knights.application.common.PageResponse
 import com.shirogane.holy.knights.application.dto.PerformedSongDto
 import com.shirogane.holy.knights.application.dto.PerformedSongSearchParamsDto
 import com.shirogane.holy.knights.application.dto.PerformedSongSearchResultDto
@@ -20,27 +21,28 @@ class SongUseCaseImpl(
         logger.info("楽曲検索実行: $searchParams")
         
         return try {
-            val offset = searchParams.getOffset()
+            val pageRequest = searchParams.toPageRequest()
             
             val songs = songRepository.searchPerformedSongs(
                 query = searchParams.query,
                 sortBy = searchParams.sortBy ?: "singCount",
                 sortOrder = searchParams.sortOrder ?: "DESC",
-                limit = searchParams.size,
-                offset = offset
+                limit = pageRequest.size,
+                offset = pageRequest.offset
             )
             
             val totalCount = songRepository.countPerformedSongs(
                 query = searchParams.query
             )
 
-            val totalPages = (totalCount + searchParams.size - 1) / searchParams.size
+            val songsDto = songs.map { PerformedSongDto.fromDomain(it) }
+            val pageResponse = PageResponse.of(songsDto, totalCount, pageRequest)
             
             PerformedSongSearchResultDto(
-                songs = songs.map { PerformedSongDto.fromDomain(it) },
-                totalCount = totalCount,
-                totalPages = totalPages,
-                currentPage = searchParams.page
+                songs = pageResponse.content,
+                totalCount = pageResponse.totalElements,
+                totalPages = pageResponse.totalPages,
+                currentPage = pageResponse.page
             )
         } catch (e: Exception) {
             logger.error("楽曲検索中にエラーが発生しました", e)
