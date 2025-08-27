@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, TrendingUp, Calendar } from 'lucide-react';
 import { SortBy, SortOrder } from '../types/types';
 
@@ -19,14 +19,36 @@ export const SongSortModal = ({
   sortOrder,
   onSortChange
 }: SongSortModalProps) => {
+  const [tempSortBy, setTempSortBy] = useState<SortBy>(sortBy);
+  const [tempSortOrder, setTempSortOrder] = useState<SortOrder>(sortOrder);
+
+  // モーダルが開かれたときに現在の設定を一時状態にコピー
+  useEffect(() => {
+    if (isOpen) {
+      setTempSortBy(sortBy);
+      setTempSortOrder(sortOrder);
+    }
+  }, [isOpen, sortBy, sortOrder]);
+
   if (!isOpen) return null;
 
   const handleSortByChange = (newSortBy: SortBy) => {
-    onSortChange(newSortBy, sortOrder);
+    setTempSortBy(newSortBy);
   };
 
   const handleSortOrderChange = (newSortOrder: SortOrder) => {
-    onSortChange(sortBy, newSortOrder);
+    setTempSortOrder(newSortOrder);
+  };
+
+  const handleApply = () => {
+    onSortChange(tempSortBy, tempSortOrder);
+    onClose();
+  };
+
+  const handleCancel = () => {
+    setTempSortBy(sortBy);
+    setTempSortOrder(sortOrder);
+    onClose();
   };
 
   const sortByOptions = [
@@ -35,7 +57,7 @@ export const SongSortModal = ({
   ];
 
   const getSortOrderLabel = () => {
-    switch (sortBy) {
+    switch (tempSortBy) {
       case SortBy.SING_COUNT:
         return { desc: '多い → 少ない', asc: '少ない → 多い' };
       case SortBy.LATEST_SING_DATE:
@@ -54,7 +76,7 @@ export const SongSortModal = ({
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-text-primary">並び替え設定</h2>
             <button
-              onClick={onClose}
+              onClick={handleCancel}
               className="text-text-secondary hover:text-text-primary transition-colors text-2xl leading-none"
             >
               ×
@@ -66,7 +88,7 @@ export const SongSortModal = ({
               <h3 className="text-sm font-medium text-text-primary mb-3">並び替え項目</h3>
               <div className="space-y-2">
                 {sortByOptions.map((option) => {
-                  const isSelected = sortBy === option.value;
+                  const isSelected = tempSortBy === option.value;
                   return (
                     <button
                       key={option.value}
@@ -105,7 +127,7 @@ export const SongSortModal = ({
                 <button
                   onClick={() => handleSortOrderChange(SortOrder.DESC)}
                   className={`flex-1 p-3 rounded-lg border flex items-center justify-center gap-2 transition-all duration-200 ${
-                    sortOrder === SortOrder.DESC
+                    tempSortOrder === SortOrder.DESC
                       ? 'border-text-secondary bg-text-secondary text-white'
                       : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-primary'
                   }`}
@@ -116,7 +138,7 @@ export const SongSortModal = ({
                 <button
                   onClick={() => handleSortOrderChange(SortOrder.ASC)}
                   className={`flex-1 p-3 rounded-lg border flex items-center justify-center gap-2 transition-all duration-200 ${
-                    sortOrder === SortOrder.ASC
+                    tempSortOrder === SortOrder.ASC
                       ? 'border-text-secondary bg-text-secondary text-white'
                       : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-primary'
                   }`}
@@ -128,10 +150,10 @@ export const SongSortModal = ({
             </div>
           </div>
           
-          <div className="mt-6 pt-4 border-t border-surface-border">
+          <div className="mt-6 pt-4 border-t border-surface-border flex gap-3">
             <button
-              onClick={onClose}
-              className="w-full px-4 py-2 bg-text-secondary text-white rounded-md hover:bg-text-secondary/90 transition-colors"
+              onClick={handleApply}
+              className="flex-1 px-4 py-2 bg-text-secondary text-white rounded-md hover:bg-text-secondary/90 transition-colors"
             >
               適用
             </button>

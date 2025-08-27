@@ -64,7 +64,13 @@ export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceLi
           {/* パフォーマンス一覧 */}
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {song.performances.map((performance: Performance, index: number) => (
-              <div key={index} className="border border-border-primary rounded-lg p-4 hover:bg-bg-secondary transition-colors">
+              <a 
+                key={index} 
+                href={performance.streamSongUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block border border-border-primary rounded-lg p-4 hover:bg-bg-secondary hover:border-accent-gold/50 transition-all duration-200 cursor-pointer group"
+              >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1 min-w-0">
                     <h4 className="text-text-primary font-medium text-sm line-clamp-2 mb-1">
@@ -82,18 +88,11 @@ export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceLi
                     </div>
                   </div>
                   
-                  <a
-                    href={performance.streamSongUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-3 flex items-center gap-1 px-3 py-2 bg-accent-gold text-text-primary text-xs font-medium rounded-lg hover:bg-accent-gold/90 transition-colors whitespace-nowrap"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    視聴する
-                  </a>
+                  <div className="ml-3 flex items-center">
+                    <ExternalLink className="w-4 h-4 text-text-secondary group-hover:text-accent-gold transition-colors" />
+                  </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
