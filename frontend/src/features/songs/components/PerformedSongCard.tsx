@@ -54,10 +54,10 @@ const PerformedSongCardComponent = ({ song, index = 0, onClick }: PerformedSongC
             </div>
           )}
 
-          {/* パフォーマンス数インジケーター */}
+          {/* 歌唱数インジケーター */}
           <div className="mt-2 text-center">
             <span className="text-xs text-text-primary bg-bg-secondary rounded-full px-2 py-1">
-              {song.performances.length}件のパフォーマンス
+              {song.performances.length}回
             </span>
           </div>
         </CardContent>

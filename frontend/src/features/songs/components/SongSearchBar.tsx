@@ -48,7 +48,7 @@ export function SongSearchBar({
   const sortDisplayInfo = getSortDisplayInfo();
 
   return (
-    <div className="mb-4 md:mb-8 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
+    <div className="mb-3 md:mb-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
       <div className="flex flex-wrap gap-2 md:gap-4 mb-3">
         <SearchInput
           searchValue={searchValue}
