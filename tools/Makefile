@@ -87,4 +87,14 @@ stream-tags-import-prd:
 extract-songs:
 	cd scripts && python3 extract_songs.py
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+## ストリーム楽曲インポート
+stream-songs-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 stream_songs_importer.py
+
+stream-songs-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 stream_songs_importer.py
+
+stream-songs-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 stream_songs_importer.py
+
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs stream-songs-import-local stream-songs-import-dev stream-songs-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
