@@ -30,17 +30,17 @@ export function Footer() {
             <ul className="flex md:flex-col gap-4 md:gap-0 md:space-y-2">
               <li>
                 <Link href="/" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-                  ホーム
+                  HOME
                 </Link>
               </li>
               <li>
                 <Link href="/videos" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-                  配信・動画
+                  ARCHIVE
                 </Link>
               </li>
               <li>
                 <Link href="/news" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-                  ニュース
+                  NEWS
                 </Link>
               </li>
             </ul>

@@ -29,7 +29,7 @@ export default function SongsList() {
         <div className="mb-4 opacity-0 animate-slide-up">
           <div className="mb-4 md:mb-6">
             <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
-              歌
+              SONG
             </h1>
           </div>
         </div>
@@ -47,8 +47,6 @@ export default function SongsList() {
         <SongSearchResultsSummary
           searchQuery={songsData.searchQuery}
           totalCount={songsData.totalCount}
-          sortBy={songsData.sortBy}
-          sortOrder={songsData.sortOrder}
           onClearSearch={songsData.clearSearch}
         />
 

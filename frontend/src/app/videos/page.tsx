@@ -28,7 +28,7 @@ export default function VideosList() {
         <div className="mb-4 opacity-0 animate-slide-up">
           <div className="mb-4 md:mb-6">
             <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
-              配信・動画
+              ARCHIVE
             </h1>
           </div>
           
