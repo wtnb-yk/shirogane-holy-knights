@@ -24,22 +24,21 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   const imageUrl = getImageUrl(news.thumbnailUrl);
   
   const cardContent = (
-    <InteractiveCard hoverScale="sm" className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl bg-bg-primary">
+    <InteractiveCard hoverScale="sm" className="border-0 rounded-lg bg-bg-primary overflow-hidden">
       <div className="flex flex-col sm:flex-row">
         {/* 画像部分 */}
         {imageUrl && (
-          <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-gradient-to-br from-accent-blue/10 to-accent-beige/10 rounded-l-xl">
+          <div className="relative w-full sm:w-96 h-64 sm:h-[240px] flex-shrink-0 overflow-hidden bg-bg-accent">
             <Image 
               src={imageUrl} 
               alt={news.title} 
               fill
-              className="object-cover image-hover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
               sizes="(max-width: 640px) 100vw, 288px"
               placeholder="blur"
               blurDataURL={IMAGE_STYLES.placeholder}
             />
-            <div className="image-overlay" />
             <OverlayIcon
               type="external-link"
               isVisible={false}
@@ -108,23 +107,22 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           target="_blank"
           rel="noopener noreferrer"
           hoverScale="sm"
-          className="border-0 shadow-sm hover:shadow-md transition-all duration-300 rounded-xl bg-bg-primary"
+          className="border-0 rounded-lg bg-bg-primary overflow-hidden"
         >
           <div className="flex flex-col sm:flex-row">
             {/* 画像部分 */}
             {imageUrl && (
-              <div className="relative w-full sm:w-72 h-48 sm:h-[180px] flex-shrink-0 overflow-hidden bg-gradient-to-br from-accent-blue/10 to-accent-beige/10 rounded-l-xl">
+              <div className="relative w-full sm:w-96 h-64 sm:h-[240px] flex-shrink-0 overflow-hidden bg-bg-accent">
                 <Image 
                   src={imageUrl} 
                   alt={news.title} 
                   fill
-                  className="object-cover image-hover"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                   sizes="(max-width: 640px) 100vw, 288px"
                   placeholder="blur"
                   blurDataURL={IMAGE_STYLES.placeholder}
                 />
-                <div className="image-overlay" />
                 <OverlayIcon
                   type="external-link"
                   isVisible={false}
