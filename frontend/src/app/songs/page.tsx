@@ -31,6 +31,9 @@ export default function SongsList() {
             <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
               SONG
             </h1>
+            <p className="text-sm md:text-base text-text-secondary mt-1">
+              歌枠で歌われた曲を検索・閲覧できます
+            </p>
           </div>
         </div>
 
