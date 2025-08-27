@@ -27,7 +27,7 @@ export function BaseGrid<T>({
     subtitle: '検索条件を変更してお試しください'
   },
   skeletonCount = 6,
-  gridClassName = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+  gridClassName = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
 }: BaseGridProps<T>) {
   if (error) {
     return (
@@ -42,7 +42,7 @@ export function BaseGrid<T>({
 
   if (loading) {
     return (
-      <div className={`grid ${gridClassName} gap-3 md:gap-5 mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
+      <div className={`grid ${gridClassName} gap-px mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
         {Array.from({ length: skeletonCount }).map((_, index) => (
           <React.Fragment key={index}>
             {renderSkeleton(index)}
@@ -64,7 +64,7 @@ export function BaseGrid<T>({
   }
 
   return (
-    <div className={`grid ${gridClassName} gap-3 md:gap-5 mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
+    <div className={`grid ${gridClassName} gap-px mb-8 opacity-0 animate-slide-up`} style={{ animationDelay: '200ms' }}>
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {renderItem(item, index)}

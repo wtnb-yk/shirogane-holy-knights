@@ -4,12 +4,10 @@ import React from 'react';
 import Image from 'next/image';
 import { Radio, Tag } from 'lucide-react';
 import { StreamDto } from '../types/types';
-import { CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
-import { OverlayIcon } from '@/components/ui/OverlayIcon';
-import { IMAGE_STYLES, BACKGROUND_OPACITY } from '@/constants/styles';
+import { IMAGE_STYLES } from '@/constants/styles';
 
 interface StreamCardProps {
   stream: StreamDto;
@@ -24,8 +22,8 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`${stream.title}をYouTubeで視聴`}
-        hoverScale="md"
-        className="video-card-hover rounded-lg overflow-hidden"
+        hoverScale="sm"
+        className="rounded-lg overflow-hidden h-full"
       >
         {stream.thumbnailUrl && (
           <div className="relative w-full aspect-video overflow-hidden bg-bg-accent">
@@ -33,67 +31,53 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
               src={stream.thumbnailUrl} 
               alt={stream.title} 
               fill
-              className="object-cover image-hover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
               placeholder="blur"
               blurDataURL={IMAGE_STYLES.placeholder}
             />
-            <div className="image-overlay" />
-            <OverlayIcon
-              type="play"
-              isVisible={false}
-              className="group-hover:opacity-100"
-            />
+            
+            {/* ホバー時オーバーレイ */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            {/* ホバー時情報表示 */}
+            <div className="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
+              <h3 className="text-white font-bold text-sm mb-2 line-clamp-2">
+                {stream.title}
+              </h3>
+              <div className="flex items-center gap-2 text-white/80 text-xs mb-2">
+                <Radio className="w-3 h-3" />
+                <span>
+                  {stream.startedAt 
+                    ? new Date(stream.startedAt).toLocaleDateString('ja-JP') 
+                    : '配信日未定'
+                  }
+                </span>
+              </div>
+              {stream.tags && stream.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {stream.tags.slice(0, 2).map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="bg-white/20 text-white hover:bg-white/30 transition-colors text-xs px-2 py-0.5 border-none"
+                    >
+                      <Tag className="w-2 h-2 mr-1" />
+                      {tag}
+                    </Badge>
+                  ))}
+                  {stream.tags.length > 2 && (
+                    <Badge variant="outline" className="text-xs px-2 py-0.5 bg-white/10 text-white border-white/30">
+                      +{stream.tags.length - 2}
+                    </Badge>
+                  )}
+                </div>
+              )}
+            </div>
+            
           </div>
         )}
-        <CardContent className="p-3 md:p-5">
-          <h3 className={`text-base md:text-lg font-bold mb-2 md:mb-3 text-text-primary group-hover:text-text-secondary transition-colors duration-ui`}>
-            {stream.title}
-          </h3>
-          <div className="flex items-center gap-2 text-sm text-text-secondary mb-2 md:mb-3">
-            <Radio className="w-4 h-4" />
-            <span>
-              {stream.startedAt 
-                ? new Date(stream.startedAt).toLocaleDateString('ja-JP') 
-                : '配信日未定'
-              }
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-1.5 md:gap-2">
-            {stream.tags?.slice(0, 3).map((tag) => (
-              <Badge
-                key={tag}
-                variant="secondary"
-                className={`${BACKGROUND_OPACITY.accent.strong} text-text-primary hover:bg-bg-accent/70 transition-colors duration-ui ${BACKGROUND_OPACITY.surface.light} text-xs px-2 py-1`}
-              >
-                <Tag className="w-2.5 h-2.5 mr-1" />
-                {tag}
-              </Badge>
-            ))}
-            {stream.tags && stream.tags.length > 3 && (
-              <div className="relative group/tooltip">
-                <Badge variant="outline" className={`text-xs ${BACKGROUND_OPACITY.surface.light} text-text-secondary`}>
-                  +{stream.tags.length - 3}
-                </Badge>
-                <div className="tooltip-base">
-                  <div className="flex flex-wrap gap-1">
-                    {stream.tags.slice(3).map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className={`${BACKGROUND_OPACITY.accent.strong} text-text-primary text-xs ${BACKGROUND_OPACITY.surface.light}`}
-                      >
-                        <Tag className="w-2.5 h-2.5 mr-1" />
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
       </InteractiveCard>
     </StaggeredItem>
   );
