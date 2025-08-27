@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, TrendingUp, Calendar } from 'lucide-react';
 import { SortBy, SortOrder } from '../types/types';
 
 interface SongSortModalProps {
@@ -30,8 +30,8 @@ export const SongSortModal = ({
   };
 
   const sortByOptions = [
-    { value: SortBy.SING_COUNT, label: '歌唱回数', icon: '🔥', description: '人気の高い楽曲順' },
-    { value: SortBy.LATEST_SING_DATE, label: '最新歌唱日', icon: '📅', description: '最近歌った楽曲順' }
+    { value: SortBy.SING_COUNT, label: '歌唱回数', icon: TrendingUp, description: '人気の高い楽曲順' },
+    { value: SortBy.LATEST_SING_DATE, label: '最新歌唱日', icon: Calendar, description: '最近歌った楽曲順' }
   ];
 
   const getSortOrderLabel = () => {
@@ -78,7 +78,7 @@ export const SongSortModal = ({
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-lg">{option.icon}</span>
+                        <option.icon className="w-5 h-5 text-text-secondary" />
                         <div>
                           <div className={`font-medium ${
                             isSelected ? 'text-text-primary' : 'text-text-secondary'

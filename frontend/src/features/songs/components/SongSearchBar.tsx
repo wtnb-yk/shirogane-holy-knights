@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { TrendingUp, Calendar } from 'lucide-react';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { SortBy, SortOrder } from '../types/types';
 import { SongSortButton } from './SongSortButton';
@@ -26,11 +27,11 @@ export function SongSearchBar({
 
   const getSortDisplayInfo = () => {
     const sortByInfo = {
-      [SortBy.SING_COUNT]: { label: '歌唱回数', icon: '🔥' },
-      [SortBy.LATEST_SING_DATE]: { label: '最新歌唱日', icon: '📅' }
+      [SortBy.SING_COUNT]: { label: '歌唱回数', icon: TrendingUp },
+      [SortBy.LATEST_SING_DATE]: { label: '最新歌唱日', icon: Calendar }
     };
     
-    return sortByInfo[sortBy] || { label: '歌唱回数', icon: '🔥' };
+    return sortByInfo[sortBy] || { label: '歌唱回数', icon: TrendingUp };
   };
 
   const getSortOrderLabel = () => {
@@ -63,7 +64,7 @@ export function SongSearchBar({
       
       <div className="flex items-center gap-2 text-sm text-text-secondary">
         <span className="text-text-tertiary">並び順:</span>
-        <span className="text-base">{sortDisplayInfo.icon}</span>
+        <sortDisplayInfo.icon className="w-4 h-4" />
         <span>{sortDisplayInfo.label}</span>
         <span className="text-text-tertiary">•</span>
         <span>{getSortOrderLabel()}</span>
