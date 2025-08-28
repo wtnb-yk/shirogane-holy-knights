@@ -3,3 +3,4 @@ pandas==2.2.3
 psycopg2-binary==2.9.7
 python-dotenv==1.0.0
 numpy==1.26.4
+spotipy==2.24.0

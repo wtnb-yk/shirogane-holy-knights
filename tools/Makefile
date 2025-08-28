@@ -97,4 +97,14 @@ stream-songs-import-dev:
 stream-songs-import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 stream_songs_importer.py
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs stream-songs-import-local stream-songs-import-dev stream-songs-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+## アーティスト情報更新（Spotify APIで日本語アーティスト名を取得）
+update-artists-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 update_song_artists.py
+
+update-artists-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 update_song_artists.py
+
+update-artists-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 update_song_artists.py
+
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
