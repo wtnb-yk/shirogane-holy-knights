@@ -3,11 +3,11 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { usePagination } from '@/features/videos/hooks/usePagination';
 import { useVideoSearch } from '@/features/videos/hooks/useVideoSearch';
-import { usePerformedSongsQuery } from './usePerformedSongsQuery';
-import { PerformedSong, SortBy, SortOrder, SongFilterOptions } from '../types/types';
+import { useStreamSongsQuery } from './useStreamSongsQuery';
+import { StreamSong, SortBy, SortOrder, SongFilterOptions } from '../types/types';
 
-interface UsePerformedSongsResult {
-  songs: PerformedSong[];
+interface UseStreamSongsResult {
+  songs: StreamSong[];
   loading: boolean;
   error: string | null;
   currentPage: number;
@@ -27,7 +27,7 @@ interface UsePerformedSongsResult {
   clearAllFilters: () => void;
 }
 
-interface UsePerformedSongsOptions {
+interface UseStreamSongsOptions {
   pageSize?: number;
   initialPage?: number;
 }
@@ -36,7 +36,7 @@ interface UsePerformedSongsOptions {
  * 楽曲検索機能の統合hook
  * 検索、ページネーション、並び替え機能を統合
  */
-export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePerformedSongsResult => {
+export const useStreamSongs = (options: UseStreamSongsOptions = {}): UseStreamSongsResult => {
   const { pageSize = 20, initialPage = 1 } = options;
   
   // 検索機能（動画と同じフックを使用）
@@ -57,7 +57,7 @@ export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePe
   );
   
   // API呼び出し（currentPageを使用）
-  const { songs, loading, error, totalCount: newTotalCount, hasMore } = usePerformedSongsQuery(
+  const { songs, loading, error, totalCount: newTotalCount, hasMore } = useStreamSongsQuery(
     { pageSize },
     { currentPage, searchQuery, sortBy, sortOrder, filters }
   );

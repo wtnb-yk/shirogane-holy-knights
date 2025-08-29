@@ -20,7 +20,7 @@ class SongRepositoryImpl(
     private val logger = LoggerFactory.getLogger(SongRepositoryImpl::class.java)
     private val objectMapper = ObjectMapper()
 
-    override suspend fun searchPerformedSongs(
+    override suspend fun searchStreamSongs(
         query: String?,
         sortBy: String,
         sortOrder: String,
@@ -151,7 +151,7 @@ class SongRepositoryImpl(
         }.all().asFlow().toList()
     }
 
-    override suspend fun countPerformedSongs(
+    override suspend fun countStreamSongs(
         query: String?,
         startDate: Instant?,
         endDate: Instant?
@@ -200,7 +200,7 @@ class SongRepositoryImpl(
             .awaitSingle()
     }
 
-    override suspend fun getPerformedSongsStats(
+    override suspend fun getStreamSongsStats(
         topSongsLimit: Int,
         recentPerformancesLimit: Int
     ): SongStats {

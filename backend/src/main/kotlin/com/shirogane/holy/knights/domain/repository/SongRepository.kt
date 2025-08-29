@@ -16,7 +16,7 @@ interface SongRepository {
      * @param offset オフセット
      * @return 検索条件に合致する楽曲のリスト
      */
-    suspend fun searchPerformedSongs(
+    suspend fun searchStreamSongs(
         query: String? = null,
         sortBy: String = "singCount",
         sortOrder: String = "DESC",
@@ -33,7 +33,7 @@ interface SongRepository {
      * @param endDate 配信開始日時の終了範囲
      * @return 検索条件に合致する楽曲の総数
      */
-    suspend fun countPerformedSongs(
+    suspend fun countStreamSongs(
         query: String? = null,
         startDate: Instant? = null,
         endDate: Instant? = null
@@ -45,7 +45,7 @@ interface SongRepository {
      * @param recentPerformancesLimit 最新歌唱の取得件数
      * @return 楽曲統計情報
      */
-    suspend fun getPerformedSongsStats(
+    suspend fun getStreamSongsStats(
         topSongsLimit: Int = 10,
         recentPerformancesLimit: Int = 10
     ): SongStats

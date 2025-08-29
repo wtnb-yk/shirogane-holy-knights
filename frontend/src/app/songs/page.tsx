@@ -1,27 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import { usePerformedSongs } from '@/features/songs/hooks/usePerformedSongs';
+import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
 import { SongSearchBar } from '@/features/songs/components/SongSearchBar';
-import { PerformedSongsGrid } from '@/features/songs/components/PerformedSongsGrid';
+import { StreamSongsGrid } from '@/features/songs/components/StreamSongsGrid';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
 import { SongOptionsModal } from '@/features/songs/components/SongOptionsModal';
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { Pagination } from '@/components/ui/Pagination';
-import { PerformedSong } from '@/features/songs/types/types';
+import { StreamSong } from '@/features/songs/types/types';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
-  const [selectedSong, setSelectedSong] = useState<PerformedSong | null>(null);
+  const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   
-  const handleSongClick = (song: PerformedSong) => {
+  const handleSongClick = (song: StreamSong) => {
     setSelectedSong(song);
     setShowPerformanceModal(true);
   };
   
-  const songsData = usePerformedSongs({ pageSize: 20 });
+  const songsData = useStreamSongs({ pageSize: 20 });
 
   return (
     <div className="min-h-screen bg-bg-primary">
@@ -55,7 +55,7 @@ export default function SongsList() {
           onClearAllFilters={songsData.clearAllFilters}
         />
 
-        <PerformedSongsGrid 
+        <StreamSongsGrid 
           songs={songsData.songs} 
           loading={songsData.loading} 
           error={songsData.error}

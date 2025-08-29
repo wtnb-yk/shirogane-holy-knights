@@ -1,8 +1,8 @@
 package com.shirogane.holy.knights.adapter.controller
 
-import com.shirogane.holy.knights.application.dto.PerformedSongSearchParamsDto
-import com.shirogane.holy.knights.application.dto.PerformedSongSearchResultDto
-import com.shirogane.holy.knights.application.dto.PerformedSongStatsDto
+import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.application.dto.StreamSongSearchResultDto
+import com.shirogane.holy.knights.application.dto.StreamSongStatsDto
 import com.shirogane.holy.knights.application.port.`in`.SongUseCasePort
 import org.springframework.stereotype.Component
 
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component
 class SongController(
     private val songUseCase: SongUseCasePort
 ) {
-    suspend fun searchPerformedSongs(params: PerformedSongSearchParamsDto): PerformedSongSearchResultDto {
-        val result = songUseCase.searchPerformedSongs(params)
+    suspend fun searchStreamSongs(params: StreamSongSearchParamsDto): StreamSongSearchResultDto {
+        val result = songUseCase.searchStreamSongs(params)
         return result
     }
     
-    suspend fun getPerformedSongsStats(): PerformedSongStatsDto {
-        val result = songUseCase.getPerformedSongsStats()
+    suspend fun getStreamSongsStats(): StreamSongStatsDto {
+        val result = songUseCase.getStreamSongsStats()
         return result
     }
 }

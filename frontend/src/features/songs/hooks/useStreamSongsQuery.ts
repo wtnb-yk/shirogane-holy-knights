@@ -3,17 +3,17 @@
 import { useState, useEffect } from 'react';
 import { SongClient } from '../api/songClient';
 import { 
-  PerformedSong, 
+  StreamSong, 
   SortBy, 
   SortOrder,
   SongFilterOptions
 } from '../types/types';
 
-interface UsePerformedSongsQueryOptions {
+interface UseStreamSongsQueryOptions {
   pageSize?: number;
 }
 
-interface UsePerformedSongsQueryState {
+interface UseStreamSongsQueryState {
   currentPage: number;
   searchQuery: string;
   sortBy: SortBy;
@@ -21,8 +21,8 @@ interface UsePerformedSongsQueryState {
   filters: SongFilterOptions;
 }
 
-interface UsePerformedSongsQueryResult {
-  songs: PerformedSong[];
+interface UseStreamSongsQueryResult {
+  songs: StreamSong[];
   loading: boolean;
   error: string | null;
   totalCount: number;
@@ -30,14 +30,14 @@ interface UsePerformedSongsQueryResult {
   hasMore: boolean;
 }
 
-export const usePerformedSongsQuery = (
-  options: UsePerformedSongsQueryOptions,
-  state: UsePerformedSongsQueryState
-): UsePerformedSongsQueryResult => {
+export const useStreamSongsQuery = (
+  options: UseStreamSongsQueryOptions,
+  state: UseStreamSongsQueryState
+): UseStreamSongsQueryResult => {
   const { pageSize = 20 } = options;
   const { currentPage, searchQuery, sortBy, sortOrder, filters } = state;
 
-  const [songs, setSongs] = useState<PerformedSong[]>([]);
+  const [songs, setSongs] = useState<StreamSong[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalCount, setTotalCount] = useState(0);
@@ -48,7 +48,7 @@ export const usePerformedSongsQuery = (
         setLoading(true);
         setError(null);
         
-        const result = await SongClient.callPerformedSongsSearchFunction({
+        const result = await SongClient.callStreamSongsSearchFunction({
           query: searchQuery || undefined,
           sortBy,
           sortOrder,

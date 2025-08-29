@@ -1,7 +1,7 @@
 import {
-  PerformedSongSearchParams,
-  PerformedSongSearchResult,
-  PerformedSongStats
+  StreamSongSearchParams,
+  StreamSongSearchResult,
+  StreamSongStats
 } from '../types/types';
 
 /**
@@ -30,10 +30,10 @@ export class SongClient {
    * @param params 検索パラメータ
    * @returns 検索結果
    */
-  static async callPerformedSongsSearchFunction(
-    params: PerformedSongSearchParams
-  ): Promise<PerformedSongSearchResult> {
-    const response = await fetch(`${API_CONFIG.baseUrl}/performed-songs`, {
+  static async callStreamSongsSearchFunction(
+    params: StreamSongSearchParams
+  ): Promise<StreamSongSearchResult> {
+    const response = await fetch(`${API_CONFIG.baseUrl}/stream-songs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,8 +56,8 @@ export class SongClient {
    * 楽曲統計情報Lambda関数を呼び出す
    * @returns 統計情報
    */
-  static async callPerformedSongsStatsFunction(): Promise<PerformedSongStats> {
-    const response = await fetch(`${API_CONFIG.baseUrl}/performed-songs/stats`, {
+  static async callStreamSongsStatsFunction(): Promise<StreamSongStats> {
+    const response = await fetch(`${API_CONFIG.baseUrl}/stream-songs/stats`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

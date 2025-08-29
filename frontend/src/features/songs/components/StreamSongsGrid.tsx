@@ -1,16 +1,16 @@
-import { PerformedSong } from '../types/types';
+import { StreamSong } from '../types/types';
 import { PerformedSongCard } from './PerformedSongCard';
 import { SkeletonSongCard } from './SkeletonSongCard';
 import { BaseGrid } from '@/components/common/BaseGrid';
 
-interface PerformedSongsGridProps {
-  songs: PerformedSong[];
+interface StreamSongsGridProps {
+  songs: StreamSong[];
   loading?: boolean;
   error?: string | null;
-  onSongClick: (song: PerformedSong) => void;
+  onSongClick: (song: StreamSong) => void;
 }
 
-export function PerformedSongsGrid({ songs, loading = false, error, onSongClick }: PerformedSongsGridProps) {
+export function StreamSongsGrid({ songs, loading = false, error, onSongClick }: StreamSongsGridProps) {
   return (
     <BaseGrid
       items={songs}

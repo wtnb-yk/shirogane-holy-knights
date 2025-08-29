@@ -28,7 +28,7 @@ export interface Performance {
 }
 
 // 楽曲情報
-export interface PerformedSong {
+export interface StreamSong {
   id: string;
   title: string;
   artist: string;
@@ -38,7 +38,7 @@ export interface PerformedSong {
 }
 
 // 楽曲検索パラメータ
-export interface PerformedSongSearchParams {
+export interface StreamSongSearchParams {
   query?: string;
   sortBy?: SortBy;
   sortOrder?: SortOrder;
@@ -49,8 +49,8 @@ export interface PerformedSongSearchParams {
 }
 
 // 楽曲検索結果
-export interface PerformedSongSearchResult {
-  songs: PerformedSong[];
+export interface StreamSongSearchResult {
+  songs: StreamSong[];
   totalCount: number;
   totalPages: number;
   currentPage: number;
@@ -76,7 +76,7 @@ export interface RecentPerformanceStats {
 }
 
 // 楽曲統計情報
-export interface PerformedSongStats {
+export interface StreamSongStats {
   totalSongs: number;
   totalPerformances: number;
   topSongs: TopSongStats[];

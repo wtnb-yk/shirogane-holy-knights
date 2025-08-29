@@ -1,10 +1,10 @@
 package com.shirogane.holy.knights.application.usecase
 
 import com.shirogane.holy.knights.application.common.PageResponse
-import com.shirogane.holy.knights.application.dto.PerformedSongDto
-import com.shirogane.holy.knights.application.dto.PerformedSongSearchParamsDto
-import com.shirogane.holy.knights.application.dto.PerformedSongSearchResultDto
-import com.shirogane.holy.knights.application.dto.PerformedSongStatsDto
+import com.shirogane.holy.knights.application.dto.StreamSongDto
+import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.application.dto.StreamSongSearchResultDto
+import com.shirogane.holy.knights.application.dto.StreamSongStatsDto
 import com.shirogane.holy.knights.application.port.`in`.SongUseCasePort
 import com.shirogane.holy.knights.domain.repository.SongRepository
 import org.slf4j.LoggerFactory
@@ -17,13 +17,13 @@ class SongUseCaseImpl(
 
     private val logger = LoggerFactory.getLogger(SongUseCaseImpl::class.java)
 
-    override suspend fun searchPerformedSongs(searchParams: PerformedSongSearchParamsDto): PerformedSongSearchResultDto {
+    override suspend fun searchStreamSongs(searchParams: StreamSongSearchParamsDto): StreamSongSearchResultDto {
         logger.info("楽曲検索実行: $searchParams")
         
         return try {
             val pageRequest = searchParams.toPageRequest()
             
-            val songs = songRepository.searchPerformedSongs(
+            val songs = songRepository.searchStreamSongs(
                 query = searchParams.query,
                 sortBy = searchParams.sortBy ?: "singCount",
                 sortOrder = searchParams.sortOrder ?: "DESC",
@@ -33,16 +33,16 @@ class SongUseCaseImpl(
                 offset = pageRequest.offset
             )
             
-            val totalCount = songRepository.countPerformedSongs(
+            val totalCount = songRepository.countStreamSongs(
                 query = searchParams.query,
                 startDate = searchParams.getStartDateAsInstant(),
                 endDate = searchParams.getEndDateAsInstant()
             )
 
-            val songsDto = songs.map { PerformedSongDto.fromDomain(it) }
+            val songsDto = songs.map { StreamSongDto.fromDomain(it) }
             val pageResponse = PageResponse.of(songsDto, totalCount, pageRequest)
             
-            PerformedSongSearchResultDto(
+            StreamSongSearchResultDto(
                 songs = pageResponse.content,
                 totalCount = pageResponse.totalElements,
                 totalPages = pageResponse.totalPages,
@@ -50,7 +50,7 @@ class SongUseCaseImpl(
             )
         } catch (e: Exception) {
             logger.error("楽曲検索中にエラーが発生しました", e)
-            PerformedSongSearchResultDto(
+            StreamSongSearchResultDto(
                 songs = emptyList(),
                 totalCount = 0,
                 totalPages = 0,
@@ -59,15 +59,15 @@ class SongUseCaseImpl(
         }
     }
 
-    override suspend fun getPerformedSongsStats(): PerformedSongStatsDto {
+    override suspend fun getStreamSongsStats(): StreamSongStatsDto {
         logger.info("楽曲統計情報取得実行")
         
         return try {
-            val stats = songRepository.getPerformedSongsStats()
-            PerformedSongStatsDto.fromDomain(stats)
+            val stats = songRepository.getStreamSongsStats()
+            StreamSongStatsDto.fromDomain(stats)
         } catch (e: Exception) {
             logger.error("楽曲統計情報取得中にエラーが発生しました", e)
-            PerformedSongStatsDto(
+            StreamSongStatsDto(
                 totalSongs = 0,
                 totalPerformances = 0,
                 topSongs = emptyList(),

@@ -165,7 +165,7 @@ data class StreamSearchResultDto(
 /**
  * 楽曲検索パラメータDTO
  */
-data class PerformedSongSearchParamsDto(
+data class StreamSongSearchParamsDto(
     val query: String? = null,
     val sortBy: String? = "singCount", // singCount|latestSingDate|title
     val sortOrder: String? = "DESC", // DESC|ASC
@@ -198,7 +198,7 @@ data class PerformedSongSearchParamsDto(
  * 楽曲DTO（データ転送オブジェクト）
  */
 @Serializable
-data class PerformedSongDto(
+data class StreamSongDto(
     val id: String,
     val title: String,
     val artist: String,
@@ -210,8 +210,8 @@ data class PerformedSongDto(
         /**
          * ドメインモデルからDTOへの変換
          */
-        fun fromDomain(song: Song): PerformedSongDto {
-            return PerformedSongDto(
+        fun fromDomain(song: Song): StreamSongDto {
+            return StreamSongDto(
                 id = song.id.value.toString(),
                 title = song.title,
                 artist = song.artist,
@@ -255,8 +255,8 @@ data class PerformanceDto(
  * 楽曲検索結果DTO
  */
 @Serializable
-data class PerformedSongSearchResultDto(
-    val songs: List<PerformedSongDto>,
+data class StreamSongSearchResultDto(
+    val songs: List<StreamSongDto>,
     val totalCount: Int,
     val totalPages: Int,
     val currentPage: Int
@@ -266,15 +266,15 @@ data class PerformedSongSearchResultDto(
  * 楽曲統計情報DTO
  */
 @Serializable
-data class PerformedSongStatsDto(
+data class StreamSongStatsDto(
     val totalSongs: Int,
     val totalPerformances: Int,
     val topSongs: List<TopSongStatsDto>,
     val recentPerformances: List<RecentPerformanceStatsDto>
 ) {
     companion object {
-        fun fromDomain(stats: SongStats): PerformedSongStatsDto {
-            return PerformedSongStatsDto(
+        fun fromDomain(stats: SongStats): StreamSongStatsDto {
+            return StreamSongStatsDto(
                 totalSongs = stats.totalSongs,
                 totalPerformances = stats.totalPerformances,
                 topSongs = stats.topSongs.map { TopSongStatsDto.fromDomain(it) },

@@ -10,7 +10,7 @@ import com.shirogane.holy.knights.adapter.controller.SongController
 import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
-import com.shirogane.holy.knights.application.dto.PerformedSongSearchParamsDto
+import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -53,12 +53,19 @@ class ApiGatewayRouter(
         RouteKey("GET", "/news/categories") to { _ ->
             newsController.getNewsCategories()
         },
+        RouteKey("POST", "/stream-songs") to { request ->
+            val params = parseBody(request.body, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto()
+            songController.searchStreamSongs(params)
+        },
+        RouteKey("GET", "/stream-songs/stats") to { _ ->
+            songController.getStreamSongsStats()
+        },
         RouteKey("POST", "/performed-songs") to { request ->
-            val params = parseBody(request.body, PerformedSongSearchParamsDto::class.java) ?: PerformedSongSearchParamsDto()
-            songController.searchPerformedSongs(params)
+            val params = parseBody(request.body, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto()
+            songController.searchStreamSongs(params)
         },
         RouteKey("GET", "/performed-songs/stats") to { _ ->
-            songController.getPerformedSongsStats()
+            songController.getStreamSongsStats()
         }
     )
     
