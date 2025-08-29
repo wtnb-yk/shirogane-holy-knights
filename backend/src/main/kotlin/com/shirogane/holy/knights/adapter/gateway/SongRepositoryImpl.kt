@@ -24,10 +24,12 @@ class SongRepositoryImpl(
         query: String?,
         sortBy: String,
         sortOrder: String,
+        startDate: Instant?,
+        endDate: Instant?,
         limit: Int,
         offset: Int
     ): List<Song> {
-        logger.info("楽曲検索: query=$query, sortBy=$sortBy, sortOrder=$sortOrder")
+        logger.info("楽曲検索: query=$query, sortBy=$sortBy, sortOrder=$sortOrder, startDate=$startDate, endDate=$endDate")
         
         val conditions = mutableListOf<String>()
         val bindings = mutableMapOf<String, Any>()
@@ -35,6 +37,16 @@ class SongRepositoryImpl(
         query?.let {
             conditions.add("(title ILIKE :query OR artist ILIKE :query)")
             bindings["query"] = "%$it%"
+        }
+        
+        startDate?.let {
+            conditions.add("sd.started_at >= :startDate")
+            bindings["startDate"] = it
+        }
+        
+        endDate?.let {
+            conditions.add("sd.started_at <= :endDate")
+            bindings["endDate"] = it
         }
 
         val whereClause = if (conditions.isNotEmpty()) {
@@ -139,8 +151,12 @@ class SongRepositoryImpl(
         }.all().asFlow().toList()
     }
 
-    override suspend fun countPerformedSongs(query: String?): Int {
-        logger.info("楽曲検索結果総数取得: query=$query")
+    override suspend fun countPerformedSongs(
+        query: String?,
+        startDate: Instant?,
+        endDate: Instant?
+    ): Int {
+        logger.info("楽曲検索結果総数取得: query=$query, startDate=$startDate, endDate=$endDate")
 
         val conditions = mutableListOf<String>()
         val bindings = mutableMapOf<String, Any>()
@@ -148,6 +164,16 @@ class SongRepositoryImpl(
         query?.let {
             conditions.add("(title ILIKE :query OR artist ILIKE :query)")
             bindings["query"] = "%$it%"
+        }
+        
+        startDate?.let {
+            conditions.add("sd.started_at >= :startDate")
+            bindings["startDate"] = it
+        }
+        
+        endDate?.let {
+            conditions.add("sd.started_at <= :endDate")
+            bindings["endDate"] = it
         }
 
         val whereClause = if (conditions.isNotEmpty()) {
@@ -158,6 +184,8 @@ class SongRepositoryImpl(
             SELECT COUNT(DISTINCT s.id)
             FROM songs s
             LEFT JOIN stream_songs ss ON s.id = ss.song_id
+            LEFT JOIN videos v ON v.id = ss.video_id
+            LEFT JOIN stream_details sd ON v.id = sd.video_id
             LEFT JOIN concert_songs cs ON s.id = cs.song_id
             $whereClause
             AND (ss.song_id IS NOT NULL OR cs.song_id IS NOT NULL)

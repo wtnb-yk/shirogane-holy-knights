@@ -27,12 +27,16 @@ class SongUseCaseImpl(
                 query = searchParams.query,
                 sortBy = searchParams.sortBy ?: "singCount",
                 sortOrder = searchParams.sortOrder ?: "DESC",
+                startDate = searchParams.getStartDateAsInstant(),
+                endDate = searchParams.getEndDateAsInstant(),
                 limit = pageRequest.size,
                 offset = pageRequest.offset
             )
             
             val totalCount = songRepository.countPerformedSongs(
-                query = searchParams.query
+                query = searchParams.query,
+                startDate = searchParams.getStartDateAsInstant(),
+                endDate = searchParams.getEndDateAsInstant()
             )
 
             val songsDto = songs.map { PerformedSongDto.fromDomain(it) }

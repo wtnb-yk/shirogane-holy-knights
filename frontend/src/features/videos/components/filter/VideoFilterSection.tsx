@@ -9,7 +9,7 @@ export interface FilterOptions {
   endDate?: string;
 }
 
-interface FilterBarProps {
+interface VideoFilterSectionProps {
   filters: FilterOptions;
   onFiltersChange: (filters: FilterOptions) => void;
   availableTags?: string[];
@@ -17,12 +17,12 @@ interface FilterBarProps {
 }
 
 
-export function FilterBar({ 
+export function VideoFilterSection({
   filters, 
   onFiltersChange, 
   availableTags = [], 
   className = '' 
-}: FilterBarProps) {
+}: VideoFilterSectionProps) {
   const handleTagToggle = (tag: string) => {
     const newTags = filters.selectedTags.includes(tag)
       ? filters.selectedTags.filter(t => t !== tag)

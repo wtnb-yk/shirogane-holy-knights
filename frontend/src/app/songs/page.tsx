@@ -6,13 +6,13 @@ import { SongSearchBar } from '@/features/songs/components/SongSearchBar';
 import { PerformedSongsGrid } from '@/features/songs/components/PerformedSongsGrid';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
-import { SongSortModal } from '@/features/songs/components/SongSortModal';
+import { SongOptionsModal } from '@/features/songs/components/SongOptionsModal';
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { Pagination } from '@/components/ui/Pagination';
 import { PerformedSong } from '@/features/songs/types/types';
 
 export default function SongsList() {
-  const [showSortModal, setShowSortModal] = useState(false);
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [selectedSong, setSelectedSong] = useState<PerformedSong | null>(null);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   
@@ -43,14 +43,16 @@ export default function SongsList() {
           onClearSearch={songsData.clearSearch}
           sortBy={songsData.sortBy}
           sortOrder={songsData.sortOrder}
-          onSortChange={songsData.handleSortChange}
-          onSortClick={() => setShowSortModal(true)}
+          onOptionsClick={() => setShowOptionsModal(true)}
+          hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
         />
 
         <SongSearchResultsSummary
           searchQuery={songsData.searchQuery}
           totalCount={songsData.totalCount}
+          filters={songsData.filters}
           onClearSearch={songsData.clearSearch}
+          onClearAllFilters={songsData.clearAllFilters}
         />
 
         <PerformedSongsGrid 
@@ -77,12 +79,14 @@ export default function SongsList() {
           loading={songsData.loading}
         />
 
-        <SongSortModal
-          isOpen={showSortModal}
-          onClose={() => setShowSortModal(false)}
+        <SongOptionsModal
+          isOpen={showOptionsModal}
+          onClose={() => setShowOptionsModal(false)}
           sortBy={songsData.sortBy}
           sortOrder={songsData.sortOrder}
+          filters={songsData.filters}
           onSortChange={songsData.handleSortChange}
+          onFiltersChange={songsData.setFilters}
         />
         
         <PerformanceListModal 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import { FilterBar, FilterOptions } from './FilterBar';
+import { VideoFilterSection, FilterOptions } from './VideoFilterSection';
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -57,7 +57,7 @@ export const FilterModal = ({
           <DialogClose onClose={() => handleOpenChange(false)} />
         </DialogHeader>
         <div className="p-6 pt-0">
-          <FilterBar
+          <VideoFilterSection
             filters={tempFilters}
             onFiltersChange={setTempFilters}
             availableTags={availableTags}

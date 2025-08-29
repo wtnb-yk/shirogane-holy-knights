@@ -42,6 +42,8 @@ export interface PerformedSongSearchParams {
   query?: string;
   sortBy?: SortBy;
   sortOrder?: SortOrder;
+  startDate?: string;
+  endDate?: string;
   page?: number;
   size?: number;
 }
@@ -79,4 +81,10 @@ export interface PerformedSongStats {
   totalPerformances: number;
   topSongs: TopSongStats[];
   recentPerformances: RecentPerformanceStats[];
+}
+
+// フィルターオプション
+export interface SongFilterOptions {
+  startDate?: string;
+  endDate?: string;
 }

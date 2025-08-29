@@ -169,6 +169,8 @@ data class PerformedSongSearchParamsDto(
     val query: String? = null,
     val sortBy: String? = "singCount", // singCount|latestSingDate|title
     val sortOrder: String? = "DESC", // DESC|ASC
+    val startDate: String? = null, // ISO 8601形式の日時文字列
+    val endDate: String? = null,   // ISO 8601形式の日時文字列
     val page: Int = 1,  
     val size: Int = 20
 ) {
@@ -176,6 +178,20 @@ data class PerformedSongSearchParamsDto(
      * PageRequestインスタンスを生成
      */
     fun toPageRequest() = com.shirogane.holy.knights.application.common.PageRequest(page, size)
+    
+    /**
+     * startDateをInstantに変換
+     */
+    fun getStartDateAsInstant(): Instant? {
+        return startDate?.let { Instant.parse(it) }
+    }
+    
+    /**
+     * endDateをInstantに変換
+     */
+    fun getEndDateAsInstant(): Instant? {
+        return endDate?.let { Instant.parse(it) }
+    }
 }
 
 /**

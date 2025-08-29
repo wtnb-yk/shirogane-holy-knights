@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 import { usePagination } from '@/features/videos/hooks/usePagination';
 import { useVideoSearch } from '@/features/videos/hooks/useVideoSearch';
 import { usePerformedSongsQuery } from './usePerformedSongsQuery';
-import { PerformedSong, SortBy, SortOrder } from '../types/types';
+import { PerformedSong, SortBy, SortOrder, SongFilterOptions } from '../types/types';
 
 interface UsePerformedSongsResult {
   songs: PerformedSong[];
@@ -22,6 +22,9 @@ interface UsePerformedSongsResult {
   sortBy: SortBy;
   sortOrder: SortOrder;
   handleSortChange: (sortBy: SortBy, sortOrder: SortOrder) => void;
+  filters: SongFilterOptions;
+  setFilters: (filters: SongFilterOptions) => void;
+  clearAllFilters: () => void;
 }
 
 interface UsePerformedSongsOptions {
@@ -43,6 +46,9 @@ export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePe
   const [sortBy, setSortBy] = useState<SortBy>(SortBy.SING_COUNT);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   
+  // フィルター状態
+  const [filters, setFilters] = useState<SongFilterOptions>({});
+  
   // ページネーション機能を先に初期化
   const [totalCount, setTotalCount] = useState(0);
   const { currentPage, totalPages, setCurrentPage, resetToFirstPage } = usePagination(
@@ -53,7 +59,7 @@ export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePe
   // API呼び出し（currentPageを使用）
   const { songs, loading, error, totalCount: newTotalCount, hasMore } = usePerformedSongsQuery(
     { pageSize },
-    { currentPage, searchQuery, sortBy, sortOrder }
+    { currentPage, searchQuery, sortBy, sortOrder, filters }
   );
   
   // totalCountの更新
@@ -76,6 +82,16 @@ export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePe
     resetToFirstPage();
   }, [resetToFirstPage]);
 
+  const setFiltersWithReset = useCallback((newFilters: SongFilterOptions) => {
+    setFilters(newFilters);
+    resetToFirstPage();
+  }, [resetToFirstPage]);
+
+  const clearAllFilters = useCallback(() => {
+    setFilters({});
+    clearSearch(resetToFirstPage);
+  }, [clearSearch, resetToFirstPage]);
+
   return useMemo(() => ({
     songs,
     loading,
@@ -92,6 +108,9 @@ export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePe
     sortBy,
     sortOrder,
     handleSortChange,
+    filters,
+    setFilters: setFiltersWithReset,
+    clearAllFilters,
   }), [
     songs,
     loading,
@@ -108,5 +127,8 @@ export const usePerformedSongs = (options: UsePerformedSongsOptions = {}): UsePe
     sortBy,
     sortOrder,
     handleSortChange,
+    filters,
+    setFiltersWithReset,
+    clearAllFilters,
   ]);
 };

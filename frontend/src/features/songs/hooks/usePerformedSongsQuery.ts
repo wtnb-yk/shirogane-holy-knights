@@ -5,7 +5,8 @@ import { SongClient } from '../api/songClient';
 import { 
   PerformedSong, 
   SortBy, 
-  SortOrder 
+  SortOrder,
+  SongFilterOptions
 } from '../types/types';
 
 interface UsePerformedSongsQueryOptions {
@@ -17,6 +18,7 @@ interface UsePerformedSongsQueryState {
   searchQuery: string;
   sortBy: SortBy;
   sortOrder: SortOrder;
+  filters: SongFilterOptions;
 }
 
 interface UsePerformedSongsQueryResult {
@@ -33,7 +35,7 @@ export const usePerformedSongsQuery = (
   state: UsePerformedSongsQueryState
 ): UsePerformedSongsQueryResult => {
   const { pageSize = 20 } = options;
-  const { currentPage, searchQuery, sortBy, sortOrder } = state;
+  const { currentPage, searchQuery, sortBy, sortOrder, filters } = state;
 
   const [songs, setSongs] = useState<PerformedSong[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,6 +52,8 @@ export const usePerformedSongsQuery = (
           query: searchQuery || undefined,
           sortBy,
           sortOrder,
+          startDate: filters.startDate,
+          endDate: filters.endDate,
           page: currentPage,
           size: pageSize,
         });
@@ -67,7 +71,7 @@ export const usePerformedSongsQuery = (
     };
 
     fetchSongs();
-  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder]);
+  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate]);
 
   const totalPages = Math.ceil(totalCount / pageSize);
   const hasMore = currentPage * pageSize < totalCount;
