@@ -24,8 +24,7 @@ const PerformedSongCardComponent = ({ song, index = 0, onClick }: PerformedSongC
         <div
           onClick={() => onClick(song)}
           className="song-card-hover rounded-lg overflow-hidden h-full cursor-pointer bg-bg-primary border border-border-primary hover:border-accent-gold/50 hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
-          aria-label={`${song.title}のパフォーマンス一覧を表示`}
-          // aria-label={`${song.title} - ${song.artist}のパフォーマンス一覧を表示`}
+          aria-label={`${song.title} - ${song.artist}のパフォーマンス一覧を表示`}
         >
         <CardContent className="p-4 md:p-5 h-full flex flex-col">
           {/* ヘッダー部分 */}
@@ -39,7 +38,7 @@ const PerformedSongCardComponent = ({ song, index = 0, onClick }: PerformedSongC
                   {song.title}
                 </h3>
                 <p className="text-text-secondary text-xs md:text-sm line-clamp-1">
-                  {/*{song.artist}*/}
+                  {song.artist}
                 </p>
               </div>
             </div>

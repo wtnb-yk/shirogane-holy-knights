@@ -54,7 +54,7 @@ export function SongSearchBar({
           searchValue={searchValue}
           onSearch={onSearch}
           onClearSearch={onClearSearch}
-          placeholder="楽曲名で検索..."
+          placeholder="楽曲名・アーティスト名を入力してください"
         />
         
         <SongSortButton
