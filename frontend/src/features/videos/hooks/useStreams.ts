@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo, useState, useEffect, useCallback } from 'react';
-import { usePagination } from './usePagination';
-import { useVideoSearch } from './useVideoSearch';
-import { useVideoFilters } from './useVideoFilters';
-import { useAllStreamTags } from './useAllStreamTags';
-import { useStreamQuery } from './useStreamQuery';
-import { StreamDto } from '../types/types';
-import { FilterOptions } from '../components/filter/FilterBar';
+import {useMemo, useState, useEffect, useCallback} from 'react';
+import {usePagination} from './usePagination';
+import {useVideoSearch} from './useVideoSearch';
+import {useVideoFilters} from './useVideoFilters';
+import {useAllStreamTags} from './useAllStreamTags';
+import {useStreamQuery} from './useStreamQuery';
+import {StreamDto} from '../types/types';
+import {FilterOptions} from "@/features/videos/components/filter/VideoFilterSection";
 
 interface UseStreamsResult {
   streams: StreamDto[];
@@ -26,6 +26,7 @@ interface UseStreamsResult {
   setFilters: (filters: FilterOptions) => void;
   availableTags: string[];
   clearAllFilters: () => void;
+  hasActiveFilters: boolean;
 }
 
 interface UseStreamsOptions {
@@ -38,34 +39,34 @@ interface UseStreamsOptions {
  * 各機能を分離したhooksを組み合わせて使用
  */
 export const useStreams = (options: UseStreamsOptions = {}): UseStreamsResult => {
-  const { pageSize = 20, initialPage = 1 } = options;
-  
+  const {pageSize = 20, initialPage = 1} = options;
+
   // 検索機能（動画と同じフックを使用）
-  const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useVideoSearch();
-  
+  const {searchQuery, setSearchQuery, handleSearch, clearSearch} = useVideoSearch();
+
   // フィルター機能（動画と同じフックを使用）
-  const { filters, setFilters, clearFilters } = useVideoFilters();
-  
+  const {filters, setFilters, clearFilters, hasActiveFilters} = useVideoFilters();
+
   // ページネーション機能を先に初期化
   const [totalCount, setTotalCount] = useState(0);
-  const { currentPage, totalPages, setCurrentPage, resetToFirstPage } = usePagination(
-    { pageSize, initialPage },
+  const {currentPage, totalPages, setCurrentPage, resetToFirstPage} = usePagination(
+    {pageSize, initialPage},
     totalCount
   );
-  
+
   // API呼び出し（currentPageを使用）
-  const { streams, loading, error, totalCount: newTotalCount, hasMore } = useStreamQuery(
-    { pageSize },
-    { currentPage, searchQuery, filters }
+  const {streams, loading, error, totalCount: newTotalCount, hasMore} = useStreamQuery(
+    {pageSize},
+    {currentPage, searchQuery, filters}
   );
-  
+
   // totalCountの更新
   useEffect(() => {
     setTotalCount(newTotalCount);
   }, [newTotalCount]);
-  
+
   // 全ての配信タグを取得
-  const { tags: availableTags } = useAllStreamTags();
+  const {tags: availableTags} = useAllStreamTags();
 
   // ページリセット機能付きのハンドラー（useCallbackで安定化）
   const handleSearchWithReset = useCallback((query: string) => {
@@ -102,6 +103,7 @@ export const useStreams = (options: UseStreamsOptions = {}): UseStreamsResult =>
     setFilters: setFiltersWithReset,
     availableTags,
     clearAllFilters,
+    hasActiveFilters,
   }), [
     streams,
     loading,
@@ -119,5 +121,6 @@ export const useStreams = (options: UseStreamsOptions = {}): UseStreamsResult =>
     clearSearchWithReset,
     setFiltersWithReset,
     clearAllFilters,
+    hasActiveFilters,
   ]);
 };
