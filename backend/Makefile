@@ -1,5 +1,9 @@
 .PHONY: deploy info clean build jar help
 
+# ビルド
+build:
+	./gradlew clean build --exclude-task test
+
 # LocalStack Lambda環境のデプロイ
 deploy:
 	./gradlew deployLocalStackLambda
@@ -11,10 +15,6 @@ info:
 # LocalStack環境のクリーンアップ
 clean:
 	./gradlew cleanLocalStackLambda
-
-# ビルドのみ（テスト除外）
-build:
-	./gradlew clean build --exclude-task test
 
 # Lambda JARのビルド
 jar:

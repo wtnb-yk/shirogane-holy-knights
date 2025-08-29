@@ -31,26 +31,31 @@ class SongRepositoryImpl(
     ): List<Song> {
         logger.info("楽曲検索: query=$query, sortBy=$sortBy, sortOrder=$sortOrder, startDate=$startDate, endDate=$endDate")
         
-        val conditions = mutableListOf<String>()
+        val outerConditions = mutableListOf<String>()
+        val innerConditions = mutableListOf<String>()
         val bindings = mutableMapOf<String, Any>()
 
         query?.let {
-            conditions.add("(title ILIKE :query OR artist ILIKE :query)")
+            outerConditions.add("(title ILIKE :query OR artist ILIKE :query)")
             bindings["query"] = "%$it%"
         }
         
         startDate?.let {
-            conditions.add("sd.started_at >= :startDate")
+            innerConditions.add("sd.started_at >= :startDate")
             bindings["startDate"] = it
         }
         
         endDate?.let {
-            conditions.add("sd.started_at <= :endDate")
+            innerConditions.add("sd.started_at <= :endDate")
             bindings["endDate"] = it
         }
 
-        val whereClause = if (conditions.isNotEmpty()) {
-            "WHERE " + conditions.joinToString(" AND ")
+        val outerWhereClause = if (outerConditions.isNotEmpty()) {
+            "WHERE " + outerConditions.joinToString(" AND ")
+        } else ""
+        
+        val innerWhereClause = if (innerConditions.isNotEmpty()) {
+            "WHERE " + innerConditions.joinToString(" AND ")
         } else ""
 
         val orderByClause = when (sortBy) {
@@ -70,28 +75,28 @@ class SongRepositoryImpl(
                     s.title,
                     s.artist,
                     COUNT(*) as sing_count,
-                    MAX(COALESCE(sd.started_at, cs.created_at)) as latest_sing_date,
+                    MAX(sd.started_at) as latest_sing_date,
                     ARRAY_AGG(
                         JSON_BUILD_OBJECT(
-                            'video_id', COALESCE(ss.video_id, cs.video_id),
+                            'video_id', ss.video_id,
                             'video_title', v.title,
-                            'performance_type', CASE WHEN ss.video_id IS NOT NULL THEN 'STREAM' ELSE 'CONCERT' END,
+                            'performance_type', 'STREAM',
                             'url', v.url,
-                            'start_seconds', COALESCE(ss.start_seconds, cs.start_seconds),
-                            'performed_at', COALESCE(sd.started_at, cs.created_at),
+                            'start_seconds', ss.start_seconds,
+                            'performed_at', sd.started_at,
                             'stream_song_url', 
                             CASE 
-                                WHEN COALESCE(ss.start_seconds, cs.start_seconds) > 0 
-                                THEN v.url || '&t=' || COALESCE(ss.start_seconds, cs.start_seconds) || 's'
+                                WHEN ss.start_seconds > 0 
+                                THEN v.url || '&t=' || ss.start_seconds || 's'
                                 ELSE v.url 
                             END
-                        ) ORDER BY COALESCE(sd.started_at, cs.created_at) DESC
+                        ) ORDER BY sd.started_at DESC
                     ) as performances
                 FROM songs s
-                LEFT JOIN stream_songs ss ON s.id = ss.song_id
-                LEFT JOIN concert_songs cs ON s.id = cs.song_id
-                LEFT JOIN videos v ON v.id = COALESCE(ss.video_id, cs.video_id)
-                LEFT JOIN stream_details sd ON v.id = sd.video_id
+                INNER JOIN stream_songs ss ON s.id = ss.song_id
+                INNER JOIN videos v ON v.id = ss.video_id
+                INNER JOIN stream_details sd ON v.id = sd.video_id
+                $innerWhereClause
                 GROUP BY s.id, s.title, s.artist
                 HAVING COUNT(*) > 0
             )
@@ -103,7 +108,7 @@ class SongRepositoryImpl(
                 latest_sing_date,
                 performances
             FROM song_performances
-            $whereClause
+            $outerWhereClause
             $orderByClause
             LIMIT :limit OFFSET :offset
         """.trimIndent()
@@ -158,37 +163,40 @@ class SongRepositoryImpl(
     ): Int {
         logger.info("楽曲検索結果総数取得: query=$query, startDate=$startDate, endDate=$endDate")
 
-        val conditions = mutableListOf<String>()
+        val queryConditions = mutableListOf<String>()
+        val dateConditions = mutableListOf<String>()
         val bindings = mutableMapOf<String, Any>()
 
         query?.let {
-            conditions.add("(title ILIKE :query OR artist ILIKE :query)")
+            queryConditions.add("(s.title ILIKE :query OR s.artist ILIKE :query)")
             bindings["query"] = "%$it%"
         }
         
         startDate?.let {
-            conditions.add("sd.started_at >= :startDate")
+            dateConditions.add("sd.started_at >= :startDate")
             bindings["startDate"] = it
         }
         
         endDate?.let {
-            conditions.add("sd.started_at <= :endDate")
+            dateConditions.add("sd.started_at <= :endDate")
             bindings["endDate"] = it
         }
 
-        val whereClause = if (conditions.isNotEmpty()) {
-            "WHERE " + conditions.joinToString(" AND ")
+        val allConditions = mutableListOf<String>()
+        allConditions.addAll(queryConditions)
+        allConditions.addAll(dateConditions)
+        
+        val whereClause = if (allConditions.isNotEmpty()) {
+            "WHERE " + allConditions.joinToString(" AND ")
         } else ""
 
         val sql = """
             SELECT COUNT(DISTINCT s.id)
             FROM songs s
-            LEFT JOIN stream_songs ss ON s.id = ss.song_id
-            LEFT JOIN videos v ON v.id = ss.video_id
-            LEFT JOIN stream_details sd ON v.id = sd.video_id
-            LEFT JOIN concert_songs cs ON s.id = cs.song_id
+            INNER JOIN stream_songs ss ON s.id = ss.song_id
+            INNER JOIN videos v ON v.id = ss.video_id
+            INNER JOIN stream_details sd ON v.id = sd.video_id
             $whereClause
-            AND (ss.song_id IS NOT NULL OR cs.song_id IS NOT NULL)
         """.trimIndent()
 
         var sqlQuery = template.databaseClient.sql(sql)
