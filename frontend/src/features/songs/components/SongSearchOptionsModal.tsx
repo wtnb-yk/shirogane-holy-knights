@@ -6,7 +6,7 @@ import { SortBy, SortOrder, SongFilterOptions } from '../types/types';
 import { SongSortSection } from './SongSortSection';
 import { SongFilterSection } from './SongFilterSection';
 
-interface SongOptionsModalProps {
+interface SongSearchOptionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   sortBy: SortBy;
@@ -16,7 +16,7 @@ interface SongOptionsModalProps {
   onFiltersChange: (filters: SongFilterOptions) => void;
 }
 
-export const SongOptionsModal = ({
+export const SongSearchOptionsModal = ({
   isOpen,
   onClose,
   sortBy,
@@ -24,7 +24,7 @@ export const SongOptionsModal = ({
   filters,
   onSortChange,
   onFiltersChange,
-}: SongOptionsModalProps) => {
+}: SongSearchOptionsModalProps) => {
   const [tempSortBy, setTempSortBy] = useState<SortBy>(sortBy);
   const [tempSortOrder, setTempSortOrder] = useState<SortOrder>(sortOrder);
   const [tempFilters, setTempFilters] = useState<SongFilterOptions>(filters);
@@ -67,7 +67,7 @@ export const SongOptionsModal = ({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>並び替え・フィルター設定</DialogTitle>
+          <DialogTitle>検索オプション</DialogTitle>
           <DialogClose onClose={() => handleOpenChange(false)} />
         </DialogHeader>
         <div className="p-6 pt-0">

@@ -6,7 +6,7 @@ import { SongSearchBar } from '@/features/songs/components/SongSearchBar';
 import { StreamSongsGrid } from '@/features/songs/components/StreamSongsGrid';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
-import { SongOptionsModal } from '@/features/songs/components/SongOptionsModal';
+import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOptionsModal';
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong } from '@/features/songs/types/types';
@@ -79,7 +79,7 @@ export default function SongsList() {
           loading={songsData.loading}
         />
 
-        <SongOptionsModal
+        <SongSearchOptionsModal
           isOpen={showOptionsModal}
           onClose={() => setShowOptionsModal(false)}
           sortBy={songsData.sortBy}

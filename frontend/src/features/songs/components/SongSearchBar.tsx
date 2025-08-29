@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { TrendingUp, Calendar, Settings } from 'lucide-react';
+import { TrendingUp, Calendar } from 'lucide-react';
 import { SearchInput } from '@/components/ui/SearchInput';
+import { SearchOptionsButton } from '@/components/ui/SearchOptionsButton';
 import { SortBy, SortOrder } from '../types/types';
 
 interface SongSearchBarProps {
@@ -57,20 +58,10 @@ export function SongSearchBar({
           placeholder="楽曲名・アーティスト名を入力してください"
         />
         
-        <button
+        <SearchOptionsButton
           onClick={onOptionsClick}
-          className={`px-4 py-2 border rounded-md font-medium text-sm transition-all duration-200 flex items-center gap-2 ${
-            hasActiveOptions 
-              ? 'border-text-secondary text-text-secondary bg-text-secondary/10 hover:bg-text-secondary/20' 
-              : 'border-surface-border text-text-secondary hover:text-text-primary hover:border-text-secondary hover:bg-bg-accent/20'
-          }`}
-        >
-          <Settings className="w-4 h-4" />
-          並び替え・フィルター
-          {hasActiveOptions && (
-            <span className="ml-1 w-2 h-2 bg-text-secondary rounded-full"></span>
-          )}
-        </button>
+          hasActiveOptions={hasActiveOptions}
+        />
       </div>
       
       <div className="flex items-center gap-2 text-sm text-text-secondary">

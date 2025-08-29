@@ -5,7 +5,7 @@ import { useVideos } from '@/features/videos/hooks/useVideos';
 import { useStreams } from '@/features/videos/hooks/useStreams';
 import { ContentType } from '@/features/videos/types/types';
 import { SearchBar } from '@/features/videos/components/SearchBar';
-import { FilterModal } from '@/features/videos/components/filter/FilterModal';
+import { SearchOptionsModal } from '@/features/videos/components/filter/SearchOptionsModal';
 import { SearchResultsSummary } from '@/features/videos/components/results/SearchResultsSummary';
 import { StatsSummary } from '@/features/videos/components/results/StatsSummary';
 import { VideosGrid } from '@/features/videos/components/VideosGrid';
@@ -62,6 +62,7 @@ export default function VideosList() {
           onSearch={currentData.handleSearch}
           onClearSearch={currentData.clearSearch}
           onFilterClick={() => setShowFilterModal(true)}
+          hasActiveOptions={currentData.hasActiveFilters}
         />
 
         <SearchResultsSummary
@@ -103,7 +104,7 @@ export default function VideosList() {
           loading={currentData.loading}
         />
 
-        <FilterModal
+        <SearchOptionsModal
           isOpen={showFilterModal}
           onClose={() => setShowFilterModal(false)}
           filters={currentData.filters}

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { VideoFilterSection, FilterOptions } from './VideoFilterSection';
 
-interface FilterModalProps {
+interface SearchOptionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   filters: FilterOptions;
@@ -12,13 +12,13 @@ interface FilterModalProps {
   availableTags: string[];
 }
 
-export const FilterModal = ({
+export const SearchOptionsModal = ({
   isOpen,
   onClose,
   filters,
   onFiltersChange,
   availableTags,
-}: FilterModalProps) => {
+}: SearchOptionsModalProps) => {
   const [tempFilters, setTempFilters] = useState<FilterOptions>(filters);
 
   // モーダルが開かれたときに現在のフィルターを一時状態にコピー
@@ -53,7 +53,7 @@ export const FilterModal = ({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>フィルター設定</DialogTitle>
+          <DialogTitle>検索オプション</DialogTitle>
           <DialogClose onClose={() => handleOpenChange(false)} />
         </DialogHeader>
         <div className="p-6 pt-0">
