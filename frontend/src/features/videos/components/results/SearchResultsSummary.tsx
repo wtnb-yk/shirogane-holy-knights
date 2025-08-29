@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SearchResultsSummary as BaseSearchResultsSummary } from '@/components/common/SearchResultsSummary';
-import { FilterOptions } from '../filter/FilterBar';
+import { FilterOptions } from '../filter/VideoFilterSection';
 
 interface SearchResultsSummaryProps {
   searchQuery: string;

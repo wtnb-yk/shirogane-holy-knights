@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { StreamClient } from '../api/lambdaClient';
 import { StreamDto } from '../types/types';
-import { FilterOptions } from '../components/filter/FilterBar';
+import { FilterOptions } from '../components/filter/VideoFilterSection';
 
 interface UseStreamQueryOptions {
   pageSize?: number;

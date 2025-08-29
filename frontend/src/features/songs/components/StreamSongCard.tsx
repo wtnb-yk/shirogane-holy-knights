@@ -2,17 +2,17 @@
 
 import React from 'react';
 import { Music } from 'lucide-react';
-import { PerformedSong } from '../types/types';
+import { StreamSong } from '../types/types';
 import { CardContent } from '@/components/ui/card';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 
-interface PerformedSongCardProps {
-  song: PerformedSong;
+interface StreamSongCardProps {
+  song: StreamSong;
   index?: number;
-  onClick: (song: PerformedSong) => void;
+  onClick: (song: StreamSong) => void;
 }
 
-const PerformedSongCardComponent = ({ song, index = 0, onClick }: PerformedSongCardProps) => {
+const StreamSongCardComponent = ({ song, index = 0, onClick }: StreamSongCardProps) => {
   
 
   // 最新のパフォーマンスを取得（最初の1件のみ表示）
@@ -66,4 +66,4 @@ const PerformedSongCardComponent = ({ song, index = 0, onClick }: PerformedSongC
   );
 };
 
-export const PerformedSongCard = React.memo(PerformedSongCardComponent);
+export const StreamSongCard = React.memo(StreamSongCardComponent);

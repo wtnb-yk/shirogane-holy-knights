@@ -3,10 +3,10 @@
 import React from 'react';
 import { ExternalLink, Calendar, Play } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import { PerformedSong, Performance } from '../types/types';
+import { StreamSong, Performance } from '../types/types';
 
 interface PerformanceListModalProps {
-  song: PerformedSong | null;
+  song: StreamSong | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }

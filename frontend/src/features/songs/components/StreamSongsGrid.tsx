@@ -1,5 +1,5 @@
 import { StreamSong } from '../types/types';
-import { PerformedSongCard } from './PerformedSongCard';
+import { StreamSongCard } from './StreamSongCard';
 import { SkeletonSongCard } from './SkeletonSongCard';
 import { BaseGrid } from '@/components/common/BaseGrid';
 
@@ -17,7 +17,7 @@ export function StreamSongsGrid({ songs, loading = false, error, onSongClick }: 
       loading={loading}
       error={error || null}
       renderItem={(song, index) => (
-        <PerformedSongCard 
+        <StreamSongCard
           key={song.id} 
           song={song}
           index={index}
