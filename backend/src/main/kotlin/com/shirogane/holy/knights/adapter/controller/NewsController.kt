@@ -11,7 +11,7 @@ class NewsController(
     suspend fun searchNews(params: NewsSearchParamsDto) =
         newsUseCase.searchNews(params)
             .fold(
-                { throw RuntimeException(it.message) },
+                { it.toResponse() },
                 { it }
             )
     

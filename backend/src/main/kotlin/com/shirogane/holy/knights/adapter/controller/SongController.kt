@@ -11,14 +11,14 @@ class SongController(
     suspend fun searchStreamSongs(params: StreamSongSearchParamsDto) =
         songUseCase.searchStreamSongs(params)
             .fold(
-                { throw RuntimeException(it.message) },
+                { it.toResponse() },
                 { it }
             )
     
     suspend fun getStreamSongsStats() =
         songUseCase.getStreamSongsStats()
             .fold(
-                { throw RuntimeException(it.message) },
+                { it.toResponse() },
                 { it }
             )
 }

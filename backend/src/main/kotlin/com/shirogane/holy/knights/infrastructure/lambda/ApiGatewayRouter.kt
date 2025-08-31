@@ -7,6 +7,7 @@ import com.shirogane.holy.knights.adapter.controller.HealthController
 import com.shirogane.holy.knights.adapter.controller.NewsController
 import com.shirogane.holy.knights.adapter.controller.VideoController
 import com.shirogane.holy.knights.adapter.controller.SongController
+import com.shirogane.holy.knights.adapter.controller.error.ErrorResponse
 import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
@@ -70,7 +71,12 @@ class ApiGatewayRouter(
         
         return if (handler != null) {
             val result = runBlocking { handler(request) }
-            responseBuilder.success(result)
+
+            // FIXME: これController側でやるべき
+            when (result) {
+                is ErrorResponse -> responseBuilder.errorResponse(400, result)
+                else -> responseBuilder.success(result)
+            }
         } else {
             logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
             responseBuilder.notFound()

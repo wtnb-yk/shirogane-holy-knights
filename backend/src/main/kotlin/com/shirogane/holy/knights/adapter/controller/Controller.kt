@@ -1,5 +1,7 @@
 package com.shirogane.holy.knights.adapter.controller
 
-interface Controller {
+import com.shirogane.holy.knights.adapter.controller.error.ErrorController
+
+interface Controller: ErrorController {
 
 }
