@@ -23,10 +23,10 @@ class VideoUseCaseImpl(
     override suspend fun searchVideos(searchParams: VideoSearchParamsDto): Either<UseCaseError, VideoSearchResultDto> =
         either {
             val pageRequest = searchParams.toPageRequest()
-            val startDate = searchParams.startDate?.let { Instant.parse(it) }
-            val endDate = searchParams.endDate?.let { Instant.parse(it) }
+            val startDate = searchParams.getStartDateAsInstant()
+            val endDate = searchParams.getEndDateAsInstant()
 
-            // TODO: Repositoryのエラーを拾う？
+            // TODO: Repositoryのエラーを拾う
             val videos = videoRepository.searchVideos(
                 query = searchParams.query,
                 tags = searchParams.tags,
