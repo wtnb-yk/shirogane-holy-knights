@@ -60,13 +60,6 @@ class ApiGatewayRouter(
         RouteKey("GET", "/stream-songs/stats") to { _ ->
             songController.getStreamSongsStats()
         },
-        RouteKey("POST", "/performed-songs") to { request ->
-            val params = parseBody(request.body, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto()
-            songController.searchStreamSongs(params)
-        },
-        RouteKey("GET", "/performed-songs/stats") to { _ ->
-            songController.getStreamSongsStats()
-        }
     )
     
     fun route(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
