@@ -2,6 +2,7 @@ package com.shirogane.holy.knights.infrastructure.lambda
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.shirogane.holy.knights.adapter.controller.error.ErrorResponse
 import org.springframework.stereotype.Component
 
 @Component
@@ -28,5 +29,12 @@ class ApiGatewayResponseBuilder(
             .withStatusCode(statusCode)
             .withHeaders(mapOf("Content-Type" to "application/json"))
             .withBody(objectMapper.writeValueAsString(mapOf("error" to message)))
+    }
+    
+    fun errorResponse(statusCode: Int, errorResponse: ErrorResponse): APIGatewayProxyResponseEvent {
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(statusCode)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(errorResponse))
     }
 }

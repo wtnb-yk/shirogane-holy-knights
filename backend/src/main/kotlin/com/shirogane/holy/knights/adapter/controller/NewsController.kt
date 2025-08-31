@@ -1,6 +1,5 @@
 package com.shirogane.holy.knights.adapter.controller
 
-import com.shirogane.holy.knights.application.dto.NewsCategoryDto
 import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
 import org.springframework.stereotype.Component
@@ -12,10 +11,10 @@ class NewsController(
     suspend fun searchNews(params: NewsSearchParamsDto) =
         newsUseCase.searchNews(params)
             .fold(
-                { it.toResponse() },
+                { throw RuntimeException(it.message) },
                 { it }
             )
     
-    suspend fun getNewsCategories(): List<NewsCategoryDto> =
+    suspend fun getNewsCategories() = 
         newsUseCase.getNewsCategories()
 }

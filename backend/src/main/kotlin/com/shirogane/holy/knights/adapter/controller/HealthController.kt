@@ -7,11 +7,10 @@ import org.springframework.stereotype.Component
 class HealthController {
     private val logger = LoggerFactory.getLogger(HealthController::class.java)
     
-    fun checkHealth(): Map<String, String> {
+    fun checkHealth() = mapOf(
+        "status" to "healthy",
+        "service" to "shirogane-holy-knights-api"
+    ).also {
         logger.info("Health check requested")
-        return mapOf(
-            "status" to "healthy",
-            "service" to "shirogane-holy-knights-api"
-        )
     }
 }
