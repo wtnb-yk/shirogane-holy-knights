@@ -1,8 +1,7 @@
 package com.shirogane.holy.knights.domain.repository
 
-import com.shirogane.holy.knights.domain.model.News
 import com.shirogane.holy.knights.domain.model.NewsCategory
-import com.shirogane.holy.knights.domain.model.NewsId
+import com.shirogane.holy.knights.domain.model.NewsList
 import java.time.Instant
 
 /**
@@ -20,7 +19,7 @@ interface NewsRepository {
         endDate: Instant? = null,
         limit: Int,
         offset: Int
-    ): List<News>
+    ): NewsList
 
     /**
      * ニュース検索結果総件数を取得

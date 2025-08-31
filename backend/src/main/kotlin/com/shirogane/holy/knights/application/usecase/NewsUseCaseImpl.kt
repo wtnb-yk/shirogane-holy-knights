@@ -1,26 +1,22 @@
 package com.shirogane.holy.knights.application.usecase
 
+import arrow.core.Either
+import arrow.core.raise.either
 import com.shirogane.holy.knights.application.dto.*
 import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
 import com.shirogane.holy.knights.domain.repository.NewsRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class NewsUseCaseImpl(
     private val newsRepository: NewsRepository
 ) : NewsUseCasePort {
 
-    private val logger = LoggerFactory.getLogger(NewsUseCaseImpl::class.java)
-
-    override suspend fun searchNews(params: NewsSearchParamsDto): NewsSearchResultDto {
-        logger.info("ニュース検索ユースケース実行（統合版）: $params")
-        
-        try {
+    override suspend fun searchNews(params: NewsSearchParamsDto): Either<UseCaseError, NewsSearchResultDto> =
+        either {
             val pageRequest = params.toPageRequest()
-            val startDate = params.startDate?.let { Instant.parse(it) }
-            val endDate = params.endDate?.let { Instant.parse(it) }
+            val startDate = params.getStartDateAsInstant()
+            val endDate = params.getEndDateAsInstant()
             
             val newsList = newsRepository.search(
                 query = params.query,
@@ -39,28 +35,12 @@ class NewsUseCaseImpl(
             )
             
             val newsDto = newsList.map { NewsDto.fromDomain(it) }
-            return NewsSearchResultDto.of(newsDto, totalCount, pageRequest)
-        } catch (e: Exception) {
-            logger.error("ニュース検索エラー", e)
-            return NewsSearchResultDto(
-                items = emptyList(),
-                totalCount = 0,
-                page = params.page,
-                pageSize = params.pageSize
-            )
+            NewsSearchResultDto.of(newsDto, totalCount, pageRequest)
         }
-    }
 
 
     override suspend fun getNewsCategories(): List<NewsCategoryDto> {
-        logger.info("ニュースカテゴリ一覧取得ユースケース実行")
-        
-        return try {
-            val categories = newsRepository.findAllCategories()
-            categories.map { NewsCategoryDto.fromDomain(it) }
-        } catch (e: Exception) {
-            logger.error("ニュースカテゴリ一覧取得エラー", e)
-            emptyList()
-        }
+        val categories = newsRepository.findAllCategories()
+        return categories.map { NewsCategoryDto.fromDomain(it) }
     }
 }

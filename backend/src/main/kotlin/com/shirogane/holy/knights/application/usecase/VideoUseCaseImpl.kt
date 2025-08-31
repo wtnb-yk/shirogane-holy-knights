@@ -13,7 +13,6 @@ import com.shirogane.holy.knights.domain.model.Video
 import com.shirogane.holy.knights.domain.model.Videos
 import com.shirogane.holy.knights.domain.repository.VideoRepository
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class VideoUseCaseImpl(
@@ -50,8 +49,8 @@ class VideoUseCaseImpl(
     override suspend fun searchStreams(searchParams: StreamSearchParamsDto): Either<UseCaseError, StreamSearchResultDto> =
         either {
             val pageRequest = searchParams.toPageRequest()
-            val startDate = searchParams.startDate?.let { Instant.parse(it) }
-            val endDate = searchParams.endDate?.let { Instant.parse(it) }
+            val startDate = searchParams.getStartDateAsInstant()
+            val endDate = searchParams.getEndDateAsInstant()
 
             val streams = videoRepository.searchStreams(
                 query = searchParams.query,
@@ -89,6 +88,7 @@ class VideoUseCaseImpl(
             publishedAt = video.publishedAt.toString(),
             duration = video.videoDetails?.duration?.value,
             thumbnailUrl = video.videoDetails?.thumbnailUrl,
+            // TODO: ここもいい感じにしたい
             url = video.videoDetails?.url ?: "",
             tags = video.tags.map { it.name },
             channelId = video.channelId.value,
@@ -103,7 +103,7 @@ class VideoUseCaseImpl(
             startedAt = video.streamDetails?.startedAt?.toString(),
             duration = video.videoDetails?.duration?.value,
             thumbnailUrl = video.videoDetails?.thumbnailUrl,
-            url = video.videoDetails?.url ?: "https://www.youtube.com/watch?v=${video.id.value}",
+            url = video.videoDetails?.url ?: "",
             tags = video.streamTags.map { it.name },
             channelId = video.channelId.value,
         )

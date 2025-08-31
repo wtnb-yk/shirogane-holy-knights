@@ -19,3 +19,12 @@ data class StreamSearchCriteria(
     val limit: Int,
     val offset: Int
 )
+
+data class NewsSearchCriteria(
+    val query: String?,
+    val categoryIds: List<Int>?,
+    val startDate: Instant?,
+    val endDate: Instant?,
+    val limit: Int,
+    val offset: Int
+)

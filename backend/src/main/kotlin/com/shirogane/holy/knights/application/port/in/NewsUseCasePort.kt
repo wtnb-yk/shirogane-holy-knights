@@ -1,6 +1,8 @@
 package com.shirogane.holy.knights.application.port.`in`
 
+import arrow.core.Either
 import com.shirogane.holy.knights.application.dto.*
+import com.shirogane.holy.knights.application.usecase.UseCaseError
 
 /**
  * ニュースユースケースポート
@@ -11,7 +13,7 @@ interface NewsUseCasePort {
     /**
      * ニュース検索
      */
-    suspend fun searchNews(params: NewsSearchParamsDto): NewsSearchResultDto
+    suspend fun searchNews(params: NewsSearchParamsDto): Either<UseCaseError, NewsSearchResultDto>
 
     /**
      * ニュースカテゴリ一覧を取得

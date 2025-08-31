@@ -16,6 +16,9 @@ data class News(
     val publishedAt: Instant
 )
 
+class NewsList(private val listUnordered: List<News>): FCC<News>(
+    listUnordered.sortedWith(compareByDescending{ it.publishedAt })
+)
 
 /**
  * ニュースID値オブジェクト
