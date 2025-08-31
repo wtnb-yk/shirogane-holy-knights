@@ -12,7 +12,6 @@ import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
 import com.shirogane.holy.knights.domain.model.Video
 import com.shirogane.holy.knights.domain.model.Videos
 import com.shirogane.holy.knights.domain.repository.VideoRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -20,9 +19,6 @@ import java.time.Instant
 class VideoUseCaseImpl(
     private val videoRepository: VideoRepository
 ) : VideoUseCasePort {
-
-    // TODO: いい感じに呼べるように
-    private val logger = LoggerFactory.getLogger(VideoUseCaseImpl::class.java)
 
     override suspend fun searchVideos(searchParams: VideoSearchParamsDto): Either<UseCaseError, VideoSearchResultDto> =
         either {
