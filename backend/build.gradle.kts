@@ -27,13 +27,20 @@ repositories {
 }
 
 val springCloudVersion = "2023.0.0"
-val logbackVersion = "1.4.11"
+val logbackVersion = "1.5.13"
 val kotlinxCoroutinesVersion = "1.7.3"
 val kotlinxSerializationVersion = "1.6.2"
 val kotestVersion = "5.8.0"
 val arrowVersion = "1.2.4"
+val nettyVersion = "4.1.124.Final"
+val commonsLang3Version = "3.18.0"
 
 dependencies {
+    // 脆弱性対応: 推移的依存関係の強制的バージョン指定
+    implementation("io.netty:netty-handler:$nettyVersion")
+    implementation("io.netty:netty-common:$nettyVersion")
+    implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
+    
     // Spring Boot (Web層削除、Lambda専用構成)
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
@@ -120,7 +127,7 @@ tasks.withType<Test> {
 
 // Spring Cloud Function AWS Lambda用JARタスク
 val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class) {
-    archiveClassifier.set("aws-lambda")
+    archiveClassifier.set("springboot-lambda")
     from(sourceSets.main.get().output)
     
     configurations = listOf(project.configurations.runtimeClasspath.get())
@@ -149,100 +156,8 @@ graalvmNative {
     }
 }
 
-// LocalStack環境用タスク
-val localstackEndpoint = System.getenv("LOCALSTACK_ENDPOINT") ?: "http://localhost:4566"
-val functionName = "shirogane-holy-knights-api"
-
-// LocalStackの準備確認
-val checkLocalStack by tasks.registering(Exec::class) {
-    group = "localstack"
-    description = "Check if LocalStack is running"
-    commandLine("curl", "-f", "$localstackEndpoint/_localstack/health")
-    isIgnoreExitValue = true
-    
-    doLast {
-        if (executionResult.get().exitValue != 0) {
-            throw GradleException("LocalStackが起動していません。docker compose up localstack -d を実行してください。")
-        }
-    }
-}
-
-// 既存Lambda関数の削除
-val cleanLocalStackLambda by tasks.registering(Exec::class) {
-    group = "localstack"
-    description = "Clean existing Lambda function in LocalStack"
-    dependsOn(checkLocalStack)
-    
-    environment("AWS_ACCESS_KEY_ID", "test")
-    environment("AWS_SECRET_ACCESS_KEY", "test")
-    environment("AWS_DEFAULT_REGION", "ap-northeast-1")
-    
-    commandLine("aws", "lambda", "delete-function", 
-        "--function-name", functionName,
-        "--endpoint-url", localstackEndpoint)
-    isIgnoreExitValue = true
-}
 
 
-// Lambda関数の作成（通常JAR配置方式）
-val deployLocalStackLambda by tasks.registering(Exec::class) {
-    group = "localstack"
-    description = "Deploy Lambda function to LocalStack"
-    dependsOn(cleanLocalStackLambda, springCloudFunctionLambdaJar)
-    
-    environment("AWS_ACCESS_KEY_ID", "test")
-    environment("AWS_SECRET_ACCESS_KEY", "test") 
-    environment("AWS_DEFAULT_REGION", "ap-northeast-1")
-    
-    commandLine("aws", "lambda", "create-function",
-        "--function-name", functionName,
-        "--runtime", "java17",
-        "--role", "arn:aws:iam::000000000000:role/lambda-role",
-        "--handler", "org.springframework.cloud.function.adapter.aws.FunctionInvoker",
-        "--zip-file", "fileb://${springCloudFunctionLambdaJar.get().archiveFile.get().asFile.absolutePath}",
-        "--timeout", "300",
-        "--memory-size", "512",
-        "--environment", "Variables={SPRING_PROFILES_ACTIVE=lambda,DATABASE_HOST=host.docker.internal,DATABASE_PORT=5432,DATABASE_NAME=shirogane,DATABASE_USERNAME=postgres,DATABASE_PASSWORD=postgres,SPRING_CLOUD_FUNCTION_DEFINITION=apiGatewayFunction}",
-        "--endpoint-url", localstackEndpoint)
-    
-    doLast {
-        println("Lambda関数のデプロイ完了: $functionName")
-    }
-}
 
-// API Gatewayの作成とデプロイ
-val deployLocalStackApiGateway by tasks.registering(Exec::class) {
-    group = "localstack"
-    description = "Deploy API Gateway to LocalStack"
-    dependsOn(deployLocalStackLambda)
-    
-    environment("AWS_ACCESS_KEY_ID", "test")
-    environment("AWS_SECRET_ACCESS_KEY", "test")
-    environment("AWS_DEFAULT_REGION", "ap-northeast-1")
-    
-    doLast {
-        // API Gateway作成スクリプトを実行
-        val createApiScript = project.file("../scripts/create-api-gateway.sh")
-        exec {
-            commandLine("bash", createApiScript.absolutePath)
-            environment("FUNCTION_NAME", functionName)
-            environment("LOCALSTACK_ENDPOINT", localstackEndpoint)
-        }
-    }
-}
 
-// Liquibaseマイグレーション実行タスク（CI/CD用）
-val liquibaseUpdate by tasks.registering(JavaExec::class) {
-    group = "database"
-    description = "Run Liquibase database migration"
-    classpath = sourceSets.main.get().runtimeClasspath
-    mainClass.set("liquibase.integration.commandline.Main")
 
-    args = listOf(
-        "--url=jdbc:postgresql://${System.getenv("DB_HOST") ?: "localhost:5432"}/${System.getenv("DB_NAME") ?: "shirogane"}",
-        "--username=${System.getenv("DB_USER") ?: "postgres"}",
-        "--password=${System.getenv("DB_PASSWORD") ?: "postgres"}",
-        "--changeLogFile=src/main/resources/db/changelog/changelog.xml",
-        "update"
-    )
-}
