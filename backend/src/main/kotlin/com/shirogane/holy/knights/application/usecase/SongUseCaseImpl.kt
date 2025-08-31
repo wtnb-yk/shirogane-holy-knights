@@ -1,12 +1,13 @@
 package com.shirogane.holy.knights.application.usecase
 
+import arrow.core.Either
+import arrow.core.raise.either
 import com.shirogane.holy.knights.application.dto.StreamSongDto
 import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSongSearchResultDto
 import com.shirogane.holy.knights.application.dto.StreamSongStatsDto
 import com.shirogane.holy.knights.application.port.`in`.SongUseCasePort
 import com.shirogane.holy.knights.domain.repository.SongRepository
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,12 +15,8 @@ class SongUseCaseImpl(
     private val songRepository: SongRepository
 ) : SongUseCasePort {
 
-    private val logger = LoggerFactory.getLogger(SongUseCaseImpl::class.java)
-
-    override suspend fun searchStreamSongs(searchParams: StreamSongSearchParamsDto): StreamSongSearchResultDto {
-        logger.info("楽曲検索実行: $searchParams")
-        
-        return try {
+    override suspend fun searchStreamSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto> =
+        either {
             val pageRequest = searchParams.toPageRequest()
             
             val songs = songRepository.searchStreamSongs(
@@ -40,31 +37,11 @@ class SongUseCaseImpl(
 
             val songsDto = songs.map { StreamSongDto.fromDomain(it) }
             StreamSongSearchResultDto.of(songsDto, totalCount, pageRequest)
-        } catch (e: Exception) {
-            logger.error("楽曲検索中にエラーが発生しました", e)
-            StreamSongSearchResultDto(
-                songs = emptyList(),
-                totalCount = 0,
-                totalPages = 0,
-                currentPage = searchParams.page
-            )
         }
-    }
 
-    override suspend fun getStreamSongsStats(): StreamSongStatsDto {
-        logger.info("楽曲統計情報取得実行")
-        
-        return try {
+    override suspend fun getStreamSongsStats(): Either<UseCaseError, StreamSongStatsDto> =
+        either {
             val stats = songRepository.getStreamSongsStats()
             StreamSongStatsDto.fromDomain(stats)
-        } catch (e: Exception) {
-            logger.error("楽曲統計情報取得中にエラーが発生しました", e)
-            StreamSongStatsDto(
-                totalSongs = 0,
-                totalPerformances = 0,
-                topSongs = emptyList(),
-                recentPerformances = emptyList()
-            )
         }
-    }
 }

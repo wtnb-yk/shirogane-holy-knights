@@ -1,6 +1,6 @@
 package com.shirogane.holy.knights.domain.repository
 
-import com.shirogane.holy.knights.domain.model.Song
+import com.shirogane.holy.knights.domain.model.Songs
 import com.shirogane.holy.knights.domain.model.SongStats
 import java.time.Instant
 
@@ -24,7 +24,7 @@ interface SongRepository {
         endDate: Instant? = null,
         limit: Int,
         offset: Int
-    ): List<Song>
+    ): Songs
     
     /**
      * 楽曲検索の総件数取得
