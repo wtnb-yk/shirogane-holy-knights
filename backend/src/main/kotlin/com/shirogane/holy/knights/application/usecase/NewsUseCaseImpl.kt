@@ -1,6 +1,5 @@
 package com.shirogane.holy.knights.application.usecase
 
-import com.shirogane.holy.knights.application.common.PageResponse
 import com.shirogane.holy.knights.application.dto.*
 import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
 import com.shirogane.holy.knights.domain.repository.NewsRepository
@@ -40,23 +39,14 @@ class NewsUseCaseImpl(
             )
             
             val newsDto = newsList.map { NewsDto.fromDomain(it) }
-            val pageResponse = PageResponse.of(newsDto, totalCount, pageRequest)
-            
-            return NewsSearchResultDto(
-                items = pageResponse.content,
-                totalCount = pageResponse.totalElements,
-                page = pageResponse.page,
-                pageSize = pageResponse.size,
-                hasMore = pageResponse.hasMore
-            )
+            return NewsSearchResultDto.of(newsDto, totalCount, pageRequest)
         } catch (e: Exception) {
             logger.error("ニュース検索エラー", e)
             return NewsSearchResultDto(
                 items = emptyList(),
                 totalCount = 0,
                 page = params.page,
-                pageSize = params.pageSize,
-                hasMore = false
+                pageSize = params.pageSize
             )
         }
     }

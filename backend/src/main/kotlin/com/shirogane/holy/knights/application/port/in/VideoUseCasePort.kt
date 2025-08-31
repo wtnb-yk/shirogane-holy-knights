@@ -1,9 +1,11 @@
 package com.shirogane.holy.knights.application.port.`in`
 
+import arrow.core.Either
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchResultDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchResultDto
+import com.shirogane.holy.knights.application.usecase.UseCaseError
 
 /**
  * 動画ユースケース入力ポート
@@ -14,14 +16,14 @@ interface VideoUseCasePort {
      * @param searchParams 検索条件
      * @return 動画検索結果DTO
      */
-    suspend fun searchVideos(searchParams: VideoSearchParamsDto): VideoSearchResultDto
+    suspend fun searchVideos(searchParams: VideoSearchParamsDto): Either<UseCaseError, VideoSearchResultDto>
     
     /**
      * 配信検索
      * @param searchParams 検索条件
      * @return 配信検索結果DTO
      */
-    suspend fun searchStreams(searchParams: StreamSearchParamsDto): StreamSearchResultDto
+    suspend fun searchStreams(searchParams: StreamSearchParamsDto): Either<UseCaseError, StreamSearchResultDto>
     
     /**
      * 全ての配信タグを取得

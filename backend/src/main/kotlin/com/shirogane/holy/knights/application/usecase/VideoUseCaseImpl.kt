@@ -1,6 +1,7 @@
 package com.shirogane.holy.knights.application.usecase
 
-import com.shirogane.holy.knights.application.common.PageResponse
+import arrow.core.Either
+import arrow.core.raise.either
 import com.shirogane.holy.knights.application.dto.VideoDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchResultDto
@@ -8,6 +9,8 @@ import com.shirogane.holy.knights.application.dto.StreamDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchResultDto
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
+import com.shirogane.holy.knights.domain.model.Video
+import com.shirogane.holy.knights.domain.model.Videos
 import com.shirogane.holy.knights.domain.repository.VideoRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -18,17 +21,17 @@ class VideoUseCaseImpl(
     private val videoRepository: VideoRepository
 ) : VideoUseCasePort {
 
+    // TODO: いい感じに呼べるように
     private val logger = LoggerFactory.getLogger(VideoUseCaseImpl::class.java)
 
-    override suspend fun searchVideos(searchParams: VideoSearchParamsDto): VideoSearchResultDto {
-        logger.info("動画検索実行: $searchParams")
-        
-        return try {
+    override suspend fun searchVideos(searchParams: VideoSearchParamsDto): Either<UseCaseError, VideoSearchResultDto> =
+        either {
             val pageRequest = searchParams.toPageRequest()
             val startDate = searchParams.startDate?.let { Instant.parse(it) }
             val endDate = searchParams.endDate?.let { Instant.parse(it) }
-            
-            val videos = videoRepository.search(
+
+            // TODO: Repositoryのエラーを拾う？
+            val videos = videoRepository.searchVideos(
                 query = searchParams.query,
                 tags = searchParams.tags,
                 startDate = startDate,
@@ -36,44 +39,24 @@ class VideoUseCaseImpl(
                 limit = pageRequest.size,
                 offset = pageRequest.offset
             )
-            
-            val totalCount = videoRepository.countVideosBySearchCriteria(
+
+            val totalCount = videoRepository.countVideos(
                 query = searchParams.query,
                 tags = searchParams.tags,
                 startDate = startDate,
                 endDate = endDate
             )
 
-            val videosDto = videos.map { convertToDto(it) }
-            val pageResponse = PageResponse.of(videosDto, totalCount, pageRequest)
-            
-            VideoSearchResultDto(
-                items = pageResponse.content,
-                totalCount = pageResponse.totalElements,
-                page = pageResponse.page,
-                pageSize = pageResponse.size,
-                hasMore = pageResponse.hasMore
-            )
-        } catch (e: Exception) {
-            logger.error("動画検索エラー", e)
-            VideoSearchResultDto(
-                items = emptyList(),
-                totalCount = 0,
-                page = searchParams.page,
-                pageSize = searchParams.pageSize,
-                hasMore = false
-            )
+            val videosDto = videos.convertToDto()
+            VideoSearchResultDto.of(videosDto, totalCount, pageRequest)
         }
-    }
 
-    override suspend fun searchStreams(searchParams: StreamSearchParamsDto): StreamSearchResultDto {
-        logger.info("配信検索実行: $searchParams")
-        
-        return try {
+    override suspend fun searchStreams(searchParams: StreamSearchParamsDto): Either<UseCaseError, StreamSearchResultDto> =
+        either {
             val pageRequest = searchParams.toPageRequest()
             val startDate = searchParams.startDate?.let { Instant.parse(it) }
             val endDate = searchParams.endDate?.let { Instant.parse(it) }
-            
+
             val streams = videoRepository.searchStreams(
                 query = searchParams.query,
                 tags = searchParams.tags,
@@ -82,60 +65,28 @@ class VideoUseCaseImpl(
                 limit = pageRequest.size,
                 offset = pageRequest.offset
             )
-            
-            val totalCount = videoRepository.countStreamsBySearchCriteria(
+
+            val totalCount = videoRepository.countStreams(
                 query = searchParams.query,
                 tags = searchParams.tags,
                 startDate = startDate,
                 endDate = endDate
             )
 
-            val streamsDto = streams.map { convertToStreamDto(it) }
-            val pageResponse = PageResponse.of(streamsDto, totalCount, pageRequest)
-            
-            StreamSearchResultDto(
-                items = pageResponse.content,
-                totalCount = pageResponse.totalElements,
-                page = pageResponse.page,
-                pageSize = pageResponse.size,
-                hasMore = pageResponse.hasMore
-            )
-        } catch (e: Exception) {
-            logger.error("配信検索エラー", e)
-            StreamSearchResultDto(
-                items = emptyList(),
-                totalCount = 0,
-                page = searchParams.page,
-                pageSize = searchParams.pageSize,
-                hasMore = false
-            )
+            val streamsDto = streams.convertToStreamDto()
+            StreamSearchResultDto.of(streamsDto, totalCount, pageRequest)
         }
-    }
 
-    override suspend fun getAllStreamTags(): List<String> {
-        logger.info("全配信タグ取得実行")
-        
-        return try {
-            videoRepository.getAllStreamTags()
-        } catch (e: Exception) {
-            logger.error("全配信タグ取得エラー", e)
-            emptyList()
-        }
-    }
 
-    override suspend fun getAllVideoTags(): List<String> {
-        logger.info("全動画タグ取得実行")
-        
-        return try {
-            videoRepository.getAllVideoTags()
-        } catch (e: Exception) {
-            logger.error("全動画タグ取得エラー", e)
-            emptyList()
-        }
-    }
+    override suspend fun getAllStreamTags(): List<String> =
+        videoRepository.getAllStreamTags()
 
-    private fun convertToDto(video: com.shirogane.holy.knights.domain.model.Video): VideoDto {
-        return VideoDto(
+    override suspend fun getAllVideoTags(): List<String> =
+        videoRepository.getAllVideoTags()
+
+    private fun Videos.convertToDto(): List<VideoDto> = this.map { video -> convertToDto(video) }
+    private fun convertToDto(video: Video): VideoDto =
+        VideoDto(
             id = video.id.value,
             title = video.title,
             description = video.contentDetails?.description,
@@ -146,9 +97,9 @@ class VideoUseCaseImpl(
             tags = video.tags.map { it.name },
             channelId = video.channelId.value,
         )
-    }
 
-    private fun convertToStreamDto(video: com.shirogane.holy.knights.domain.model.Video): StreamDto {
+    private fun Videos.convertToStreamDto(): List<StreamDto> = this.map { video -> convertToStreamDto(video) }
+    private fun convertToStreamDto(video: Video): StreamDto {
         return StreamDto(
             id = video.id.value,
             title = video.title,

@@ -31,6 +31,7 @@ val logbackVersion = "1.4.11"
 val kotlinxCoroutinesVersion = "1.7.3"
 val kotlinxSerializationVersion = "1.6.2"
 val kotestVersion = "5.8.0"
+val arrowVersion = "1.2.4"
 
 dependencies {
     // Spring Boot (Web層削除、Lambda専用構成)
@@ -62,6 +63,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinxCoroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
+    
+    // Arrow-kt
+    implementation("io.arrow-kt:arrow-core:$arrowVersion")
+    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
     
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")

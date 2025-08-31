@@ -1,6 +1,5 @@
 package com.shirogane.holy.knights.application.usecase
 
-import com.shirogane.holy.knights.application.common.PageResponse
 import com.shirogane.holy.knights.application.dto.StreamSongDto
 import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSongSearchResultDto
@@ -40,14 +39,7 @@ class SongUseCaseImpl(
             )
 
             val songsDto = songs.map { StreamSongDto.fromDomain(it) }
-            val pageResponse = PageResponse.of(songsDto, totalCount, pageRequest)
-            
-            StreamSongSearchResultDto(
-                songs = pageResponse.content,
-                totalCount = pageResponse.totalElements,
-                totalPages = pageResponse.totalPages,
-                currentPage = pageResponse.page
-            )
+            StreamSongSearchResultDto.of(songsDto, totalCount, pageRequest)
         } catch (e: Exception) {
             logger.error("楽曲検索中にエラーが発生しました", e)
             StreamSongSearchResultDto(

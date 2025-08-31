@@ -1,5 +1,7 @@
 package com.shirogane.holy.knights.application.dto
 
+import com.shirogane.holy.knights.application.common.PageRequest
+import com.shirogane.holy.knights.application.common.PaginatedResult
 import com.shirogane.holy.knights.domain.model.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
@@ -19,7 +21,7 @@ data class StreamSongSearchParamsDto(
     /**
      * PageRequestインスタンスを生成
      */
-    fun toPageRequest() = com.shirogane.holy.knights.application.common.PageRequest(page, size)
+    fun toPageRequest() = PageRequest(page, size)
     
     /**
      * startDateをInstantに変換 (YYYY-MM-DD形式専用)
@@ -111,10 +113,26 @@ data class PerformanceDto(
 @Serializable
 data class StreamSongSearchResultDto(
     val songs: List<StreamSongDto>,
-    val totalCount: Int,
+    override val totalCount: Int,
     val totalPages: Int,
     val currentPage: Int
-)
+) : PaginatedResult<StreamSongDto> {
+    override val items: List<StreamSongDto> get() = songs
+    override val page: Int get() = currentPage
+    override val pageSize: Int get() = if (songs.isEmpty()) 20 else totalCount / ((currentPage - 1).coerceAtLeast(0) + 1).coerceAtLeast(1)
+    
+    companion object {
+        fun of(songs: List<StreamSongDto>, totalCount: Int, pageRequest: PageRequest): StreamSongSearchResultDto {
+            val totalPages = if (totalCount == 0) 0 else ((totalCount + pageRequest.size - 1) / pageRequest.size)
+            return StreamSongSearchResultDto(
+                songs = songs,
+                totalCount = totalCount,
+                totalPages = totalPages,
+                currentPage = pageRequest.requestPage
+            )
+        }
+    }
+}
 
 /**
  * 楽曲統計情報DTO

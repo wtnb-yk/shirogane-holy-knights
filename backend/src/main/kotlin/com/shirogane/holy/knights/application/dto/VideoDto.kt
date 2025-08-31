@@ -1,5 +1,7 @@
 package com.shirogane.holy.knights.application.dto
 
+import com.shirogane.holy.knights.application.common.PageRequest
+import com.shirogane.holy.knights.application.common.PaginatedResult
 import com.shirogane.holy.knights.domain.model.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
@@ -54,7 +56,7 @@ data class VideoSearchParamsDto(
     /**
      * PageRequestインスタンスを生成
      */
-    fun toPageRequest() = com.shirogane.holy.knights.application.common.PageRequest(page, pageSize)
+    fun toPageRequest() = PageRequest(page, pageSize)
     /**
      * startDateをInstantに変換
      */
@@ -76,12 +78,21 @@ data class VideoSearchParamsDto(
  */
 @Serializable
 data class VideoSearchResultDto(
-    val items: List<VideoDto>,
-    val totalCount: Int,
-    val page: Int,
-    val pageSize: Int,
-    val hasMore: Boolean
-)
+    override val items: List<VideoDto>,
+    override val totalCount: Int,
+    override val page: Int,
+    override val pageSize: Int
+) : PaginatedResult<VideoDto> {
+    companion object {
+        fun of(items: List<VideoDto>, totalCount: Int, pageRequest: PageRequest): VideoSearchResultDto =
+            VideoSearchResultDto(
+                items = items,
+                totalCount = totalCount,
+                page = pageRequest.requestPage,
+                pageSize = pageRequest.size
+            )
+        }
+    }
 
 /**
  * 配信DTO（データ転送オブジェクト）
@@ -133,7 +144,7 @@ data class StreamSearchParamsDto(
     /**
      * PageRequestインスタンスを生成
      */
-    fun toPageRequest() = com.shirogane.holy.knights.application.common.PageRequest(page, pageSize)
+    fun toPageRequest() = PageRequest(page, pageSize)
     /**
      * startDateをInstantに変換
      */
@@ -155,10 +166,20 @@ data class StreamSearchParamsDto(
  */
 @Serializable
 data class StreamSearchResultDto(
-    val items: List<StreamDto>,
-    val totalCount: Int,
-    val page: Int,
-    val pageSize: Int,
-    val hasMore: Boolean
-)
+    override val items: List<StreamDto>,
+    override val totalCount: Int,
+    override val page: Int,
+    override val pageSize: Int
+) : PaginatedResult<StreamDto> {
+    companion object {
+        fun of(items: List<StreamDto>, totalCount: Int, pageRequest: PageRequest): StreamSearchResultDto {
+            return StreamSearchResultDto(
+                items = items,
+                totalCount = totalCount,
+                page = pageRequest.requestPage,
+                pageSize = pageRequest.size
+            )
+        }
+    }
+}
 

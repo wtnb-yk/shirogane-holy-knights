@@ -18,6 +18,10 @@ data class Video(
     val streamTags: List<StreamTag> = emptyList()
 )
 
+class Videos(private val listUnordered: List<Video>): FCC<Video>(
+    listUnordered.sortedWith(compareByDescending{ it.publishedAt })
+)
+
 /**
  * 動画詳細情報値オブジェクト
  */

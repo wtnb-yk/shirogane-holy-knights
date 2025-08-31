@@ -1,5 +1,7 @@
 package com.shirogane.holy.knights.application.dto
 
+import com.shirogane.holy.knights.application.common.PageRequest
+import com.shirogane.holy.knights.application.common.PaginatedResult
 import com.shirogane.holy.knights.domain.model.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
@@ -83,7 +85,7 @@ data class NewsSearchParamsDto(
     /**
      * PageRequestインスタンスを生成
      */
-    fun toPageRequest() = com.shirogane.holy.knights.application.common.PageRequest(page, pageSize)
+    fun toPageRequest() = PageRequest(page, pageSize)
     /**
      * startDateをInstantに変換
      */
@@ -105,11 +107,21 @@ data class NewsSearchParamsDto(
  */
 @Serializable
 data class NewsSearchResultDto(
-    val items: List<NewsDto>,
-    val totalCount: Int,
-    val page: Int,
-    val pageSize: Int,
-    val hasMore: Boolean
-)
+    override val items: List<NewsDto>,
+    override val totalCount: Int,
+    override val page: Int,
+    override val pageSize: Int
+) : PaginatedResult<NewsDto> {
+    companion object {
+        fun of(items: List<NewsDto>, totalCount: Int, pageRequest: PageRequest): NewsSearchResultDto {
+            return NewsSearchResultDto(
+                items = items,
+                totalCount = totalCount,
+                page = pageRequest.requestPage,
+                pageSize = pageRequest.size
+            )
+        }
+    }
+}
 
 
