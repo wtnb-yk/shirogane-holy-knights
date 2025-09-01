@@ -52,8 +52,8 @@ export const useStreamSongsQuery = (
           query: searchQuery || undefined,
           sortBy,
           sortOrder,
-          startDate: filters.startDate,
-          endDate: filters.endDate,
+          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
+          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
           page: currentPage,
           size: pageSize,
         });

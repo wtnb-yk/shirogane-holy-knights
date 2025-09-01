@@ -13,8 +13,8 @@ data class StreamSongSearchParamsDto(
     val query: String? = null,
     val sortBy: String? = "singCount", // singCount|latestSingDate|title
     val sortOrder: String? = "DESC", // DESC|ASC
-    val startDate: String? = null, // YYYY-MM-DD形式の日付文字列
-    val endDate: String? = null,   // YYYY-MM-DD形式の日付文字列
+    val startDate: String? = null, // ISO 8601形式の日時文字列
+    val endDate: String? = null,   // ISO 8601形式の日時文字列
     val page: Int = 1,  
     val size: Int = 20
 ) {
@@ -24,29 +24,17 @@ data class StreamSongSearchParamsDto(
     fun toPageRequest() = PageRequest(page, size)
     
     /**
-     * startDateをInstantに変換 (YYYY-MM-DD形式専用)
+     * startDateをInstantに変換
      */
     fun getStartDateAsInstant(): Instant? {
-        return startDate?.let { dateString ->
-            try {
-                Instant.parse("${dateString}T00:00:00Z")
-            } catch (e: Exception) {
-                null
-            }
-        }
+        return startDate?.let { Instant.parse(it) }
     }
     
     /**
-     * endDateをInstantに変換 (YYYY-MM-DD形式専用)
+     * endDateをInstantに変換
      */
     fun getEndDateAsInstant(): Instant? {
-        return endDate?.let { dateString ->
-            try {
-                Instant.parse("${dateString}T23:59:59.999Z")
-            } catch (e: Exception) {
-                null
-            }
-        }
+        return endDate?.let { Instant.parse(it) }
     }
 }
 
