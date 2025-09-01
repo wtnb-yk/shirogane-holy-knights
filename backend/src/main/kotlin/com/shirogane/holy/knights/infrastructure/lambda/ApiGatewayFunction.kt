@@ -26,14 +26,8 @@ class ApiGatewayFunction(
         if (request.httpMethod == "OPTIONS") {
             return corsHandler.createOptionsResponse(request)
         }
-        
-        return try {
-            val response = router.route(request)
-            corsHandler.addCorsHeaders(request, response)
-        } catch (e: Exception) {
-            logger.error("Lambda Function error", e)
-            val errorResponse = responseBuilder.error()
-            corsHandler.addCorsHeaders(request, errorResponse)
-        }
+
+        val response = router.route(request)
+        return corsHandler.addCorsHeaders(request, response)
     }
 }

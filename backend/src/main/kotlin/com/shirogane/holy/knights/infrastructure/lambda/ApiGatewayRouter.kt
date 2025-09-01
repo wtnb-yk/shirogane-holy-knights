@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.infrastructure.lambda
 
+import arrow.core.Either
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -69,18 +70,26 @@ class ApiGatewayRouter(
         
         val routeKey = RouteKey(request.httpMethod, request.path)
         val handler = routes[routeKey]
+
+        if (handler == null) {
+            logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
+            return responseBuilder.notFound()
+        }
         
-        return if (handler != null) {
+        return Either.catch {
             val result = runBlocking { handler(request) }
-            
+
             when (result.body) {
                 is ErrorResponse -> responseBuilder.errorResponse(result.statusCode, result.body)
                 else -> responseBuilder.success(result.body)
             }
-        } else {
-            logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
-            responseBuilder.notFound()
-        }
+        }.fold(
+            { e ->
+                logger.error("Error processing request", e)
+                responseBuilder.error()
+            },
+            { it }
+        )
     }
     
     private fun <T> parseBody(body: String?, clazz: Class<T>): T? {
