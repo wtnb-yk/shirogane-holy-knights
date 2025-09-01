@@ -5,10 +5,10 @@ build:
 	./gradlew clean build --exclude-task test
 
 # LocalStack Lambda環境のデプロイ
-deploy:
+deploy: build
 	./gradlew deployLocalStackLambda
 
-# デプロイ情報の表示  
+# デプロイ情報の表示
 info:
 	./gradlew localStackInfo
 
@@ -23,8 +23,9 @@ jar:
 # ヘルプ表示
 help:
 	@echo "Available commands:"
-	@echo "  make deploy  - Deploy Lambda to LocalStack"
-	@echo "  make info    - Show deployment info"
-	@echo "  make clean   - Clean LocalStack Lambda"
-	@echo "  make build   - Build project (exclude tests)"
-	@echo "  make jar     - Build Lambda JAR only"
+	@echo "  make build-deploy - Build and deploy in one command"
+	@echo "  make deploy       - Deploy Lambda to LocalStack"
+	@echo "  make info         - Show deployment info"
+	@echo "  make clean        - Clean LocalStack Lambda"
+	@echo "  make build        - Build project (exclude tests)"
+	@echo "  make jar          - Build Lambda JAR only"
