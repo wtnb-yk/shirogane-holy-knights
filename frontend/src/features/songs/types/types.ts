@@ -50,10 +50,10 @@ export interface StreamSongSearchParams {
 
 // 楽曲検索結果
 export interface StreamSongSearchResult {
-  songs: StreamSong[];
+  items: StreamSong[];
   totalCount: number;
-  totalPages: number;
-  currentPage: number;
+  page: number;
+  pageSize: number;
 }
 
 // 上位楽曲統計

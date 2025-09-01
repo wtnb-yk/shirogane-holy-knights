@@ -58,7 +58,7 @@ export const useStreamSongsQuery = (
           size: pageSize,
         });
         
-        setSongs(result.songs);
+        setSongs(result.items);
         setTotalCount(result.totalCount);
       } catch (err: any) {
         console.error('楽曲検索エラー:', err);

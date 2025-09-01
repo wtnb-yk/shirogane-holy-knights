@@ -86,23 +86,18 @@ data class PerformanceDto(
  */
 @Serializable
 data class StreamSongSearchResultDto(
-    val songs: List<StreamSongDto>,
+    override val items: List<StreamSongDto>,
     override val totalCount: Int,
-    val totalPages: Int,
-    val currentPage: Int
+    override val page: Int,
+    override val pageSize: Int
 ) : PaginatedResult<StreamSongDto> {
-    override val items: List<StreamSongDto> get() = songs
-    override val page: Int get() = currentPage
-    override val pageSize: Int get() = if (songs.isEmpty()) 20 else totalCount / ((currentPage - 1).coerceAtLeast(0) + 1).coerceAtLeast(1)
-    
     companion object {
-        fun of(songs: List<StreamSongDto>, totalCount: Int, pageRequest: PageRequest): StreamSongSearchResultDto {
-            val totalPages = if (totalCount == 0) 0 else ((totalCount + pageRequest.size - 1) / pageRequest.size)
+        fun of(items: List<StreamSongDto>, totalCount: Int, pageRequest: PageRequest): StreamSongSearchResultDto {
             return StreamSongSearchResultDto(
-                songs = songs,
+                items = items,
                 totalCount = totalCount,
-                totalPages = totalPages,
-                currentPage = pageRequest.requestPage
+                page = pageRequest.requestPage,
+                pageSize = pageRequest.size
             )
         }
     }
