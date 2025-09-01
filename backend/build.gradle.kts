@@ -128,7 +128,7 @@ tasks.withType<Test> {
 
 // Spring Cloud Function AWS Lambda用JARタスク
 val springCloudFunctionLambdaJar by tasks.registering(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class) {
-    archiveClassifier.set("springboot-lambda")
+    archiveClassifier.set("aws-lambda")
     from(sourceSets.main.get().output)
     
     configurations = listOf(project.configurations.runtimeClasspath.get())

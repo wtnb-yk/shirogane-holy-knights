@@ -12,13 +12,13 @@ class SongController(
         songUseCase.searchStreamSongs(params)
             .fold(
                 { it.toResponse() },
-                { it }
+                { ApiResponse(200, it) }
             )
     
     suspend fun getStreamSongsStats() =
         songUseCase.getStreamSongsStats()
             .fold(
-                { it.toResponse() },
-                { it }
+                { ApiResponse(400, it.toResponse()) },
+                { ApiResponse(200, it) }
             )
 }

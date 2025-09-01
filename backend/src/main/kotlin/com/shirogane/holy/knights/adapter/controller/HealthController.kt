@@ -7,9 +7,12 @@ import org.springframework.stereotype.Component
 class HealthController {
     private val logger = LoggerFactory.getLogger(HealthController::class.java)
     
-    fun checkHealth() = mapOf(
-        "status" to "healthy",
-        "service" to "shirogane-holy-knights-api"
+    fun checkHealth() = ApiResponse(
+        200,
+        mapOf(
+            "status" to "healthy",
+            "service" to "shirogane-holy-knights-api"
+        )
     ).also {
         logger.info("Health check requested")
     }

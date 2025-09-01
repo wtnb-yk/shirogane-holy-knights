@@ -3,6 +3,7 @@ package com.shirogane.holy.knights.infrastructure.lambda
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.shirogane.holy.knights.adapter.controller.ApiResponse
 import com.shirogane.holy.knights.adapter.controller.HealthController
 import com.shirogane.holy.knights.adapter.controller.NewsController
 import com.shirogane.holy.knights.adapter.controller.VideoController
@@ -29,7 +30,7 @@ class ApiGatewayRouter(
     
     data class RouteKey(val method: String, val path: String)
     
-    private val routes: Map<RouteKey, suspend (APIGatewayProxyRequestEvent) -> Any> = mapOf(
+    private val routes: Map<RouteKey, suspend (APIGatewayProxyRequestEvent) -> ApiResponse> = mapOf(
         RouteKey("GET", "/health") to { _ -> 
             healthController.checkHealth()
         },
@@ -71,11 +72,10 @@ class ApiGatewayRouter(
         
         return if (handler != null) {
             val result = runBlocking { handler(request) }
-
-            // FIXME: これController側でやるべき
-            when (result) {
-                is ErrorResponse -> responseBuilder.errorResponse(400, result)
-                else -> responseBuilder.success(result)
+            
+            when (result.body) {
+                is ErrorResponse -> responseBuilder.errorResponse(result.statusCode, result.body)
+                else -> responseBuilder.success(result.body)
             }
         } else {
             logger.warn("Unknown path: ${request.httpMethod} ${request.path}")

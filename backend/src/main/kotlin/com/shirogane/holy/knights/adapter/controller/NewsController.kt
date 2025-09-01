@@ -12,9 +12,9 @@ class NewsController(
         newsUseCase.searchNews(params)
             .fold(
                 { it.toResponse() },
-                { it }
+                { ApiResponse(200, it) }
             )
     
     suspend fun getNewsCategories() = 
-        newsUseCase.getNewsCategories()
+        ApiResponse(200, newsUseCase.getNewsCategories())
 }

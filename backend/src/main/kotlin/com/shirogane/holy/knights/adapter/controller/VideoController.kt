@@ -12,20 +12,20 @@ class VideoController(
     suspend fun searchVideos(params: VideoSearchParamsDto) =
         videoUseCase.searchVideos(params)
             .fold(
-                { it.toResponse() },
-                { it }
+                { ApiResponse(400, it.toResponse()) },
+                { ApiResponse(200, it) }
             )
     
     suspend fun searchStreams(params: StreamSearchParamsDto) =
         videoUseCase.searchStreams(params)
             .fold(
                 { it.toResponse() },
-                { it }
+                { ApiResponse(200, it) }
             )
     
     suspend fun getAllStreamTags() = 
-        videoUseCase.getAllStreamTags()
+        ApiResponse(200, videoUseCase.getAllStreamTags())
     
     suspend fun getAllVideoTags() =
-        videoUseCase.getAllVideoTags()
+        ApiResponse(200, videoUseCase.getAllVideoTags())
 }
