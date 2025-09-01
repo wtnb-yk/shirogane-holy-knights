@@ -1,6 +1,5 @@
 package com.shirogane.holy.knights.infrastructure.lambda
 
-import arrow.core.Either
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -9,12 +8,10 @@ import com.shirogane.holy.knights.adapter.controller.HealthController
 import com.shirogane.holy.knights.adapter.controller.NewsController
 import com.shirogane.holy.knights.adapter.controller.VideoController
 import com.shirogane.holy.knights.adapter.controller.SongController
-import com.shirogane.holy.knights.adapter.controller.error.ErrorResponse
 import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -25,7 +22,8 @@ class ApiGatewayRouter(
     private val songController: SongController,
     private val healthController: HealthController,
     private val objectMapper: ObjectMapper,
-    private val responseBuilder: ApiGatewayResponseBuilder
+    private val responseBuilder: ApiGatewayResponseBuilder,
+    private val requestHandlerMiddleware: RequestHandlerMiddleware
 ) {
     private val logger = LoggerFactory.getLogger(ApiGatewayRouter::class.java)
     
@@ -76,20 +74,7 @@ class ApiGatewayRouter(
             return responseBuilder.notFound()
         }
         
-        return Either.catch {
-            val result = runBlocking { handler(request) }
-
-            when (result.body) {
-                is ErrorResponse -> responseBuilder.errorResponse(result.statusCode, result.body)
-                else -> responseBuilder.success(result.body)
-            }
-        }.fold(
-            { e ->
-                logger.error("Error processing request", e)
-                responseBuilder.error()
-            },
-            { it }
-        )
+        return requestHandlerMiddleware.handle(request, handler)
     }
     
     private fun <T> parseBody(body: String?, clazz: Class<T>): T? {
