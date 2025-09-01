@@ -2,6 +2,7 @@ package com.shirogane.holy.knights.infrastructure.lambda
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.function.Function
@@ -14,7 +15,6 @@ import java.util.function.Function
 class ApiGatewayFunction(
     private val router: ApiGatewayRouter,
     private val corsHandler: CorsHandler,
-    private val responseBuilder: ApiGatewayResponseBuilder
 ) : Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     private val logger = LoggerFactory.getLogger(ApiGatewayFunction::class.java)
@@ -27,7 +27,7 @@ class ApiGatewayFunction(
             return corsHandler.createOptionsResponse(request)
         }
 
-        val response = router.route(request)
+        val response = runBlocking { router.route(request) }
         return corsHandler.addCorsHeaders(request, response)
     }
 }

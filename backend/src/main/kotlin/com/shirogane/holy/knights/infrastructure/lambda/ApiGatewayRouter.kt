@@ -12,6 +12,9 @@ import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.infrastructure.lambda.middleware.MiddlewareChain
+import com.shirogane.holy.knights.infrastructure.lambda.middleware.ErrorHandlingMiddleware
+import com.shirogane.holy.knights.infrastructure.lambda.middleware.LoggingMiddleware
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -23,7 +26,9 @@ class ApiGatewayRouter(
     private val healthController: HealthController,
     private val objectMapper: ObjectMapper,
     private val responseBuilder: ApiGatewayResponseBuilder,
-    private val requestHandlerMiddleware: RequestHandlerMiddleware
+    private val middlewareChain: MiddlewareChain,
+    private val errorHandlingMiddleware: ErrorHandlingMiddleware,
+    private val loggingMiddleware: LoggingMiddleware
 ) {
     private val logger = LoggerFactory.getLogger(ApiGatewayRouter::class.java)
     
@@ -63,9 +68,7 @@ class ApiGatewayRouter(
         },
     )
     
-    fun route(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        logger.info("Routing request: ${request.httpMethod} ${request.path}")
-        
+    suspend fun route(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
         val routeKey = RouteKey(request.httpMethod, request.path)
         val handler = routes[routeKey]
 
@@ -74,7 +77,8 @@ class ApiGatewayRouter(
             return responseBuilder.notFound()
         }
         
-        return requestHandlerMiddleware.handle(request, handler)
+        val middlewares = listOf(loggingMiddleware, errorHandlingMiddleware)
+        return middlewareChain.execute(request, middlewares, handler)
     }
     
     private fun <T> parseBody(body: String?, clazz: Class<T>): T? {
