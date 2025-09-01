@@ -82,15 +82,9 @@ class ApiGatewayRouter(
     }
     
     private fun <T> parseBody(body: String?, clazz: Class<T>): T? {
-        return if (body != null) {
-            try {
-                objectMapper.readValue(body, clazz)
-            } catch (e: Exception) {
-                logger.error("Failed to parse request body", e)
-                null
-            }
-        } else {
-            null
+        return when {
+            body == null || body.isBlank() -> null
+            else -> objectMapper.readValue(body, clazz)
         }
     }
 }
