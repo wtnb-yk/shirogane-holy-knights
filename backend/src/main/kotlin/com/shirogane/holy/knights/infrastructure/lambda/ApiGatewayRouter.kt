@@ -2,16 +2,11 @@ package com.shirogane.holy.knights.infrastructure.lambda
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.shirogane.holy.knights.adapter.controller.ApiResponse
 import com.shirogane.holy.knights.adapter.controller.HealthController
 import com.shirogane.holy.knights.adapter.controller.NewsController
 import com.shirogane.holy.knights.adapter.controller.VideoController
 import com.shirogane.holy.knights.adapter.controller.SongController
-import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
-import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
-import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
-import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.MiddlewareChain
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.ErrorHandlingMiddleware
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.LoggingMiddleware
@@ -24,7 +19,6 @@ class ApiGatewayRouter(
     private val newsController: NewsController,
     private val songController: SongController,
     private val healthController: HealthController,
-    private val objectMapper: ObjectMapper,
     private val responseBuilder: ApiGatewayResponseBuilder,
     private val middlewareChain: MiddlewareChain,
     private val errorHandlingMiddleware: ErrorHandlingMiddleware,
@@ -39,12 +33,10 @@ class ApiGatewayRouter(
             healthController.checkHealth()
         },
         RouteKey("POST", "/videos") to { request ->
-            val params = parseBody(request.body, VideoSearchParamsDto::class.java) ?: VideoSearchParamsDto()
-            videoController.searchVideos(params)
+            videoController.searchVideos(request.body)
         },
         RouteKey("POST", "/streams") to { request ->
-            val params = parseBody(request.body, StreamSearchParamsDto::class.java) ?: StreamSearchParamsDto()
-            videoController.searchStreams(params)
+            videoController.searchStreams(request.body)
         },
         RouteKey("GET", "/stream-tags") to { _ ->
             videoController.getAllStreamTags()
@@ -53,15 +45,13 @@ class ApiGatewayRouter(
             videoController.getAllVideoTags()
         },
         RouteKey("POST", "/news") to { request ->
-            val params = parseBody(request.body, NewsSearchParamsDto::class.java) ?: NewsSearchParamsDto()
-            newsController.searchNews(params)
+            newsController.searchNews(request.body)
         },
         RouteKey("GET", "/news/categories") to { _ ->
             newsController.getNewsCategories()
         },
         RouteKey("POST", "/stream-songs") to { request ->
-            val params = parseBody(request.body, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto()
-            songController.searchStreamSongs(params)
+            songController.searchStreamSongs(request.body)
         },
         RouteKey("GET", "/stream-songs/stats") to { _ ->
             songController.getStreamSongsStats()
@@ -81,10 +71,4 @@ class ApiGatewayRouter(
         return middlewareChain.execute(request, middlewares, handler)
     }
     
-    private fun <T> parseBody(body: String?, clazz: Class<T>): T? {
-        return when {
-            body == null || body.isBlank() -> null
-            else -> objectMapper.readValue(body, clazz)
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.adapter.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
 import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
 import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
@@ -7,17 +8,18 @@ import org.springframework.stereotype.Component
 
 @Component
 class VideoController(
-    private val videoUseCase: VideoUseCasePort
+    private val videoUseCase: VideoUseCasePort,
+    override val objectMapper: ObjectMapper
 ): Controller {
-    suspend fun searchVideos(params: VideoSearchParamsDto) =
-        videoUseCase.searchVideos(params)
+    suspend fun searchVideos(requestBody: String?) =
+        videoUseCase.searchVideos(parseRequestBody(requestBody, VideoSearchParamsDto::class.java) ?: VideoSearchParamsDto())
             .fold(
-                { ApiResponse(400, it.toResponse()) },
+                { it.toResponse() },
                 { ApiResponse(200, it) }
             )
     
-    suspend fun searchStreams(params: StreamSearchParamsDto) =
-        videoUseCase.searchStreams(params)
+    suspend fun searchStreams(requestBody: String?) =
+        videoUseCase.searchStreams(parseRequestBody(requestBody, StreamSearchParamsDto::class.java) ?: StreamSearchParamsDto())
             .fold(
                 { it.toResponse() },
                 { ApiResponse(200, it) }
