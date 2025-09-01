@@ -2,11 +2,11 @@ package com.shirogane.holy.knights.application.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.shirogane.holy.knights.application.dto.StreamSongDto
-import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
-import com.shirogane.holy.knights.application.dto.StreamSongSearchResultDto
-import com.shirogane.holy.knights.application.dto.StreamSongStatsDto
-import com.shirogane.holy.knights.application.port.`in`.SongUseCasePort
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongStatsDto
+import com.shirogane.holy.knights.adapter.controller.port.SongUseCasePort
 import com.shirogane.holy.knights.domain.repository.SongRepository
 import org.springframework.stereotype.Service
 

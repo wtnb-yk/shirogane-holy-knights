@@ -1,7 +1,9 @@
-package com.shirogane.holy.knights.application.port.`in`
+package com.shirogane.holy.knights.adapter.controller.port
 
 import arrow.core.Either
-import com.shirogane.holy.knights.application.dto.*
+import com.shirogane.holy.knights.adapter.controller.dto.NewsCategoryDto
+import com.shirogane.holy.knights.adapter.controller.dto.NewsSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.NewsSearchResultDto
 import com.shirogane.holy.knights.application.usecase.UseCaseError
 
 /**

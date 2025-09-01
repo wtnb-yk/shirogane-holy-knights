@@ -1,4 +1,4 @@
-package com.shirogane.holy.knights.application.dto
+package com.shirogane.holy.knights.adapter.controller.dto
 
 import com.shirogane.holy.knights.application.common.PageRequest
 import com.shirogane.holy.knights.application.common.PaginatedResult

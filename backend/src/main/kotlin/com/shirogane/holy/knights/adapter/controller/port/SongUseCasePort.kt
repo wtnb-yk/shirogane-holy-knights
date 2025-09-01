@@ -1,9 +1,9 @@
-package com.shirogane.holy.knights.application.port.`in`
+package com.shirogane.holy.knights.adapter.controller.port
 
 import arrow.core.Either
-import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
-import com.shirogane.holy.knights.application.dto.StreamSongSearchResultDto
-import com.shirogane.holy.knights.application.dto.StreamSongStatsDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongStatsDto
 import com.shirogane.holy.knights.application.usecase.UseCaseError
 
 /**

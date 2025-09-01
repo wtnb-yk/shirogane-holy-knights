@@ -1,8 +1,8 @@
 package com.shirogane.holy.knights.adapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.shirogane.holy.knights.application.dto.NewsSearchParamsDto
-import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
+import com.shirogane.holy.knights.adapter.controller.dto.NewsSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.port.NewsUseCasePort
 import org.springframework.stereotype.Component
 
 @Component

@@ -1,9 +1,9 @@
 package com.shirogane.holy.knights.adapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
-import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
-import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.VideoSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.port.VideoUseCasePort
 import org.springframework.stereotype.Component
 
 @Component

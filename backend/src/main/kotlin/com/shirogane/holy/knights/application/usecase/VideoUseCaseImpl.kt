@@ -2,13 +2,13 @@ package com.shirogane.holy.knights.application.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.shirogane.holy.knights.application.dto.VideoDto
-import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
-import com.shirogane.holy.knights.application.dto.VideoSearchResultDto
-import com.shirogane.holy.knights.application.dto.StreamDto
-import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
-import com.shirogane.holy.knights.application.dto.StreamSearchResultDto
-import com.shirogane.holy.knights.application.port.`in`.VideoUseCasePort
+import com.shirogane.holy.knights.adapter.controller.dto.VideoDto
+import com.shirogane.holy.knights.adapter.controller.dto.VideoSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.VideoSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.port.VideoUseCasePort
 import com.shirogane.holy.knights.domain.model.Video
 import com.shirogane.holy.knights.domain.model.Videos
 import com.shirogane.holy.knights.domain.repository.VideoRepository

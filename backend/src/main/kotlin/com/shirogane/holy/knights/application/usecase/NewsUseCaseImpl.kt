@@ -2,8 +2,11 @@ package com.shirogane.holy.knights.application.usecase
 
 import arrow.core.Either
 import arrow.core.raise.either
-import com.shirogane.holy.knights.application.dto.*
-import com.shirogane.holy.knights.application.port.`in`.NewsUseCasePort
+import com.shirogane.holy.knights.adapter.controller.dto.NewsCategoryDto
+import com.shirogane.holy.knights.adapter.controller.dto.NewsDto
+import com.shirogane.holy.knights.adapter.controller.dto.NewsSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.NewsSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.port.NewsUseCasePort
 import com.shirogane.holy.knights.domain.repository.NewsRepository
 import org.springframework.stereotype.Service
 

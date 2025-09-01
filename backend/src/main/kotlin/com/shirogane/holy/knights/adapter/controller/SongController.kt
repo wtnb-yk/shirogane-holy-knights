@@ -1,8 +1,8 @@
 package com.shirogane.holy.knights.adapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.shirogane.holy.knights.application.dto.StreamSongSearchParamsDto
-import com.shirogane.holy.knights.application.port.`in`.SongUseCasePort
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.port.SongUseCasePort
 import org.springframework.stereotype.Component
 
 @Component

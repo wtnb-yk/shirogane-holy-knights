@@ -1,10 +1,10 @@
-package com.shirogane.holy.knights.application.port.`in`
+package com.shirogane.holy.knights.adapter.controller.port
 
 import arrow.core.Either
-import com.shirogane.holy.knights.application.dto.VideoSearchParamsDto
-import com.shirogane.holy.knights.application.dto.VideoSearchResultDto
-import com.shirogane.holy.knights.application.dto.StreamSearchParamsDto
-import com.shirogane.holy.knights.application.dto.StreamSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.dto.VideoSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.VideoSearchResultDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.StreamSearchResultDto
 import com.shirogane.holy.knights.application.usecase.UseCaseError
 
 /**
