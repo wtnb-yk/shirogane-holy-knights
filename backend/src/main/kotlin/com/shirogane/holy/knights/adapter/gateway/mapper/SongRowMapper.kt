@@ -39,6 +39,7 @@ class SongRowMapper(
                     streamSongUrl = jsonNode.get("stream_song_url").asText() ?: ""
                 )
             } catch (e: Exception) {
+                // TODO: ちゃんとエラーハンドリングする
                 null
             }
         }
