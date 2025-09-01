@@ -15,8 +15,8 @@ class NewsUseCaseImpl(
     override suspend fun searchNews(params: NewsSearchParamsDto): Either<UseCaseError, NewsSearchResultDto> =
         either {
             val pageRequest = params.toPageRequest()
-            val startDate = params.getStartDateAsInstant()
-            val endDate = params.getEndDateAsInstant()
+            val startDate = params.startDate
+            val endDate = params.endDate
             
             val newsList = newsRepository.search(
                 query = params.query,

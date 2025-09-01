@@ -77,8 +77,8 @@ data class NewsCategoryDto(
 data class NewsSearchParamsDto(
     val query: String? = null,
     val categoryIds: List<Int>? = null, // 複数カテゴリ対応
-    val startDate: String? = null, // ISO 8601形式の日時文字列
-    val endDate: String? = null,   // ISO 8601形式の日時文字列
+    val startDate: Instant? = null,
+    val endDate: Instant? = null,
     val page: Int = 1,  
     val pageSize: Int = 20
 ) {
@@ -86,20 +86,6 @@ data class NewsSearchParamsDto(
      * PageRequestインスタンスを生成
      */
     fun toPageRequest() = PageRequest(page, pageSize)
-    /**
-     * startDateをInstantに変換
-     */
-    fun getStartDateAsInstant(): Instant? {
-        return startDate?.let { Instant.parse(it) }
-    }
-    
-    /**
-     * endDateをInstantに変換
-     */
-    fun getEndDateAsInstant(): Instant? {
-        return endDate?.let { Instant.parse(it) }
-    }
-    
 }
 
 /**
