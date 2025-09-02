@@ -41,7 +41,7 @@ export function VideoFilterSection({
           {/* タグフィルター */}
           {availableTags.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-text-primary mb-2">タグ</h4>
+              <h4 className="text-sm font-medium text-text-primary mb-2">カテゴリー</h4>
               <div className="flex flex-wrap gap-2">
                 {availableTags.map((tag) => (
                   <Badge

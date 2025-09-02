@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useVideos } from '@/features/videos/hooks/useVideos';
 import { useStreams } from '@/features/videos/hooks/useStreams';
 import { ContentType } from '@/features/videos/types/types';
-import { SearchBar } from '@/features/videos/components/SearchBar';
+import { VideosSidebar } from '@/features/videos/components/VideosSidebar';
 import { SearchOptionsModal } from '@/features/videos/components/filter/SearchOptionsModal';
 import { SearchResultsSummary } from '@/features/videos/components/results/SearchResultsSummary';
 import { StatsSummary } from '@/features/videos/components/results/StatsSummary';
@@ -23,94 +23,81 @@ export default function VideosList() {
   const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
 
   return (
-    <div className="min-h-screen bg-bg-primary">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="mb-4 opacity-0 animate-slide-up">
-          <div className="mb-4 md:mb-6">
-            <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
-              ARCHIVE
-            </h1>
-          </div>
-          
-          {/* タブ切り替えUI */}
-          <div className="flex border-b border-surface-border">
-            <button
-              onClick={() => setContentType(ContentType.STREAMS)}
-              className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-all duration-200 border-b-2 text-sm md:text-base ${
-                contentType === ContentType.STREAMS 
-                  ? 'text-text-primary border-text-secondary bg-bg-accent/30' 
-                  : 'text-text-secondary border-transparent hover:text-text-primary hover:border-surface-border'
-              }`}
-            >
-              配信
-            </button>
-            <button
-              onClick={() => setContentType(ContentType.VIDEOS)}
-              className={`px-4 md:px-6 py-2 md:py-3 font-medium transition-all duration-200 border-b-2 text-sm md:text-base ${
-                contentType === ContentType.VIDEOS 
-                  ? 'text-text-primary border-text-secondary bg-bg-accent/30' 
-                  : 'text-text-secondary border-transparent hover:text-text-primary hover:border-surface-border'
-              }`}
-            >
-              動画
-            </button>
-          </div>
-        </div>
-
-        <SearchBar 
+    <div className="min-h-screen bg-white">
+      {/* メインコンテナ */}
+      <div className="flex max-w-full py-8 px-10 gap-10">
+        {/* サイドバー */}
+        <VideosSidebar
+          contentType={contentType}
+          onContentTypeChange={setContentType}
           searchValue={currentData.searchQuery}
           onSearch={currentData.handleSearch}
           onClearSearch={currentData.clearSearch}
           onFilterClick={() => setShowFilterModal(true)}
           hasActiveOptions={currentData.hasActiveFilters}
-        />
-
-        <SearchResultsSummary
-          searchQuery={currentData.searchQuery}
           filters={currentData.filters}
-          totalCount={currentData.totalCount}
-          onClearAllFilters={currentData.clearAllFilters}
+          setFilters={currentData.setFilters}
         />
 
-        {/* タブに応じてGrid表示を切り替え */}
-        {contentType === ContentType.VIDEOS ? (
-          <VideosGrid 
-            videos={videosData.videos} 
-            loading={videosData.loading} 
-            error={videosData.error} 
-          />
-        ) : (
-          <StreamsGrid 
-            streams={streamsData.streams} 
-            loading={streamsData.loading} 
-            error={streamsData.error} 
-          />
-        )}
+        {/* メインコンテンツ */}
+        <main className="flex-1 min-w-0">
+          <div className="page-header mb-8">
+            <h1 className="text-5xl font-black text-gray-900 mb-3 tracking-wider">
+              ARCHIVE
+            </h1>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              配信アーカイブ＋他チャンネルへのゲスト出演をまとめています。<br />
+              ソートアイコンを押すと、絞り込み検索ができます。
+            </p>
+          </div>
 
-        {currentData.totalCount > 20 && (
-          <Pagination
+          <SearchResultsSummary
+            searchQuery={currentData.searchQuery}
+            filters={currentData.filters}
+            totalCount={currentData.totalCount}
+            onClearAllFilters={currentData.clearAllFilters}
+          />
+
+          {/* タブに応じてGrid表示を切り替え */}
+          {contentType === ContentType.VIDEOS ? (
+            <VideosGrid 
+              videos={videosData.videos} 
+              loading={videosData.loading} 
+              error={videosData.error} 
+            />
+          ) : (
+            <StreamsGrid 
+              streams={streamsData.streams} 
+              loading={streamsData.loading} 
+              error={streamsData.error} 
+            />
+          )}
+
+          {currentData.totalCount > 20 && (
+            <Pagination
+              currentPage={currentData.currentPage}
+              totalPages={currentData.totalPages}
+              hasMore={currentData.hasMore}
+              onPageChange={currentData.setCurrentPage}
+              size="sm"
+            />
+          )}
+
+          <StatsSummary
             currentPage={currentData.currentPage}
-            totalPages={currentData.totalPages}
-            hasMore={currentData.hasMore}
-            onPageChange={currentData.setCurrentPage}
-            size="sm"
+            totalCount={currentData.totalCount}
+            pageSize={20}
+            loading={currentData.loading}
           />
-        )}
 
-        <StatsSummary
-          currentPage={currentData.currentPage}
-          totalCount={currentData.totalCount}
-          pageSize={20}
-          loading={currentData.loading}
-        />
-
-        <SearchOptionsModal
-          isOpen={showFilterModal}
-          onClose={() => setShowFilterModal(false)}
-          filters={currentData.filters}
-          onFiltersChange={currentData.setFilters}
-          availableTags={currentData.availableTags}
-        />
+          <SearchOptionsModal
+            isOpen={showFilterModal}
+            onClose={() => setShowFilterModal(false)}
+            filters={currentData.filters}
+            onFiltersChange={currentData.setFilters}
+            availableTags={currentData.availableTags}
+          />
+        </main>
       </div>
     </div>
   );

@@ -51,15 +51,16 @@ export const Pagination = ({
     md: 'px-3 py-2'
   };
 
-  const baseButtonClasses = "text-sm font-medium rounded-lg transition-all duration-ui disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseButtonClasses = "text-sm font-medium rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
   const pageButtonClasses = cn(
     baseButtonClasses,
-    buttonSizeClasses[size]
+    buttonSizeClasses[size],
+    "min-w-[36px] h-[36px] flex items-center justify-center"
   );
   const prevNextButtonClasses = cn(
     baseButtonClasses,
     prevNextSizeClasses[size],
-    "flex items-center gap-2"
+    "flex items-center gap-1"
   );
 
   return (
@@ -76,8 +77,8 @@ export const Pagination = ({
         disabled={currentPage <= 1 || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
-          "disabled:hover:bg-bg-primary disabled:hover:text-text-secondary"
+          "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700",
+          "disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-200"
         )}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -94,14 +95,14 @@ export const Pagination = ({
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
+                "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
               1
             </button>
             {visiblePages[0] > 2 && (
-              <span className="px-2 text-text-secondary">...</span>
+              <span className="px-2 text-gray-400">...</span>
             )}
           </>
         )}
@@ -115,9 +116,9 @@ export const Pagination = ({
             className={cn(
               pageButtonClasses,
               page === currentPage
-                ? "bg-text-secondary text-white shadow-lg shadow-text-secondary/30"
+                ? "bg-amber-200 text-amber-900 border-amber-200 font-bold"
                 : cn(
-                    "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
+                    "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700",
                     size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
                   )
             )}
@@ -130,14 +131,14 @@ export const Pagination = ({
         {visiblePages[visiblePages.length - 1] < totalPages && (
           <>
             {visiblePages[visiblePages.length - 1] < totalPages - 1 && (
-              <span className="px-2 text-text-secondary">...</span>
+              <span className="px-2 text-gray-400">...</span>
             )}
             <button
               onClick={() => onPageChange(totalPages)}
               disabled={loading}
               className={cn(
                 pageButtonClasses,
-                "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
+                "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700",
                 size === 'sm' && "hover:scale-110 hover:-translate-y-0.5"
               )}
             >
@@ -153,8 +154,8 @@ export const Pagination = ({
         disabled={currentPage >= totalPages || !hasMore || loading}
         className={cn(
           prevNextButtonClasses,
-          "text-text-secondary bg-bg-primary border border-surface-border hover:bg-bg-accent hover:text-text-primary",
-          "disabled:hover:bg-bg-primary disabled:hover:text-text-secondary"
+          "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700",
+          "disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-200"
         )}
       >
         次
