@@ -26,19 +26,6 @@ export default function VideosList() {
     <div className="min-h-screen bg-white">
       {/* メインコンテナ */}
       <div className="flex max-w-full py-8 px-10 gap-10">
-        {/* サイドバー */}
-        <VideosSidebar
-          contentType={contentType}
-          onContentTypeChange={setContentType}
-          searchValue={currentData.searchQuery}
-          onSearch={currentData.handleSearch}
-          onClearSearch={currentData.clearSearch}
-          onFilterClick={() => setShowFilterModal(true)}
-          hasActiveOptions={currentData.hasActiveFilters}
-          filters={currentData.filters}
-          setFilters={currentData.setFilters}
-        />
-
         {/* メインコンテンツ */}
         <main className="flex-1 min-w-0">
           <div className="page-header mb-8">
@@ -46,8 +33,8 @@ export default function VideosList() {
               ARCHIVE
             </h1>
             <p className="text-sm text-gray-600 leading-relaxed">
-              配信アーカイブ＋他チャンネルへのゲスト出演をまとめています。<br />
-              ソートアイコンを押すと、絞り込み検索ができます。
+              配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br />
+              最新の配信はYouTubeチャンネルをご確認ください。
             </p>
           </div>
 
@@ -98,6 +85,19 @@ export default function VideosList() {
             availableTags={currentData.availableTags}
           />
         </main>
+
+        {/* サイドバー（右側） */}
+        <VideosSidebar
+          contentType={contentType}
+          onContentTypeChange={setContentType}
+          searchValue={currentData.searchQuery}
+          onSearch={currentData.handleSearch}
+          onClearSearch={currentData.clearSearch}
+          onFilterClick={() => setShowFilterModal(true)}
+          hasActiveOptions={currentData.hasActiveFilters}
+          filters={currentData.filters}
+          setFilters={currentData.setFilters}
+        />
       </div>
     </div>
   );

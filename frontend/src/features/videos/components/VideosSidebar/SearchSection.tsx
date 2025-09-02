@@ -10,7 +10,6 @@ interface SearchSectionProps {
   onFilterClick: () => void;
   hasActiveOptions: boolean;
   title?: string;
-  description?: string;
 }
 
 export const SearchSection = ({
@@ -19,8 +18,7 @@ export const SearchSection = ({
   onClearSearch,
   onFilterClick,
   hasActiveOptions,
-  title = 'アーカイブ検索',
-  description = '配信アーカイブ＋他チャンネルへのゲスト出演をまとめています。\nソートアイコンを押すと、絞り込み検索ができます。'
+  title = '検索',
 }: SearchSectionProps) => {
   const [inputValue, setInputValue] = React.useState(searchValue);
 
@@ -50,15 +48,7 @@ export const SearchSection = ({
       <h3 className="text-base font-bold text-gray-900 mb-3">
         {title}
       </h3>
-      <p className="text-xs text-gray-600 leading-relaxed mb-4">
-        {description.split('\n').map((line, index) => (
-          <span key={index}>
-            {line}
-            {index < description.split('\n').length - 1 && <br />}
-          </span>
-        ))}
-      </p>
-      
+
       <form onSubmit={handleSubmit} className="mb-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />

@@ -52,12 +52,14 @@ export const VideosSidebar = ({
   const handleTagToggle = (tag: string) => {
     const currentTags = filters.selectedTags || [];
     if (currentTags.includes(tag)) {
+      // 同じタグをクリックした場合は選択解除
       setFilters({
-        selectedTags: currentTags.filter(t => t !== tag)
+        selectedTags: []
       });
     } else {
+      // 異なるタグをクリックした場合は、そのタグのみを選択
       setFilters({
-        selectedTags: [...currentTags, tag]
+        selectedTags: [tag]
       });
     }
   };
