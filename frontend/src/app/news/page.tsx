@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { useNews } from '@/features/news/hooks/useNews';
-import { SearchInput } from '@/components/ui/SearchInput';
-import { NewsCategoryFilter } from '@/features/news/components/NewsCategoryFilter';
 import { NewsGrid } from '@/features/news/components/NewsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { NewsStatsSummary } from '@/features/news/components/NewsStatsSummary';
 import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
+import { NewsSidebar } from '@/features/news/components/NewsSidebar';
 
 export default function NewsPage() {
   const {
@@ -28,67 +27,59 @@ export default function NewsPage() {
   } = useNews({ pageSize: 10 });
 
   return (
-    <div className="min-h-screen bg-bg-primary">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* ページタイトル */}
-        <div className="mb-4 md:mb-8 opacity-0 animate-slide-up">
-          <div className="mb-2 md:mb-3">
-            <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
+    <div className="min-h-screen bg-white">
+      {/* メインコンテナ */}
+      <div className="flex max-w-full py-8 px-10 gap-10">
+        {/* メインコンテンツ */}
+        <main className="flex-1 min-w-0">
+          <div className="page-header mb-8">
+            <h1 className="text-5xl font-black text-gray-900 mb-3 tracking-wider">
               NEWS
             </h1>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              白銀ノエルさん関連のニュースや話題をまとめています。<br />
+              カテゴリやキーワードで検索して最新情報をチェックできます。
+            </p>
           </div>
-        </div>
 
-        {/* 検索バー */}
-        <div className="mb-4 md:mb-8 flex flex-wrap gap-2 md:gap-4 opacity-0 animate-slide-up" style={{ animationDelay: '100ms' }}>
-          <SearchInput 
-            searchValue={searchQuery}
-            onSearch={handleSearch}
-            onClearSearch={clearSearch}
-            placeholder="気になるニュースを探してみてください"
+          <NewsSearchResultsSummary
+            searchQuery={searchQuery}
+            filters={filters}
+            totalCount={totalCount}
+            onClearAllFilters={clearAllFilters}
           />
-        </div>
 
-        {/* カテゴリフィルター */}
-        <NewsCategoryFilter
-          filters={filters}
-          onFiltersChange={setFilters}
-        />
+          <NewsGrid 
+            news={news} 
+            loading={loading} 
+            error={error} 
+          />
 
-        {/* 検索結果サマリー */}
-        <NewsSearchResultsSummary
-          searchQuery={searchQuery}
-          filters={filters}
-          totalCount={totalCount}
-          onClearAllFilters={clearAllFilters}
-        />
+          {totalCount > 10 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              hasMore={hasMore}
+              onPageChange={setCurrentPage}
+              size="sm"
+            />
+          )}
 
-        {/* ニュースグリッド */}
-        <NewsGrid 
-          news={news} 
-          loading={loading} 
-          error={error} 
-        />
-
-        {/* ページネーション */}
-        {totalCount > 10 && (
-          <Pagination
+          <NewsStatsSummary
             currentPage={currentPage}
-            totalPages={totalPages}
-            hasMore={hasMore}
-            onPageChange={setCurrentPage}
+            totalCount={totalCount}
+            pageSize={10}
             loading={loading}
-            animationDelay="600ms"
-            size="md"
           />
-        )}
+        </main>
 
-        {/* 統計サマリー */}
-        <NewsStatsSummary
-          currentPage={currentPage}
-          totalCount={totalCount}
-          pageSize={10}
-          loading={loading}
+        {/* サイドバー（右側） */}
+        <NewsSidebar
+          searchValue={searchQuery}
+          onSearch={handleSearch}
+          onClearSearch={clearSearch}
+          filters={filters}
+          setFilters={setFilters}
         />
       </div>
     </div>
