@@ -95,8 +95,18 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
         }
         
         tags?.takeIf { it.isNotEmpty() }?.let {
-            conditions.add("t.name = ANY(:tags)")
+            conditions.add("""
+                v.id IN (
+                    SELECT vtg.video_id
+                    FROM video_video_tags vtg
+                    JOIN video_tags t ON vtg.tag_id = t.id
+                    WHERE t.name = ANY(:tags)
+                    GROUP BY vtg.video_id
+                    HAVING COUNT(DISTINCT t.name) = :tagCount
+                )
+            """.trimIndent())
             bindings["tags"] = it.toTypedArray()
+            bindings["tagCount"] = it.size
         }
         
         return Pair(conditions, bindings)
@@ -199,8 +209,18 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
         }
         
         tags?.takeIf { it.isNotEmpty() }?.let {
-            conditions.add("t.name = ANY(:tags)")
+            conditions.add("""
+                v.id IN (
+                    SELECT vst.video_id
+                    FROM video_stream_tags vst
+                    JOIN stream_tags t ON vst.tag_id = t.id
+                    WHERE t.name = ANY(:tags)
+                    GROUP BY vst.video_id
+                    HAVING COUNT(DISTINCT t.name) = :tagCount
+                )
+            """.trimIndent())
             bindings["tags"] = it.toTypedArray()
+            bindings["tagCount"] = it.size
         }
         
         return Pair(conditions, bindings)
