@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
-import { SongSearchBar } from '@/features/songs/components/SongSearchBar';
 import { StreamSongsGrid } from '@/features/songs/components/StreamSongsGrid';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOptionsModal';
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
+import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong } from '@/features/songs/types/types';
 
@@ -24,75 +24,77 @@ export default function SongsList() {
   const songsData = useStreamSongs({ pageSize: 20 });
 
   return (
-    <div className="min-h-screen bg-bg-primary">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="mb-4 opacity-0 animate-slide-up">
-          <div className="mb-4 md:mb-6">
-            <h1 className="text-2xl md:text-4xl font-bold text-text-primary">
+    <div className="min-h-screen bg-white">
+      {/* メインコンテナ */}
+      <div className="flex max-w-full py-8 px-10 gap-10">
+        {/* メインコンテンツ */}
+        <main className="flex-1 min-w-0">
+          <div className="page-header mb-8">
+            <h1 className="text-5xl font-black text-gray-900 mb-3 tracking-wider">
               SONG
             </h1>
-            <p className="text-sm md:text-base text-text-secondary mt-1">
-              歌枠で歌われた曲を検索・閲覧できます
+            <p className="text-sm text-gray-600 leading-relaxed">
+              歌枠で歌われた曲を検索・閲覧できます。<br />
+              楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
             </p>
           </div>
-        </div>
 
-        <SongSearchBar 
+          <SongSearchResultsSummary
+            searchQuery={songsData.searchQuery}
+            totalCount={songsData.totalCount}
+            filters={songsData.filters}
+            onClearSearch={songsData.clearSearch}
+            onClearAllFilters={songsData.clearAllFilters}
+          />
+
+          <StreamSongsGrid 
+            songs={songsData.songs} 
+            loading={songsData.loading} 
+            error={songsData.error}
+            onSongClick={handleSongClick}
+          />
+
+          {songsData.totalCount > 20 && (
+            <Pagination
+              currentPage={songsData.currentPage}
+              totalPages={songsData.totalPages}
+              hasMore={songsData.hasMore}
+              onPageChange={songsData.setCurrentPage}
+              size="sm"
+            />
+          )}
+
+          <SongStatsSummary
+            currentPage={songsData.currentPage}
+            totalCount={songsData.totalCount}
+            pageSize={20}
+            loading={songsData.loading}
+          />
+
+          <SongSearchOptionsModal
+            isOpen={showOptionsModal}
+            onClose={() => setShowOptionsModal(false)}
+            sortBy={songsData.sortBy}
+            sortOrder={songsData.sortOrder}
+            filters={songsData.filters}
+            onSortChange={songsData.handleSortChange}
+            onFiltersChange={songsData.setFilters}
+          />
+          
+          <PerformanceListModal 
+            song={selectedSong}
+            open={showPerformanceModal}
+            onOpenChange={setShowPerformanceModal}
+          />
+        </main>
+
+        {/* サイドバー（右側） */}
+        <SongsSidebar
           searchValue={songsData.searchQuery}
           onSearch={songsData.handleSearch}
           onClearSearch={songsData.clearSearch}
-          sortBy={songsData.sortBy}
-          sortOrder={songsData.sortOrder}
           onOptionsClick={() => setShowOptionsModal(true)}
           hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
-        />
-
-        <SongSearchResultsSummary
-          searchQuery={songsData.searchQuery}
-          totalCount={songsData.totalCount}
-          filters={songsData.filters}
-          onClearSearch={songsData.clearSearch}
-          onClearAllFilters={songsData.clearAllFilters}
-        />
-
-        <StreamSongsGrid 
-          songs={songsData.songs} 
-          loading={songsData.loading} 
-          error={songsData.error}
-          onSongClick={handleSongClick}
-        />
-
-        {songsData.totalCount > 20 && (
-          <Pagination
-            currentPage={songsData.currentPage}
-            totalPages={songsData.totalPages}
-            hasMore={songsData.hasMore}
-            onPageChange={songsData.setCurrentPage}
-            size="sm"
-          />
-        )}
-
-        <SongStatsSummary
-          currentPage={songsData.currentPage}
-          totalCount={songsData.totalCount}
-          pageSize={20}
-          loading={songsData.loading}
-        />
-
-        <SongSearchOptionsModal
-          isOpen={showOptionsModal}
-          onClose={() => setShowOptionsModal(false)}
-          sortBy={songsData.sortBy}
-          sortOrder={songsData.sortOrder}
-          filters={songsData.filters}
-          onSortChange={songsData.handleSortChange}
-          onFiltersChange={songsData.setFilters}
-        />
-        
-        <PerformanceListModal 
-          song={selectedSong}
-          open={showPerformanceModal}
-          onOpenChange={setShowPerformanceModal}
         />
       </div>
     </div>

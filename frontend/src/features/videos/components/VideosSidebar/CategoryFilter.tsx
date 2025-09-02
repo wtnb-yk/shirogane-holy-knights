@@ -15,7 +15,7 @@ export const CategoryFilter = ({
   selectedCategories,
   onCategoryToggle,
   onClearAll,
-  title = 'カテゴリー'
+  title = 'タグ'
 }: CategoryFilterProps) => {
   const allCategories = ['すべて', ...categories];
 
