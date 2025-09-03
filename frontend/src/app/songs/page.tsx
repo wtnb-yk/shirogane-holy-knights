@@ -47,8 +47,22 @@ export default function SongsList() {
               SONG
             </h1>
             
-            {/* 説明文とボタン類を同じ行に配置 */}
-            <div className="flex items-start justify-between gap-4">
+            {/* スマホサイズではボタンをタイトル下に表示 */}
+            <div className="sm:hidden mb-4 flex gap-2">
+              <ViewToggleButton
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
+              <MobileSidebarButton 
+                onClick={() => setIsSidebarOpen(true)}
+                hasActiveFilters={activeFiltersCount > 0}
+                activeFiltersCount={activeFiltersCount}
+                variant="search"
+              />
+            </div>
+            
+            {/* タブレット以上では説明文とボタンを横並び */}
+            <div className="hidden sm:flex items-start justify-between gap-4 mb-4">
               <p className="text-sm text-text-secondary leading-relaxed flex-1">
                 歌枠で歌われた曲を検索・閲覧できます。<br />
                 楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
@@ -60,7 +74,7 @@ export default function SongsList() {
                 onViewModeChange={setViewMode}
               />
               
-              {/* モバイルメニューボタン（lg未満のみ表示） */}
+              {/* タブレット用メニューボタン（lg未満のみ表示） */}
               <div className="lg:hidden relative">
                 <MobileSidebarButton 
                   onClick={() => setIsSidebarOpen(true)}

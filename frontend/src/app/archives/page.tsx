@@ -41,14 +41,24 @@ export default function VideosList() {
               ARCHIVE
             </h1>
             
-            {/* 説明文とモバイルボタンを同じ行に配置 */}
-            <div className="flex items-start justify-between mb-4">
+            {/* スマホサイズではボタンをタイトル下に表示 */}
+            <div className="sm:hidden mb-4">
+              <MobileSidebarButton 
+                onClick={() => setIsSidebarOpen(true)}
+                hasActiveFilters={activeFiltersCount > 0}
+                activeFiltersCount={activeFiltersCount}
+                variant="search"
+              />
+            </div>
+            
+            {/* タブレット以上では説明文とボタンを横並び */}
+            <div className="hidden sm:flex items-start justify-between mb-4">
               <p className="text-sm text-text-secondary leading-relaxed flex-1">
                 配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br />
                 最新の配信はYouTubeチャンネルをご確認ください。
               </p>
               
-              {/* モバイルメニューボタン（lg未満のみ表示） */}
+              {/* タブレット用メニューボタン（lg未満のみ表示） */}
               <div className="lg:hidden ml-4 relative">
                 <MobileSidebarButton 
                   onClick={() => setIsSidebarOpen(true)}
