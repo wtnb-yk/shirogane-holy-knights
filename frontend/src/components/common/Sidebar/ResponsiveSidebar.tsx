@@ -67,7 +67,7 @@ export const ResponsiveSidebar = ({
           {/* ドロップダウンメニュー */}
           <div
             className={cn(
-              'absolute left-0 top-full mt-2 w-96 max-w-[95vw] bg-white shadow-lg border border-surface-border rounded-xl z-50',
+              'absolute right-0 top-full mt-2 w-96 max-w-[95vw] bg-white shadow-lg border border-surface-border rounded-xl z-50',
               'animate-in slide-in-from-top-2 duration-200',
               className
             )}

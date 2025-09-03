@@ -42,45 +42,49 @@ export default function SongsList() {
             <h1 className="text-5xl font-black text-text-primary mb-3 tracking-wider">
               SONG
             </h1>
-            <p className="text-sm text-text-secondary leading-relaxed mb-4">
-              歌枠で歌われた曲を検索・閲覧できます。<br />
-              楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
-            </p>
             
-            {/* モバイルメニューボタン（lg未満のみ表示） */}
-            <div className="lg:hidden mb-6 relative">
-              <MobileSidebarButton 
-                onClick={() => setIsSidebarOpen(true)}
-                hasActiveFilters={activeFiltersCount > 0}
-                activeFiltersCount={activeFiltersCount}
-                variant="search"
-              />
+            {/* 説明文とモバイルボタンを同じ行に配置 */}
+            <div className="flex items-start justify-between mb-4">
+              <p className="text-sm text-text-secondary leading-relaxed flex-1">
+                歌枠で歌われた曲を検索・閲覧できます。<br />
+                楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
+              </p>
               
-              {/* レスポンシブサイドバー */}
-              <ResponsiveSidebar 
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                mobileContent={
-                  <MobileDropdownSongsSection
+              {/* モバイルメニューボタン（lg未満のみ表示） */}
+              <div className="lg:hidden ml-4 relative">
+                <MobileSidebarButton 
+                  onClick={() => setIsSidebarOpen(true)}
+                  hasActiveFilters={activeFiltersCount > 0}
+                  activeFiltersCount={activeFiltersCount}
+                  variant="search"
+                />
+                
+                {/* レスポンシブサイドバー */}
+                <ResponsiveSidebar 
+                  isOpen={isSidebarOpen}
+                  onClose={() => setIsSidebarOpen(false)}
+                  mobileContent={
+                    <MobileDropdownSongsSection
+                      searchValue={songsData.searchQuery}
+                      onSearch={songsData.handleSearch}
+                      onClearSearch={songsData.clearSearch}
+                      sortBy={songsData.sortBy}
+                      sortOrder={songsData.sortOrder}
+                      filters={songsData.filters}
+                      onSortChange={songsData.handleSortChange}
+                      onFiltersChange={songsData.setFilters}
+                    />
+                  }
+                >
+                  <SongsSidebar
                     searchValue={songsData.searchQuery}
                     onSearch={songsData.handleSearch}
                     onClearSearch={songsData.clearSearch}
-                    sortBy={songsData.sortBy}
-                    sortOrder={songsData.sortOrder}
-                    filters={songsData.filters}
-                    onSortChange={songsData.handleSortChange}
-                    onFiltersChange={songsData.setFilters}
+                    onOptionsClick={() => setShowOptionsModal(true)}
+                    hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
                   />
-                }
-              >
-                <SongsSidebar
-                  searchValue={songsData.searchQuery}
-                  onSearch={songsData.handleSearch}
-                  onClearSearch={songsData.clearSearch}
-                  onOptionsClick={() => setShowOptionsModal(true)}
-                  hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
-                />
-              </ResponsiveSidebar>
+                </ResponsiveSidebar>
+              </div>
             </div>
           </div>
 

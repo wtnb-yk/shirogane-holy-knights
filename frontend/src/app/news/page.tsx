@@ -45,42 +45,46 @@ export default function NewsPage() {
             <h1 className="text-5xl font-black text-text-primary mb-3 tracking-wider">
               NEWS
             </h1>
-            <p className="text-sm text-text-secondary leading-relaxed mb-4">
-              白銀ノエルさん関連のニュースや話題をまとめています。<br />
-              カテゴリやキーワードで検索して最新情報をチェックできます。
-            </p>
             
-            {/* モバイルメニューボタン（lg未満のみ表示） */}
-            <div className="lg:hidden mb-6 relative">
-              <MobileSidebarButton 
-                onClick={() => setIsSidebarOpen(true)}
-                hasActiveFilters={activeFiltersCount > 0}
-                activeFiltersCount={activeFiltersCount}
-                variant="search"
-              />
+            {/* 説明文とモバイルボタンを同じ行に配置 */}
+            <div className="flex items-start justify-between mb-4">
+              <p className="text-sm text-text-secondary leading-relaxed flex-1">
+                白銀ノエルさん関連のニュースや話題をまとめています。<br />
+                カテゴリやキーワードで検索して最新情報をチェックできます。
+              </p>
               
-              {/* レスポンシブサイドバー */}
-              <ResponsiveSidebar 
-                isOpen={isSidebarOpen}
-                onClose={() => setIsSidebarOpen(false)}
-                mobileContent={
-                  <MobileDropdownNewsSection
+              {/* モバイルメニューボタン（lg未満のみ表示） */}
+              <div className="lg:hidden ml-4 relative">
+                <MobileSidebarButton 
+                  onClick={() => setIsSidebarOpen(true)}
+                  hasActiveFilters={activeFiltersCount > 0}
+                  activeFiltersCount={activeFiltersCount}
+                  variant="search"
+                />
+                
+                {/* レスポンシブサイドバー */}
+                <ResponsiveSidebar 
+                  isOpen={isSidebarOpen}
+                  onClose={() => setIsSidebarOpen(false)}
+                  mobileContent={
+                    <MobileDropdownNewsSection
+                      searchValue={searchQuery}
+                      onSearch={handleSearch}
+                      onClearSearch={clearSearch}
+                      filters={filters}
+                      setFilters={setFilters}
+                    />
+                  }
+                >
+                  <NewsSidebar
                     searchValue={searchQuery}
                     onSearch={handleSearch}
                     onClearSearch={clearSearch}
                     filters={filters}
                     setFilters={setFilters}
                   />
-                }
-              >
-                <NewsSidebar
-                  searchValue={searchQuery}
-                  onSearch={handleSearch}
-                  onClearSearch={clearSearch}
-                  filters={filters}
-                  setFilters={setFilters}
-                />
-              </ResponsiveSidebar>
+                </ResponsiveSidebar>
+              </div>
             </div>
           </div>
 

@@ -25,17 +25,17 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
   
   const cardContent = (
     <InteractiveCard hoverScale="sm" className="border-0 rounded-lg bg-bg-primary overflow-hidden">
-      <div className="flex flex-col lg:flex-row">
+      <div className="flex flex-col md:flex-row">
         {/* 画像部分 */}
         {imageUrl && (
-          <div className="relative w-full lg:w-80 h-48 lg:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
+          <div className="relative w-full md:w-80 h-48 md:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
             <Image 
               src={imageUrl} 
               alt={news.title} 
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
-              sizes="(max-width: 1023px) 100vw, 320px"
+              sizes="(max-width: 767px) 100vw, 320px"
               placeholder="blur"
               blurDataURL={IMAGE_STYLES.placeholder}
             />
@@ -48,7 +48,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
         )}
         
         {/* コンテンツ部分 */}
-        <div className="flex-1 min-w-0 p-4 md:p-5 lg:p-4 flex flex-col justify-between">
+        <div className="flex-1 min-w-0 p-4 md:p-4 flex flex-col justify-between">
           <div>
             {/* カテゴリバッジ */}
             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -109,17 +109,17 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           hoverScale="sm"
           className="border-0 rounded-lg bg-bg-primary overflow-hidden"
         >
-          <div className="flex flex-col lg:flex-row">
+          <div className="flex flex-col md:flex-row">
             {/* 画像部分 */}
             {imageUrl && (
-              <div className="relative w-full lg:w-80 h-48 lg:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
+              <div className="relative w-full md:w-80 h-48 md:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
                 <Image 
                   src={imageUrl} 
                   alt={news.title} 
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
-                  sizes="(max-width: 1023px) 100vw, 320px"
+                  sizes="(max-width: 767px) 100vw, 320px"
                   placeholder="blur"
                   blurDataURL={IMAGE_STYLES.placeholder}
                 />
@@ -132,7 +132,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
             )}
             
             {/* コンテンツ部分 */}
-            <div className="flex-1 min-w-0 p-4 md:p-5 lg:p-4 flex flex-col justify-between">
+            <div className="flex-1 min-w-0 p-4 md:p-4 flex flex-col justify-between">
               <div>
                 {/* カテゴリバッジ */}
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
