@@ -18,7 +18,7 @@ export const SearchSection = ({
   onClearSearch,
   onFilterClick,
   hasActiveOptions,
-  title = '検索',
+  title = 'アーカイブ検索',
 }: SearchSectionProps) => {
   const [inputValue, setInputValue] = React.useState(searchValue);
 
