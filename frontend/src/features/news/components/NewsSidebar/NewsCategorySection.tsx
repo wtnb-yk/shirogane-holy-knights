@@ -43,12 +43,12 @@ export const NewsCategorySection = ({
   if (loading) {
     return (
       <div className="space-y-4">
-        <h3 className="text-base font-bold text-gray-900">カテゴリ</h3>
+        <h3 className="text-base font-bold text-text-primary">カテゴリ</h3>
         <div className="space-y-2">
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className="h-8 bg-gray-200 rounded animate-pulse"
+              className="h-8 bg-bg-tertiary rounded animate-pulse"
             />
           ))}
         </div>
@@ -58,7 +58,7 @@ export const NewsCategorySection = ({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-gray-900">カテゴリ</h3>
+      <h3 className="text-base font-bold text-text-primary">カテゴリ</h3>
       
       <div className="space-y-2">
         {/* 全てクリアボタン */}
@@ -66,8 +66,8 @@ export const NewsCategorySection = ({
           onClick={handleClearAll}
           className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
             selectedCategoryIds.length === 0
-              ? 'bg-amber-100 text-amber-800 font-semibold'
-              : 'text-gray-600 hover:bg-amber-50 hover:pl-4'
+              ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+              : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
           }`}
         >
           全て
@@ -82,8 +82,8 @@ export const NewsCategorySection = ({
               onClick={() => handleCategoryToggle(category.id)}
               className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
                 isSelected
-                  ? 'bg-amber-100 text-amber-800 font-semibold'
-                  : 'text-gray-600 hover:bg-amber-50 hover:pl-4'
+                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
               }`}
             >
               {getCategoryDisplayName(category.name)}

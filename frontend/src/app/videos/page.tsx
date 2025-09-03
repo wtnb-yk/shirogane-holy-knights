@@ -29,10 +29,10 @@ export default function VideosList() {
         {/* メインコンテンツ */}
         <main className="flex-1 min-w-0">
           <div className="page-header mb-8">
-            <h1 className="text-5xl font-black text-gray-900 mb-3 tracking-wider">
+            <h1 className="text-5xl font-black text-text-primary mb-3 tracking-wider">
               ARCHIVE
             </h1>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-text-secondary leading-relaxed">
               配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br />
               最新の配信はYouTubeチャンネルをご確認ください。
             </p>

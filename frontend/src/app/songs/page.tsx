@@ -30,10 +30,10 @@ export default function SongsList() {
         {/* メインコンテンツ */}
         <main className="flex-1 min-w-0">
           <div className="page-header mb-8">
-            <h1 className="text-5xl font-black text-gray-900 mb-3 tracking-wider">
+            <h1 className="text-5xl font-black text-text-primary mb-3 tracking-wider">
               SONG
             </h1>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-text-secondary leading-relaxed">
               歌枠で歌われた曲を検索・閲覧できます。<br />
               楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
             </p>

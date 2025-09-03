@@ -26,23 +26,31 @@ const config: Config = {
       },
       colors: {
         bg: {
-          primary: '#FFFFFF',    // メイン背景（現在のnoel-bg-light）
-          secondary: '#F9F7F4',  // セクション背景（現在のbrand-cream）
-          accent: '#ACBDC5',     // アクセント背景（現在のsage-100）
+          primary: '#FFFFFF',    // メイン背景
+          secondary: '#F9F7F4',  // セクション背景
+          tertiary: '#F5F5F5',   // サイドバー背景
+          hover: '#FEF3E2',      // ホバー背景
+          accent: '#ACBDC5',     // アクセント背景
         },
         text: {
-          primary: '#374553',    // メインテキスト
-          secondary: '#89939d',  // サブテキスト
-          muted: '#acabb2',      // 薄いテキスト
-          light: '#e5e7eb',      // 明るいテキスト
+          primary: '#1F2937',    // メインテキスト（gray-800相当）
+          secondary: '#6B7280',  // サブテキスト（gray-500相当）
+          tertiary: '#9CA3AF',   // 薄いテキスト（gray-400相当）
+          inverse: '#FFFFFF',    // 白テキスト
+          muted: '#acabb2',      // 薄いテキスト（従来）
+          light: '#e5e7eb',      // 明るいテキスト（従来）
         },
         surface: {
           primary: '#324353',    // ヘッダーなど
           secondary: '#8B9DC3',  // カード背景など
-          border: '#acabb2',     // ボーダー色
+          border: '#E5E7EB',     // ボーダー色（gray-200相当）
+          hover: '#F3F4F6',      // ホバー用サーフェス
         },
         accent: {
           gold: '#F6C794',
+          'gold-hover': '#F4B87D',  // ゴールドホバー
+          'gold-light': '#FEF3E2',  // ゴールド薄色
+          'gold-dark': '#D89C5B',   // ゴールド濃色
           blue: '#8B9DC3',
           beige: '#DDB892',
           green: '#5BA179',

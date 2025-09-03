@@ -36,7 +36,7 @@ export const CategoryFilter = ({
 
   return (
     <div>
-      <h3 className="text-base font-bold text-gray-900 mb-3">
+      <h3 className="text-base font-bold text-text-primary mb-3">
         {title}
       </h3>
       <ul className="space-y-1">
@@ -46,8 +46,8 @@ export const CategoryFilter = ({
               onClick={() => handleItemClick(category)}
               className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
                 isSelected(category)
-                  ? 'bg-amber-100 text-amber-800 font-semibold'
-                  : 'text-gray-600 hover:bg-amber-50 hover:pl-4'
+                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
               }`}
             >
               {category}
