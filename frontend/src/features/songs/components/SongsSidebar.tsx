@@ -3,6 +3,9 @@
 import React from 'react';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
 import { SongSearchSection } from './SongsSidebar/SongSearchSection';
+import { SongDatePresetsSection } from './SongsSidebar/SongDatePresetsSection';
+import { SongFrequencySection } from './SongsSidebar/SongFrequencySection';
+import { SongFilterOptions } from '../types/types';
 
 interface SongsSidebarConfig {
   searchSection?: {
@@ -17,6 +20,8 @@ interface SongsSidebarProps {
   onClearSearch: () => void;
   onOptionsClick: () => void;
   hasActiveOptions: boolean;
+  filters: SongFilterOptions;
+  onFiltersChange: (filters: SongFilterOptions) => void;
   config?: SongsSidebarConfig;
 }
 
@@ -26,6 +31,8 @@ export const SongsSidebar = ({
   onClearSearch,
   onOptionsClick,
   hasActiveOptions,
+  filters,
+  onFiltersChange,
   config = {}
 }: SongsSidebarProps) => {
   const {
@@ -46,6 +53,22 @@ export const SongsSidebar = ({
         onOptionsClick,
         hasActiveOptions,
         title: searchSection.title,
+      }
+    },
+    {
+      id: 'date-presets',
+      component: SongDatePresetsSection,
+      props: {
+        filters,
+        onFiltersChange,
+      }
+    },
+    {
+      id: 'frequency-filter',
+      component: SongFrequencySection,
+      props: {
+        filters,
+        onFiltersChange,
       }
     },
   ];

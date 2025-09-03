@@ -1,77 +1,131 @@
 import React from 'react';
-import { X, Calendar } from 'lucide-react';
-import { SongFilterOptions } from '../types/types';
+import { X, Calendar, TrendingUp, Search } from 'lucide-react';
+import { SongFilterOptions, SearchTarget, SingFrequencyCategory } from '../types/types';
 
 interface SongSearchResultsSummaryProps {
   searchQuery: string;
+  searchTarget?: SearchTarget;
   totalCount: number;
   filters: SongFilterOptions;
   onClearSearch: () => void;
   onClearAllFilters: () => void;
+  onClearDateFilters?: () => void;
+  onClearFrequencyFilters?: () => void;
 }
+
+const FREQUENCY_LABELS = {
+  [SingFrequencyCategory.LOW]: '1-2回',
+  [SingFrequencyCategory.MEDIUM]: '3-5回',
+  [SingFrequencyCategory.HIGH]: '6-10回',
+  [SingFrequencyCategory.VERY_HIGH]: '11回以上'
+};
+
+const SEARCH_TARGET_LABELS = {
+  [SearchTarget.ALL]: '楽曲名・アーティスト名',
+  [SearchTarget.TITLE]: '楽曲名のみ',
+  [SearchTarget.ARTIST]: 'アーティスト名のみ'
+};
 
 export function SongSearchResultsSummary({
   searchQuery,
+  searchTarget = SearchTarget.ALL,
   totalCount,
   filters,
   onClearSearch,
-  onClearAllFilters
+  onClearAllFilters,
+  onClearDateFilters,
+  onClearFrequencyFilters
 }: SongSearchResultsSummaryProps) {
   const hasSearchQuery = searchQuery.trim().length > 0;
   const hasDateFilters = !!(filters.startDate || filters.endDate);
-  const hasAnyFilters = hasSearchQuery || hasDateFilters;
+  const hasFrequencyFilters = !!(filters.frequencyCategories && filters.frequencyCategories.length > 0);
+  const hasAnyFilters = hasSearchQuery || hasDateFilters || hasFrequencyFilters;
   
   if (!hasAnyFilters) {
     return null;
   }
 
-  const parts = [];
-  if (hasSearchQuery) parts.push(`「${searchQuery}」`);
-  if (hasDateFilters) {
-    if (filters.startDate && filters.endDate) {
-      parts.push(`${filters.startDate} ～ ${filters.endDate}`);
-    } else if (filters.startDate) {
-      parts.push(`${filters.startDate} 以降`);
-    } else if (filters.endDate) {
-      parts.push(`${filters.endDate} 以前`);
-    }
-  }
+  const getSearchTargetDisplay = () => {
+    if (!hasSearchQuery || searchTarget === SearchTarget.ALL) return null;
+    return SEARCH_TARGET_LABELS[searchTarget];
+  };
 
   return (
-    <div className="mb-6 py-2 px-3 bg-bg-accent/30 border border-surface-border/50 rounded-lg opacity-0 animate-slide-up" style={{ animationDelay: '175ms' }}>
-      <div className="flex items-center justify-between">
-        <div className="flex flex-wrap items-center gap-3">
+    <div className="mb-6 py-3 px-4 bg-bg-accent/30 border border-surface-border/50 rounded-lg opacity-0 animate-slide-up" style={{ animationDelay: '175ms' }}>
+      <div className="flex flex-col gap-3">
+        {/* 検索結果サマリー */}
+        <div className="flex items-center justify-between">
           <span className="text-sm text-text-primary">
-            {parts.join(' / ')}{parts.length > 0 && 'の'}検索結果: <span className="font-medium">{totalCount.toLocaleString()}件</span>
+            検索結果: <span className="font-medium">{totalCount.toLocaleString()}件</span>
           </span>
           
-          {hasDateFilters && (
-            <div className="flex items-center gap-1 text-xs text-text-secondary">
-              <Calendar className="w-3 h-3" />
-              歌唱日フィルター適用中
-            </div>
-          )}
+          <button
+            onClick={onClearAllFilters}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary bg-bg-primary border border-surface-border rounded-md interactive-hover transition-all duration-ui"
+          >
+            <X className="w-3 h-3" />
+            すべてクリア
+          </button>
         </div>
         
-        <div className="flex gap-2">
+        {/* アクティブフィルター表示 */}
+        <div className="flex flex-wrap gap-2">
           {hasSearchQuery && (
-            <button
-              onClick={onClearSearch}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary bg-bg-primary border border-surface-border rounded-md interactive-hover transition-all duration-ui"
-            >
-              <X className="w-3 h-3" />
-              検索クリア
-            </button>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 px-2 py-1 bg-white border border-accent-gold/30 rounded text-xs">
+                <Search className="w-3 h-3 text-accent-gold" />
+                <span className="text-text-primary font-medium">「{searchQuery}」</span>
+                {getSearchTargetDisplay() && (
+                  <span className="text-text-tertiary">({getSearchTargetDisplay()})</span>
+                )}
+              </div>
+              <button
+                onClick={onClearSearch}
+                className="flex items-center gap-1 px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
           )}
           
-          {hasAnyFilters && (
-            <button
-              onClick={onClearAllFilters}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary bg-bg-primary border border-surface-border rounded-md interactive-hover transition-all duration-ui"
-            >
-              <X className="w-3 h-3" />
-              すべてクリア
-            </button>
+          {hasDateFilters && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 px-2 py-1 bg-white border border-surface-border rounded text-xs">
+                <Calendar className="w-3 h-3 text-text-secondary" />
+                <span className="text-text-primary">
+                  {filters.startDate && filters.endDate && `${filters.startDate} ～ ${filters.endDate}`}
+                  {filters.startDate && !filters.endDate && `${filters.startDate} 以降`}
+                  {!filters.startDate && filters.endDate && `${filters.endDate} 以前`}
+                </span>
+              </div>
+              {onClearDateFilters && (
+                <button
+                  onClick={onClearDateFilters}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          )}
+          
+          {hasFrequencyFilters && (
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 px-2 py-1 bg-white border border-surface-border rounded text-xs">
+                <TrendingUp className="w-3 h-3 text-text-secondary" />
+                <span className="text-text-primary">
+                  {filters.frequencyCategories!.map(cat => FREQUENCY_LABELS[cat]).join(', ')}
+                </span>
+              </div>
+              {onClearFrequencyFilters && (
+                <button
+                  onClick={onClearFrequencyFilters}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>

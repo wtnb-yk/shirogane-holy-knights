@@ -36,36 +36,39 @@ export const SongSortSection = ({
   const orderLabels = getSortOrderLabel();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-medium text-text-primary mb-3">並び替え</h3>
-        <div className="space-y-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
+          並び替え
+        </h4>
+        <div className="grid grid-cols-1 gap-3">
           {sortByOptions.map((option) => {
             const isSelected = sortBy === option.value;
             return (
               <button
                 key={option.value}
                 onClick={() => onSortByChange(option.value)}
-                className={`w-full p-3 rounded-lg border text-left transition-all duration-200 ${
+                className={`relative flex flex-col p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-[1.02] text-left ${
                   isSelected
-                    ? 'border-text-secondary bg-text-secondary/5 shadow-sm'
-                    : 'border-surface-border hover:border-text-secondary/50 hover:bg-bg-accent/20'
+                    ? 'border-accent-gold bg-accent-gold/10 shadow-sm'
+                    : 'border-surface-border bg-white hover:border-accent-gold/50'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <option.icon className="w-5 h-5 text-text-secondary" />
-                  <div>
+                  <option.icon className={`w-5 h-5 ${isSelected ? 'text-accent-gold' : 'text-text-secondary'}`} />
+                  <div className="flex-1">
                     <div className={`font-medium ${
                       isSelected ? 'text-text-primary' : 'text-text-secondary'
                     }`}>
                       {option.label}
                     </div>
-                    <div className="text-xs text-text-tertiary">
+                    <div className="text-xs text-text-tertiary leading-relaxed">
                       {option.description}
                     </div>
                   </div>
                   {isSelected && (
-                    <div className="ml-auto w-2 h-2 bg-text-secondary rounded-full" />
+                    <div className="ml-auto w-2 h-2 bg-accent-gold rounded-full" />
                   )}
                 </div>
               </button>
@@ -75,13 +78,17 @@ export const SongSortSection = ({
       </div>
 
       <div>
-        <div className="flex gap-2">
+        <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+          <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
+          並び順
+        </h4>
+        <div className="flex gap-3">
           <button
             onClick={() => onSortOrderChange(SortOrder.DESC)}
-            className={`flex-1 p-3 rounded-lg border flex items-center justify-center gap-2 transition-all duration-200 ${
+            className={`flex-1 p-3 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] ${
               sortOrder === SortOrder.DESC
-                ? 'border-text-secondary bg-text-secondary text-white'
-                : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-primary'
+                ? 'border-accent-gold bg-accent-gold text-white shadow-sm'
+                : 'border-surface-border bg-white text-text-secondary hover:border-accent-gold/50'
             }`}
           >
             <ChevronDown className="w-4 h-4" />
@@ -89,10 +96,10 @@ export const SongSortSection = ({
           </button>
           <button
             onClick={() => onSortOrderChange(SortOrder.ASC)}
-            className={`flex-1 p-3 rounded-lg border flex items-center justify-center gap-2 transition-all duration-200 ${
+            className={`flex-1 p-3 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] ${
               sortOrder === SortOrder.ASC
-                ? 'border-text-secondary bg-text-secondary text-white'
-                : 'border-surface-border text-text-secondary hover:border-text-secondary hover:text-text-primary'
+                ? 'border-accent-gold bg-accent-gold text-white shadow-sm'
+                : 'border-surface-border bg-white text-text-secondary hover:border-accent-gold/50'
             }`}
           >
             <ChevronUp className="w-4 h-4" />

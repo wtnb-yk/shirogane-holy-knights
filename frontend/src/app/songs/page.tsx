@@ -82,6 +82,8 @@ export default function SongsList() {
                     onClearSearch={songsData.clearSearch}
                     onOptionsClick={() => setShowOptionsModal(true)}
                     hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
+                    filters={songsData.filters}
+                    onFiltersChange={songsData.setFilters}
                   />
                 </ResponsiveSidebar>
               </div>
@@ -148,6 +150,8 @@ export default function SongsList() {
             onClearSearch={songsData.clearSearch}
             onOptionsClick={() => setShowOptionsModal(true)}
             hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
+            filters={songsData.filters}
+            onFiltersChange={songsData.setFilters}
           />
         </ResponsiveSidebar>
       </div>
