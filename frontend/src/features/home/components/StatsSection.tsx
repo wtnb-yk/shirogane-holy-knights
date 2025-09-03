@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useVideos } from '@/features/streams/hooks/useVideos';
+import { useVideos } from '@/features/archives/hooks/useVideos';
 
 export default function StatsSection() {
   const { totalCount, loading } = useVideos({ pageSize: 1 });

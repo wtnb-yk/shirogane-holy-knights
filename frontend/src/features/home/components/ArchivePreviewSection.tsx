@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useStreams } from '@/features/streams/hooks/useStreams';
+import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ArchivePreviewCard } from './ArchivePreviewCard';
 import { SkeletonArchivePreviewCard } from './SkeletonArchivePreviewCard';
 

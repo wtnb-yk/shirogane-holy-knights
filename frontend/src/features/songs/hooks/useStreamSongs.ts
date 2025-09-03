@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo, useState, useEffect, useCallback } from 'react';
-import { usePagination } from '@/features/streams/hooks/usePagination';
-import { useVideoSearch } from '@/features/streams/hooks/useVideoSearch';
+import { usePagination } from '@/features/archives/hooks/usePagination';
+import { useVideoSearch } from '@/features/archives/hooks/useVideoSearch';
 import { useStreamSongsQuery } from './useStreamSongsQuery';
 import { StreamSong, SortBy, SortOrder, SongFilterOptions } from '../types/types';
 

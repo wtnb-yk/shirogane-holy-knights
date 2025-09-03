@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ContentType } from '@/features/streams/types/types';
+import { ContentType } from '@/features/archives/types/types';
 import { SearchInput } from './components/SearchInput';
 import { ContentTypeTabs } from './components/ContentTypeTabs';
 import { CategoryButtons } from './components/CategoryButtons';
