@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useVideos } from '@/features/videos/hooks/useVideos';
-import { useStreams } from '@/features/videos/hooks/useStreams';
-import { ContentType } from '@/features/videos/types/types';
-import { VideosSidebar } from '@/features/videos/components/VideosSidebar';
-import { SearchOptionsModal } from '@/features/videos/components/filter/SearchOptionsModal';
-import { SearchResultsSummary } from '@/features/videos/components/results/SearchResultsSummary';
-import { StatsSummary } from '@/features/videos/components/results/StatsSummary';
-import { VideosGrid } from '@/features/videos/components/VideosGrid';
-import { StreamsGrid } from '@/features/videos/components/StreamsGrid';
+import { useVideos } from '@/features/streams/hooks/useVideos';
+import { useStreams } from '@/features/streams/hooks/useStreams';
+import { ContentType } from '@/features/streams/types/types';
+import { VideosSidebar } from '@/features/streams/components/VideosSidebar';
+import { SearchOptionsModal } from '@/features/streams/components/filter/SearchOptionsModal';
+import { SearchResultsSummary } from '@/features/streams/components/results/SearchResultsSummary';
+import { StatsSummary } from '@/features/streams/components/results/StatsSummary';
+import { VideosGrid } from '@/features/streams/components/VideosGrid';
+import { StreamsGrid } from '@/features/streams/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';

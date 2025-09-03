@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useStreams } from '@/features/videos/hooks/useStreams';
+import { useStreams } from '@/features/streams/hooks/useStreams';
 import { ArchivePreviewCard } from './ArchivePreviewCard';
 import { SkeletonArchivePreviewCard } from './SkeletonArchivePreviewCard';
 
@@ -52,7 +52,7 @@ export default function ArchivePreviewSection() {
         {/* すべてのアーカイブを見るボタン */}
         <div className="text-center">
           <a
-            href="/videos"
+            href="/archives"
             className="inline-flex items-center px-8 py-3 bg-bg-primary text-text-primary border border-surface-border rounded-lg font-medium hover:bg-bg-accent transition-colors duration-200"
           >
             すべてのアーカイブを見る

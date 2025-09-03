@@ -34,7 +34,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/videos" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/archives" className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                   ARCHIVE
                 </Link>
               </li>

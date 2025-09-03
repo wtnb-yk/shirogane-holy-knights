@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar } from 'lucide-react';
-import { StreamDto } from '@/features/videos/types/types';
+import { StreamDto } from '@/features/streams/types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
