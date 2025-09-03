@@ -108,7 +108,12 @@ export default function VideosList() {
             <StreamsGrid 
               streams={streamsData.streams} 
               loading={streamsData.loading} 
-              error={streamsData.error} 
+              error={streamsData.error}
+              showFeatured={
+                !streamsData.searchQuery && 
+                (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0)
+              }
+              isFirstPage={streamsData.currentPage === 1}
             />
           )}
 
