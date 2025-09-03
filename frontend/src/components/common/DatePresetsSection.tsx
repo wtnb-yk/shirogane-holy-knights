@@ -76,21 +76,43 @@ const DATE_PRESETS = [
   }
 ];
 
+const ALL_OPTION = {
+  id: 'all',
+  label: 'すべて'
+};
+
 export const DatePresetsSection = ({
   filters,
   onFiltersChange,
   title = '期間',
 }: DatePresetsSectionProps) => {
-  const handlePresetClick = (preset: typeof DATE_PRESETS[0]) => {
-    const range = preset.getRange();
-    onFiltersChange({ 
-      ...filters, 
-      startDate: range.startDate, 
-      endDate: range.endDate 
-    });
+  const handleItemClick = (item: typeof ALL_OPTION | typeof DATE_PRESETS[0]) => {
+    if (item.id === 'all') {
+      // 日付のみクリア、他のフィルターは保持
+      onFiltersChange({ 
+        ...filters, 
+        startDate: undefined, 
+        endDate: undefined 
+      });
+    } else {
+      // 既存のプリセット処理
+      const range = (item as typeof DATE_PRESETS[0]).getRange();
+      onFiltersChange({ 
+        ...filters, 
+        startDate: range.startDate, 
+        endDate: range.endDate 
+      });
+    }
   };
 
-  const isActive = !!(filters?.startDate || filters?.endDate);
+  const isSelected = (item: typeof ALL_OPTION | typeof DATE_PRESETS[0]) => {
+    if (item.id === 'all') {
+      return !filters?.startDate && !filters?.endDate;
+    }
+    return false; // プリセットの選択状態は表示しない（一時的な選択なので）
+  };
+
+  const allItems = [ALL_OPTION, ...DATE_PRESETS];
 
   return (
     <div>
@@ -99,31 +121,20 @@ export const DatePresetsSection = ({
       </h3>
 
       <ul className="space-y-1">
-        {DATE_PRESETS.map((preset) => (
-          <li key={preset.id}>
+        {allItems.map((item) => (
+          <li key={item.id}>
             <button
-              onClick={() => handlePresetClick(preset)}
-              className="w-full text-left py-2 px-3 rounded-md text-sm transition-all text-text-secondary hover:bg-accent-gold-light hover:pl-4"
+              onClick={() => handleItemClick(item)}
+              className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
+                isSelected(item)
+                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
+              }`}
             >
-              {preset.label}
+              {item.label}
             </button>
           </li>
         ))}
-        
-        {isActive && (
-          <li>
-            <button
-              onClick={() => onFiltersChange({ 
-                ...filters, 
-                startDate: undefined, 
-                endDate: undefined 
-              })}
-              className="w-full text-left py-2 px-3 rounded-md text-xs transition-all text-text-tertiary hover:bg-surface-border/20 hover:pl-4"
-            >
-              期間クリア
-            </button>
-          </li>
-        )}
       </ul>
     </div>
   );

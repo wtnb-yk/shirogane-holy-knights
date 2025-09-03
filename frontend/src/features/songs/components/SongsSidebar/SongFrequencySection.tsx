@@ -32,6 +32,11 @@ const FREQUENCY_OPTIONS = [
   }
 ];
 
+const ALL_OPTION = {
+  id: 'all',
+  label: 'すべて'
+};
+
 export const SongFrequencySection = ({
   filters = {},
   onFiltersChange,
@@ -39,22 +44,40 @@ export const SongFrequencySection = ({
 }: SongFrequencySectionProps) => {
   const selectedCategories = filters?.frequencyCategories || [];
 
-  const handleCategoryToggle = (category: SingFrequencyCategory) => {
-    let newCategories: SingFrequencyCategory[];
-    
-    if (selectedCategories.includes(category)) {
-      newCategories = selectedCategories.filter(c => c !== category);
+  const handleItemClick = (item: typeof ALL_OPTION | typeof FREQUENCY_OPTIONS[0]) => {
+    if (item.id === 'all') {
+      // 頻度のみクリア、他のフィルターは保持
+      onFiltersChange({ 
+        ...filters, 
+        frequencyCategories: undefined 
+      });
     } else {
-      newCategories = [...selectedCategories, category];
+      // 既存のカテゴリ処理
+      const category = (item as typeof FREQUENCY_OPTIONS[0]).category;
+      let newCategories: SingFrequencyCategory[];
+      
+      if (selectedCategories.includes(category)) {
+        newCategories = selectedCategories.filter(c => c !== category);
+      } else {
+        newCategories = [...selectedCategories, category];
+      }
+      
+      onFiltersChange({ 
+        ...filters, 
+        frequencyCategories: newCategories.length > 0 ? newCategories : undefined 
+      });
     }
-    
-    onFiltersChange({ 
-      ...filters, 
-      frequencyCategories: newCategories.length > 0 ? newCategories : undefined 
-    });
   };
 
-  const hasActiveFilters = selectedCategories.length > 0;
+  const isSelected = (item: typeof ALL_OPTION | typeof FREQUENCY_OPTIONS[0]) => {
+    if (item.id === 'all') {
+      return selectedCategories.length === 0;
+    }
+    const category = (item as typeof FREQUENCY_OPTIONS[0]).category;
+    return selectedCategories.includes(category);
+  };
+
+  const allItems = [ALL_OPTION, ...FREQUENCY_OPTIONS];
 
   return (
     <div>
@@ -63,34 +86,20 @@ export const SongFrequencySection = ({
       </h3>
 
       <ul className="space-y-1">
-        {FREQUENCY_OPTIONS.map(({ category, label }) => {
-          const isSelected = selectedCategories.includes(category);
-          return (
-            <li key={category}>
-              <button
-                onClick={() => handleCategoryToggle(category)}
-                className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
-                  isSelected
-                    ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
-                    : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
-                }`}
-              >
-                {label}
-              </button>
-            </li>
-          );
-        })}
-        
-        {hasActiveFilters && (
-          <li>
+        {allItems.map((item) => (
+          <li key={item.id || (item as typeof FREQUENCY_OPTIONS[0]).category}>
             <button
-              onClick={() => onFiltersChange({ ...filters, frequencyCategories: undefined })}
-              className="w-full text-left py-2 px-3 rounded-md text-xs transition-all text-text-tertiary hover:bg-surface-border/20 hover:pl-4"
+              onClick={() => handleItemClick(item)}
+              className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
+                isSelected(item)
+                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
+              }`}
             >
-              頻度クリア
+              {item.label}
             </button>
           </li>
-        )}
+        ))}
       </ul>
     </div>
   );
