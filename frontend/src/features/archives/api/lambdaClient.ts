@@ -32,9 +32,8 @@ export class VideoClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
       throw {
-        error: errorData.error || '動画検索中にエラーが発生しました',
+        error: '動画検索中にエラーが発生しました。',
         statusCode: response.status,
       } as ApiError;
     }
@@ -67,9 +66,8 @@ export class StreamClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
       throw {
-        error: errorData.error || '配信検索中にエラーが発生しました',
+        error: '配信検索中にエラーが発生しました。',
         statusCode: response.status,
       } as ApiError;
     }

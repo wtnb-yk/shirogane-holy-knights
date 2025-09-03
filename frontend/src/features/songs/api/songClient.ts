@@ -42,9 +42,8 @@ export class SongClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
       throw {
-        error: errorData.error || '楽曲検索中にエラーが発生しました',
+        error: '楽曲検索中にエラーが発生しました。',
         statusCode: response.status,
       } as ApiError;
     }
@@ -65,9 +64,8 @@ export class SongClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
       throw {
-        error: errorData.error || '楽曲統計情報取得中にエラーが発生しました',
+        error: '楽曲統計情報取得中にエラーが発生しました。',
         statusCode: response.status,
       } as ApiError;
     }

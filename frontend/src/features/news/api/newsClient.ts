@@ -46,9 +46,8 @@ export class NewsClient {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
       throw {
-        error: errorData.error || 'ニュースの取得に失敗しました。',
+        error: 'ニュースの取得に失敗しました。',
         statusCode: response.status,
       } as NewsApiError;
     }

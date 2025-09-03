@@ -32,9 +32,7 @@ export const useNewsCategories = (): UseNewsCategoriesResult => {
 
         const data: NewsCategoryDto[] = await response.json();
         setCategories(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
+      }  finally {
         setLoading(false);
       }
     };

@@ -31,8 +31,7 @@ export function NewsListGrid<T>({
     return (
       <div className="flex items-center justify-center h-64 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
         <div className="text-center">
-          <div className="text-error text-lg font-medium mb-2">エラーが発生しました</div>
-          <div className="text-text-secondary text-sm">{error}</div>
+          <div className="text-error text-lg font-medium">エラーが発生しました</div>
         </div>
       </div>
     );
