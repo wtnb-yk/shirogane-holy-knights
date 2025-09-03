@@ -11,11 +11,11 @@ export function Footer() {
             {/* 左側：サイト情報 */}
             <div className="flex-none lg:w-[450px]">
               <div className="mb-6">
-                <h3 className="text-lg font-normal text-navy mb-2">
+                <h3 className="text-lg font-normal text-surface-primary mb-2">
                   白銀ノエル 非公式ファンサイト<br />
                   だんいんポータル
                 </h3>
-                <div className="text-xs text-navy/60 leading-relaxed mb-2">
+                <div className="text-xs text-surface-primary/60 leading-relaxed mb-2">
                   <p className="mb-1">
                     ※当サイトは、ホロライブプロダクション所属VTuber 白銀ノエルさんを応援する非公式サイトです。
                   </p>
@@ -31,7 +31,7 @@ export function Footer() {
                     href="https://x.com/ChuunChuuun"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-navy/50 hover:text-accent-primary transition-colors"
+                    className="text-xs text-surface-primary/50 hover:text-accent-primary transition-colors"
                   >
                     @ChuunChuuun
                   </a>
@@ -39,7 +39,7 @@ export function Footer() {
                     href="https://hololivepro.com/terms/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-navy/50 hover:text-accent-primary transition-colors"
+                    className="text-xs text-surface-primary/50 hover:text-accent-primary transition-colors"
                   >
                     二次創作ガイドライン
                   </a>
@@ -51,25 +51,25 @@ export function Footer() {
             <div className="flex flex-col sm:flex-row gap-8 lg:gap-20">
               {/* サイトマップ */}
               <div className="min-w-36">
-                <h4 className="text-sm font-normal text-navy mb-4">サイトマップ</h4>
+                <h4 className="text-sm font-normal text-surface-primary mb-4">サイトマップ</h4>
                 <ul className="space-y-2.5">
                   <li>
-                    <Link href="/" className="text-xs text-navy/70 hover:text-accent-primary transition-colors">
+                    <Link href="/" className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors">
                       HOME
                     </Link>
                   </li>
                   <li>
-                    <Link href="/archives" className="text-xs text-navy/70 hover:text-accent-primary transition-colors">
+                    <Link href="/archives" className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors">
                       ARCHIVE
                     </Link>
                   </li>
                   <li>
-                    <Link href="/songs" className="text-xs text-navy/70 hover:text-accent-primary transition-colors">
+                    <Link href="/songs" className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors">
                       SONG
                     </Link>
                   </li>
                   <li>
-                    <Link href="/news" className="text-xs text-navy/70 hover:text-accent-primary transition-colors">
+                    <Link href="/news" className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors">
                       NEWS
                     </Link>
                   </li>
@@ -78,14 +78,14 @@ export function Footer() {
               
               {/* 公式リンク */}
               <div className="min-w-36">
-                <h4 className="text-sm font-normal text-navy mb-4">公式リンク</h4>
+                <h4 className="text-sm font-normal text-surface-primary mb-4">公式リンク</h4>
                 <ul className="space-y-2.5">
                   <li>
                     <a 
                       href="https://www.youtube.com/@ShiroganeNoel" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-xs text-navy/70 hover:text-accent-primary transition-colors"
+                      className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors"
                     >
                       YouTube
                     </a>
@@ -95,7 +95,7 @@ export function Footer() {
                       href="https://x.com/shiroganenoel"
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-xs text-navy/70 hover:text-accent-primary transition-colors"
+                      className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors"
                     >
                       X (Twitter)
                     </a>
@@ -107,7 +107,7 @@ export function Footer() {
           
           {/* 下部：コピーライト */}
           <div className="mt-2 pt-2 border-t border-surface-border">
-            <p className="text-center text-xs text-navy/50">
+            <p className="text-center text-xs text-surface-primary/50">
               &copy; 2025 だんいんポータル
             </p>
           </div>
