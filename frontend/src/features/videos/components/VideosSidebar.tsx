@@ -14,7 +14,6 @@ interface VideosSidebarConfig {
     description?: string;
   };
   width?: 'sm' | 'md' | 'lg' | string;
-  responsive?: boolean;
 }
 
 interface VideosSidebarProps {
@@ -45,8 +44,7 @@ export const VideosSidebar = ({
   const {
     displayCategories = ['雑談', 'ゲーム','ASMR', '歌枠', 'コラボ'],
     searchSection = {},
-    width = 'lg',
-    responsive = true
+    width = 'lg'
   } = config;
 
   const handleTagToggle = (tag: string) => {
@@ -108,7 +106,6 @@ export const VideosSidebar = ({
     <FilterableSidebar
       sections={sections}
       width={width}
-      responsive={responsive}
     />
   );
 };

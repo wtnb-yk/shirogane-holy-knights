@@ -10,6 +10,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"Helvetica Neue"', '"Hiragino Sans"', 'var(--font-noto-sans-jp)', 'Arial', 'sans-serif'],
+        'system': ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"Helvetica Neue"', '"Hiragino Sans"', 'Arial', 'sans-serif'],
+        'japanese': ['var(--font-noto-sans-jp)', '"Hiragino Sans"', 'ヒラギノ角ゴ Pro W3', 'メイリオ', 'Meiryo', 'sans-serif'],
+        'rounded': ['var(--font-mplus-rounded)', 'M PLUS Rounded 1c', 'sans-serif'],
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

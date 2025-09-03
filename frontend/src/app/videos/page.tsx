@@ -11,9 +11,13 @@ import { StatsSummary } from '@/features/videos/components/results/StatsSummary'
 import { VideosGrid } from '@/features/videos/components/VideosGrid';
 import { StreamsGrid } from '@/features/videos/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
+import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
+import { MobileDropdownVideosSection } from '@/components/common/Sidebar/MobileDropdownVideosSection';
 
 export default function VideosList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
   
   const videosData = useVideos({ pageSize: 20 });
@@ -22,20 +26,64 @@ export default function VideosList() {
   // 現在選択されているタブのデータを取得
   const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
 
+  // アクティブなフィルター数を計算
+  const activeFiltersCount = (currentData.filters.selectedTags?.length || 0) + 
+    (currentData.searchQuery ? 1 : 0);
+
   return (
     <div className="min-h-screen bg-white">
       {/* メインコンテナ */}
-      <div className="flex max-w-full py-8 px-10 gap-10">
+      <div className="flex flex-col md:flex-row max-w-full py-8 px-10 gap-10">
         {/* メインコンテンツ */}
         <main className="flex-1 min-w-0">
-          <div className="page-header mb-8">
+          <div className="page-header mb-6">
             <h1 className="text-5xl font-black text-text-primary mb-3 tracking-wider">
               ARCHIVE
             </h1>
-            <p className="text-sm text-text-secondary leading-relaxed">
+            <p className="text-sm text-text-secondary leading-relaxed mb-4">
               配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br />
               最新の配信はYouTubeチャンネルをご確認ください。
             </p>
+            
+            {/* モバイルメニューボタン（lg未満のみ表示） */}
+            <div className="lg:hidden mb-6 relative">
+              <MobileSidebarButton 
+                onClick={() => setIsSidebarOpen(true)}
+                hasActiveFilters={activeFiltersCount > 0}
+                activeFiltersCount={activeFiltersCount}
+                variant="search"
+              />
+              
+              {/* レスポンシブサイドバー */}
+              <ResponsiveSidebar 
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                mobileContent={
+                  <MobileDropdownVideosSection
+                    contentType={contentType}
+                    onContentTypeChange={setContentType}
+                    searchValue={currentData.searchQuery}
+                    onSearch={currentData.handleSearch}
+                    onClearSearch={currentData.clearSearch}
+                    filters={currentData.filters}
+                    setFilters={currentData.setFilters}
+                    availableTags={currentData.availableTags}
+                  />
+                }
+              >
+                <VideosSidebar
+                  contentType={contentType}
+                  onContentTypeChange={setContentType}
+                  searchValue={currentData.searchQuery}
+                  onSearch={currentData.handleSearch}
+                  onClearSearch={currentData.clearSearch}
+                  onFilterClick={() => setShowFilterModal(true)}
+                  hasActiveOptions={currentData.hasActiveFilters}
+                  filters={currentData.filters}
+                  setFilters={currentData.setFilters}
+                />
+              </ResponsiveSidebar>
+            </div>
           </div>
 
           <SearchResultsSummary
@@ -86,18 +134,23 @@ export default function VideosList() {
           />
         </main>
 
-        {/* サイドバー（右側） */}
-        <VideosSidebar
-          contentType={contentType}
-          onContentTypeChange={setContentType}
-          searchValue={currentData.searchQuery}
-          onSearch={currentData.handleSearch}
-          onClearSearch={currentData.clearSearch}
-          onFilterClick={() => setShowFilterModal(true)}
-          hasActiveOptions={currentData.hasActiveFilters}
-          filters={currentData.filters}
-          setFilters={currentData.setFilters}
-        />
+        {/* デスクトップサイドバー */}
+        <ResponsiveSidebar 
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        >
+          <VideosSidebar
+            contentType={contentType}
+            onContentTypeChange={setContentType}
+            searchValue={currentData.searchQuery}
+            onSearch={currentData.handleSearch}
+            onClearSearch={currentData.clearSearch}
+            onFilterClick={() => setShowFilterModal(true)}
+            hasActiveOptions={currentData.hasActiveFilters}
+            filters={currentData.filters}
+            setFilters={currentData.setFilters}
+          />
+        </ResponsiveSidebar>
       </div>
     </div>
   );

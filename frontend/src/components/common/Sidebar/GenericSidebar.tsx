@@ -8,7 +8,6 @@ export type SidebarWidth = 'sm' | 'md' | 'lg';
 interface GenericSidebarProps {
   children: React.ReactNode;
   width?: SidebarWidth | string;
-  responsive?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -22,7 +21,6 @@ const widthClasses: Record<SidebarWidth, string> = {
 export const GenericSidebar = ({
   children,
   width = 'md',
-  responsive = true,
   className,
   style
 }: GenericSidebarProps) => {
@@ -36,16 +34,11 @@ export const GenericSidebar = ({
     return width;
   };
 
-  const responsiveClasses = responsive 
-    ? 'hidden md:block' 
-    : '';
-
   return (
     <aside 
       className={cn(
-        'flex-shrink-0 bg-gray-50 rounded-xl p-6 h-fit',
+        'flex-shrink-0 bg-bg-tertiary rounded-xl p-6 h-fit',
         getWidthClasses(),
-        responsiveClasses,
         className
       )}
       style={style}

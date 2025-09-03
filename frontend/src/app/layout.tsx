@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { M_PLUS_Rounded_1c } from 'next/font/google';
+import { M_PLUS_Rounded_1c, Noto_Sans_JP } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header/Header';
 import { Footer } from '@/components/footer/Footer';
@@ -9,6 +9,14 @@ const mplusRounded = M_PLUS_Rounded_1c({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-mplus-rounded',
+});
+
+const notoSansJP = Noto_Sans_JP({
+  weight: ['400', '500', '700'],
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-noto-sans-jp',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -26,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={`min-h-screen flex flex-col ${mplusRounded.variable}`}>
+      <body className={`min-h-screen flex flex-col ${mplusRounded.variable} ${notoSansJP.variable}`}>
         <Header />
         <main className="flex-grow pt-16">
           {children}

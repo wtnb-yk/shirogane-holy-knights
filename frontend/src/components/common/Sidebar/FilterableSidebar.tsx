@@ -14,7 +14,6 @@ export interface SidebarSectionConfig<T = any> {
 interface FilterableSidebarProps<TFilters = any> {
   sections: SidebarSectionConfig[];
   width?: SidebarWidth | string;
-  responsive?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -22,14 +21,12 @@ interface FilterableSidebarProps<TFilters = any> {
 export const FilterableSidebar = <TFilters = any>({
   sections,
   width = 'md',
-  responsive = true,
   className,
   style
 }: FilterableSidebarProps<TFilters>) => {
   return (
     <GenericSidebar
       width={width}
-      responsive={responsive}
       className={className}
       style={style}
     >
