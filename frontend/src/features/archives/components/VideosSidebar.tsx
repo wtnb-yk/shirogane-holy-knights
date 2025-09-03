@@ -6,6 +6,8 @@ import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sid
 import { ContentTypeTabs } from './VideosSidebar/ContentTypeTabs';
 import { SearchSection } from './VideosSidebar/SearchSection';
 import { CategoryFilter } from './VideosSidebar/CategoryFilter';
+import { DatePresetsSection } from '@/components/common/DatePresetsSection';
+import { FilterOptions } from './filter/VideoFilterSection';
 
 interface VideosSidebarConfig {
   displayCategories?: string[];
@@ -24,8 +26,8 @@ interface VideosSidebarProps {
   onClearSearch: () => void;
   onFilterClick: () => void;
   hasActiveOptions: boolean;
-  filters: { selectedTags: string[] };
-  setFilters: (filters: { selectedTags: string[] }) => void;
+  filters: FilterOptions;
+  setFilters: (filters: FilterOptions) => void;
   config?: VideosSidebarConfig;
 }
 
@@ -52,11 +54,13 @@ export const VideosSidebar = ({
     if (currentTags.includes(tag)) {
       // 同じタグをクリックした場合は選択解除
       setFilters({
+        ...filters,
         selectedTags: []
       });
     } else {
       // 異なるタグをクリックした場合は、そのタグのみを選択
       setFilters({
+        ...filters,
         selectedTags: [tag]
       });
     }
@@ -64,6 +68,7 @@ export const VideosSidebar = ({
 
   const handleTagClear = () => {
     setFilters({
+      ...filters,
       selectedTags: []
     });
   };
@@ -99,12 +104,21 @@ export const VideosSidebar = ({
         onCategoryToggle: handleTagToggle,
         onClearAll: handleTagClear
       }
+    },
+    {
+      id: 'date-presets',
+      component: DatePresetsSection,
+      props: {
+        filters,
+        onFiltersChange: setFilters,
+        title: '配信日'
+      }
     }
   ];
 
   return (
     <FilterableSidebar
-      sections={sections}
+       sections={sections}
       width={width}
     />
   );

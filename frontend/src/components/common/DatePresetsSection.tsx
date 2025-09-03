@@ -2,16 +2,18 @@
 
 import React from 'react';
 import { Calendar, Clock } from 'lucide-react';
-import { SongFilterOptions } from '../../types/types';
 
 interface DateRange {
   startDate: string;
   endDate: string;
 }
 
-interface SongDatePresetsSectionProps {
-  filters: SongFilterOptions;
-  onFiltersChange: (filters: SongFilterOptions) => void;
+interface DatePresetsSectionProps {
+  filters: {
+    startDate?: string;
+    endDate?: string;
+  };
+  onFiltersChange: (filters: any) => void;
   title?: string;
 }
 
@@ -74,14 +76,18 @@ const DATE_PRESETS = [
   }
 ];
 
-export const SongDatePresetsSection = ({
-  filters = {},
+export const DatePresetsSection = ({
+  filters,
   onFiltersChange,
-  title = '期間選択',
-}: SongDatePresetsSectionProps) => {
+  title = '期間',
+}: DatePresetsSectionProps) => {
   const handlePresetClick = (preset: typeof DATE_PRESETS[0]) => {
     const range = preset.getRange();
-    onFiltersChange({ ...filters, startDate: range.startDate, endDate: range.endDate });
+    onFiltersChange({ 
+      ...filters, 
+      startDate: range.startDate, 
+      endDate: range.endDate 
+    });
   };
 
   const isActive = !!(filters?.startDate || filters?.endDate);
@@ -107,7 +113,11 @@ export const SongDatePresetsSection = ({
         {isActive && (
           <li>
             <button
-              onClick={() => onFiltersChange({ ...filters, startDate: undefined, endDate: undefined })}
+              onClick={() => onFiltersChange({ 
+                ...filters, 
+                startDate: undefined, 
+                endDate: undefined 
+              })}
               className="w-full text-left py-2 px-3 rounded-md text-xs transition-all text-text-tertiary hover:bg-surface-border/20 hover:pl-4"
             >
               期間クリア

@@ -111,7 +111,9 @@ export default function VideosList() {
               error={streamsData.error}
               showFeatured={
                 !streamsData.searchQuery && 
-                (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0)
+                (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0) &&
+                !streamsData.filters.startDate &&
+                !streamsData.filters.endDate
               }
               isFirstPage={streamsData.currentPage === 1}
             />

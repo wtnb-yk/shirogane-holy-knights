@@ -41,13 +41,6 @@ export const SearchOptionsModal = ({
     onClose();
   };
 
-  const handleReset = () => {
-    setTempFilters({
-      selectedTags: [],
-      startDate: undefined,
-      endDate: undefined,
-    });
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -57,23 +50,21 @@ export const SearchOptionsModal = ({
           <DialogClose onClose={() => handleOpenChange(false)} />
         </DialogHeader>
         <div className="p-6 pt-0">
-          <VideoFilterSection
-            filters={tempFilters}
-            onFiltersChange={setTempFilters}
-            availableTags={availableTags}
-          />
-          <div className="flex gap-3 mt-6 pt-4 border-t border-surface-border">
+          
+          <div className="space-y-6">
+            <VideoFilterSection
+              filters={tempFilters}
+              onFiltersChange={setTempFilters}
+              availableTags={availableTags}
+            />
+          </div>
+          
+          <div className="mt-6 pt-4 border-t border-surface-border flex gap-3">
             <button
               onClick={handleApply}
-              className="flex-1 px-4 py-2 bg-text-secondary text-white rounded-md hover:bg-bg-accent/80 transition-colors"
+              className="flex-1 px-4 py-2 bg-text-secondary text-white rounded-md hover:bg-text-secondary/90 transition-colors"
             >
               適用
-            </button>
-            <button
-              onClick={handleReset}
-              className="px-4 py-2 border border-surface-border text-text-secondary rounded-md hover:bg-bg-accent transition-colors"
-            >
-              リセット
             </button>
           </div>
         </div>

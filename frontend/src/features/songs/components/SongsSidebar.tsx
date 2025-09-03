@@ -3,7 +3,7 @@
 import React from 'react';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
 import { SongSearchSection } from './SongsSidebar/SongSearchSection';
-import { SongDatePresetsSection } from './SongsSidebar/SongDatePresetsSection';
+import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { SongFrequencySection } from './SongsSidebar/SongFrequencySection';
 import { SongFilterOptions } from '../types/types';
 
@@ -57,10 +57,11 @@ export const SongsSidebar = ({
     },
     {
       id: 'date-presets',
-      component: SongDatePresetsSection,
+      component: DatePresetsSection,
       props: {
         filters,
         onFiltersChange,
+        title: '歌唱日'
       }
     },
     {

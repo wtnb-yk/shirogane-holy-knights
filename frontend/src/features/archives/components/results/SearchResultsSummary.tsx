@@ -40,6 +40,11 @@ export const SearchResultsSummary = ({
       totalCount={totalCount}
       onClearAllFilters={onClearAllFilters}
       hasFilters={hasFilters}
+      filters={{
+        selectedTags: filters.selectedTags,
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      }}
     />
   );
 };

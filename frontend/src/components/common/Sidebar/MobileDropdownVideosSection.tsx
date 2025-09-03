@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ContentType } from '@/features/archives/types/types';
+import { FilterOptions } from '@/features/archives/components/filter/VideoFilterSection';
 import { SearchInput } from './components/SearchInput';
 import { ContentTypeTabs } from './components/ContentTypeTabs';
 import { CategoryButtons } from './components/CategoryButtons';
@@ -14,8 +15,8 @@ interface MobileDropdownVideosSectionProps {
   searchValue: string;
   onSearch: (query: string) => void;
   onClearSearch: () => void;
-  filters: { selectedTags: string[]; startDate?: string; endDate?: string };
-  setFilters: (filters: { selectedTags: string[]; startDate?: string; endDate?: string }) => void;
+  filters: FilterOptions;
+  setFilters: (filters: FilterOptions) => void;
   availableTags?: string[];
   displayCategories?: string[];
 }
