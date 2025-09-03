@@ -8,8 +8,9 @@ import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOptionsModal';
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
+import { ViewToggleButton } from '@/features/songs/components/ViewToggleButton';
 import { Pagination } from '@/components/ui/Pagination';
-import { StreamSong } from '@/features/songs/types/types';
+import { StreamSong, ViewMode } from '@/features/songs/types/types';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { MobileDropdownSongsSection } from '@/components/common/Sidebar/MobileDropdownSongsSection';
@@ -19,13 +20,16 @@ export default function SongsList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
   
   const handleSongClick = (song: StreamSong) => {
     setSelectedSong(song);
     setShowPerformanceModal(true);
   };
   
-  const songsData = useStreamSongs({ pageSize: 20 });
+  const songsData = useStreamSongs({ 
+    pageSize: 20
+  });
 
   // アクティブなフィルター数を計算
   const activeFiltersCount = (songsData.searchQuery ? 1 : 0) + 
@@ -43,15 +47,21 @@ export default function SongsList() {
               SONG
             </h1>
             
-            {/* 説明文とモバイルボタンを同じ行に配置 */}
-            <div className="flex items-start justify-between mb-4">
+            {/* 説明文とボタン類を同じ行に配置 */}
+            <div className="flex items-start justify-between gap-4">
               <p className="text-sm text-text-secondary leading-relaxed flex-1">
                 歌枠で歌われた曲を検索・閲覧できます。<br />
                 楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
               </p>
               
+              {/* 表示切り替えボタン */}
+              <ViewToggleButton
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
+              
               {/* モバイルメニューボタン（lg未満のみ表示） */}
-              <div className="lg:hidden ml-4 relative">
+              <div className="lg:hidden relative">
                 <MobileSidebarButton 
                   onClick={() => setIsSidebarOpen(true)}
                   hasActiveFilters={activeFiltersCount > 0}
@@ -102,6 +112,7 @@ export default function SongsList() {
             songs={songsData.songs} 
             loading={songsData.loading} 
             error={songsData.error}
+            viewMode={viewMode}
             onSongClick={handleSongClick}
           />
 

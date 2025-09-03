@@ -106,3 +106,9 @@ export interface SongFilterOptions {
   endDate?: string;
   frequencyCategories?: SingFrequencyCategory[];
 }
+
+// 表示モード
+export enum ViewMode {
+  GRID = 'grid',
+  LIST = 'list'
+}
