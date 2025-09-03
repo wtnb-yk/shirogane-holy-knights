@@ -27,7 +27,7 @@ export function BaseGrid<T>({
     subtitle: '検索条件を変更してお試しください'
   },
   skeletonCount = 6,
-  gridClassName = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+  gridClassName = 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
 }: BaseGridProps<T>) {
   if (error) {
     return (

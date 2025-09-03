@@ -60,14 +60,14 @@ const StreamSongCardComponent = ({ song, index = 0, onClick }: StreamSongCardPro
               </p>
               
               {/* 統計情報 */}
-              <div className="flex flex-col xl:flex-row xl:items-center space-y-1 xl:space-y-0 xl:space-x-3 text-xs text-text-tertiary">
-                <div className="flex items-center space-x-1">
-                  <Music className="w-3 h-3" />
+              <div className="flex flex-col space-y-1 text-xs text-text-tertiary">
+                <div className="flex items-center space-x-1 whitespace-nowrap">
+                  <Music className="w-3 h-3 flex-shrink-0" />
                   <span>{song.performances.length}回</span>
                 </div>
                 {song.latestSingDate && (
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-3 h-3" />
+                  <div className="flex items-center space-x-1 whitespace-nowrap">
+                    <Calendar className="w-3 h-3 flex-shrink-0" />
                     <span>{formatDate(song.latestSingDate)}</span>
                   </div>
                 )}
