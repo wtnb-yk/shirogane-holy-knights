@@ -37,7 +37,7 @@ export const GenericSidebar = ({
   return (
     <aside 
       className={cn(
-        'flex-shrink-0 bg-bg-tertiary rounded-xl p-6 h-fit',
+        'flex-shrink-0 bg-bg-tertiary rounded-xl p-6 sticky top-20 max-h-[calc(100vh-5rem)] overflow-y-auto',
         getWidthClasses(),
         className
       )}
