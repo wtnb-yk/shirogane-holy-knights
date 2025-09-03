@@ -38,6 +38,16 @@ enum class PerformanceType {
 }
 
 /**
+ * 歌唱頻度カテゴリ
+ */
+enum class SingFrequencyCategory {
+    LOW,        // 1-2回
+    MEDIUM,     // 3-5回
+    HIGH,       // 6-10回
+    VERY_HIGH   // 11回以上
+}
+
+/**
  * 楽曲統計情報
  */
 data class SongStats(

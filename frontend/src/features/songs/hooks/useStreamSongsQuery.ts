@@ -54,6 +54,7 @@ export const useStreamSongsQuery = (
           sortOrder,
           startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
           endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
+          frequencyCategories: filters.frequencyCategories,
           page: currentPage,
           size: pageSize,
         });
@@ -71,7 +72,7 @@ export const useStreamSongsQuery = (
     };
 
     fetchSongs();
-  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate]);
+  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate, filters.frequencyCategories]);
 
   const totalPages = Math.ceil(totalCount / pageSize);
   const hasMore = currentPage * pageSize < totalCount;

@@ -28,6 +28,7 @@ class SongRepositoryImpl(
         sortOrder: String,
         startDate: Instant?,
         endDate: Instant?,
+        frequencyCategories: List<SingFrequencyCategory>?,
         limit: Int,
         offset: Int
     ): Songs {
@@ -37,6 +38,7 @@ class SongRepositoryImpl(
             sortOrder = sortOrder,
             startDate = startDate,
             endDate = endDate,
+            frequencyCategories = frequencyCategories,
             limit = limit,
             offset = offset
         )
@@ -50,7 +52,8 @@ class SongRepositoryImpl(
     override suspend fun countStreamSongs(
         query: String?,
         startDate: Instant?,
-        endDate: Instant?
+        endDate: Instant?,
+        frequencyCategories: List<SingFrequencyCategory>?
     ): Int {
         val criteria = SongSearchCriteria(
             query = query,
@@ -58,6 +61,7 @@ class SongRepositoryImpl(
             sortOrder = "DESC",
             startDate = startDate,
             endDate = endDate,
+            frequencyCategories = frequencyCategories,
             limit = 0,
             offset = 0
         )

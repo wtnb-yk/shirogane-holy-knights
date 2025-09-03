@@ -15,6 +15,7 @@ data class StreamSongSearchParamsDto(
     val sortOrder: String? = "DESC", // DESC|ASC
     val startDate: Instant? = null,
     val endDate: Instant? = null,
+    val frequencyCategories: List<SingFrequencyCategory>? = null,
     val page: Int = 1,  
     val size: Int = 20
 ) {

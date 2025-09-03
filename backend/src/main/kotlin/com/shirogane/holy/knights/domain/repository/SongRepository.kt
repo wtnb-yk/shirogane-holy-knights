@@ -1,5 +1,6 @@
 package com.shirogane.holy.knights.domain.repository
 
+import com.shirogane.holy.knights.domain.model.SingFrequencyCategory
 import com.shirogane.holy.knights.domain.model.Songs
 import com.shirogane.holy.knights.domain.model.SongStats
 import java.time.Instant
@@ -12,6 +13,7 @@ interface SongRepository {
      * @param sortOrder 並び替え順（ASC, DESC）
      * @param startDate 配信開始日時の開始範囲
      * @param endDate 配信開始日時の終了範囲
+     * @param frequencyCategories 歌唱頻度カテゴリでのフィルター
      * @param limit 取得上限数
      * @param offset オフセット
      * @return 検索条件に合致する楽曲のリスト
@@ -22,6 +24,7 @@ interface SongRepository {
         sortOrder: String = "DESC",
         startDate: Instant? = null,
         endDate: Instant? = null,
+        frequencyCategories: List<SingFrequencyCategory>? = null,
         limit: Int,
         offset: Int
     ): Songs
@@ -31,12 +34,14 @@ interface SongRepository {
      * @param query タイトル・アーティスト名での部分一致検索クエリ
      * @param startDate 配信開始日時の開始範囲
      * @param endDate 配信開始日時の終了範囲
+     * @param frequencyCategories 歌唱頻度カテゴリでのフィルター
      * @return 検索条件に合致する楽曲の総数
      */
     suspend fun countStreamSongs(
         query: String? = null,
         startDate: Instant? = null,
-        endDate: Instant? = null
+        endDate: Instant? = null,
+        frequencyCategories: List<SingFrequencyCategory>? = null
     ): Int
     
     /**

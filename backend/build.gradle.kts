@@ -159,7 +159,7 @@ graalvmNative {
 }
 
 // LocalStack環境用タスク
-val localstackEndpoint = System.getenv("LOCALSTACK_ENDPOINT") ?: "http://localhost:4566"
+val localstackEndpoint = System.getenv("LOCALSTACK_ENDPOINT") ?: "http://localhost:4567"
 val functionName = "shirogane-holy-knights-api"
 
 // LocalStackの準備確認

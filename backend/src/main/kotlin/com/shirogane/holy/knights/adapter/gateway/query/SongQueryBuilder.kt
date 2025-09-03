@@ -2,6 +2,7 @@ package com.shirogane.holy.knights.adapter.gateway.query
 
 import com.shirogane.holy.knights.adapter.gateway.QuerySpec
 import com.shirogane.holy.knights.adapter.gateway.model.SongSearchCriteria
+import com.shirogane.holy.knights.domain.model.SingFrequencyCategory
 import org.springframework.stereotype.Component
 import java.time.Instant
 
@@ -15,7 +16,7 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
             criteria.endDate
         )
         
-        val outerWhereClause = buildOuterWhereClause(criteria.query)
+        val outerWhereClause = buildOuterWhereClause(criteria.query, criteria.frequencyCategories)
         val innerWhereClause = buildInnerWhereClause(conditions.first)
         
         val orderByClause = buildOrderByClause(criteria.sortBy, criteria.sortOrder)
@@ -65,10 +66,12 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
             LIMIT :limit OFFSET :offset
         """.trimIndent()
         
-        val bindings = conditions.second + mapOf(
-            "limit" to criteria.limit,
-            "offset" to criteria.offset
-        )
+        val bindings = conditions.second + 
+            buildFrequencyBindings(criteria.frequencyCategories) + 
+            mapOf(
+                "limit" to criteria.limit,
+                "offset" to criteria.offset
+            )
         
         return QuerySpec(sql, bindings)
     }
@@ -80,26 +83,33 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
             criteria.endDate
         )
         
-        val allConditions = mutableListOf<String>()
-        criteria.query?.let {
-            allConditions.add("(s.title ILIKE :query OR s.artist ILIKE :query)")
-        }
-        allConditions.addAll(conditions.first)
-        
-        val whereClause = if (allConditions.isNotEmpty()) {
-            "WHERE " + allConditions.joinToString(" AND ")
-        } else ""
+        val outerWhereClause = buildOuterWhereClause(criteria.query, criteria.frequencyCategories)
+        val innerWhereClause = buildInnerWhereClause(conditions.first)
         
         val sql = """
-            SELECT COUNT(DISTINCT s.id)
-            FROM songs s
-            INNER JOIN stream_songs ss ON s.id = ss.song_id
-            INNER JOIN videos v ON v.id = ss.video_id
-            INNER JOIN stream_details sd ON v.id = sd.video_id
-            $whereClause
+            SELECT COUNT(*)
+            FROM (
+                WITH song_performances AS (
+                    SELECT 
+                        s.id as song_id,
+                        s.title,
+                        s.artist,
+                        COUNT(*) as sing_count
+                    FROM songs s
+                    INNER JOIN stream_songs ss ON s.id = ss.song_id
+                    INNER JOIN videos v ON v.id = ss.video_id
+                    INNER JOIN stream_details sd ON v.id = sd.video_id
+                    $innerWhereClause
+                    GROUP BY s.id, s.title, s.artist
+                    HAVING COUNT(*) > 0
+                )
+                SELECT song_id, title, artist, sing_count
+                FROM song_performances
+                $outerWhereClause
+            ) counted_songs
         """.trimIndent()
         
-        return QuerySpec(sql, conditions.second)
+        return QuerySpec(sql, conditions.second + buildFrequencyBindings(criteria.frequencyCategories))
     }
     
     private fun buildSearchConditions(
@@ -127,9 +137,20 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
         return Pair(innerConditions, bindings)
     }
     
-    private fun buildOuterWhereClause(query: String?): String {
-        return if (query != null) {
-            "WHERE (title ILIKE :query OR artist ILIKE :query)"
+    private fun buildOuterWhereClause(query: String?, frequencyCategories: List<SingFrequencyCategory>?): String {
+        val conditions = mutableListOf<String>()
+        
+        query?.let {
+            conditions.add("(title ILIKE :query OR artist ILIKE :query)")
+        }
+        
+        val frequencyCondition = buildFrequencyCondition(frequencyCategories)
+        if (frequencyCondition.isNotEmpty()) {
+            conditions.add("($frequencyCondition)")
+        }
+        
+        return if (conditions.isNotEmpty()) {
+            "WHERE " + conditions.joinToString(" AND ")
         } else ""
     }
     
@@ -146,5 +167,28 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
             "title" -> "ORDER BY s.title $sortOrder"
             else -> "ORDER BY sing_count $sortOrder"
         }
+    }
+    
+    private fun buildFrequencyCondition(frequencyCategories: List<SingFrequencyCategory>?, useAlias: Boolean = true): String {
+        if (frequencyCategories.isNullOrEmpty()) return ""
+        
+        val conditions = mutableListOf<String>()
+        val countColumn = if (useAlias) "sing_count" else "COUNT(*)"
+        
+        frequencyCategories.forEach { category ->
+            when (category) {
+                SingFrequencyCategory.LOW -> conditions.add("$countColumn BETWEEN 1 AND 2")
+                SingFrequencyCategory.MEDIUM -> conditions.add("$countColumn BETWEEN 3 AND 5") 
+                SingFrequencyCategory.HIGH -> conditions.add("$countColumn BETWEEN 6 AND 10")
+                SingFrequencyCategory.VERY_HIGH -> conditions.add("$countColumn >= 11")
+            }
+        }
+        
+        return conditions.joinToString(" OR ")
+    }
+    
+    private fun buildFrequencyBindings(frequencyCategories: List<SingFrequencyCategory>?): Map<String, Any> {
+        // 頻度フィルターは直接SQL条件に組み込まれるため、追加バインディングは不要
+        return emptyMap()
     }
 }
