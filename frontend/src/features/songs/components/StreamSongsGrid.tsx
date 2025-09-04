@@ -10,14 +10,15 @@ interface StreamSongsGridProps {
   error?: string | null;
   viewMode?: ViewMode;
   onSongClick: (song: StreamSong) => void;
+  onSongPlayClick?: (song: StreamSong) => void;
 }
 
-export function StreamSongsGrid({ songs, loading = false, error, viewMode = ViewMode.GRID, onSongClick }: StreamSongsGridProps) {
+export function StreamSongsGrid({ songs, loading = false, error, viewMode = ViewMode.GRID, onSongClick, onSongPlayClick }: StreamSongsGridProps) {
   const getGridClassName = () => {
     if (viewMode === ViewMode.LIST) {
-      return 'grid-cols-1 gap-3';
+      return 'grid-cols-1 gap-4';
     }
-    return 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-0.5';
+    return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3';
   };
 
   return (
@@ -43,6 +44,7 @@ export function StreamSongsGrid({ songs, loading = false, error, viewMode = View
             song={song}
             index={index}
             onClick={onSongClick}
+            onPlayClick={onSongPlayClick}
           />
         );
       }}

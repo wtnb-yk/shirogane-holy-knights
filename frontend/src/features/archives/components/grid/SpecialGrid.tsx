@@ -50,7 +50,8 @@ export function SpecialGrid<T>({
             }
             
             // 通常アイテム
-            return renderNormalItem(item, index);
+            const normalItem = renderNormalItem(item, index);
+            return normalItem || null;
           })}
         </div>
       </div>
@@ -65,7 +66,7 @@ export function SpecialGrid<T>({
       items={items}
       loading={loading}
       error={error || null}
-      renderItem={(item, index) => renderNormalItem(item, index)}
+      renderItem={(item, index) => renderNormalItem(item, index) || null}
       renderSkeleton={renderSkeleton}
       emptyMessage={emptyMessage}
       skeletonCount={skeletonCount}
