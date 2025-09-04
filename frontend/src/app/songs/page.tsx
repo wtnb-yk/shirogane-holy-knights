@@ -143,7 +143,10 @@ export default function SongsList() {
 
           {/* YouTube プレイヤーセクション */}
           <div className="mb-8">
-            <PlayerSection currentSong={currentSong} />
+            <PlayerSection 
+              currentSong={currentSong} 
+              loading={songsData.loading}
+            />
           </div>
 
           <StreamSongsGrid 

@@ -7,10 +7,11 @@ import { YouTubePlayer } from './YouTubePlayer';
 
 interface PlayerSectionProps {
   currentSong: StreamSong | null;
+  loading?: boolean;
   onStateChange?: (event: any) => void;
 }
 
-export const PlayerSection = ({ currentSong, onStateChange }: PlayerSectionProps) => {
+export const PlayerSection = ({ currentSong, loading = false, onStateChange }: PlayerSectionProps) => {
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '歌唱日不明';
     try {
@@ -24,6 +25,21 @@ export const PlayerSection = ({ currentSong, onStateChange }: PlayerSectionProps
     }
   };
 
+  // ローディング状態
+  if (loading) {
+    return (
+      <div className="w-full bg-bg-primary rounded-lg border border-surface-border p-6">
+        <div className="aspect-video bg-bg-secondary rounded-lg flex items-center justify-center mb-4">
+          <div className="text-center">
+            <Music className="w-12 h-12 text-text-tertiary mx-auto mb-2 animate-pulse" />
+            <p className="text-text-secondary">楽曲を読み込み中...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 楽曲が選択されていない状態
   if (!currentSong) {
     return (
       <div className="w-full bg-bg-primary rounded-lg border border-surface-border p-6">

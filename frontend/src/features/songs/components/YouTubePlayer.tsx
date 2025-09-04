@@ -30,6 +30,8 @@ export const YouTubePlayer = ({ song, onStateChange }: YouTubePlayerProps) => {
       modestbranding: 1,
       // プレイヤーコントロールを表示
       controls: 1,
+      // 楽曲開始位置から再生
+      start: latestPerformance.startSeconds,
     },
   };
 
