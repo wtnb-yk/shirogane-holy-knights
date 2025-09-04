@@ -37,6 +37,8 @@ const config: Config = {
           tertiary: '#F5F5F5',   // サイドバー背景
           hover: '#FEF3E2',      // ホバー背景
           accent: '#ACBDC5',     // アクセント背景
+          page: '#FCFDFE',       // ページ全体背景
+          footer: '#FAF8F4',     // フッター背景
         },
         text: {
           primary: '#1F2937',    // メインテキスト（gray-800相当）
