@@ -52,6 +52,7 @@ const StreamSongCardComponent = ({ song, index = 0, onClick, onPlayClick }: Stre
                   onClick={(e) => {
                     e.stopPropagation();
                     onPlayClick(song);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-accent-gold text-white rounded-lg hover:bg-accent-gold-hover transition-all duration-200 hover:shadow-md font-medium"
                 >
