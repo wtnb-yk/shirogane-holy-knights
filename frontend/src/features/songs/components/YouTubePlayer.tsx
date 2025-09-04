@@ -35,17 +35,11 @@ export const YouTubePlayer = ({ song, onStateChange }: YouTubePlayerProps) => {
     },
   };
 
-  const handleReady = (event: any) => {
-    // TODO: プレイヤーが準備完了した時の処理
-    console.log('YouTube Player Ready');
-  };
-
   return (
     <div className="aspect-video rounded-lg overflow-hidden bg-black">
       <YouTube
         videoId={latestPerformance.videoId}
         opts={opts}
-        onReady={handleReady}
         onStateChange={onStateChange}
         className="w-full h-full"
       />
