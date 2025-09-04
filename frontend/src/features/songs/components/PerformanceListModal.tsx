@@ -40,11 +40,9 @@ export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePl
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-gray-900 leading-tight">
-            <div className="space-y-1">
-              <div className="text-xl font-bold">{song.title}</div>
-              <div className="text-base font-medium text-gray-600">{song.artist}</div>
-            </div>
+          <DialogTitle>
+            <span className="font-bold text-gray-900">{song.title}</span>
+            <span className="ml-3 font-medium text-gray-600 text-base">{song.artist}</span>
           </DialogTitle>
           <DialogClose onClose={() => onOpenChange(false)} />
         </DialogHeader>
@@ -98,7 +96,7 @@ export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePl
                       {performance.startSeconds > 0 && (
                         <div className="flex items-center gap-1.5 text-xs text-gray-600">
                           <Play className="w-3 h-3 text-accent-gold" />
-                          <span>{formatDuration(performance.startSeconds)}から開始</span>
+                          <span>{formatDuration(performance.startSeconds)}</span>
                         </div>
                       )}
                       <div className="flex items-center gap-1.5 text-xs text-gray-600">
