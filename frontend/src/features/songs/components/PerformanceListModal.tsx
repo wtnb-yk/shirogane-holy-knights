@@ -1,17 +1,19 @@
 'use client';
 
 import React from 'react';
-import { ExternalLink, Calendar, Play } from 'lucide-react';
+import { Calendar, Play } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { StreamSong, Performance } from '../types/types';
+import { SongCardThumbnail } from './SongCardThumbnail';
 
 interface PerformanceListModalProps {
   song: StreamSong | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onPerformancePlay?: (song: StreamSong, performance: Performance) => void;
 }
 
-export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceListModalProps) => {
+export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePlay }: PerformanceListModalProps) => {
   if (!song) return null;
 
   const formatDate = (dateStr: string) => {
@@ -38,8 +40,11 @@ export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceLi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {song.title} - {song.artist}
+          <DialogTitle className="text-xl font-bold text-gray-900 leading-tight">
+            <div className="space-y-1">
+              <div className="text-xl font-bold">{song.title}</div>
+              <div className="text-base font-medium text-gray-600">{song.artist}</div>
+            </div>
           </DialogTitle>
           <DialogClose onClose={() => onOpenChange(false)} />
         </DialogHeader>
@@ -60,37 +65,55 @@ export const PerformanceListModal = ({ song, open, onOpenChange }: PerformanceLi
           </div>
 
           {/* パフォーマンス一覧 */}
-          <div className="space-y-3 max-h-96 overflow-y-auto">
+          <div className="space-y-4 max-h-96 overflow-y-auto">
             {song.performances.map((performance: Performance, index: number) => (
-              <a 
-                key={index} 
-                href={performance.streamSongUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block border border-border-primary rounded-lg p-4 hover:bg-bg-secondary hover:border-accent-gold/50 transition-all duration-200 cursor-pointer group"
+              <button
+                key={index}
+                onClick={() => {
+                  if (onPerformancePlay) {
+                    onPerformancePlay(song, performance);
+                  }
+                  onOpenChange(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="block w-full text-left border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:border-accent-gold/50 transition-all duration-200 cursor-pointer group hover:shadow-md"
               >
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start gap-4">
+                  {/* サムネイル */}
+                  <SongCardThumbnail
+                    videoId={performance.videoId || null}
+                    title={performance.videoTitle}
+                    size="md"
+                    aspectRatio="video"
+                    className="flex-shrink-0 group-hover:scale-105 transition-transform duration-200"
+                  />
+                  
+                  {/* 配信情報 */}
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-text-primary font-medium text-sm line-clamp-2 mb-1">
+                    <h4 className="text-gray-900 font-medium text-sm line-clamp-2 mb-2 group-hover:text-accent-gold transition-colors">
                       {performance.videoTitle}
                     </h4>
-                    {performance.startSeconds > 0 && (
-                      <div className="flex items-center gap-1 text-xs text-text-primary mb-2">
-                        <Play className="w-3 h-3" />
-                        <span>{formatDuration(performance.startSeconds)}から開始</span>
+                    
+                    <div className="space-y-1">
+                      {performance.startSeconds > 0 && (
+                        <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                          <Play className="w-3 h-3 text-accent-gold" />
+                          <span>{formatDuration(performance.startSeconds)}から開始</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                        <Calendar className="w-3 h-3 text-accent-blue" />
+                        <span>{formatDate(performance.performedAt)}</span>
                       </div>
-                    )}
-                    <div className="flex items-center gap-1 text-xs text-text-primary">
-                      <Calendar className="w-3 h-3" />
-                      <span>{formatDate(performance.performedAt)}</span>
                     </div>
                   </div>
                   
-                  <div className="ml-3 flex items-center">
-                    <ExternalLink className="w-4 h-4 text-text-secondary group-hover:text-accent-gold transition-colors" />
+                  {/* 再生アイコン */}
+                  <div className="flex items-center">
+                    <Play className="w-4 h-4 text-gray-400 group-hover:text-accent-gold transition-colors fill-current" />
                   </div>
                 </div>
-              </a>
+              </button>
             ))}
           </div>
         </div>

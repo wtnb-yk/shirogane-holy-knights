@@ -202,6 +202,10 @@ export default function SongsList() {
           song={selectedSong}
           open={showPerformanceModal}
           onOpenChange={setShowPerformanceModal}
+          onPerformancePlay={(song, performance) => {
+            // 特定のパフォーマンスの再生位置から開始
+            playSong(song, performance.startSeconds);
+          }}
         />
       </>
     </PageLayout>
