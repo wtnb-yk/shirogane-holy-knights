@@ -9,11 +9,13 @@ import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOp
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
 import { ViewToggleButton } from '@/features/songs/components/ViewToggleButton';
+import { PlayerSection } from '@/features/songs/components/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong, ViewMode } from '@/features/songs/types/types';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { MobileDropdownSongsSection } from '@/components/common/Sidebar/MobileDropdownSongsSection';
+import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -22,14 +24,31 @@ export default function SongsList() {
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
   
-  const handleSongClick = (song: StreamSong) => {
-    setSelectedSong(song);
-    setShowPerformanceModal(true);
-  };
-  
+  // 楽曲データの取得
   const songsData = useStreamSongs({ 
     pageSize: 20
   });
+
+  // 現在の楽曲状態管理
+  const { currentSong, changeCurrentSong } = useCurrentSong();
+  
+  // 楽曲データが読み込まれたら最初の楽曲を選択
+  React.useEffect(() => {
+    if (songsData.songs.length > 0 && !currentSong) {
+      changeCurrentSong(songsData.songs[0]);
+    }
+  }, [songsData.songs, currentSong, changeCurrentSong]);
+  
+  const handleSongClick = (song: StreamSong) => {
+    // 楽曲カードクリック時：楽曲を選択してプレイヤーで再生
+    changeCurrentSong(song);
+  };
+
+  const handleSongDetailsClick = (song: StreamSong) => {
+    // 詳細表示：パフォーマンスモーダルを開く
+    setSelectedSong(song);
+    setShowPerformanceModal(true);
+  };
 
   // アクティブなフィルター数を計算
   const activeFiltersCount = (songsData.searchQuery ? 1 : 0) + 
@@ -122,12 +141,18 @@ export default function SongsList() {
             onClearAllFilters={songsData.clearAllFilters}
           />
 
+          {/* YouTube プレイヤーセクション */}
+          <div className="mb-8">
+            <PlayerSection currentSong={currentSong} />
+          </div>
+
           <StreamSongsGrid 
             songs={songsData.songs} 
             loading={songsData.loading} 
             error={songsData.error}
             viewMode={viewMode}
-            onSongClick={handleSongClick}
+            onSongClick={handleSongDetailsClick}
+            onSongPlayClick={handleSongClick}
           />
 
           {songsData.totalCount > 20 && (
