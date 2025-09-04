@@ -7,11 +7,12 @@ import { YouTubePlayer } from './YouTubePlayer';
 
 interface PlayerSectionProps {
   currentSong: StreamSong | null;
+  autoplay?: boolean;
   loading?: boolean;
   onStateChange?: (event: any) => void;
 }
 
-export const PlayerSection = ({ currentSong, loading = false, onStateChange }: PlayerSectionProps) => {
+export const PlayerSection = ({ currentSong, autoplay = false, loading = false, onStateChange }: PlayerSectionProps) => {
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '歌唱日不明';
     try {
@@ -62,6 +63,7 @@ export const PlayerSection = ({ currentSong, loading = false, onStateChange }: P
       <div className="mb-5 rounded-xl overflow-hidden shadow-md">
         <YouTubePlayer
           song={currentSong}
+          autoplay={autoplay}
           onStateChange={onStateChange}
         />
       </div>

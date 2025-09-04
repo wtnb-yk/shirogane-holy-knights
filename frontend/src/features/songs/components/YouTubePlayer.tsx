@@ -6,10 +6,11 @@ import { StreamSong } from '../types/types';
 
 interface YouTubePlayerProps {
   song: StreamSong;
+  autoplay?: boolean;
   onStateChange?: (event: any) => void;
 }
 
-export const YouTubePlayer = ({ song, onStateChange }: YouTubePlayerProps) => {
+export const YouTubePlayer = ({ song, autoplay = false, onStateChange }: YouTubePlayerProps) => {
   const latestPerformance = song.performances[0];
   
   if (!latestPerformance?.videoId) {
@@ -32,6 +33,8 @@ export const YouTubePlayer = ({ song, onStateChange }: YouTubePlayerProps) => {
       controls: 1,
       // 楽曲開始位置から再生
       start: latestPerformance.startSeconds,
+      // 自動再生
+      autoplay: autoplay ? 1 : 0,
     },
   };
 

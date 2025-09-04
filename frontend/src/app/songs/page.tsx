@@ -31,7 +31,7 @@ export default function SongsList() {
   });
 
   // 現在の楽曲状態管理
-  const { currentSong, changeCurrentSong } = useCurrentSong();
+  const { currentSong, autoplay, changeCurrentSong, playSong } = useCurrentSong();
   
   // 楽曲データが読み込まれたら最初の楽曲を選択
   React.useEffect(() => {
@@ -40,9 +40,9 @@ export default function SongsList() {
     }
   }, [songsData.songs, currentSong, changeCurrentSong]);
   
-  const handleSongClick = (song: StreamSong) => {
-    // 楽曲カードクリック時：楽曲を選択してプレイヤーで再生
-    changeCurrentSong(song);
+  const handleSongPlayClick = (song: StreamSong) => {
+    // 再生ボタンクリック時：自動再生で楽曲を開始
+    playSong(song);
   };
 
   const handleSongDetailsClick = (song: StreamSong) => {
@@ -157,6 +157,7 @@ export default function SongsList() {
           <div className="mb-8">
             <PlayerSection 
               currentSong={currentSong} 
+              autoplay={autoplay}
               loading={songsData.loading}
             />
           </div>
@@ -167,7 +168,7 @@ export default function SongsList() {
             error={songsData.error}
             viewMode={viewMode}
             onSongClick={handleSongDetailsClick}
-            onSongPlayClick={handleSongClick}
+            onSongPlayClick={handleSongPlayClick}
           />
 
           {songsData.totalCount > 20 && (
