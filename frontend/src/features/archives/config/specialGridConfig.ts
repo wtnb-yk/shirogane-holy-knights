@@ -8,24 +8,7 @@ import { createSpecialGridLayout } from '../utils/gridLayoutCalculator';
 /**
  * 動画グリッドの特別表示設定
  */
-const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [
-  {
-    type: 'featured',
-    dataIndex: 0, // 最新動画（1番目）
-    gridPlacement: {
-      colSpan: 2,
-      rowSpan: 2
-    }
-  },
-  {
-    type: 'pickup', 
-    dataIndex: 7, // PICKUP動画（8番目）
-    gridPlacement: {
-      colSpan: 2,
-      rowSpan: 2  
-    }
-  }
-];
+const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [];
 
 /**
  * 配信グリッドの特別表示設定
@@ -46,7 +29,23 @@ const STREAM_SPECIAL_ITEMS: SpecialItemConfig[] = [
       colSpan: 2,
       rowSpan: 2
     }
-  }
+  },
+  {
+    type: 'pickup',
+    dataIndex: 10,
+    gridPlacement: {
+      colSpan: 2,
+      rowSpan: 2
+    }
+  },
+  {
+    type: 'pickup',
+    dataIndex: 17,
+    gridPlacement: {
+      colSpan: 2,
+      rowSpan: 2
+    }
+  },
 ];
 
 /**
