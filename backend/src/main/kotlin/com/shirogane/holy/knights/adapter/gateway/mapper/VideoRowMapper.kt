@@ -51,7 +51,11 @@ class StreamRowMapper : RowMapper<Stream> {
             startedAt = row.get("started_at", Instant::class.java)!!,
             channelId = ChannelId(row.get("channel_id", String::class.java)!!),
             streamDetails = StreamDetailsVO(
-                startedAt = row.get("started_at", Instant::class.java)
+                startedAt = row.get("started_at", Instant::class.java),
+                duration = row.get("duration", String::class.java)?.let { Duration(it) },
+                thumbnailUrl = row.get("thumbnail_url", String::class.java),
+                url = row.get("url", String::class.java) 
+                    ?: "https://www.youtube.com/watch?v=${row.get("id", String::class.java)}"
             ),
             contentDetails = ContentDetails(
                 description = row.get("description", String::class.java),

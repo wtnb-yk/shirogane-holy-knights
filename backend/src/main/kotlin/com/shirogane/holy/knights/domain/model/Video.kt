@@ -55,7 +55,10 @@ data class VideoDetailsVO(
  * 配信詳細情報値オブジェクト
  */
 data class StreamDetailsVO(
-    val startedAt: Instant? = null
+    val startedAt: Instant? = null,
+    val duration: Duration? = null,
+    val thumbnailUrl: String? = null,
+    val url: String? = null
 )
 
 /**

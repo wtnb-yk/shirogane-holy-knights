@@ -102,9 +102,9 @@ class VideoUseCaseImpl(
             title = stream.title,
             description = stream.contentDetails?.description,
             startedAt = stream.startedAt.toString(),
-            duration = stream.streamDetails?.let { "unknown" },
-            thumbnailUrl = null,
-            url = "https://www.youtube.com/watch?v=${stream.id.value}",
+            duration = stream.streamDetails?.duration?.value,
+            thumbnailUrl = stream.streamDetails?.thumbnailUrl,
+            url = stream.streamDetails?.url ?: "https://www.youtube.com/watch?v=${stream.id.value}",
             tags = stream.streamTags.map { it.name },
             channelId = stream.channelId.value,
         )
