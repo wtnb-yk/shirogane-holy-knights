@@ -44,10 +44,10 @@ export function SpecialGrid<T>({
               return renderSpecialItem(item, index, specialItemConfig.type);
             }
             
-            // スキップ対象かどうかをチェック
-            if (shouldSkipItem(index, specialLayout.skipIndices)) {
-              return null;
-            }
+            // スキップロジックを無効化 - CSSグリッドが自動的に配置を調整
+            // if (shouldSkipItem(index, specialLayout.skipIndices)) {
+            //   return <div key={`skip-${index}`} className="opacity-0 pointer-events-none" />;
+            // }
             
             // 通常アイテム
             const normalItem = renderNormalItem(item, index);

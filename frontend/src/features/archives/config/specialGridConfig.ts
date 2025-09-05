@@ -19,7 +19,7 @@ const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [
   },
   {
     type: 'pickup', 
-    dataIndex: 8, // PICKUP動画（9番目、LATEST占有考慮後の実際位置）
+    dataIndex: 7, // PICKUP動画（8番目）
     gridPlacement: {
       colSpan: 2,
       rowSpan: 2  
@@ -41,7 +41,7 @@ const STREAM_SPECIAL_ITEMS: SpecialItemConfig[] = [
   },
   {
     type: 'pickup',
-    dataIndex: 8, // PICKUP配信（9番目、LATEST占有考慮後の実際位置）
+    dataIndex: 7, // PICKUP配信（8番目）
     gridPlacement: {
       colSpan: 2,
       rowSpan: 2
