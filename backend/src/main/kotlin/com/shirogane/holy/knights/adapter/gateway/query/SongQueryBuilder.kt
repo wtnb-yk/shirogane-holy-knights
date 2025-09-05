@@ -66,12 +66,10 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
             LIMIT :limit OFFSET :offset
         """.trimIndent()
         
-        val bindings = conditions.second + 
-            buildFrequencyBindings(criteria.frequencyCategories) + 
-            mapOf(
-                "limit" to criteria.limit,
-                "offset" to criteria.offset
-            )
+        val bindings = conditions.second + mapOf(
+            "limit" to criteria.limit,
+            "offset" to criteria.offset
+        )
         
         return QuerySpec(sql, bindings)
     }
@@ -109,7 +107,101 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
             ) counted_songs
         """.trimIndent()
         
-        return QuerySpec(sql, conditions.second + buildFrequencyBindings(criteria.frequencyCategories))
+        return QuerySpec(sql, conditions.second)
+    }
+    
+    fun buildConcertSearchQuery(criteria: SongSearchCriteria): QuerySpec {
+        val conditions = buildConcertSearchConditions(
+            criteria.query,
+            criteria.startDate,
+            criteria.endDate
+        )
+        
+        val outerWhereClause = buildOuterWhereClause(criteria.query, criteria.frequencyCategories)
+        val innerWhereClause = buildInnerWhereClause(conditions.first)
+        
+        val orderByClause = buildOrderByClause(criteria.sortBy, criteria.sortOrder)
+        
+        val sql = """
+            WITH song_performances AS (
+                SELECT 
+                    s.id as song_id,
+                    s.title,
+                    s.artist,
+                    COUNT(*) as sing_count,
+                    MAX(v.published_at) as latest_sing_date,
+                    ARRAY_AGG(
+                        JSON_BUILD_OBJECT(
+                            'video_id', cs.video_id,
+                            'video_title', v.title,
+                            'performance_type', 'CONCERT',
+                            'url', v.url,
+                            'start_seconds', 0,
+                            'performed_at', v.published_at,
+                            'stream_song_url', v.url
+                        ) ORDER BY v.published_at DESC
+                    ) as performances
+                FROM songs s
+                INNER JOIN concert_songs cs ON s.id = cs.song_id
+                INNER JOIN videos v ON v.id = cs.video_id
+                $innerWhereClause
+                GROUP BY s.id, s.title, s.artist
+                HAVING COUNT(*) > 0
+            )
+            SELECT 
+                song_id,
+                title,
+                artist,
+                sing_count,
+                latest_sing_date,
+                performances
+            FROM song_performances
+            $outerWhereClause
+            $orderByClause
+            LIMIT :limit OFFSET :offset
+        """.trimIndent()
+        
+        val bindings = conditions.second + mapOf(
+            "limit" to criteria.limit,
+            "offset" to criteria.offset
+        )
+        
+        return QuerySpec(sql, bindings)
+    }
+    
+    fun buildConcertCountQuery(criteria: SongSearchCriteria): QuerySpec {
+        val conditions = buildConcertSearchConditions(
+            criteria.query,
+            criteria.startDate,
+            criteria.endDate
+        )
+        
+        val outerWhereClause = buildOuterWhereClause(criteria.query, criteria.frequencyCategories)
+        val innerWhereClause = buildInnerWhereClause(conditions.first)
+        
+        val sql = """
+            SELECT COUNT(*)
+            FROM (
+                WITH song_performances AS (
+                    SELECT 
+                        s.id as song_id,
+                        s.title,
+                        s.artist,
+                        COUNT(*) as sing_count
+                    FROM songs s
+                    INNER JOIN concert_songs cs ON s.id = cs.song_id
+                    INNER JOIN videos v ON v.id = cs.video_id
+                    $innerWhereClause
+                    GROUP BY s.id, s.title, s.artist
+                    HAVING COUNT(*) > 0
+                )
+                SELECT song_id, title, artist, sing_count
+                FROM song_performances
+                $outerWhereClause
+            ) counted_songs
+        """.trimIndent()
+        
+        return QuerySpec(sql, conditions.second)
     }
     
     private fun buildSearchConditions(
@@ -131,6 +223,31 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
         
         endDate?.let {
             innerConditions.add("sd.started_at <= :endDate")
+            bindings["endDate"] = it
+        }
+        
+        return Pair(innerConditions, bindings)
+    }
+    
+    private fun buildConcertSearchConditions(
+        query: String?,
+        startDate: Instant?,
+        endDate: Instant?
+    ): Pair<List<String>, Map<String, Any>> {
+        val innerConditions = mutableListOf<String>()
+        val bindings = mutableMapOf<String, Any>()
+        
+        query?.let {
+            bindings["query"] = "%$it%"
+        }
+        
+        startDate?.let {
+            innerConditions.add("v.published_at >= :startDate")
+            bindings["startDate"] = it
+        }
+        
+        endDate?.let {
+            innerConditions.add("v.published_at <= :endDate")
             bindings["endDate"] = it
         }
         
@@ -185,10 +302,5 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
         }
         
         return conditions.joinToString(" OR ")
-    }
-    
-    private fun buildFrequencyBindings(frequencyCategories: List<SingFrequencyCategory>?): Map<String, Any> {
-        // 頻度フィルターは直接SQL条件に組み込まれるため、追加バインディングは不要
-        return emptyMap()
     }
 }

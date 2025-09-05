@@ -112,3 +112,31 @@ export enum ViewMode {
   GRID = 'grid',
   LIST = 'list'
 }
+
+// 楽曲コンテンツタイプ
+export enum SongContentType {
+  STREAM = 'STREAM',
+  CONCERT = 'CONCERT'
+}
+
+// コンサート楽曲情報（StreamSongと同じ構造）
+export type ConcertSong = StreamSong;
+
+// コンサート楽曲検索パラメータ（StreamSongSearchParamsと同じ構造）
+export type ConcertSongSearchParams = StreamSongSearchParams;
+
+// コンサート楽曲検索結果
+export interface ConcertSongSearchResult {
+  items: ConcertSong[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
+// コンサート楽曲統計情報
+export interface ConcertSongStats {
+  totalSongs: number;
+  totalPerformances: number;
+  topSongs: TopSongStats[];
+  recentPerformances: RecentPerformanceStats[];
+}

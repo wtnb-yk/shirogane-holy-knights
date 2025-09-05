@@ -46,4 +46,36 @@ class SongUseCaseImpl(
             val stats = songRepository.getStreamSongsStats()
             StreamSongStatsDto.fromDomain(stats)
         }
+
+    override suspend fun searchConcertSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto> =
+        either {
+            val pageRequest = searchParams.toPageRequest()
+            
+            val songs = songRepository.searchConcertSongs(
+                query = searchParams.query,
+                sortBy = searchParams.sortBy ?: "singCount",
+                sortOrder = searchParams.sortOrder ?: "DESC",
+                startDate = searchParams.startDate,
+                endDate = searchParams.endDate,
+                frequencyCategories = searchParams.frequencyCategories,
+                limit = pageRequest.size,
+                offset = pageRequest.offset
+            )
+            
+            val totalCount = songRepository.countConcertSongs(
+                query = searchParams.query,
+                startDate = searchParams.startDate,
+                endDate = searchParams.endDate,
+                frequencyCategories = searchParams.frequencyCategories
+            )
+
+            val songsDto = songs.map { StreamSongDto.fromDomain(it) }
+            StreamSongSearchResultDto.of(songsDto, totalCount, pageRequest)
+        }
+
+    override suspend fun getConcertSongsStats(): Either<UseCaseError, StreamSongStatsDto> =
+        either {
+            val stats = songRepository.getConcertSongsStats()
+            StreamSongStatsDto.fromDomain(stats)
+        }
 }

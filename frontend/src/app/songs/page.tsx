@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
+import { useConcertSongs } from '@/features/songs/hooks/useConcertSongs';
 import { StreamSongsGrid } from '@/features/songs/components/StreamSongsGrid';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
@@ -11,7 +12,7 @@ import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
 import { ViewToggleButton } from '@/features/songs/components/ViewToggleButton';
 import { PlayerSection } from '@/features/songs/components/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
-import { StreamSong, ViewMode } from '@/features/songs/types/types';
+import { StreamSong, ViewMode, SongContentType } from '@/features/songs/types/types';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { MobileDropdownSongsSection } from '@/components/common/Sidebar/MobileDropdownSongsSection';
@@ -24,11 +25,19 @@ export default function SongsList() {
   const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
+  const [songContentType, setSongContentType] = useState<SongContentType>(SongContentType.STREAM);
   
   // 楽曲データの取得
-  const songsData = useStreamSongs({ 
+  const streamSongsData = useStreamSongs({ 
     pageSize: 20
   });
+  
+  const concertSongsData = useConcertSongs({
+    pageSize: 20
+  });
+  
+  // 現在選択されているタブのデータを取得
+  const currentData = songContentType === SongContentType.STREAM ? streamSongsData : concertSongsData;
 
   // プレイヤー状態管理
   const { currentSong, autoplay, changeCurrentSong, playSong } = useCurrentSong();
@@ -36,10 +45,10 @@ export default function SongsList() {
   
   // 初回読み込み時のみ最初の楽曲を選択（検索・ページング変更では影響されない）
   React.useEffect(() => {
-    if (songsData.songs.length > 0 && !currentSong && !songsData.loading) {
-      changeCurrentSong(songsData.songs[0]);
+    if (currentData.songs.length > 0 && !currentSong && !currentData.loading) {
+      changeCurrentSong(currentData.songs[0]);
     }
-  }, [songsData.songs.length > 0, currentSong, changeCurrentSong, songsData.loading]);
+  }, [currentData.songs.length > 0, currentSong, changeCurrentSong, currentData.loading]);
   
   const handleSongPlayClick = (song: StreamSong) => {
     // 再生ボタンクリック時：自動再生で楽曲を開始
@@ -53,16 +62,16 @@ export default function SongsList() {
   };
 
   // アクティブなフィルター数を計算
-  const activeFiltersCount = (songsData.searchQuery ? 1 : 0) + 
-    (songsData.filters.startDate || songsData.filters.endDate ? 1 : 0) +
-    (songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC' ? 1 : 0);
+  const activeFiltersCount = (currentData.searchQuery ? 1 : 0) + 
+    (currentData.filters.startDate || currentData.filters.endDate ? 1 : 0) +
+    (currentData.sortBy !== 'singCount' || currentData.sortOrder !== 'DESC' ? 1 : 0);
 
   return (
     <PageLayout
       title="SONG"
       description={
         <p>
-          歌枠で歌われた曲を検索・閲覧できます。<br />
+          白銀ノエルさんが歌枠や記念ライブで歌った曲を検索・閲覧できます。<br />
           楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
         </p>
       }
@@ -75,7 +84,7 @@ export default function SongsList() {
           />
           
           {/* タブレット用メニューボタン（lg未満のみ表示） */}
-          <div className="lg:hidden relative">
+          <div className="lg:hidden ml-4 relative">
             <MobileSidebarButton 
               onClick={() => setIsSidebarOpen(true)}
               hasActiveFilters={activeFiltersCount > 0}
@@ -89,25 +98,27 @@ export default function SongsList() {
               onClose={() => setIsSidebarOpen(false)}
               mobileContent={
                 <MobileDropdownSongsSection
-                  searchValue={songsData.searchQuery}
-                  onSearch={songsData.handleSearch}
-                  onClearSearch={songsData.clearSearch}
-                  sortBy={songsData.sortBy}
-                  sortOrder={songsData.sortOrder}
-                  filters={songsData.filters}
-                  onSortChange={songsData.handleSortChange}
-                  onFiltersChange={songsData.setFilters}
+                  searchValue={currentData.searchQuery}
+                  onSearch={currentData.handleSearch}
+                  onClearSearch={currentData.clearSearch}
+                  sortBy={currentData.sortBy}
+                  sortOrder={currentData.sortOrder}
+                  filters={currentData.filters}
+                  onSortChange={currentData.handleSortChange}
+                  onFiltersChange={currentData.setFilters}
                 />
               }
             >
               <SongsSidebar
-                searchValue={songsData.searchQuery}
-                onSearch={songsData.handleSearch}
-                onClearSearch={songsData.clearSearch}
+                songContentType={songContentType}
+                onSongContentTypeChange={setSongContentType}
+                searchValue={currentData.searchQuery}
+                onSearch={currentData.handleSearch}
+                onClearSearch={currentData.clearSearch}
                 onOptionsClick={() => setShowOptionsModal(true)}
-                hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
-                filters={songsData.filters}
-                onFiltersChange={songsData.setFilters}
+                hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'singCount' || currentData.sortOrder !== 'DESC')}
+                filters={currentData.filters}
+                onFiltersChange={currentData.setFilters}
               />
             </ResponsiveSidebar>
           </div>
@@ -133,13 +144,15 @@ export default function SongsList() {
           onClose={() => setIsSidebarOpen(false)}
         >
           <SongsSidebar
-            searchValue={songsData.searchQuery}
-            onSearch={songsData.handleSearch}
-            onClearSearch={songsData.clearSearch}
+            songContentType={songContentType}
+            onSongContentTypeChange={setSongContentType}
+            searchValue={currentData.searchQuery}
+            onSearch={currentData.handleSearch}
+            onClearSearch={currentData.clearSearch}
             onOptionsClick={() => setShowOptionsModal(true)}
-            hasActiveOptions={!!(songsData.filters.startDate || songsData.filters.endDate || songsData.sortBy !== 'singCount' || songsData.sortOrder !== 'DESC')}
-            filters={songsData.filters}
-            onFiltersChange={songsData.setFilters}
+            hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'singCount' || currentData.sortOrder !== 'DESC')}
+            filters={currentData.filters}
+            onFiltersChange={currentData.setFilters}
           />
         </ResponsiveSidebar>
       }
@@ -147,11 +160,11 @@ export default function SongsList() {
       <>
 
           <SongSearchResultsSummary
-            searchQuery={songsData.searchQuery}
-            totalCount={songsData.totalCount}
-            filters={songsData.filters}
-            onClearSearch={songsData.clearSearch}
-            onClearAllFilters={songsData.clearAllFilters}
+            searchQuery={currentData.searchQuery}
+            totalCount={currentData.totalCount}
+            filters={currentData.filters}
+            onClearSearch={currentData.clearSearch}
+            onClearAllFilters={currentData.clearAllFilters}
           />
 
           {/* YouTube プレイヤーセクション */}
@@ -163,39 +176,39 @@ export default function SongsList() {
           </div>
 
           <StreamSongsGrid 
-            songs={songsData.songs} 
-            loading={songsData.loading} 
-            error={songsData.error}
+            songs={currentData.songs} 
+            loading={currentData.loading} 
+            error={currentData.error}
             viewMode={viewMode}
             onSongClick={handleSongDetailsClick}
             onSongPlayClick={handleSongPlayClick}
           />
 
-          {songsData.totalCount > 20 && (
+          {currentData.totalCount > 20 && (
             <Pagination
-              currentPage={songsData.currentPage}
-              totalPages={songsData.totalPages}
-              hasMore={songsData.hasMore}
-              onPageChange={songsData.setCurrentPage}
+              currentPage={currentData.currentPage}
+              totalPages={currentData.totalPages}
+              hasMore={currentData.hasMore}
+              onPageChange={currentData.setCurrentPage}
               size="sm"
             />
           )}
 
           <SongStatsSummary
-            currentPage={songsData.currentPage}
-            totalCount={songsData.totalCount}
+            currentPage={currentData.currentPage}
+            totalCount={currentData.totalCount}
             pageSize={20}
-            loading={songsData.loading}
+            loading={currentData.loading}
           />
 
           <SongSearchOptionsModal
             isOpen={showOptionsModal}
             onClose={() => setShowOptionsModal(false)}
-            sortBy={songsData.sortBy}
-            sortOrder={songsData.sortOrder}
-            filters={songsData.filters}
-            onSortChange={songsData.handleSortChange}
-            onFiltersChange={songsData.setFilters}
+            sortBy={currentData.sortBy}
+            sortOrder={currentData.sortOrder}
+            filters={currentData.filters}
+            onSortChange={currentData.handleSortChange}
+            onFiltersChange={currentData.setFilters}
           />
           
         <PerformanceListModal 
@@ -203,8 +216,7 @@ export default function SongsList() {
           open={showPerformanceModal}
           onOpenChange={setShowPerformanceModal}
           onPerformancePlay={(song, performance) => {
-            // 特定のパフォーマンスの再生位置から開始
-            playSong(song, performance.startSeconds);
+            playSong(song);
           }}
         />
       </>

@@ -56,6 +56,12 @@ class ApiGatewayRouter(
         RouteKey("GET", "/stream-songs/stats") to { _ ->
             songController.getStreamSongsStats()
         },
+        RouteKey("POST", "/concert-songs") to { request ->
+            songController.searchConcertSongs(request.body)
+        },
+        RouteKey("GET", "/concert-songs/stats") to { _ ->
+            songController.getConcertSongsStats()
+        },
     )
     
     suspend fun route(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {

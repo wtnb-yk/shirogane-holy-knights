@@ -11,5 +11,6 @@ data class SongSearchCriteria(
     val endDate: Instant?,
     val frequencyCategories: List<SingFrequencyCategory>?,
     val limit: Int,
-    val offset: Int
+    val offset: Int,
+    val performanceType: String? = null
 )

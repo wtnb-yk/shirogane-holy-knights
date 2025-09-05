@@ -23,4 +23,18 @@ class SongController(
                 { it.toResponse() },
                 { ApiResponse(200, it) }
             )
+
+    suspend fun searchConcertSongs(requestBody: String?) =
+        songUseCase.searchConcertSongs(parseRequestBody(requestBody, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto())
+            .fold(
+                { it.toResponse() },
+                { ApiResponse(200, it) }
+            )
+    
+    suspend fun getConcertSongsStats() =
+        songUseCase.getConcertSongsStats()
+            .fold(
+                { it.toResponse() },
+                { ApiResponse(200, it) }
+            )
 }

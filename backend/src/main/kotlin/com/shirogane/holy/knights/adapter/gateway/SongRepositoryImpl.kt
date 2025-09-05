@@ -171,4 +171,60 @@ class SongRepositoryImpl(
             recentPerformances = recentPerformances
         )
     }
+
+    override suspend fun searchConcertSongs(
+        query: String?,
+        sortBy: String,
+        sortOrder: String,
+        startDate: Instant?,
+        endDate: Instant?,
+        frequencyCategories: List<SingFrequencyCategory>?,
+        limit: Int,
+        offset: Int
+    ): Songs {
+        val criteria = SongSearchCriteria(
+            query = query,
+            sortBy = sortBy,
+            sortOrder = sortOrder,
+            startDate = startDate,
+            endDate = endDate,
+            frequencyCategories = frequencyCategories,
+            limit = limit,
+            offset = offset
+        )
+        
+        val querySpec = songQueryBuilder.buildConcertSearchQuery(criteria)
+        val songs = queryExecutor.execute(querySpec, songRowMapper)
+        
+        return Songs(songs)
+    }
+
+    override suspend fun countConcertSongs(
+        query: String?,
+        startDate: Instant?,
+        endDate: Instant?,
+        frequencyCategories: List<SingFrequencyCategory>?
+    ): Int {
+        val criteria = SongSearchCriteria(
+            query = query,
+            sortBy = "singCount",
+            sortOrder = "DESC",
+            startDate = startDate,
+            endDate = endDate,
+            frequencyCategories = frequencyCategories,
+            limit = 0,
+            offset = 0
+        )
+        
+        val querySpec = songQueryBuilder.buildConcertCountQuery(criteria)
+        return queryExecutor.executeCount(querySpec)
+    }
+
+    override suspend fun getConcertSongsStats(
+        topSongsLimit: Int,
+        recentPerformancesLimit: Int
+    ): SongStats =
+        getStreamSongsStats(topSongsLimit, recentPerformancesLimit)
+
+
 }

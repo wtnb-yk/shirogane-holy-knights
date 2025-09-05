@@ -22,4 +22,17 @@ interface SongUseCasePort {
      * @return 楽曲統計情報DTO
      */
     suspend fun getStreamSongsStats(): Either<UseCaseError, StreamSongStatsDto>
+    
+    /**
+     * コンサート楽曲検索
+     * @param searchParams 検索条件
+     * @return コンサート楽曲検索結果DTO
+     */
+    suspend fun searchConcertSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto>
+    
+    /**
+     * コンサート楽曲統計情報取得
+     * @return コンサート楽曲統計情報DTO
+     */
+    suspend fun getConcertSongsStats(): Either<UseCaseError, StreamSongStatsDto>
 }
