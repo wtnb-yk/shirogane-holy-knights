@@ -13,6 +13,7 @@ const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [];
 /**
  * 配信グリッドの特別表示設定
  */
+// TODO: いい感じにランダムにする
 const STREAM_SPECIAL_ITEMS: SpecialItemConfig[] = [
   {
     type: 'featured',
