@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
 interface YearPresetsSectionProps {
   filters: {
@@ -18,21 +18,17 @@ export const YearPresetsSection = ({
   title = '歌唱日',
   minYear = 2021,
 }: YearPresetsSectionProps) => {
-  const yearItems = useMemo(() => {
-    const currentYear = new Date().getFullYear();
-    const items = [];
-    
-    for (let year = currentYear; year >= minYear; year--) {
-      items.push({
-        id: `year-${year}`,
-        label: `${year}年`,
-        startDate: `${year}-01-01`,
-        endDate: `${year}-12-31`
-      });
-    }
-    
-    return items;
-  }, [minYear]);
+  const currentYear = new Date().getFullYear();
+  const yearItems = [];
+  
+  for (let year = currentYear; year >= minYear; year--) {
+    yearItems.push({
+      id: `year-${year}`,
+      label: `${year}年`,
+      startDate: `${year}-01-01`,
+      endDate: `${year}-12-31`
+    });
+  }
 
   const handleItemClick = (startDate?: string, endDate?: string) => {
     onFiltersChange({ 
