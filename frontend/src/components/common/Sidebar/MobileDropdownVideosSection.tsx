@@ -94,16 +94,18 @@ export const MobileDropdownVideosSection = ({
         placeholder="キーワードを入力"
       />
 
-      {/* カテゴリフィルター */}
-      <div className="border-t border-surface-border pt-6">
-        <h4 className="text-sm font-semibold text-text-primary mb-4">カテゴリ</h4>
-        <CategoryButtons
-          categories={displayCategories}
-          selectedCategories={filters.selectedTags || []}
-          onCategoryToggle={handleTagToggle}
-          onClearAll={handleTagClear}
-        />
-      </div>
+      {/* カテゴリフィルター - 配信タブでのみ表示 */}
+      {contentType === ContentType.STREAMS && (
+        <div className="border-t border-surface-border pt-6">
+          <h4 className="text-sm font-semibold text-text-primary mb-4">カテゴリ</h4>
+          <CategoryButtons
+            categories={displayCategories}
+            selectedCategories={filters.selectedTags || []}
+            onCategoryToggle={handleTagToggle}
+            onClearAll={handleTagClear}
+          />
+        </div>
+      )}
 
       {/* 高度なタグフィルター */}
       {availableTags.length > 0 && (

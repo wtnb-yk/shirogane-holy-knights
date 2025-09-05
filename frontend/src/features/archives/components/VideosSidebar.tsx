@@ -101,7 +101,7 @@ export const VideosSidebar = ({
         description: searchSection.description
       }
     },
-    {
+    ...(contentType === ContentType.STREAMS ? [{
       id: 'category-filter',
       component: CategoryFilter,
       props: {
@@ -110,7 +110,7 @@ export const VideosSidebar = ({
         onCategoryToggle: handleTagToggle,
         onClearAll: handleTagClear
       }
-    },
+    }] : []),
     {
       id: 'date-presets',
       component: DatePresetsSection,
