@@ -92,7 +92,7 @@ export enum SearchTarget {
   ARTIST = 'ARTIST'
 }
 
-// 歌唱頻度カテゴリ
+// 歌唱回数カテゴリ
 export enum SingFrequencyCategory {
   LOW = 'LOW',        // 1-2回
   MEDIUM = 'MEDIUM',  // 3-5回

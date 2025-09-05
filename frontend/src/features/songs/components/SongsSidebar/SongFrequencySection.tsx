@@ -40,12 +40,14 @@ const ALL_OPTION = {
 export const SongFrequencySection = ({
   filters = {},
   onFiltersChange,
-  title = '歌唱頻度',
+  title = '歌唱回数',
 }: SongFrequencySectionProps) => {
   const selectedCategories = filters?.frequencyCategories || [];
 
+  const hasId = (item: any): item is typeof ALL_OPTION => 'id' in item;
+
   const handleItemClick = (item: typeof ALL_OPTION | typeof FREQUENCY_OPTIONS[0]) => {
-    if (item.id === 'all') {
+    if (hasId(item) && item.id === 'all') {
       // 頻度のみクリア、他のフィルターは保持
       onFiltersChange({ 
         ...filters, 
@@ -70,7 +72,7 @@ export const SongFrequencySection = ({
   };
 
   const isSelected = (item: typeof ALL_OPTION | typeof FREQUENCY_OPTIONS[0]) => {
-    if (item.id === 'all') {
+    if (hasId(item) && item.id === 'all') {
       return selectedCategories.length === 0;
     }
     const category = (item as typeof FREQUENCY_OPTIONS[0]).category;
@@ -87,7 +89,7 @@ export const SongFrequencySection = ({
 
       <ul className="space-y-1">
         {allItems.map((item) => (
-          <li key={item.id || (item as typeof FREQUENCY_OPTIONS[0]).category}>
+          <li key={hasId(item) ? item.id : (item as typeof FREQUENCY_OPTIONS[0]).category}>
             <button
               onClick={() => handleItemClick(item)}
               className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${

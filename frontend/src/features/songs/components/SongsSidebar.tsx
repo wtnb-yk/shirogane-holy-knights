@@ -77,7 +77,7 @@ export const SongsSidebar = ({
     }
   ];
 
-  // ライブタブの場合は年単位の歌唱日フィルター、歌枠タブの場合は通常の歌唱日フィルター＋歌唱頻度
+  // ライブタブの場合は年単位の歌唱日フィルター、歌枠タブの場合は通常の歌唱日フィルター＋歌唱回数
   const dateSection: SidebarSectionConfig = songContentType === SongContentType.CONCERT 
     ? {
         id: 'year-presets',
@@ -100,7 +100,7 @@ export const SongsSidebar = ({
 
   const sections: SidebarSectionConfig[] = [...baseSections, dateSection];
   
-  // 歌枠タブの場合のみ歌唱頻度フィルターを追加
+  // 歌枠タブの場合のみ歌唱回数フィルターを追加
   if (songContentType === SongContentType.STREAM) {
     sections.push({
       id: 'frequency-filter',

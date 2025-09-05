@@ -13,7 +13,7 @@ interface SongRepository {
      * @param sortOrder 並び替え順（ASC, DESC）
      * @param startDate 配信開始日時の開始範囲
      * @param endDate 配信開始日時の終了範囲
-     * @param frequencyCategories 歌唱頻度カテゴリでのフィルター
+     * @param frequencyCategories 歌唱回数カテゴリでのフィルター
      * @param limit 取得上限数
      * @param offset オフセット
      * @return 検索条件に合致する楽曲のリスト
@@ -34,7 +34,7 @@ interface SongRepository {
      * @param query タイトル・アーティスト名での部分一致検索クエリ
      * @param startDate 配信開始日時の開始範囲
      * @param endDate 配信開始日時の終了範囲
-     * @param frequencyCategories 歌唱頻度カテゴリでのフィルター
+     * @param frequencyCategories 歌唱回数カテゴリでのフィルター
      * @return 検索条件に合致する楽曲の総数
      */
     suspend fun countStreamSongs(
@@ -62,7 +62,7 @@ interface SongRepository {
      * @param sortOrder 並び替え順（ASC, DESC）
      * @param startDate 配信開始日時の開始範囲
      * @param endDate 配信開始日時の終了範囲
-     * @param frequencyCategories 歌唱頻度カテゴリでのフィルター
+     * @param frequencyCategories 歌唱回数カテゴリでのフィルター
      * @param limit 取得上限数
      * @param offset オフセット
      * @return 検索条件に合致するコンサート楽曲のリスト
@@ -83,7 +83,7 @@ interface SongRepository {
      * @param query タイトル・アーティスト名での部分一致検索クエリ
      * @param startDate 配信開始日時の開始範囲
      * @param endDate 配信開始日時の終了範囲
-     * @param frequencyCategories 歌唱頻度カテゴリでのフィルター
+     * @param frequencyCategories 歌唱回数カテゴリでのフィルター
      * @return 検索条件に合致するコンサート楽曲の総数
      */
     suspend fun countConcertSongs(

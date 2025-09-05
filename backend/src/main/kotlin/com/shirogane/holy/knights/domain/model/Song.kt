@@ -38,7 +38,7 @@ enum class PerformanceType {
 }
 
 /**
- * 歌唱頻度カテゴリ
+ * 歌唱回数カテゴリ
  */
 enum class SingFrequencyCategory {
     LOW,        // 1-2回

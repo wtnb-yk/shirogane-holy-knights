@@ -47,7 +47,7 @@ export const SongFrequencyFilter = ({
     <div>
       <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
         <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-        歌唱頻度
+        歌唱回数
       </h4>
       <div className="grid grid-cols-2 gap-3">
         {FREQUENCY_OPTIONS.map(({ category, label, description }) => {
