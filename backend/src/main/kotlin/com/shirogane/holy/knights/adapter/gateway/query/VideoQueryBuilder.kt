@@ -227,10 +227,11 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
     }
     
     private fun buildWhereClause(type: String, conditions: List<String>): String {
+        val hiddenCondition = "v.id NOT IN (SELECT video_id FROM hidden_streams)"
         return if (conditions.isNotEmpty()) {
-            "WHERE vt.type = '$type' AND " + conditions.joinToString(" AND ")
+            "WHERE vt.type = '$type' AND $hiddenCondition AND " + conditions.joinToString(" AND ")
         } else {
-            "WHERE vt.type = '$type'"
+            "WHERE vt.type = '$type' AND $hiddenCondition"
         }
     }
 }

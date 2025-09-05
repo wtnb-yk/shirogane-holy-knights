@@ -11,43 +11,64 @@ import { createSpecialGridLayout } from '../utils/gridLayoutCalculator';
 const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [];
 
 /**
- * 配信グリッドの特別表示設定
+ * 指定した範囲からランダムなインデックスを生成
  */
-// TODO: いい感じにランダムにする
-const STREAM_SPECIAL_ITEMS: SpecialItemConfig[] = [
-  {
-    type: 'featured',
-    dataIndex: 0, // 最新配信（1番目）
-    gridPlacement: {
-      colSpan: 2,
-      rowSpan: 2
-    }
-  },
-  {
-    type: 'pickup',
-    dataIndex: 7,
-    gridPlacement: {
-      colSpan: 2,
-      rowSpan: 2
-    }
-  },
-  {
-    type: 'pickup',
-    dataIndex: 11,
-    gridPlacement: {
-      colSpan: 2,
-      rowSpan: 2
-    }
-  },
-  {
-    type: 'pickup',
-    dataIndex: 17,
-    gridPlacement: {
-      colSpan: 2,
-      rowSpan: 2
-    }
-  },
-];
+function getRandomIndex(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * PICKUPアイテムのランダムインデックスを生成
+ */
+function generatePickupIndices(): number[] {
+  const firstPickup = getRandomIndex(5, 7);   // 1つ目: 5-7
+  const secondPickup = getRandomIndex(10, 12); // 2つ目: 10-12
+  const thirdPickup = getRandomIndex(15, 17);  // 3つ目: 15-17
+  
+  return [firstPickup, secondPickup, thirdPickup];
+}
+
+/**
+ * 配信グリッドの特別表示設定を生成
+ */
+function createStreamSpecialItems(): SpecialItemConfig[] {
+  const pickupIndices = generatePickupIndices();
+  
+  return [
+    {
+      type: 'featured',
+      dataIndex: 0, // 最新配信（1番目）
+      gridPlacement: {
+        colSpan: 2,
+        rowSpan: 2
+      }
+    },
+    {
+      type: 'pickup',
+      dataIndex: pickupIndices[0],
+      gridPlacement: {
+        colSpan: 2,
+        rowSpan: 2
+      }
+    },
+    {
+      type: 'pickup',
+      dataIndex: pickupIndices[1],
+      gridPlacement: {
+        colSpan: 2,
+        rowSpan: 2
+      }
+    },
+    {
+      type: 'pickup',
+      dataIndex: pickupIndices[2],
+      gridPlacement: {
+        colSpan: 2,
+        rowSpan: 2
+      }
+    },
+  ];
+}
 
 /**
  * 動画グリッドの列設定
@@ -80,7 +101,7 @@ export function getVideoSpecialLayout(): SpecialGridLayout {
  * 配信グリッドの特別レイアウト設定を取得
  */
 export function getStreamSpecialLayout(): SpecialGridLayout {
-  return createSpecialGridLayout(STREAM_SPECIAL_ITEMS);
+  return createSpecialGridLayout(createStreamSpecialItems());
 }
 
 /**
