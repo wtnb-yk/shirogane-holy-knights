@@ -49,8 +49,8 @@ export const SongsSidebar = ({
   } = config;
 
   const songContentTypeTabs: Tab[] = [
-    { value: SongContentType.STREAM, label: '歌枠' },
-    { value: SongContentType.CONCERT, label: 'ライブ' }
+    { value: SongContentType.CONCERT, label: 'ライブ' },
+    { value: SongContentType.STREAM, label: '歌枠' }
   ];
 
   const baseSections: SidebarSectionConfig[] = [

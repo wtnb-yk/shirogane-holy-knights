@@ -25,7 +25,7 @@ export default function SongsList() {
   const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
-  const [songContentType, setSongContentType] = useState<SongContentType>(SongContentType.STREAM);
+  const [songContentType, setSongContentType] = useState<SongContentType>(SongContentType.CONCERT);
   
   // 楽曲データの取得
   const streamSongsData = useStreamSongs({ 
@@ -64,7 +64,7 @@ export default function SongsList() {
   // アクティブなフィルター数を計算
   const activeFiltersCount = (currentData.searchQuery ? 1 : 0) + 
     (currentData.filters.startDate || currentData.filters.endDate ? 1 : 0) +
-    (currentData.sortBy !== 'singCount' || currentData.sortOrder !== 'DESC' ? 1 : 0);
+    (currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC' ? 1 : 0);
 
   return (
     <PageLayout
@@ -116,7 +116,7 @@ export default function SongsList() {
                 onSearch={currentData.handleSearch}
                 onClearSearch={currentData.clearSearch}
                 onOptionsClick={() => setShowOptionsModal(true)}
-                hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'singCount' || currentData.sortOrder !== 'DESC')}
+                hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC')}
                 filters={currentData.filters}
                 onFiltersChange={currentData.setFilters}
               />
@@ -150,7 +150,7 @@ export default function SongsList() {
             onSearch={currentData.handleSearch}
             onClearSearch={currentData.clearSearch}
             onOptionsClick={() => setShowOptionsModal(true)}
-            hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'singCount' || currentData.sortOrder !== 'DESC')}
+            hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC')}
             filters={currentData.filters}
             onFiltersChange={currentData.setFilters}
           />

@@ -43,7 +43,7 @@ export const useConcertSongs = (options: UseConcertSongsOptions = {}): UseConcer
   const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useVideoSearch();
   
   // 並び替え状態
-  const [sortBy, setSortBy] = useState<SortBy>(SortBy.SING_COUNT);
+  const [sortBy, setSortBy] = useState<SortBy>(SortBy.LATEST_SING_DATE);
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   
   // フィルター状態

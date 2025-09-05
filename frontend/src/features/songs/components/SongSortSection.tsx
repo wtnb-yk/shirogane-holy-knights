@@ -18,8 +18,8 @@ export const SongSortSection = ({
   onSortOrderChange,
 }: SongSortSectionProps) => {
   const sortByOptions = [
-    { value: SortBy.SING_COUNT, label: '歌唱回数', icon: TrendingUp, description: '人気の高い楽曲順' },
-    { value: SortBy.LATEST_SING_DATE, label: '最新歌唱日', icon: Calendar, description: '最近歌った楽曲順' }
+    { value: SortBy.LATEST_SING_DATE, label: '最新歌唱日', icon: Calendar, description: '最近歌った楽曲順' },
+    { value: SortBy.SING_COUNT, label: '歌唱回数', icon: TrendingUp, description: '人気の高い楽曲順' }
   ];
 
   const getSortOrderLabel = () => {
