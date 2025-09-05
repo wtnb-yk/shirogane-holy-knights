@@ -136,9 +136,14 @@ class SongQueryBuilder : QueryBuilder<SongSearchCriteria> {
                             'video_title', v.title,
                             'performance_type', 'CONCERT',
                             'url', v.url,
-                            'start_seconds', 0,
+                            'start_seconds', cs.start_seconds,
                             'performed_at', v.published_at,
-                            'stream_song_url', v.url
+                            'stream_song_url', 
+                            CASE 
+                                WHEN cs.start_seconds > 0 
+                                THEN v.url || '&t=' || cs.start_seconds || 's'
+                                ELSE v.url 
+                            END
                         ) ORDER BY v.published_at DESC
                     ) as performances
                 FROM songs s
