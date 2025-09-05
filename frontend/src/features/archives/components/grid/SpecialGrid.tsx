@@ -70,7 +70,7 @@ export function SpecialGrid<T>({
       renderSkeleton={renderSkeleton}
       emptyMessage={emptyMessage}
       skeletonCount={skeletonCount}
-      gridClassName={baseGridClassName.replace('grid ', '')} // 'grid'プレフィックスを除去
+      gridClassName={baseGridClassName.replace('grid ', '')}
     />
   );
 }

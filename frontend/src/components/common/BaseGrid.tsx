@@ -1,13 +1,13 @@
 'use client';
 
-import React, { ReactElement } from 'react';
+import React, { ReactNode } from 'react';
 
 interface BaseGridProps<T> {
   items: T[];
   loading: boolean;
   error: string | null;
-  renderItem: (item: T, index: number) => ReactElement;
-  renderSkeleton: (index: number) => ReactElement;
+  renderItem: (item: T, index: number) => ReactNode;
+  renderSkeleton: (index: number) => ReactNode;
   emptyMessage?: {
     title: string;
     subtitle: string;
