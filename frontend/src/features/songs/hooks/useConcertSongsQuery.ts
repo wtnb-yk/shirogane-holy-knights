@@ -54,8 +54,8 @@ export const useConcertSongsQuery = (
           query: searchQuery || undefined,
           sortBy,
           sortOrder,
-          startDate: filters.startDate || undefined,
-          endDate: filters.endDate || undefined,
+          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
+          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
           frequencyCategories: filters.frequencyCategories || undefined,
         });
         
