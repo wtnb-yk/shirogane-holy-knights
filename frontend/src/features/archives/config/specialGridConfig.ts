@@ -24,7 +24,7 @@ const STREAM_SPECIAL_ITEMS: SpecialItemConfig[] = [
   },
   {
     type: 'pickup',
-    dataIndex: 7, // PICKUP配信（8番目）
+    dataIndex: 7,
     gridPlacement: {
       colSpan: 2,
       rowSpan: 2
@@ -32,7 +32,7 @@ const STREAM_SPECIAL_ITEMS: SpecialItemConfig[] = [
   },
   {
     type: 'pickup',
-    dataIndex: 10,
+    dataIndex: 11,
     gridPlacement: {
       colSpan: 2,
       rowSpan: 2
