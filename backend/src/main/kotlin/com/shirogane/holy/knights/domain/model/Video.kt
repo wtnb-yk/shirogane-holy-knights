@@ -2,24 +2,44 @@ package com.shirogane.holy.knights.domain.model
 
 import java.time.Instant
 
-/**
- * 配信・動画ドメインモデル
- * ドメイン層の中心的なエンティティ
- */
+@JvmInline
+value class ContentId(val value: String) {
+    override fun toString(): String = value
+}
+
+sealed class Content {
+    abstract val id: ContentId
+    abstract val title: String
+    abstract val channelId: ChannelId
+    abstract val contentDetails: ContentDetails?
+}
+
 data class Video(
-    val id: VideoId,
-    val title: String,
+    override val id: ContentId,
+    override val title: String,
     val publishedAt: Instant,
-    val channelId: ChannelId,
+    override val channelId: ChannelId,
     val videoDetails: VideoDetailsVO? = null,
+    override val contentDetails: ContentDetails? = null,
+    val tags: List<Tag> = emptyList()
+) : Content()
+
+data class Stream(
+    override val id: ContentId,
+    override val title: String,
+    val startedAt: Instant,
+    override val channelId: ChannelId,
     val streamDetails: StreamDetailsVO? = null,
-    val contentDetails: ContentDetails? = null,
-    val tags: List<Tag> = emptyList(),
+    override val contentDetails: ContentDetails? = null,
     val streamTags: List<StreamTag> = emptyList()
-)
+) : Content()
 
 class Videos(private val listUnordered: List<Video>): FCC<Video>(
-    listUnordered.sortedWith(compareByDescending{ it.publishedAt })
+    listUnordered.sortedByDescending{ it.publishedAt }
+)
+
+class Streams(private val listUnordered: List<Stream>): FCC<Stream>(
+    listUnordered.sortedByDescending{ it.startedAt }
 )
 
 /**
@@ -45,13 +65,6 @@ data class ContentDetails(
     val description: String? = null,
 )
 
-/**
- * 動画ID値オブジェクト
- */
-@JvmInline
-value class VideoId(val value: String) {
-    override fun toString(): String = value
-}
 
 /**
  * チャンネルID値オブジェクト

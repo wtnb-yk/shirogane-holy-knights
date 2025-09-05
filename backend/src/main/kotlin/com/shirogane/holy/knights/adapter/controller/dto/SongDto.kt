@@ -157,7 +157,7 @@ data class RecentPerformanceStatsDto(
     val title: String,
     val artist: String,
     val latestPerformance: String, // ISO 8601形式の日時文字列
-    val latestVideoId: String,
+    val latestContentId: String,
     val latestVideoTitle: String,
     val latestVideoUrl: String
 ) {
@@ -168,7 +168,7 @@ data class RecentPerformanceStatsDto(
                 title = recentPerformance.title,
                 artist = recentPerformance.artist,
                 latestPerformance = recentPerformance.latestPerformance.toString(),
-                latestVideoId = recentPerformance.latestVideoId.value,
+                latestContentId = recentPerformance.latestContentId.value,
                 latestVideoTitle = recentPerformance.latestVideoTitle,
                 latestVideoUrl = recentPerformance.latestVideoUrl
             )

@@ -90,7 +90,7 @@ class VideoRepositoryImpl(
         endDate: Instant?,
         limit: Int,
         offset: Int
-    ): Videos {
+    ): Streams {
         val criteria = StreamSearchCriteria(
             query = query,
             tags = tags,
@@ -103,7 +103,7 @@ class VideoRepositoryImpl(
         val querySpec = streamQueryBuilder.buildSearchQuery(criteria)
         val streams = queryExecutor.execute(querySpec, streamRowMapper)
 
-        return Videos(streams)
+        return Streams(streams)
     }
 
     override suspend fun countStreams(
@@ -138,4 +138,5 @@ class VideoRepositoryImpl(
             .collectList()
             .awaitSingle()
     }
+
 }

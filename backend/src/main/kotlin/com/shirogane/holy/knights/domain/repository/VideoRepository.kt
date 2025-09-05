@@ -1,6 +1,7 @@
 package com.shirogane.holy.knights.domain.repository
 
 import com.shirogane.holy.knights.domain.model.Videos
+import com.shirogane.holy.knights.domain.model.Streams
 import java.time.Instant
 
 interface VideoRepository {
@@ -55,7 +56,7 @@ interface VideoRepository {
         endDate: Instant? = null,
         limit: Int,
         offset: Int
-    ): Videos
+    ): Streams
     
     /**
      * 配信検索条件による総件数取得
@@ -83,4 +84,5 @@ interface VideoRepository {
      * @return 動画タグ名のリスト
      */
     suspend fun getAllVideoTags(): List<String>
+
 }

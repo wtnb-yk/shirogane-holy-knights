@@ -21,7 +21,7 @@ data class Song(
  * stream_songsまたはconcert_songsテーブルの情報を表現
  */
 data class Performance(
-    val videoId: VideoId,
+    val videoId: ContentId,
     val videoTitle: String,
     val performanceType: PerformanceType,
     val url: String,
@@ -75,7 +75,7 @@ data class RecentPerformanceStats(
     val title: String,
     val artist: String,
     val latestPerformance: Instant,
-    val latestVideoId: VideoId,
+    val latestContentId: ContentId,
     val latestVideoTitle: String,
     val latestVideoUrl: String
 )

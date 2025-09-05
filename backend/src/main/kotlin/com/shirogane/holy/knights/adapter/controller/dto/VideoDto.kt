@@ -100,17 +100,17 @@ data class StreamDto(
         /**
          * ドメインモデルからDTOへの変換
          */
-        fun fromDomain(video: Video): StreamDto {
+        fun fromDomain(stream: Stream): StreamDto {
             return StreamDto(
-                id = video.id.value,
-                title = video.title,
-                channelId = video.channelId.value,
-                url = video.videoDetails?.url ?: "https://www.youtube.com/watch?v=${video.id.value}",
-                startedAt = video.streamDetails?.startedAt?.toString(),
-                description = video.contentDetails?.description,
-                tags = video.tags.map { it.name },
-                duration = video.videoDetails?.duration?.value,
-                thumbnailUrl = video.videoDetails?.thumbnailUrl,
+                id = stream.id.value,
+                title = stream.title,
+                channelId = stream.channelId.value,
+                url = "https://www.youtube.com/watch?v=${stream.id.value}",
+                startedAt = stream.startedAt.toString(),
+                description = stream.contentDetails?.description,
+                tags = stream.streamTags.map { it.name },
+                duration = null,
+                thumbnailUrl = null,
             )
         }
     }

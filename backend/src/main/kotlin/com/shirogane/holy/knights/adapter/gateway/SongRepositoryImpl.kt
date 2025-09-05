@@ -158,7 +158,7 @@ class SongRepositoryImpl(
                     title = row.get("title", String::class.java)!!,
                     artist = row.get("artist", String::class.java)!!,
                     latestPerformance = row.get("latest_performance", Instant::class.java)!!,
-                    latestVideoId = VideoId(row.get("latest_video_id", String::class.java)!!),
+                    latestContentId = ContentId(row.get("latest_video_id", String::class.java)!!),
                     latestVideoTitle = row.get("latest_video_title", String::class.java)!!,
                     latestVideoUrl = row.get("latest_video_url", String::class.java)!!
                 )

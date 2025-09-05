@@ -12,7 +12,7 @@ class VideoRowMapper : RowMapper<Video> {
         val tags = parseTags(row.get("tags", String::class.java))
         
         return Video(
-            id = VideoId(row.get("id", String::class.java)!!),
+            id = ContentId(row.get("id", String::class.java)!!),
             title = row.get("title", String::class.java)!!,
             publishedAt = row.get("published_at", Instant::class.java) 
                 ?: row.get("created_at", Instant::class.java)!!,
@@ -40,22 +40,16 @@ class VideoRowMapper : RowMapper<Video> {
 }
 
 @Component  
-class StreamRowMapper : RowMapper<Video> {
+class StreamRowMapper : RowMapper<Stream> {
     
-    override fun map(row: Row): Video {
+    override fun map(row: Row): Stream {
         val streamTags = parseStreamTags(row.get("stream_tags", String::class.java))
         
-        return Video(
-            id = VideoId(row.get("id", String::class.java)!!),
+        return Stream(
+            id = ContentId(row.get("id", String::class.java)!!),
             title = row.get("title", String::class.java)!!,
-            publishedAt = row.get("published_at", Instant::class.java)!!,
+            startedAt = row.get("started_at", Instant::class.java)!!,
             channelId = ChannelId(row.get("channel_id", String::class.java)!!),
-            videoDetails = VideoDetailsVO(
-                url = row.get("url", String::class.java) 
-                    ?: "https://www.youtube.com/watch?v=${row.get("id", String::class.java)}",
-                duration = row.get("duration", String::class.java)?.let { Duration(it) },
-                thumbnailUrl = row.get("thumbnail_url", String::class.java)
-            ),
             streamDetails = StreamDetailsVO(
                 startedAt = row.get("started_at", Instant::class.java)
             ),

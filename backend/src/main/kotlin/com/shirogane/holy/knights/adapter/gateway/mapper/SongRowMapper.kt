@@ -30,7 +30,7 @@ class SongRowMapper(
             try {
                 val jsonNode = objectMapper.readTree(jsonString)
                 Performance(
-                    videoId = VideoId(jsonNode.get("video_id").asText()),
+                    videoId = ContentId(jsonNode.get("video_id").asText()),
                     videoTitle = jsonNode.get("video_title").asText() ?: "",
                     performanceType = PerformanceType.valueOf(jsonNode.get("performance_type").asText()),
                     url = jsonNode.get("url").asText() ?: "",

@@ -11,6 +11,8 @@ import com.shirogane.holy.knights.adapter.controller.dto.StreamSearchResultDto
 import com.shirogane.holy.knights.adapter.controller.port.VideoUseCasePort
 import com.shirogane.holy.knights.domain.model.Video
 import com.shirogane.holy.knights.domain.model.Videos
+import com.shirogane.holy.knights.domain.model.Stream
+import com.shirogane.holy.knights.domain.model.Streams
 import com.shirogane.holy.knights.domain.repository.VideoRepository
 import org.springframework.stereotype.Service
 
@@ -88,24 +90,23 @@ class VideoUseCaseImpl(
             publishedAt = video.publishedAt.toString(),
             duration = video.videoDetails?.duration?.value,
             thumbnailUrl = video.videoDetails?.thumbnailUrl,
-            // TODO: ここもいい感じにしたい
-            url = video.videoDetails?.url ?: "",
+            url = video.videoDetails?.url ?: "https://www.youtube.com/watch?v=${video.id.value}",
             tags = video.tags.map { it.name },
             channelId = video.channelId.value,
         )
 
-    private fun Videos.convertToStreamDto(): List<StreamDto> = this.map { video -> convertToStreamDto(video) }
-    private fun convertToStreamDto(video: Video): StreamDto {
+    private fun Streams.convertToStreamDto(): List<StreamDto> = this.map { stream -> convertToStreamDto(stream) }
+    private fun convertToStreamDto(stream: Stream): StreamDto {
         return StreamDto(
-            id = video.id.value,
-            title = video.title,
-            description = video.contentDetails?.description,
-            startedAt = video.streamDetails?.startedAt?.toString(),
-            duration = video.videoDetails?.duration?.value,
-            thumbnailUrl = video.videoDetails?.thumbnailUrl,
-            url = video.videoDetails?.url ?: "",
-            tags = video.streamTags.map { it.name },
-            channelId = video.channelId.value,
+            id = stream.id.value,
+            title = stream.title,
+            description = stream.contentDetails?.description,
+            startedAt = stream.startedAt.toString(),
+            duration = stream.streamDetails?.let { "unknown" },
+            thumbnailUrl = null,
+            url = "https://www.youtube.com/watch?v=${stream.id.value}",
+            tags = stream.streamTags.map { it.name },
+            channelId = stream.channelId.value,
         )
     }
 }
