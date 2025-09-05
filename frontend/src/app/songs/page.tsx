@@ -43,10 +43,11 @@ export default function SongsList() {
   const { currentSong, autoplay, changeCurrentSong, playSong } = useCurrentSong();
   
   
-  // 初回読み込み時のみ最初の楽曲を選択（検索・ページング変更では影響されない）
+  // 初回読み込み時のみランダムな楽曲を選択（検索・ページング変更では影響されない）
   React.useEffect(() => {
     if (currentData.songs.length > 0 && !currentSong && !currentData.loading) {
-      changeCurrentSong(currentData.songs[0]);
+      const randomIndex = Math.floor(Math.random() * currentData.songs.length);
+      changeCurrentSong(currentData.songs[randomIndex]);
     }
   }, [currentData.songs.length > 0, currentSong, changeCurrentSong, currentData.loading]);
   
