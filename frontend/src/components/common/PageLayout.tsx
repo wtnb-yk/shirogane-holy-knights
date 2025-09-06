@@ -20,7 +20,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   return (
     <div className="min-h-screen bg-bg-page">
       {/* メインコンテナ */}
-      <div className="flex flex-col md:flex-row max-w-full py-2 sm:py-8 px-10 gap-10">
+      <div className="flex flex-col md:flex-row max-w-full py-2 sm:py-8 px-2 sm:px-4 gap-2 sm:gap-4">
         {/* メインコンテンツ */}
         <main className="flex-1 min-w-0">
           {/* ページヘッダー */}

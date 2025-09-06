@@ -185,7 +185,7 @@ export default function SongsList() {
           />
 
           {/* YouTube プレイヤーセクション */}
-          <div className="mb-8">
+          <div className="mb-4 -mx-2 sm:-mx-4">
             <PlayerSection 
               currentSong={currentSong} 
               autoplay={autoplay}
