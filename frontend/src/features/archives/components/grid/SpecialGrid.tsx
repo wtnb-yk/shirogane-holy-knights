@@ -6,7 +6,6 @@ import { SpecialGridProps } from '../../types/specialGridTypes';
 import { 
   generateGridClassName, 
   isSpecialItem, 
-  shouldSkipItem 
 } from '../../utils/gridLayoutCalculator';
 
 /**
@@ -43,11 +42,6 @@ export function SpecialGrid<T>({
             if (specialItemConfig) {
               return renderSpecialItem(item, index, specialItemConfig.type);
             }
-            
-            // スキップロジックを無効化 - CSSグリッドが自動的に配置を調整
-            // if (shouldSkipItem(index, specialLayout.skipIndices)) {
-            //   return <div key={`skip-${index}`} className="opacity-0 pointer-events-none" />;
-            // }
             
             // 通常アイテム
             const normalItem = renderNormalItem(item, index);

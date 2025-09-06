@@ -11,19 +11,12 @@ import { createSpecialGridLayout } from '../utils/gridLayoutCalculator';
 const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [];
 
 /**
- * 指定した範囲からランダムなインデックスを生成
- */
-function getRandomIndex(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/**
  * PICKUPアイテムのランダムインデックスを生成
  */
 function generatePickupIndices(): number[] {
-  const firstPickup = getRandomIndex(5, 7);   // 1つ目: 5-7
-  const secondPickup = getRandomIndex(10, 12); // 2つ目: 10-12
-  const thirdPickup = getRandomIndex(15, 17);  // 3つ目: 15-17
+  const firstPickup = Math.random() < 0.5 ? 5 : 7;    // 1つ目: 5or7
+  const secondPickup = Math.random() < 0.5 ? 10 : 12; // 2つ目: 10or12
+  const thirdPickup = Math.random() < 0.5 ? 15 : 17;  // 3つ目: 15or17
   
   return [firstPickup, secondPickup, thirdPickup];
 }
