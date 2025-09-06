@@ -15,7 +15,7 @@ import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong, ViewMode, SongContentType } from '@/features/songs/types/types';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
-import { MobileDropdownSongsSection } from '@/components/common/Sidebar/MobileDropdownSongsSection';
+import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
 
@@ -98,7 +98,9 @@ export default function SongsList() {
               isOpen={isSidebarOpen}
               onClose={() => setIsSidebarOpen(false)}
               mobileContent={
-                <MobileDropdownSongsSection
+                <SongsBottomSheetContent
+                  songContentType={songContentType}
+                  onSongContentTypeChange={setSongContentType}
                   searchValue={currentData.searchQuery}
                   onSearch={currentData.handleSearch}
                   onClearSearch={currentData.clearSearch}
@@ -143,6 +145,20 @@ export default function SongsList() {
         <ResponsiveSidebar 
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <SongsBottomSheetContent
+              songContentType={songContentType}
+              onSongContentTypeChange={setSongContentType}
+              searchValue={currentData.searchQuery}
+              onSearch={currentData.handleSearch}
+              onClearSearch={currentData.clearSearch}
+              sortBy={currentData.sortBy}
+              sortOrder={currentData.sortOrder}
+              filters={currentData.filters}
+              onSortChange={currentData.handleSortChange}
+              onFiltersChange={currentData.setFilters}
+            />
+          }
         >
           <SongsSidebar
             songContentType={songContentType}

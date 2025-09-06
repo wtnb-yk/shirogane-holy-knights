@@ -1,13 +1,18 @@
 'use client';
 
 import React from 'react';
-import { TrendingUp, Calendar } from 'lucide-react';
-import { SortBy, SortOrder, SongFilterOptions } from '@/features/songs/types/types';
-import { SearchInput } from './components/SearchInput';
-import { SortSection } from './components/SortSection';
-import { DateRangeInput } from './components/DateRangeInput';
+import { Search, X } from 'lucide-react';
+import { SortBy, SortOrder, SongFilterOptions, SongContentType } from '@/features/songs/types/types';
+import { ContentTypeTabs, Tab } from '@/components/common/ContentTypeTabs';
+import { SongSortSection } from '@/features/songs/components/SongSortSection';
+import { SongFilterSection } from '@/features/songs/components/SongFilterSection';
+import { YearPresetsSection } from '@/components/common/YearPresetsSection';
+import { DatePresetsSection } from '@/components/common/DatePresetsSection';
+import { SongFrequencySection } from '@/features/songs/components/SongsSidebar/SongFrequencySection';
 
 interface MobileDropdownSongsSectionProps {
+  songContentType: SongContentType;
+  onSongContentTypeChange: (type: SongContentType) => void;
   searchValue: string;
   onSearch: (query: string) => void;
   onClearSearch: () => void;
@@ -16,9 +21,13 @@ interface MobileDropdownSongsSectionProps {
   filters: SongFilterOptions;
   onSortChange: (sortBy: SortBy, sortOrder: SortOrder) => void;
   onFiltersChange: (filters: SongFilterOptions) => void;
+  onOptionsClick?: () => void;
+  hasActiveOptions?: boolean;
 }
 
 export const MobileDropdownSongsSection = ({
+  songContentType,
+  onSongContentTypeChange,
   searchValue,
   onSearch,
   onClearSearch,
@@ -41,52 +50,114 @@ export const MobileDropdownSongsSection = ({
     }
   };
 
-  const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
-    onFiltersChange({ ...filters, [field]: value || undefined });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch(inputValue.trim());
   };
 
-  const sortOptions = [
-    { value: SortBy.SING_COUNT, label: '歌唱回数', icon: TrendingUp, description: '人気の高い楽曲順' },
-    { value: SortBy.LATEST_SING_DATE, label: '最新歌唱日', icon: Calendar, description: '最近歌った楽曲順' }
-  ];
+  const handleClear = () => {
+    setInputValue('');
+    onClearSearch();
+  };
 
-  const orderOptions = [
-    { value: SortOrder.DESC, label: sortBy === SortBy.SING_COUNT ? '多い → 少ない' : '新しい → 古い' },
-    { value: SortOrder.ASC, label: sortBy === SortBy.SING_COUNT ? '少ない → 多い' : '古い → 新しい' }
+  const songContentTypeTabs: Tab[] = [
+    { value: SongContentType.CONCERT, label: 'ライブ' },
+    { value: SongContentType.STREAM, label: '歌枠' }
   ];
 
   return (
     <div className="space-y-6">
-      {/* 検索セクション */}
-      <SearchInput
-        value={inputValue}
-        onChange={handleInputChange}
-        onSubmit={onSearch}
-        onClear={onClearSearch}
-        placeholder="楽曲名・アーティスト名を入力"
-      />
+      {/* コンテンツタイプタブ */}
+      <div className="scale-90">
+        <ContentTypeTabs
+          tabs={songContentTypeTabs}
+          activeTab={songContentType}
+          onTabChange={onSongContentTypeChange}
+        />
+      </div>
+
+      {/* 楽曲検索セクション */}
+      <div>
+        <form onSubmit={handleSubmit}>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary w-3.5 h-3.5" />
+            <input
+              type="text"
+              placeholder="楽曲名・アーティスト名を入力"
+              value={inputValue}
+              onChange={(e) => handleInputChange(e.target.value)}
+              className="w-full pl-8 pr-8 py-2 border border-surface-border rounded-md text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all"
+            />
+            {inputValue && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary hover:text-text-secondary transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
 
       {/* 並び替えセクション */}
-      <div className="border-t border-surface-border pt-6">
-        <h4 className="text-sm font-semibold text-text-primary mb-4">並び替え</h4>
-        <SortSection
-          sortOptions={sortOptions}
-          orderOptions={orderOptions}
-          selectedSort={sortBy}
-          selectedOrder={sortOrder}
-          onSortChange={(sortBy, sortOrder) => onSortChange(sortBy as SortBy, sortOrder as SortOrder)}
+      <div>
+        <SongSortSection
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortByChange={(sortBy) => onSortChange(sortBy, sortOrder)}
+          onSortOrderChange={(sortOrder) => onSortChange(sortBy, sortOrder)}
         />
       </div>
 
-      {/* 日付フィルターセクション */}
-      <div className="border-t border-surface-border pt-6">
-        <h4 className="text-sm font-semibold text-text-primary mb-4">歌唱日</h4>
-        <DateRangeInput
-          startDate={filters.startDate}
-          endDate={filters.endDate}
-          onDateChange={handleDateChange}
-        />
+      {/* 歌唱日 */}
+      <div>
+        <h3 className="text-sm font-bold text-text-primary mb-2">
+          歌唱日
+        </h3>
+        
+        {/* プリセットボタン */}
+        <div className="mb-4">
+          <div className="[&_h3]:hidden [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-sm [&_li]:space-y-0.5">
+            {songContentType === SongContentType.CONCERT ? (
+              <YearPresetsSection
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                title=""
+              />
+            ) : (
+              <DatePresetsSection
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                title=""
+              />
+            )}
+          </div>
+        </div>
+
+        {/* 日付入力 */}
+        <div>
+          <div className="[&_h4]:hidden [&_input]:py-2 [&_input]:px-2.5 [&_input]:text-sm">
+            <SongFilterSection
+              filters={filters}
+              onFiltersChange={onFiltersChange}
+            />
+          </div>
+        </div>
       </div>
+
+      {/* 歌唱回数フィルター（歌枠のみ） */}
+      {songContentType === SongContentType.STREAM && (
+        <div>
+          <div className="[&_h3]:text-sm [&_h3]:mb-2 [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-sm [&_li]:space-y-0.5">
+            <SongFrequencySection
+              filters={filters}
+              onFiltersChange={onFiltersChange}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

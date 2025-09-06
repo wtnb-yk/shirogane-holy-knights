@@ -36,76 +36,31 @@ export const SongSortSection = ({
   const orderLabels = getSortOrderLabel();
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
-          <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-          並び替え
-        </h4>
-        <div className="grid grid-cols-1 gap-3">
-          {sortByOptions.map((option) => {
-            const isSelected = sortBy === option.value;
-            return (
-              <button
-                key={option.value}
-                onClick={() => onSortByChange(option.value)}
-                className={`relative flex flex-col p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:scale-[1.02] text-left ${
-                  isSelected
-                    ? 'border-accent-gold bg-accent-gold/10 shadow-sm'
-                    : 'border-surface-border bg-white hover:border-accent-gold/50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <option.icon className={`w-5 h-5 ${isSelected ? 'text-accent-gold' : 'text-text-secondary'}`} />
-                  <div className="flex-1">
-                    <div className={`font-medium ${
-                      isSelected ? 'text-text-primary' : 'text-text-secondary'
-                    }`}>
-                      {option.label}
-                    </div>
-                    <div className="text-xs text-text-tertiary leading-relaxed">
-                      {option.description}
-                    </div>
-                  </div>
-                  {isSelected && (
-                    <div className="ml-auto w-2 h-2 bg-accent-gold rounded-full" />
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
-        <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
-          <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-          並び順
-        </h4>
-        <div className="flex gap-3">
-          <button
-            onClick={() => onSortOrderChange(SortOrder.DESC)}
-            className={`flex-1 p-3 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] ${
-              sortOrder === SortOrder.DESC
-                ? 'border-accent-gold bg-accent-gold text-white shadow-sm'
-                : 'border-surface-border bg-white text-text-secondary hover:border-accent-gold/50'
-            }`}
-          >
-            <ChevronDown className="w-4 h-4" />
-            <span className="text-sm font-medium">{orderLabels.desc}</span>
-          </button>
-          <button
-            onClick={() => onSortOrderChange(SortOrder.ASC)}
-            className={`flex-1 p-3 rounded-lg border-2 flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] ${
-              sortOrder === SortOrder.ASC
-                ? 'border-accent-gold bg-accent-gold text-white shadow-sm'
-                : 'border-surface-border bg-white text-text-secondary hover:border-accent-gold/50'
-            }`}
-          >
-            <ChevronUp className="w-4 h-4" />
-            <span className="text-sm font-medium">{orderLabels.asc}</span>
-          </button>
-        </div>
+    <div>
+      <h4 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+        <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
+        並び替え
+      </h4>
+      <div className="space-y-2">
+        <select
+          value={sortBy}
+          onChange={(e) => onSortByChange(e.target.value as SortBy)}
+          className="w-full px-3 py-2 border border-surface-border rounded-md text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all bg-white"
+        >
+          {sortByOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={sortOrder}
+          onChange={(e) => onSortOrderChange(e.target.value as SortOrder)}
+          className="w-full px-3 py-2 border border-surface-border rounded-md text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all bg-white"
+        >
+          <option value={SortOrder.DESC}>{orderLabels.desc}</option>
+          <option value={SortOrder.ASC}>{orderLabels.asc}</option>
+        </select>
       </div>
     </div>
   );
