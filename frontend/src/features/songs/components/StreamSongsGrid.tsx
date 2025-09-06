@@ -16,9 +16,9 @@ interface StreamSongsGridProps {
 export function StreamSongsGrid({ songs, loading = false, error, viewMode = ViewMode.GRID, onSongClick, onSongPlayClick }: StreamSongsGridProps) {
   const getGridClassName = () => {
     if (viewMode === ViewMode.LIST) {
-      return 'grid-cols-1 gap-4';
+      return 'grid-cols-1 gap-1 sm:gap-4';
     }
-    return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3';
+    return 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1 md:gap-3';
   };
 
   return (

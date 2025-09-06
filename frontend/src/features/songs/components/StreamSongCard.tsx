@@ -23,24 +23,24 @@ const StreamSongCardComponent = ({ song, index = 0, onClick, onPlayClick }: Stre
         <div
           className="rounded-xl overflow-hidden h-full bg-bg-primary border border-gray-100 hover:border-accent-gold/30 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
         >
-          <CardContent className="p-4 h-full flex flex-col">
+          <CardContent className="p-2 sm:p-4 h-full flex flex-col">
             {/* サムネイル */}
-            <div className="mb-3">
+            <div className="mb-2 sm:mb-3 h-16 sm:h-auto">
               <SongCardThumbnail
                 videoId={latestPerformance?.videoId || null}
                 title={song.title}
                 size="lg"
                 aspectRatio="video"
-                className="w-full group-hover:scale-105 transition-transform duration-300 shadow-md group-hover:shadow-lg rounded-lg overflow-hidden"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 shadow-md group-hover:shadow-lg rounded-lg overflow-hidden"
               />
             </div>
 
             {/* 曲情報 */}
             <div className="flex-1">
-              <h3 className="text-gray-900 font-bold text-base line-clamp-2 group-hover:text-accent-gold transition-colors duration-200 leading-tight mb-1">
+              <h3 className="text-gray-900 font-bold text-sm sm:text-base line-clamp-2 group-hover:text-accent-gold transition-colors duration-200 leading-tight mb-1">
                 {song.title}
               </h3>
-              <p className="text-gray-600 text-sm line-clamp-1 mb-3">
+              <p className="text-gray-600 text-xs sm:text-sm line-clamp-1 mb-2 sm:mb-3">
                 {song.artist}
               </p>
             </div>
