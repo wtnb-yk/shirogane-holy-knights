@@ -14,9 +14,9 @@ const VIDEO_SPECIAL_ITEMS: SpecialItemConfig[] = [];
  * PICKUPアイテムのランダムインデックスを生成
  */
 function generatePickupIndices(): number[] {
-  const firstPickup = Math.random() < 0.5 ? 5 : 7;    // 1つ目: 5or7
-  const secondPickup = Math.random() < 0.5 ? 10 : 12; // 2つ目: 10or12
-  const thirdPickup = Math.random() < 0.5 ? 15 : 17;  // 3つ目: 15or17
+  const firstPickup = Math.random() < 0.5 ? 5 : 7;
+  const secondPickup = Math.random() < 0.5 ? 10 : 12;
+  const thirdPickup = Math.random() < 0.5 ? 15 : 17;
   
   return [firstPickup, secondPickup, thirdPickup];
 }
