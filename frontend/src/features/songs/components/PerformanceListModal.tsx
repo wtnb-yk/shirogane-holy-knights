@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Calendar, Play } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { StreamSong, Performance } from '../types/types';
-import { SongCardThumbnail } from './SongCardThumbnail';
+import { PerformanceListContent } from './PerformanceListContent';
+import { useViewport } from '@/hooks/useViewport';
 
 interface PerformanceListModalProps {
   song: StreamSong | null;
@@ -14,28 +16,33 @@ interface PerformanceListModalProps {
 }
 
 export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePlay }: PerformanceListModalProps) => {
-  if (!song) return null;
+  const { isMobile, isLoaded } = useViewport();
 
-  const formatDate = (dateStr: string) => {
-    try {
-      return new Date(dateStr).toLocaleDateString('ja-JP', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch {
-      return '日時不明';
-    }
-  };
+  if (!song || !isLoaded) return null;
 
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+  const handleClose = () => onOpenChange(false);
 
+  // スマホの場合はBottomSheetを表示
+  if (isMobile) {
+    return (
+      <BottomSheet isOpen={open} onClose={handleClose}>
+        <BottomSheetHeader
+          title={`${song.title} - ${song.artist}`}
+          onClose={handleClose}
+        />
+        <div className="flex-1 overflow-y-auto">
+          <PerformanceListContent
+            song={song}
+            onPerformancePlay={onPerformancePlay}
+            onClose={handleClose}
+            isMobile={true}
+          />
+        </div>
+      </BottomSheet>
+    );
+  }
+
+  // デスクトップの場合はDialogを表示
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -44,77 +51,15 @@ export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePl
             <span className="font-bold text-gray-900">{song.title}</span>
             <span className="ml-3 font-medium text-gray-600 text-base">{song.artist}</span>
           </DialogTitle>
-          <DialogClose onClose={() => onOpenChange(false)} />
+          <DialogClose onClose={handleClose} />
         </DialogHeader>
         
-        <div className="p-6 pt-0">
-          {/* 楽曲統計 */}
-          <div className="mb-6 p-4 bg-bg-secondary rounded-lg">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-text-primary">総歌唱回数</span>
-              <span className="text-text-primary font-semibold">{song.performances.length}回</span>
-            </div>
-            {song.latestSingDate && (
-              <div className="flex items-center justify-between text-sm mt-2">
-                <span className="text-text-primary">最新歌唱</span>
-                <span className="text-text-primary">{formatDate(song.latestSingDate)}</span>
-              </div>
-            )}
-          </div>
-
-          {/* パフォーマンス一覧 */}
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {song.performances.map((performance: Performance, index: number) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (onPerformancePlay) {
-                    onPerformancePlay(song, performance);
-                  }
-                  onOpenChange(false);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="block w-full text-left border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:border-accent-gold/50 transition-all duration-200 cursor-pointer group hover:shadow-md"
-              >
-                <div className="flex items-start gap-4">
-                  {/* サムネイル */}
-                  <SongCardThumbnail
-                    videoId={performance.videoId || null}
-                    title={performance.videoTitle}
-                    size="md"
-                    aspectRatio="video"
-                    className="flex-shrink-0 group-hover:scale-105 transition-transform duration-200"
-                  />
-                  
-                  {/* 配信情報 */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-gray-900 font-medium text-sm line-clamp-2 mb-2 group-hover:text-accent-gold transition-colors">
-                      {performance.videoTitle}
-                    </h4>
-                    
-                    <div className="space-y-1">
-                      {performance.startSeconds > 0 && (
-                        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                          <Play className="w-3 h-3 text-accent-gold" />
-                          <span>{formatDuration(performance.startSeconds)}</span>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                        <Calendar className="w-3 h-3 text-accent-blue" />
-                        <span>{formatDate(performance.performedAt)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* 再生アイコン */}
-                  <div className="flex items-center">
-                    <Play className="w-4 h-4 text-gray-400 group-hover:text-accent-gold transition-colors fill-current" />
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+        <PerformanceListContent
+          song={song}
+          onPerformancePlay={onPerformancePlay}
+          onClose={handleClose}
+          isMobile={false}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -72,7 +72,7 @@ export const SongsBottomSheetContent = ({
             <ContentTypeTabs
               tabs={songContentTypeTabs}
               activeTab={songContentType}
-              onTabChange={onSongContentTypeChange}
+              onTabChange={(value) => onSongContentTypeChange(value as SongContentType)}
             />
           </div>
 
