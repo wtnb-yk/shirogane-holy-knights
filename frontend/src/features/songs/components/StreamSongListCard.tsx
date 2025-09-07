@@ -43,8 +43,9 @@ const StreamSongListCardComponent = ({ song, index = 0, onClick }: StreamSongLis
               videoId={latestPerformance?.videoId || null}
               title={song.title}
               size="lg"
-              showPlayButton={true}
+              showOverlay={true}
               aspectRatio="video"
+              variant="detail"
               className="flex-shrink-0 group-hover:scale-105 transition-transform duration-ui"
             />
             

@@ -56,6 +56,8 @@ export const PerformanceListContent = ({
                 title={performance.videoTitle}
                 size={isMobile ? "sm" : "md"}
                 aspectRatio="video"
+                showOverlay={true}
+                variant="playable"
                 className="flex-shrink-0 group-hover:scale-105 transition-transform duration-200"
               />
               
@@ -77,11 +79,6 @@ export const PerformanceListContent = ({
                     <span>{formatDate(performance.performedAt)}</span>
                   </div>
                 </div>
-              </div>
-              
-              {/* 再生アイコン */}
-              <div className="flex items-center">
-                <Play className="w-4 h-4 text-gray-400 group-hover:text-accent-gold transition-colors fill-current" />
               </div>
             </div>
           </button>
