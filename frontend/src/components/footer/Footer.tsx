@@ -5,25 +5,21 @@ import Link from 'next/link';
 export function Footer() {
   return (
     <footer className="bg-bg-secondary border-t border-surface-border mt-auto">
-      <div className="w-full pt-6 pb-4 px-4 sm:px-6 lg:pt-10 lg:pb-5 lg:px-10">
+      <div className="w-full pt-4 pb-4 px-4 sm:px-6 lg:pt-8 lg:pb-5 lg:px-10">
         <div className="max-w-full mx-auto">
-          <div className="flex flex-col lg:flex-row justify-between gap-4 lg:gap-12">
-            {/* 左側：サイト情報（デスクトップのみ） */}
-            <div className="hidden lg:block flex-none lg:w-[450px]">
-              <div className="mb-4 lg:mb-6">
-                <h3 className="text-lg font-normal text-surface-primary mb-2">
-                  白銀ノエル 非公式ファンサイト<br />
-                  だんいんポータル
-                </h3>
-              </div>
-            </div>
+          {/* サイト情報（デスクトップのみ） */}
+          <div className="hidden lg:block mb-6">
+            <h3 className="text-base font-normal text-surface-primary mb-4">
+              白銀ノエル 非公式ファンサイト<br />
+              だんいんポータル
+            </h3>
             
-            {/* 右側：リンク2列（タブレット以下では非表示） */}
-            <div className="hidden lg:flex flex-col lg:flex-row gap-6 lg:gap-20">
+            {/* サイトマップと公式リンクを横並び */}
+            <div className="flex flex-row gap-20">
               {/* サイトマップ */}
-              <div className="min-w-36">
-                <h4 className="text-sm font-normal text-surface-primary mb-4">サイトマップ</h4>
-                <ul className="space-y-2.5">
+              <div className="flex items-baseline gap-3">
+                <h4 className="text-sm font-normal text-surface-primary">サイトマップ</h4>
+                <ul className="flex flex-wrap gap-x-6 gap-y-2">
                   <li>
                     <Link href="/" className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors">
                       HOME
@@ -53,9 +49,9 @@ export function Footer() {
               </div>
               
               {/* 公式リンク */}
-              <div className="min-w-36">
-                <h4 className="text-sm font-normal text-surface-primary mb-3">公式リンク</h4>
-                <ul className="space-y-2">
+              <div className="flex items-baseline gap-3">
+                <h4 className="text-sm font-normal text-surface-primary">公式リンク</h4>
+                <ul className="flex flex-wrap gap-x-6 gap-y-2">
                   <li>
                     <a 
                       href="https://www.youtube.com/@ShiroganeNoel" 
