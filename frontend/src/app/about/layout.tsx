@@ -2,17 +2,24 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'ABOUT - だんいんポータル',
-  description: '「だんいんポータル」は、ホロライブプロダクション所属VTuber 白銀ノエルさんを応援する非公式ファンサイトです。サイト概要、免責事項、運営情報を掲載しています。',
+  description: 'だんいんポータルは、白銀ノエルさんを応援する非公式ファンサイトです。サイトの概要や免責事項、運営情報をご確認いただけます。',
   openGraph: {
     title: 'ABOUT - だんいんポータル',
-    description: '「だんいんポータル」は、ホロライブプロダクション所属VTuber 白銀ノエルさんを応援する非公式ファンサイトです。',
+    description: 'だんいんポータルは、白銀ノエルさんを応援する非公式ファンサイトです。サイトの概要や免責事項、運営情報をご確認いただけます。',
     type: 'website',
     locale: 'ja_JP',
+    images: [{
+      url: '/og-images/og-about.svg',
+      width: 1200,
+      height: 630,
+      alt: 'ABOUT - だんいんポータルについて',
+    }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'ABOUT - だんいんポータル',
-    description: '白銀ノエルさんの非公式応援サイトについて',
+    description: 'だんいんポータルは、白銀ノエルさんを応援する非公式ファンサイトです。',
+    images: '/og-images/og-about.svg',
   },
 };
 
