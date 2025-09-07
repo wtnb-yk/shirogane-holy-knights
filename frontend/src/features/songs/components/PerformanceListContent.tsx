@@ -47,7 +47,7 @@ export const PerformanceListContent = ({
               onClose();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className={`block w-full text-left border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-accent-gold/50 transition-all duration-200 cursor-pointer group hover:shadow-md ${isMobile ? 'p-3' : 'p-4'}`}
+            className={`block w-full text-left border border-surface-border rounded-xl hover:border-accent-gold/50 hover:shadow-lg transition-all duration-card cursor-pointer group hover:bg-bg-hover ${isMobile ? 'p-3' : 'p-4'}`}
           >
             <div className={`flex items-start ${isMobile ? 'gap-3' : 'gap-4'}`}>
               {/* サムネイル */}
