@@ -26,6 +26,17 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.png',
   },
+  openGraph: {
+    title: 'だんいんポータル',
+    description: '白銀ノエルさんの非公式応援サイト。ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
+    type: 'website',
+    locale: 'ja_JP',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'だんいんポータル',
+    description: '白銀ノエルさんの非公式応援サイト',
+  },
 };
 
 export default function RootLayout({
