@@ -3,7 +3,6 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
 import { SortBy, SortOrder, SongFilterOptions, SongContentType } from '@/features/songs/types/types';
-import { ContentTypeTabs, Tab } from '@/components/common/ContentTypeTabs';
 import { SongSortSection } from '@/features/songs/components/SongSortSection';
 import { SongFilterSection } from '@/features/songs/components/SongFilterSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';
@@ -58,23 +57,10 @@ export const SongsBottomSheetContent = ({
     onClearSearch();
   };
 
-  const songContentTypeTabs: Tab[] = [
-    { value: SongContentType.CONCERT, label: 'ライブ' },
-    { value: SongContentType.STREAM, label: '歌枠' }
-  ];
-
   return (
     <div className="flex-1 overflow-y-auto min-h-0">
       <div className="p-3">
         <div className="space-y-6">
-          {/* コンテンツタイプタブ */}
-          <div className="scale-90">
-            <ContentTypeTabs
-              tabs={songContentTypeTabs}
-              activeTab={songContentType}
-              onTabChange={(value) => onSongContentTypeChange(value as SongContentType)}
-            />
-          </div>
 
           {/* 楽曲検索セクション */}
           <div>

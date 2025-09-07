@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
-import { ContentTypeTabs, Tab } from '@/components/common/ContentTypeTabs';
+import { ContentTypeTabs, Tab } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { SongSearchSection } from './SongsSidebar/SongSearchSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';

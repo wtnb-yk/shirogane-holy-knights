@@ -2,24 +2,63 @@
 
 import React from 'react';
 
+export interface Tab {
+  value: string;
+  label: string;
+}
+
 interface ContentTypeOption {
   key: string;
   label: string;
 }
 
-interface ContentTypeTabsProps {
+interface ContentTypeTabsPropsWithOptions {
   options: ContentTypeOption[];
   selectedType: string;
   onTypeChange: (type: string) => void;
   className?: string;
+  tabs?: never;
+  activeTab?: never;
+  onTabChange?: never;
 }
 
-export const ContentTypeTabs = ({
-  options,
-  selectedType,
-  onTypeChange,
-  className = ""
-}: ContentTypeTabsProps) => {
+interface ContentTypeTabsPropsWithTabs {
+  tabs: Tab[];
+  activeTab: string;
+  onTabChange: (value: string) => void;
+  className?: string;
+  options?: never;
+  selectedType?: never;
+  onTypeChange?: never;
+}
+
+type ContentTypeTabsProps = ContentTypeTabsPropsWithOptions | ContentTypeTabsPropsWithTabs;
+
+export const ContentTypeTabs = (props: ContentTypeTabsProps) => {
+  const { className = "" } = props;
+  
+  // Tab[]形式の場合
+  if ('tabs' in props && props.tabs) {
+    const { tabs, activeTab, onTabChange } = props;
+    const options = tabs.map(tab => ({ key: tab.value, label: tab.label }));
+    return renderTabs(options, activeTab, onTabChange, className);
+  }
+  
+  // ContentTypeOption[]形式の場合
+  if ('options' in props && props.options) {
+    const { options, selectedType, onTypeChange } = props;
+    return renderTabs(options, selectedType, onTypeChange, className);
+  }
+  
+  return null;
+};
+
+const renderTabs = (
+  options: ContentTypeOption[],
+  selectedType: string,
+  onTypeChange: (type: string) => void,
+  className: string
+) => {
   return (
     <div className={className}>
       <div className="flex rounded-lg border border-surface-border p-1 bg-bg-secondary">

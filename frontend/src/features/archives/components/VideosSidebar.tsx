@@ -3,7 +3,7 @@
 import React from 'react';
 import { ContentType } from '../types/types';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
-import { ContentTypeTabs, Tab } from '@/components/common/ContentTypeTabs';
+import { ContentTypeTabs, Tab } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { SearchSection } from './VideosSidebar/SearchSection';
 import { CategoryFilter } from './VideosSidebar/CategoryFilter';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';

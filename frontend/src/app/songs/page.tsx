@@ -18,6 +18,7 @@ import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar
 import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
+import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -99,8 +100,6 @@ export default function SongsList() {
               onClose={() => setIsSidebarOpen(false)}
               mobileContent={
                 <SongsBottomSheetContent
-                  songContentType={songContentType}
-                  onSongContentTypeChange={setSongContentType}
                   searchValue={currentData.searchQuery}
                   onSearch={currentData.handleSearch}
                   onClearSearch={currentData.clearSearch}
@@ -109,6 +108,8 @@ export default function SongsList() {
                   filters={currentData.filters}
                   onSortChange={currentData.handleSortChange}
                   onFiltersChange={currentData.setFilters}
+                  songContentType={songContentType}
+                  onSongContentTypeChange={setSongContentType}
                 />
               }
             >
@@ -141,14 +142,22 @@ export default function SongsList() {
           />
         </>
       }
+      mobileTabsContent={
+        <ContentTypeTabs
+          tabs={[
+            { value: SongContentType.CONCERT, label: 'ライブ' },
+            { value: SongContentType.STREAM, label: '歌枠' }
+          ]}
+          activeTab={songContentType}
+          onTabChange={(value) => setSongContentType(value as SongContentType)}
+        />
+      }
       sidebar={
         <ResponsiveSidebar 
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           mobileContent={
             <SongsBottomSheetContent
-              songContentType={songContentType}
-              onSongContentTypeChange={setSongContentType}
               searchValue={currentData.searchQuery}
               onSearch={currentData.handleSearch}
               onClearSearch={currentData.clearSearch}
@@ -157,6 +166,8 @@ export default function SongsList() {
               filters={currentData.filters}
               onSortChange={currentData.handleSortChange}
               onFiltersChange={currentData.setFilters}
+              songContentType={songContentType}
+              onSongContentTypeChange={setSongContentType}
             />
           }
         >
