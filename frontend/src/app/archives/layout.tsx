@@ -8,11 +8,18 @@ export const metadata: Metadata = {
     description: '配信アーカイブの検索、カテゴリーや日付での絞り込みができます。最新の配信はYouTubeチャンネルをご確認ください。',
     type: 'website',
     locale: 'ja_JP',
+    images: [{
+      url: '/og-images/og-archives.svg',
+      width: 1200,
+      height: 630,
+      alt: 'ARCHIVE - 白銀ノエル配信アーカイブ',
+    }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'ARCHIVE - だんいんポータル',
-    description: '白銀ノエルさんの配信アーカイブを検索・閲覧できます。',
+    description: '配信アーカイブの検索、カテゴリーや日付での絞り込みができます。',
+    images: '/og-images/og-archives.svg',
   },
 };
 

@@ -53,8 +53,8 @@
     <text x="600" y="350" text-anchor="middle" fill="url(#aboutGoldGradient)" font-family="'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', sans-serif" font-size="38" font-weight="bold" letter-spacing="2">運営・免責事項・お問い合わせ</text>
 
     <g transform="translate(600,420)">
-        <rect x="-200" y="-25" width="400" height="50" rx="25" fill="#ffffff" opacity="0.1"/>
-        <text x="0" y="8" text-anchor="middle" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN', sans-serif" font-size="22" opacity="0.9">だんいんポータルの詳細情報</text>
+        <rect x="-250" y="-25" width="500" height="50" rx="25" fill="#ffffff" opacity="0.1"/>
+        <text x="0" y="8" text-anchor="middle" fill="#ffffff" font-family="'Hiragino Kaku Gothic ProN', sans-serif" font-size="22" opacity="0.9">だんいんポータル</text>
     </g>
 
     <text x="600" y="530" text-anchor="middle" fill="url(#aboutSilverGradient)" font-family="'Arial', sans-serif" font-size="24" font-weight="600" letter-spacing="2">www.noe-room.com/about</text>
