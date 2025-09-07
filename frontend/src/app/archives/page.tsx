@@ -62,7 +62,7 @@ export default function VideosList() {
           variant="search"
         />
       }
-      mobileTabsContent={
+      primaryTabs={
         <ContentTypeTabs
           tabs={[
             { value: ContentType.STREAMS, label: '配信' },
@@ -70,6 +70,8 @@ export default function VideosList() {
           ]}
           activeTab={contentType}
           onTabChange={(value) => setContentType(value as ContentType)}
+          size="md"
+          variant="compact"
         />
       }
       sidebar={

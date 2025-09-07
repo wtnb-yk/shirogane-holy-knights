@@ -7,7 +7,8 @@ interface PageLayoutProps {
   sidebar?: React.ReactNode;
   headerActions?: React.ReactNode;
   mobileActions?: React.ReactNode;
-  mobileTabsContent?: React.ReactNode;
+  mobileRightActions?: React.ReactNode;
+  primaryTabs?: React.ReactNode;
 }
 
 export const PageLayout: React.FC<PageLayoutProps> = ({ 
@@ -17,7 +18,8 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   sidebar,
   headerActions,
   mobileActions,
-  mobileTabsContent
+  mobileRightActions,
+  primaryTabs
 }) => {
   return (
     <div className="bg-bg-page">
@@ -31,10 +33,13 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               {title}
             </h1>
             
-            {/* モバイルサイズではボタンをタイトル下に表示 */}
-            {mobileActions && (
-              <div className="lg:hidden mb-3 flex gap-2">
+            
+            {/* モバイル: タブ+検索+グリッド切り替え全て左揃え */}
+            {(primaryTabs || mobileActions || mobileRightActions) && (
+              <div className="lg:hidden mb-3 flex items-center gap-2">
+                {primaryTabs}
                 {mobileActions}
+                {mobileRightActions}
               </div>
             )}
             
@@ -45,13 +50,6 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               </div>
               {headerActions}
             </div>
-            
-            {/* デスクトップ以外でタブを表示 */}
-            {mobileTabsContent && (
-              <div className="lg:hidden mb-3">
-                {mobileTabsContent}
-              </div>
-            )}
           </div>
           
           {/* メインコンテンツ */}

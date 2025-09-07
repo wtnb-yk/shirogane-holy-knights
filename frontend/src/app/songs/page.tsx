@@ -129,20 +129,20 @@ export default function SongsList() {
         </>
       }
       mobileActions={
-        <>
-          <ViewToggleButton
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
-          <MobileSidebarButton 
-            onClick={() => setIsSidebarOpen(true)}
-            hasActiveFilters={activeFiltersCount > 0}
-            activeFiltersCount={activeFiltersCount}
-            variant="search"
-          />
-        </>
+        <MobileSidebarButton 
+          onClick={() => setIsSidebarOpen(true)}
+          hasActiveFilters={activeFiltersCount > 0}
+          activeFiltersCount={activeFiltersCount}
+          variant="search"
+        />
       }
-      mobileTabsContent={
+      mobileRightActions={
+        <ViewToggleButton
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+        />
+      }
+      primaryTabs={
         <ContentTypeTabs
           tabs={[
             { value: SongContentType.CONCERT, label: 'ライブ' },
@@ -150,6 +150,8 @@ export default function SongsList() {
           ]}
           activeTab={songContentType}
           onTabChange={(value) => setSongContentType(value as SongContentType)}
+          size="md"
+          variant="compact"
         />
       }
       sidebar={
