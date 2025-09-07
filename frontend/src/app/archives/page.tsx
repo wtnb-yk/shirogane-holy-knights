@@ -17,6 +17,7 @@ import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { VideosBottomSheetContent } from '@/features/archives/components/VideosBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
+import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 
 export default function VideosList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -59,6 +60,16 @@ export default function VideosList() {
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
+        />
+      }
+      mobileTabsContent={
+        <ContentTypeTabs
+          tabs={[
+            { value: ContentType.STREAMS, label: '配信' },
+            { value: ContentType.VIDEOS, label: '動画' }
+          ]}
+          activeTab={contentType}
+          onTabChange={(value) => setContentType(value as ContentType)}
         />
       }
       sidebar={
@@ -146,8 +157,6 @@ export default function VideosList() {
             onClose={() => setIsBottomSheetOpen(false)}
           />
           <VideosBottomSheetContent
-            contentType={contentType}
-            onContentTypeChange={setContentType}
             searchValue={currentData.searchQuery}
             onSearch={currentData.handleSearch}
             onClearSearch={currentData.clearSearch}

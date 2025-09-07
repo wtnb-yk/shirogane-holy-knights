@@ -2,16 +2,11 @@
 
 import React from 'react';
 import { Search, X } from 'lucide-react';
-import { ContentType } from '@/features/archives/types/types';
 import { FilterOptions } from '@/features/archives/components/filter/VideoFilterSection';
-import { SearchInput } from '@/components/common/Sidebar/components/SearchInput';
-import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
-import { DateRangeInput } from '@/components/common/Sidebar/components/DateRangeInput';
+import { MobileDateRangeInput } from '@/components/common/Sidebar/components/MobileDateRangeInput';
 
 interface VideosBottomSheetContentProps {
-  contentType: ContentType;
-  onContentTypeChange: (type: ContentType) => void;
   searchValue: string;
   onSearch: (query: string) => void;
   onClearSearch: () => void;
@@ -21,8 +16,6 @@ interface VideosBottomSheetContentProps {
 }
 
 export const VideosBottomSheetContent = ({
-  contentType,
-  onContentTypeChange,
   searchValue,
   onSearch,
   onClearSearch,
@@ -73,23 +66,10 @@ export const VideosBottomSheetContent = ({
     setFilters({ ...filters, [field]: value || undefined });
   };
 
-  const contentTypeOptions = [
-    { key: ContentType.STREAMS, label: '配信' },
-    { key: ContentType.VIDEOS, label: '動画' }
-  ];
-
   return (
     <div className="flex-1 overflow-y-auto min-h-0">
       <div className="p-3">
         <div className="space-y-6">
-          {/* コンテンツタイプタブ */}
-          <div className="scale-90">
-            <ContentTypeTabs
-              options={contentTypeOptions}
-              selectedType={contentType}
-              onTypeChange={(type) => onContentTypeChange(type as ContentType)}
-            />
-          </div>
 
           {/* アーカイブ検索セクション */}
           <div>
@@ -132,7 +112,7 @@ export const VideosBottomSheetContent = ({
           {/* 日付フィルター */}
           <div>
             <h3 className="text-sm font-bold text-text-primary mb-2">配信日</h3>
-            <DateRangeInput
+            <MobileDateRangeInput
               startDate={filters.startDate}
               endDate={filters.endDate}
               onDateChange={handleDateChange}
