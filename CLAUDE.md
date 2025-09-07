@@ -29,6 +29,10 @@ This existing project uses the following technology stack:
 
 ## Essential Commands
 
+### Development Server Ports
+- **Frontend**: http://localhost:3001 (Next.js)
+- **Backend API**: LocalStack Lambda endpoints
+
 ### Backend Development
 
 **See `backend/README.md` for backend-related details**
