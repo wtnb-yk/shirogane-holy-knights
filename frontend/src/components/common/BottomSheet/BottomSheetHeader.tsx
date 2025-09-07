@@ -12,7 +12,7 @@ interface BottomSheetHeaderProps {
 export const BottomSheetHeader = ({
   title,
   onClose,
-  showDragHandle = true,
+  showDragHandle = false,
 }: BottomSheetHeaderProps) => {
   return (
     <>
@@ -24,15 +24,15 @@ export const BottomSheetHeader = ({
       )}
 
       {/* ヘッダー */}
-      <div className="flex items-center justify-between px-4 pb-3 border-b border-surface-border bg-white">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-surface-border bg-white">
         <h2 className="text-lg font-bold text-text-primary">
           {title}
         </h2>
         <button
           onClick={onClose}
-          className="p-1 text-text-tertiary hover:text-text-primary transition-colors rounded-md hover:bg-surface-hover"
+          className="p-2 text-text-primary hover:text-accent-gold transition-colors rounded-lg hover:bg-surface-hover"
         >
-          <X className="w-4 h-4" />
+          <X className="w-6 h-6" />
         </button>
       </div>
     </>
