@@ -5,12 +5,12 @@ import Link from 'next/link';
 export function Footer() {
   return (
     <footer className="bg-bg-secondary border-t border-surface-border mt-auto">
-      <div className="w-full pt-10 pb-5 px-10">
+      <div className="w-full pt-6 pb-4 px-4 sm:px-6 lg:pt-10 lg:pb-5 lg:px-10">
         <div className="max-w-full mx-auto">
-          <div className="flex flex-col lg:flex-row justify-between gap-6 lg:gap-12">
+          <div className="flex flex-col lg:flex-row justify-between gap-4 lg:gap-12">
             {/* 左側：サイト情報 */}
             <div className="flex-none lg:w-[450px]">
-              <div className="mb-6">
+              <div className="mb-4 lg:mb-6">
                 <h3 className="text-lg font-normal text-surface-primary mb-2">
                   白銀ノエル 非公式ファンサイト<br />
                   だんいんポータル
@@ -47,8 +47,8 @@ export function Footer() {
               </div>
             </div>
             
-            {/* 右側：リンク2列 */}
-            <div className="flex flex-col sm:flex-row gap-8 lg:gap-20">
+            {/* 右側：リンク2列（スマホでは非表示） */}
+            <div className="hidden sm:flex flex-col sm:flex-row gap-6 sm:gap-8 lg:gap-20">
               {/* サイトマップ */}
               <div className="min-w-36">
                 <h4 className="text-sm font-normal text-surface-primary mb-4">サイトマップ</h4>
@@ -78,8 +78,8 @@ export function Footer() {
               
               {/* 公式リンク */}
               <div className="min-w-36">
-                <h4 className="text-sm font-normal text-surface-primary mb-4">公式リンク</h4>
-                <ul className="space-y-2.5">
+                <h4 className="text-sm font-normal text-surface-primary mb-3">公式リンク</h4>
+                <ul className="space-y-2">
                   <li>
                     <a 
                       href="https://www.youtube.com/@ShiroganeNoel" 
