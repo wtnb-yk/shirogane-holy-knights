@@ -24,12 +24,12 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   return (
     <div className="bg-bg-page">
       {/* メインコンテナ */}
-      <div className="flex flex-col md:flex-row max-w-full py-2 sm:py-8 px-2 sm:px-4 gap-2 sm:gap-4">
+      <div className="flex flex-col md:flex-row max-w-full py-4 sm:py-8 px-4 sm:px-6 gap-2 sm:gap-4">
         {/* メインコンテンツ */}
         <main className="flex-1 min-w-0">
           {/* ページヘッダー */}
-          <div className="page-header mb-5">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-surface-primary to-accent-blue bg-clip-text text-transparent mb-3 tracking-wider">
+          <div className="page-header mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-surface-primary to-accent-blue bg-clip-text text-transparent mb-4 tracking-wider">
               {title}
             </h1>
             
