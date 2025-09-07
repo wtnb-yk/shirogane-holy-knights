@@ -2,18 +2,19 @@
 
 import React from 'react';
 import YouTube from 'react-youtube';
-import { StreamSong } from '../types/types';
+import { StreamSong, Performance } from '../types/types';
 
 interface YouTubePlayerProps {
   song: StreamSong;
+  performance?: Performance | null;
   autoplay?: boolean;
   onStateChange?: (event: any) => void;
 }
 
-export const YouTubePlayer = ({ song, autoplay = false, onStateChange }: YouTubePlayerProps) => {
-  const latestPerformance = song.performances[0];
+export const YouTubePlayer = ({ song, performance, autoplay = false, onStateChange }: YouTubePlayerProps) => {
+  const activePerformance = performance || song.performances[0];
   
-  if (!latestPerformance?.videoId) {
+  if (!activePerformance?.videoId) {
     return (
       <div className="aspect-video bg-bg-secondary rounded-lg flex items-center justify-center">
         <p className="text-text-secondary">動画が見つかりません</p>
@@ -32,7 +33,7 @@ export const YouTubePlayer = ({ song, autoplay = false, onStateChange }: YouTube
       // プレイヤーコントロールを表示
       controls: 1,
       // 楽曲開始位置から再生
-      start: latestPerformance.startSeconds,
+      start: activePerformance.startSeconds,
       // 自動再生
       autoplay: autoplay ? 1 : 0,
     },
@@ -41,7 +42,7 @@ export const YouTubePlayer = ({ song, autoplay = false, onStateChange }: YouTube
   return (
     <div className="aspect-video rounded-lg overflow-hidden bg-black">
       <YouTube
-        videoId={latestPerformance.videoId}
+        videoId={activePerformance.videoId}
         opts={opts}
         onStateChange={onStateChange}
         className="w-full h-full"

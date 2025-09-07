@@ -40,7 +40,7 @@ export default function SongsList() {
   const currentData = songContentType === SongContentType.STREAM ? streamSongsData : concertSongsData;
 
   // プレイヤー状態管理
-  const { currentSong, autoplay, changeCurrentSong, playSong } = useCurrentSong();
+  const { currentSong, currentPerformance, autoplay, changeCurrentSong, playSong } = useCurrentSong();
   
   
   // 初回読み込み時のみランダムな楽曲を選択（検索・ページング変更では影響されない）
@@ -188,6 +188,7 @@ export default function SongsList() {
           <div className="mb-4 -mx-2 lg:mx-0">
             <PlayerSection 
               currentSong={currentSong} 
+              currentPerformance={currentPerformance}
               autoplay={autoplay}
             />
           </div>
@@ -233,7 +234,7 @@ export default function SongsList() {
           open={showPerformanceModal}
           onOpenChange={setShowPerformanceModal}
           onPerformancePlay={(song, performance) => {
-            playSong(song);
+            playSong(song, performance);
           }}
         />
       </>

@@ -2,16 +2,17 @@
 
 import React from 'react';
 import { Music, Clock } from 'lucide-react';
-import { StreamSong } from '../types/types';
+import { StreamSong, Performance } from '../types/types';
 import { YouTubePlayer } from './YouTubePlayer';
 
 interface PlayerSectionProps {
   currentSong: StreamSong | null;
+  currentPerformance: Performance | null;
   autoplay?: boolean;
   onStateChange?: (event: any) => void;
 }
 
-export const PlayerSection = ({ currentSong, autoplay = false, onStateChange }: PlayerSectionProps) => {
+export const PlayerSection = ({ currentSong, currentPerformance, autoplay = false, onStateChange }: PlayerSectionProps) => {
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return '歌唱日不明';
     try {
@@ -42,6 +43,7 @@ export const PlayerSection = ({ currentSong, autoplay = false, onStateChange }: 
           <div className="w-full lg:w-3/4 rounded-lg lg:rounded-xl overflow-hidden shadow-md">
             <YouTubePlayer
               song={currentSong}
+              performance={currentPerformance}
               autoplay={autoplay}
               onStateChange={onStateChange}
             />
@@ -57,23 +59,25 @@ export const PlayerSection = ({ currentSong, autoplay = false, onStateChange }: 
               </p>
             </div>
 
-            {currentSong.latestSingDate && (
+            {(currentPerformance?.performedAt || currentSong.latestSingDate) && (
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-accent-blue/10 rounded-md">
                   <Clock className="w-4 h-4 text-accent-blue" />
                 </div>
-                <span className="text-sm text-gray-600">最新: {formatDate(currentSong.latestSingDate)}</span>
+                <span className="text-sm text-gray-600">
+                  {currentPerformance ? '歌唱日' : '最新'}: {formatDate(currentPerformance?.performedAt || currentSong.latestSingDate)}
+                </span>
               </div>
             )}
 
-            {currentSong.performances[0] && (
+            {currentPerformance && (
               <div className="pt-2 lg:pt-3 border-t border-gray-200">
                 <p className="text-gray-700 text-sm font-semibold mb-2 flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-accent-gold" />
-                  最新の配信
+                  選択中の配信
                 </p>
                 <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
-                  {currentSong.performances[0].videoTitle}
+                  {currentPerformance.videoTitle}
                 </p>
               </div>
             )}
