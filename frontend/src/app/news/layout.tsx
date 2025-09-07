@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     images: [{
-      url: 'https://www.noe-room.com/og-images/og-news.svg',
+      url: 'https://www.noe-room.com/og-images/og-news.png',
       width: 1200,
-      height: 630,
+      height: 628,
       alt: 'NEWS - 白銀ノエル関連ニュース',
     }],
   },
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'NEWS - だんいんポータル',
     description: '白銀ノエルさん関連のニュースや話題をまとめています。',
-    images: 'https://www.noe-room.com/og-images/og-news.svg',
+    images: 'https://www.noe-room.com/og-images/og-news.png',
   },
 };
 

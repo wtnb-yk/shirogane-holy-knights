@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     images: [{
-      url: 'https://www.noe-room.com/og-images/og-archives.svg',
+      url: 'https://www.noe-room.com/og-images/og-archives.png',
       width: 1200,
-      height: 630,
+      height: 628,
       alt: 'ARCHIVE - 白銀ノエル配信アーカイブ',
     }],
   },
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ARCHIVE - だんいんポータル',
     description: '配信アーカイブの検索、カテゴリーや日付での絞り込みができます。',
-    images: 'https://www.noe-room.com/og-images/og-archives.svg',
+    images: 'https://www.noe-room.com/og-images/og-archives.png',
   },
 };
 

@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     images: [{
-      url: 'https://www.noe-room.com/og-images/og-about.svg',
+      url: 'https://www.noe-room.com/og-images/og-about.png',
       width: 1200,
-      height: 630,
+      height: 628,
       alt: 'ABOUT - だんいんポータルについて',
     }],
   },
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ABOUT - だんいんポータル',
     description: 'だんいんポータルは、白銀ノエルさんを応援する非公式ファンサイトです。',
-    images: 'https://www.noe-room.com/og-images/og-about.svg',
+    images: 'https://www.noe-room.com/og-images/og-about.png',
   },
 };
 
