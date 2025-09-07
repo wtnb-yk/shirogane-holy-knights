@@ -15,16 +15,12 @@ interface VideosGridProps {
   videos: VideoDto[];
   loading: boolean;
   error?: string | null;
-  showFeatured?: boolean;
-  isFirstPage?: boolean;
 }
 
 export const VideosGrid = ({ 
   videos, 
   loading, 
-  error, 
-  showFeatured = false, 
-  isFirstPage = false 
+  error
 }: VideosGridProps) => {
   // グリッド設定を取得
   const gridColumns = getVideoGridColumns();
@@ -44,7 +40,7 @@ export const VideosGrid = ({
     <BaseGrid
       items={videos}
       loading={loading}
-      error={error}
+      error={error ?? null}
       renderItem={renderItem}
       renderSkeleton={renderSkeleton}
       emptyMessage={DEFAULT_EMPTY_MESSAGE.videos}
