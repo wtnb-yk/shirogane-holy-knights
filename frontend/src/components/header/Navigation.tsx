@@ -10,6 +10,7 @@ interface NavigationMenuItems {
 }
 
 const navigationItems: NavigationMenuItems[] = [
+  { href: '/about', label: 'ABOUT' },
   { href: '/archives', label: 'ARCHIVE' },
   { href: '/songs', label: 'SONG' },
   { href: '/news', label: 'NEWS' },
