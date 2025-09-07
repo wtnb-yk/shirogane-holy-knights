@@ -35,7 +35,6 @@ export default function NewsPage() {
     clearAllFilters
   } = useNews({ pageSize: 10 });
 
-  // アクティブなフィルター数を計算
   const activeFiltersCount = (searchQuery ? 1 : 0) + 
     (filters.categoryIds?.length || 0);
 
@@ -81,56 +80,52 @@ export default function NewsPage() {
         </ResponsiveSidebar>
       }
     >
-      <>
+      <NewsSearchResultsSummary
+        searchQuery={searchQuery}
+        filters={filters}
+        totalCount={totalCount}
+        onClearAllFilters={clearAllFilters}
+      />
 
-          <NewsSearchResultsSummary
-            searchQuery={searchQuery}
-            filters={filters}
-            totalCount={totalCount}
-            onClearAllFilters={clearAllFilters}
-          />
+      <NewsGrid 
+        news={news} 
+        loading={loading} 
+        error={error} 
+      />
 
-          <NewsGrid 
-            news={news} 
-            loading={loading} 
-            error={error} 
-          />
-
-          {totalCount > 10 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              hasMore={hasMore}
-              onPageChange={setCurrentPage}
-              size="sm"
-            />
-          )}
-
-        <NewsStatsSummary
+      {totalCount > 10 && (
+        <Pagination
           currentPage={currentPage}
-          totalCount={totalCount}
-          pageSize={10}
-          loading={loading}
+          totalPages={totalPages}
+          hasMore={hasMore}
+          onPageChange={setCurrentPage}
+          size="sm"
         />
+      )}
 
-        {/* BottomSheet */}
-        <BottomSheet
-          isOpen={isBottomSheetOpen}
+      <NewsStatsSummary
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageSize={10}
+        loading={loading}
+      />
+
+      <BottomSheet
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+      >
+        <BottomSheetHeader
+          title="検索・絞り込み"
           onClose={() => setIsBottomSheetOpen(false)}
-        >
-          <BottomSheetHeader
-            title="検索・絞り込み"
-            onClose={() => setIsBottomSheetOpen(false)}
-          />
-          <NewsBottomSheetContent
-            searchValue={searchQuery}
-            onSearch={handleSearch}
-            onClearSearch={clearSearch}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        </BottomSheet>
-      </>
+        />
+        <NewsBottomSheetContent
+          searchValue={searchQuery}
+          onSearch={handleSearch}
+          onClearSearch={clearSearch}
+          filters={filters}
+          setFilters={setFilters}
+        />
+      </BottomSheet>
     </PageLayout>
   );
 }
