@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     images: [{
-      url: '/og-images/og-songs.svg',
+      url: 'https://www.noe-room.com/og-images/og-songs.svg',
       width: 1200,
       height: 630,
       alt: 'SONG - 白銀ノエル楽曲アーカイブ',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SONG - だんいんポータル',
     description: '白銀ノエルさんが歌枠や記念ライブで歌った曲を検索・閲覧できます。',
-    images: '/og-images/og-songs.svg',
+    images: 'https://www.noe-room.com/og-images/og-songs.svg',
   },
 };
 

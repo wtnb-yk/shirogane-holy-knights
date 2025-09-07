@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     images: [{
-      url: '/og-images/og-home.svg',
+      url: 'https://www.noe-room.com/og-images/og-home.svg',
       width: 1200,
       height: 630,
       alt: 'だんいんポータル - 白銀ノエル非公式応援サイト',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'だんいんポータル',
     description: '白銀ノエルさんの非公式応援サイト',
-    images: '/og-images/og-home.svg',
+    images: 'https://www.noe-room.com/og-images/og-home.svg',
   },
 };
 
