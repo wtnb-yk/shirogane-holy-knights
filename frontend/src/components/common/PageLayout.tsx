@@ -31,15 +31,15 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               {title}
             </h1>
             
-            {/* スマホサイズではボタンをタイトル下に表示 */}
+            {/* モバイルサイズではボタンをタイトル下に表示 */}
             {mobileActions && (
-              <div className="sm:hidden mb-3 flex gap-2">
+              <div className="lg:hidden mb-3 flex gap-2">
                 {mobileActions}
               </div>
             )}
             
-            {/* タブレット以上では説明文とボタンを横並び */}
-            <div className="hidden sm:flex items-start justify-between gap-4 mb-3">
+            {/* デスクトップ以上では説明文とボタンを横並び */}
+            <div className="hidden lg:flex items-start justify-between gap-4 mb-3">
               <div className="text-base text-gray-600 leading-relaxed flex-1">
                 {description}
               </div>
@@ -48,7 +48,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
             
             {/* デスクトップ以外でタブを表示 */}
             {mobileTabsContent && (
-              <div className="lg:hidden mb-4">
+              <div className="lg:hidden mb-3">
                 {mobileTabsContent}
               </div>
             )}
