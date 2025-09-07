@@ -4,7 +4,8 @@ import React from 'react';
 import { Search, X } from 'lucide-react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
-import { CategoryBadges } from './CategoryBadges';
+import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
+import { getCategoryDisplayName } from '@/constants/newsCategories';
 
 interface NewsBottomSheetContentProps {
   searchValue: string;
@@ -46,7 +47,10 @@ export const NewsBottomSheetContent = ({
     onClearSearch();
   };
 
-  const handleCategoryToggle = (categoryId: number) => {
+  const handleTagToggle = (tag: string) => {
+    const categoryId = categories.find(c => getCategoryDisplayName(c.name) === tag)?.id;
+    if (!categoryId) return;
+
     if (selectedCategoryIds.includes(categoryId)) {
       setFilters({
         ...filters,
@@ -59,6 +63,11 @@ export const NewsBottomSheetContent = ({
       });
     }
   };
+
+  const tags = categories.map(c => getCategoryDisplayName(c.name));
+  const selectedTags = categories
+    .filter(c => selectedCategoryIds.includes(c.id))
+    .map(c => getCategoryDisplayName(c.name));
 
   return (
     <div className="flex-1 overflow-y-auto min-h-0">
@@ -102,10 +111,10 @@ export const NewsBottomSheetContent = ({
                 ))}
               </div>
             ) : (
-              <CategoryBadges
-                categories={categories}
-                selectedCategoryIds={selectedCategoryIds}
-                onCategoryToggle={handleCategoryToggle}
+              <TagBadges
+                tags={tags}
+                selectedTags={selectedTags}
+                onTagToggle={handleTagToggle}
               />
             )}
           </div>

@@ -9,11 +9,14 @@ import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchR
 import { NewsSidebar } from '@/features/news/components/NewsSidebar';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
-import { MobileDropdownNewsSection } from '@/components/common/Sidebar/MobileDropdownNewsSection';
+import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
+import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
+import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
 
 export default function NewsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   
   const {
     news,
@@ -48,39 +51,16 @@ export default function NewsPage() {
       headerActions={
         <div className="lg:hidden ml-4 relative">
           <MobileSidebarButton 
-            onClick={() => setIsSidebarOpen(true)}
+            onClick={() => setIsBottomSheetOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
             variant="search"
           />
-          
-          {/* レスポンシブサイドバー */}
-          <ResponsiveSidebar 
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-            mobileContent={
-              <MobileDropdownNewsSection
-                searchValue={searchQuery}
-                onSearch={handleSearch}
-                onClearSearch={clearSearch}
-                filters={filters}
-                setFilters={setFilters}
-              />
-            }
-          >
-            <NewsSidebar
-              searchValue={searchQuery}
-              onSearch={handleSearch}
-              onClearSearch={clearSearch}
-              filters={filters}
-              setFilters={setFilters}
-            />
-          </ResponsiveSidebar>
         </div>
       }
       mobileActions={
         <MobileSidebarButton 
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={() => setIsBottomSheetOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
@@ -132,6 +112,24 @@ export default function NewsPage() {
           pageSize={10}
           loading={loading}
         />
+
+        {/* BottomSheet */}
+        <BottomSheet
+          isOpen={isBottomSheetOpen}
+          onClose={() => setIsBottomSheetOpen(false)}
+        >
+          <BottomSheetHeader
+            title="検索・絞り込み"
+            onClose={() => setIsBottomSheetOpen(false)}
+          />
+          <NewsBottomSheetContent
+            searchValue={searchQuery}
+            onSearch={handleSearch}
+            onClearSearch={clearSearch}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        </BottomSheet>
       </>
     </PageLayout>
   );
