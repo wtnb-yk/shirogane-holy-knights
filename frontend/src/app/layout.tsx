@@ -32,11 +32,18 @@ export const metadata: Metadata = {
     description: '白銀ノエルさんの非公式応援サイト。ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
     type: 'website',
     locale: 'ja_JP',
+    images: [{
+      url: '/og-images/og-home.svg',
+      width: 1200,
+      height: 630,
+      alt: 'だんいんポータル - 白銀ノエル非公式応援サイト',
+    }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'だんいんポータル',
     description: '白銀ノエルさんの非公式応援サイト',
+    images: '/og-images/og-home.svg',
   },
 };
 
