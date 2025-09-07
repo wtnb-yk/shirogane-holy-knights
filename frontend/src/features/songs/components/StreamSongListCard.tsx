@@ -44,7 +44,8 @@ const StreamSongListCardComponent = ({ song, index = 0, onClick }: StreamSongLis
               title={song.title}
               size="lg"
               showPlayButton={true}
-              className="flex-shrink-0 group-hover:scale-105 transition-transform duration-ui w-12 h-12 sm:w-20 sm:h-20"
+              aspectRatio="video"
+              className="flex-shrink-0 group-hover:scale-105 transition-transform duration-ui"
             />
             
             {/* メイン情報 */}
@@ -66,7 +67,7 @@ const StreamSongListCardComponent = ({ song, index = 0, onClick }: StreamSongLis
                         <Clock className="w-3 h-3 text-text-tertiary" />
                         <span className="text-xs text-text-tertiary">最新</span>
                       </div>
-                      <p className="text-text-secondary text-xs sm:text-sm line-clamp-1">
+                      <p className="text-text-secondary text-xs sm:text-sm line-clamp-2">
                         {latestPerformance.videoTitle}
                       </p>
                     </div>
