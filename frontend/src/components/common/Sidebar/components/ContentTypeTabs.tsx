@@ -103,8 +103,8 @@ const renderTabs = (
   options: ContentTypeOption[],
   selectedType: string,
   onTypeChange: (type: string) => void,
-  size?: "sm" | "md" | "lg" | null,
-  variant?: "default" | "compact" | "minimal" | null,
+  size: VariantProps<typeof contentTypeTabsVariants>['size'],
+  variant: VariantProps<typeof contentTypeTabsVariants>['variant'],
   className?: string
 ) => {
   return (

@@ -3,16 +3,15 @@
 import React, { useState } from 'react';
 import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
 import { useConcertSongs } from '@/features/songs/hooks/useConcertSongs';
-import { StreamSongsGrid } from '@/features/songs/components/StreamSongsGrid';
+import { StreamSongsList } from '@/features/songs/components/StreamSongsList';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOptionsModal';
 import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
 import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
-import { ViewToggleButton } from '@/features/songs/components/ViewToggleButton';
 import { PlayerSection } from '@/features/songs/components/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
-import { StreamSong, ViewMode, SongContentType } from '@/features/songs/types/types';
+import { StreamSong, SongContentType } from '@/features/songs/types/types';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
@@ -25,7 +24,6 @@ export default function SongsList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
   const [songContentType, setSongContentType] = useState<SongContentType>(SongContentType.CONCERT);
   
   // 楽曲データの取得
@@ -52,11 +50,6 @@ export default function SongsList() {
     }
   }, [currentData.songs.length > 0, currentSong, changeCurrentSong, currentData.loading]);
   
-  const handleSongPlayClick = (song: StreamSong) => {
-    // 再生ボタンクリック時：自動再生で楽曲を開始
-    playSong(song);
-  };
-
   const handleSongDetailsClick = (song: StreamSong) => {
     // 詳細表示：パフォーマンスモーダルを開く
     setSelectedSong(song);
@@ -79,14 +72,8 @@ export default function SongsList() {
       }
       headerActions={
         <>
-          {/* 表示切り替えボタン */}
-          <ViewToggleButton
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-          />
-          
           {/* タブレット用メニューボタン（lg未満のみ表示） */}
-          <div className="lg:hidden ml-4 relative">
+          <div className="lg:hidden relative">
             <MobileSidebarButton 
               onClick={() => setIsSidebarOpen(true)}
               hasActiveFilters={activeFiltersCount > 0}
@@ -136,12 +123,7 @@ export default function SongsList() {
           variant="search"
         />
       }
-      mobileRightActions={
-        <ViewToggleButton
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-        />
-      }
+      mobileRightActions={null}
       primaryTabs={
         <ContentTypeTabs
           tabs={[
@@ -206,13 +188,11 @@ export default function SongsList() {
             />
           </div>
 
-          <StreamSongsGrid 
+          <StreamSongsList 
             songs={currentData.songs} 
             loading={currentData.loading} 
             error={currentData.error}
-            viewMode={viewMode}
             onSongClick={handleSongDetailsClick}
-            onSongPlayClick={handleSongPlayClick}
           />
 
           {currentData.totalCount > 20 && (

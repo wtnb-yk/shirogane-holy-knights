@@ -107,12 +107,6 @@ export interface SongFilterOptions {
   frequencyCategories?: SingFrequencyCategory[];
 }
 
-// 表示モード
-export enum ViewMode {
-  GRID = 'grid',
-  LIST = 'list'
-}
-
 // 楽曲コンテンツタイプ
 export enum SongContentType {
   STREAM = 'STREAM',
