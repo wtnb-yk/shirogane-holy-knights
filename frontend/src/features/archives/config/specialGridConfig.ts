@@ -67,7 +67,7 @@ function createStreamSpecialItems(): SpecialItemConfig[] {
  * 動画グリッドの列設定
  */
 const VIDEO_GRID_COLUMNS: GridColumnConfig = {
-  sm: 1,    // モバイル: 1列
+  sm: 2,    // モバイル: 2列
   md: 2,    // タブレット: 2列  
   lg: 3,    // デスクトップ小: 3列
   xl: 4     // デスクトップ大: 4列
