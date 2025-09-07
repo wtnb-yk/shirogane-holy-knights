@@ -18,6 +18,7 @@ import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHe
 import { VideosBottomSheetContent } from '@/features/archives/components/VideosBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
+import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function VideosList() {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -94,6 +95,10 @@ export default function VideosList() {
       }
     >
       <>
+        <BreadcrumbSchema items={[
+          { name: 'ホーム', url: 'https://www.noe-room.com/' },
+          { name: 'アーカイブ', url: 'https://www.noe-room.com/archives' }
+        ]} />
 
           <SearchResultsSummary
             searchQuery={currentData.searchQuery}

@@ -18,6 +18,7 @@ import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottom
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
 import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
+import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -170,6 +171,10 @@ export default function SongsList() {
       }
     >
       <>
+        <BreadcrumbSchema items={[
+          { name: 'ホーム', url: 'https://www.noe-room.com/' },
+          { name: '楽曲', url: 'https://www.noe-room.com/songs' }
+        ]} />
 
           <SongSearchResultsSummary
             searchQuery={currentData.searchQuery}

@@ -13,6 +13,7 @@ import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomShe
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
+import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function NewsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -80,6 +81,10 @@ export default function NewsPage() {
         </ResponsiveSidebar>
       }
     >
+      <BreadcrumbSchema items={[
+        { name: 'ホーム', url: 'https://www.noe-room.com/' },
+        { name: 'ニュース', url: 'https://www.noe-room.com/news' }
+      ]} />
       <NewsSearchResultsSummary
         searchQuery={searchQuery}
         filters={filters}
