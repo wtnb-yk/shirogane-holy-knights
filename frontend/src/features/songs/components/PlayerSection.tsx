@@ -38,68 +38,47 @@ export const PlayerSection = ({ currentSong, autoplay = false, onStateChange }: 
       )}
 
       {currentSong && (
-        <>
-          {/* スマホサイズ: コンパクトレイアウト */}
-          <div className="lg:hidden flex flex-col gap-2 p-2">
-            <div className="w-full rounded-lg overflow-hidden">
-              <YouTubePlayer
-                song={currentSong}
-                autoplay={autoplay}
-                onStateChange={onStateChange}
-              />
-            </div>
-            <div className="px-2 py-1">
-              <h2 className="text-lg font-bold text-gray-900 line-clamp-1">
+        <div className="flex flex-col lg:flex-row gap-2 lg:gap-6 p-2 lg:p-6">
+          <div className="w-full lg:w-3/4 rounded-lg lg:rounded-xl overflow-hidden shadow-md">
+            <YouTubePlayer
+              song={currentSong}
+              autoplay={autoplay}
+              onStateChange={onStateChange}
+            />
+          </div>
+          
+          <div className="w-full lg:w-1/4 flex flex-col justify-center space-y-2 lg:space-y-4 px-2 lg:pl-4">
+            <div>
+              <h2 className="text-lg lg:text-xl font-bold text-gray-900 line-clamp-1 lg:line-clamp-2 leading-tight">
                 {currentSong.title}
               </h2>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-sm lg:text-base mt-1">
                 {currentSong.artist}
               </p>
             </div>
-          </div>
 
-          {/* デスクトップサイズ: 元のレイアウト */}
-          <div className="hidden lg:flex flex-row gap-6 p-6">
-            <div className="w-3/4 rounded-xl overflow-hidden shadow-md">
-              <YouTubePlayer
-                song={currentSong}
-                autoplay={autoplay}
-                onStateChange={onStateChange}
-              />
-            </div>
-            <div className="w-1/4 flex flex-col justify-center space-y-4 pl-4">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 line-clamp-2 leading-tight">
-                  {currentSong.title}
-                </h2>
-                <p className="text-gray-600 text-base mt-1">
-                  {currentSong.artist}
+            {currentSong.latestSingDate && (
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-accent-blue/10 rounded-md">
+                  <Clock className="w-4 h-4 text-accent-blue" />
+                </div>
+                <span className="text-sm text-gray-600">最新: {formatDate(currentSong.latestSingDate)}</span>
+              </div>
+            )}
+
+            {currentSong.performances[0] && (
+              <div className="pt-2 lg:pt-3 border-t border-gray-200">
+                <p className="text-gray-700 text-sm font-semibold mb-2 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-accent-gold" />
+                  最新の配信
+                </p>
+                <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+                  {currentSong.performances[0].videoTitle}
                 </p>
               </div>
-
-              {currentSong.latestSingDate && (
-                <div className="flex items-center gap-2">
-                  <div className="p-1.5 bg-accent-blue/10 rounded-md">
-                    <Clock className="w-4 h-4 text-accent-blue" />
-                  </div>
-                  <span className="text-sm text-gray-600">最新: {formatDate(currentSong.latestSingDate)}</span>
-                </div>
-              )}
-
-              {currentSong.performances[0] && (
-                <div className="pt-3 border-t border-gray-200">
-                  <p className="text-gray-700 text-sm font-semibold mb-2 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-accent-gold" />
-                    最新の配信
-                  </p>
-                  <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
-                    {currentSong.performances[0].videoTitle}
-                  </p>
-                </div>
-              )}
-            </div>
+            )}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
