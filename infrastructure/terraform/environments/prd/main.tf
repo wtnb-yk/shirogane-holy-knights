@@ -138,6 +138,7 @@ module "amplify" {
     NEXT_PUBLIC_CDN_URL = "https://${aws_cloudfront_distribution.images.domain_name}"
     PORT = "3000"
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
+    NEXT_PUBLIC_GA_ID = var.google_analytics_id
   }
   
   custom_domain = "noe-room.com"

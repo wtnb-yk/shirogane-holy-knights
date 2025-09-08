@@ -125,6 +125,12 @@ variable "github_repository_id" {
   default     = "wtnb-yk/shirogane-holy-knights"
 }
 
+variable "google_analytics_id" {
+  description = "Google Analytics 4 Measurement ID"
+  type        = string
+  default     = ""
+}
+
 variable "tags" {
   description = "Default tags to apply to all resources"
   type        = map(string)

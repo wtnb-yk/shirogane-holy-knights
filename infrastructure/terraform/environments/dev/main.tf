@@ -140,6 +140,7 @@ module "amplify" {
     NEXT_PUBLIC_CDN_URL = data.terraform_remote_state.prd.outputs.cdn_cloudfront_url
     PORT = "3000"
     AMPLIFY_MONOREPO_APP_ROOT = "frontend"
+    NEXT_PUBLIC_GA_ID = var.google_analytics_id
   }
   
   custom_domain = "noe-room.com"

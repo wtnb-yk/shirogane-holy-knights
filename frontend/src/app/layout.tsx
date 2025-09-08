@@ -5,6 +5,7 @@ import { Header } from '@/components/header/Header';
 import { Footer } from '@/components/footer/Footer';
 import { FloatingYouTubeLink } from '@/components/common/FloatingYouTubeLink';
 import { WebSiteSchema, OrganizationSchema } from '@/components/seo/JsonLd';
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics';
 
 const mplusRounded = M_PLUS_Rounded_1c({
   weight: ['400', '700'],
@@ -55,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`min-h-screen flex flex-col ${mplusRounded.variable} ${notoSansJP.variable}`}>
+        <GoogleAnalytics />
         <WebSiteSchema />
         <OrganizationSchema />
         <Header />
