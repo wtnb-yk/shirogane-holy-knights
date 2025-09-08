@@ -64,6 +64,46 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* プライバシーポリシー */}
+        <section>
+          <h2 className="text-xl font-bold text-surface-primary mb-6 pb-2 border-b border-surface-border">
+            プライバシーポリシー
+          </h2>
+          <div className="space-y-4 text-surface-primary/80">
+            <h3 className="font-semibold">アクセス解析ツールについて</h3>
+            <p>
+              当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を使用しています。
+              このGoogleアナリティクスはデータの収集のためにCookieを使用しています。
+              このデータは匿名で収集されており、個人を特定するものではありません。
+            </p>
+            <p>
+              この機能はCookieを無効にすることで収集を拒否することが出来ますので、
+              お使いのブラウザの設定をご確認ください。
+            </p>
+            <p>
+              この規約に関しての詳細は
+              <a 
+                href="https://marketingplatform.google.com/about/analytics/terms/jp/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent-primary hover:text-accent-primary/80 transition-colors mx-1"
+              >
+                Googleアナリティクスサービス利用規約
+              </a>
+              のページや
+              <a 
+                href="https://policies.google.com/privacy?hl=ja"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent-primary hover:text-accent-primary/80 transition-colors mx-1"
+              >
+                Googleポリシーと規約
+              </a>
+              ページをご覧ください。
+            </p>
+          </div>
+        </section>
+
         {/* 運営 */}
         <section>
           <h2 className="text-xl font-bold text-surface-primary mb-6 pb-2 border-b border-surface-border">
