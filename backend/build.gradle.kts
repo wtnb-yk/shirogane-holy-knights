@@ -54,7 +54,7 @@ dependencies {
     
     // Database
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
-    implementation("org.postgresql:postgresql:42.7.2")
+    implementation("org.postgresql:postgresql:42.7.7")
     
     // Liquibase Migration
     implementation("org.liquibase:liquibase-core:4.31.0")
