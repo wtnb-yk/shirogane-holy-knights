@@ -45,7 +45,7 @@ jobs:
           ls -la build/libs/
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::975069893654:role/GitHubActionsDeployRole
           aws-region: ap-northeast-1
