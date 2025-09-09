@@ -16,9 +16,9 @@ export function WebSiteSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "だんいんポータル",
+    "name": "だんいんポータル -白銀ノエル非公式ファンサイト-",
     "url": "https://www.noe-room.com",
-    "description": "白銀ノエルさんの非公式ファンサイト。ニュース、配信、歌等の情報を検索・閲覧できます。",
+    "description": "白銀ノエルさんの非公式ファンサイト「だんいんポータル」はホロライブ3期生の白銀ノエル団長を応援する非公式ファンサイトです。最新ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。",
     "inLanguage": "ja-JP",
     "potentialAction": {
       "@type": "SearchAction",
@@ -38,9 +38,9 @@ export function OrganizationSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "だんいんポータル",
+    "name": "だんいんポータル -白銀ノエル非公式ファンサイト-",
     "url": "https://www.noe-room.com",
-    "description": "白銀ノエルさんを応援する非公式ファンサイト",
+    "description": "白銀ノエルさんの非公式ファンサイト「だんいんポータル」はホロライブ3期生の白銀ノエル団長を応援する非公式ファンサイトです。最新ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。",
     "sameAs": [
       "https://x.com/ChuunChuuun"
     ],

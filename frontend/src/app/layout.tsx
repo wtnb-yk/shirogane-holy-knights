@@ -24,13 +24,13 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',
-  description: '白銀ノエルさんの非公式ファンサイト',
+  description: '白銀ノエルさんの非公式ファンサイト「だんいんポータル」はホロライブ3期生の白銀ノエル団長を応援する非公式ファンサイトです。最新ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
   icons: {
     icon: '/favicon.png',
   },
   openGraph: {
     title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',
-    description: '白銀ノエルさんの非公式ファンサイト。ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
+    description: '白銀ノエルさんの非公式ファンサイト「だんいんポータル」はホロライブ3期生の白銀ノエル団長を応援する非公式ファンサイトです。最新ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
     type: 'website',
     locale: 'ja_JP',
     images: [{
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',
-    description: '白銀ノエルさんの非公式ファンサイト',
+    description: '白銀ノエルさんの非公式ファンサイト「だんいんポータル」はホロライブ3期生の白銀ノエル団長を応援する非公式ファンサイトです。最新ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
     images: 'https://www.noe-room.com/og-images/og-home.png',
   },
 };
