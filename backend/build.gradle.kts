@@ -57,7 +57,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.2")
     
     // Liquibase Migration
-    implementation("org.liquibase:liquibase-core:4.31.0")
+    implementation("org.liquibase:liquibase-core:4.33.0")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
