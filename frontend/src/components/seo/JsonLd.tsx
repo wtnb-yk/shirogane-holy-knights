@@ -18,7 +18,7 @@ export function WebSiteSchema() {
     "@type": "WebSite",
     "name": "だんいんポータル",
     "url": "https://www.noe-room.com",
-    "description": "白銀ノエルさんの非公式応援サイト。ニュース、配信、歌等の情報を検索・閲覧できます。",
+    "description": "白銀ノエルさんの非公式ファンサイト。ニュース、配信、歌等の情報を検索・閲覧できます。",
     "inLanguage": "ja-JP",
     "potentialAction": {
       "@type": "SearchAction",

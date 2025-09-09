@@ -79,7 +79,7 @@ export default function HeroSection() {
           </h1>
           
           <p className="text-xl md:text-2xl mb-2 opacity-90">
-            白銀ノエルさんの非公式応援サイト
+            白銀ノエルさんの非公式ファンサイト
           </p>
         </div>
       </div>

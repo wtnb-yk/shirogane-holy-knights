@@ -23,27 +23,27 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: 'だんいんポータル',
-  description: '白銀ノエルさんの非公式応援サイト',
+  title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',
+  description: '白銀ノエルさんの非公式ファンサイト',
   icons: {
     icon: '/favicon.png',
   },
   openGraph: {
-    title: 'だんいんポータル',
-    description: '白銀ノエルさんの非公式応援サイト。ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
+    title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',
+    description: '白銀ノエルさんの非公式ファンサイト。ニュース、配信アーカイブ、楽曲情報を検索・閲覧できます。',
     type: 'website',
     locale: 'ja_JP',
     images: [{
       url: 'https://www.noe-room.com/og-images/og-home.png',
       width: 1200,
       height: 628,
-      alt: 'だんいんポータル - 白銀ノエル非公式応援サイト',
+      alt: 'だんいんポータル - 白銀ノエル非公式ファンサイト',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'だんいんポータル',
-    description: '白銀ノエルさんの非公式応援サイト',
+    title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',
+    description: '白銀ノエルさんの非公式ファンサイト',
     images: 'https://www.noe-room.com/og-images/og-home.png',
   },
 };
