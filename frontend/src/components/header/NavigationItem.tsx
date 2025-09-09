@@ -15,12 +15,20 @@ export function NavigationItem({ href, label, isActive, isMobile, onClick }: Nav
     return (
       <Link
         href={href}
-        onClick={onClick}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onClick?.();
+          window.location.href = href;
+        }}
+        onTouchStart={(e) => e.stopPropagation()}
+        onTouchEnd={(e) => e.stopPropagation()}
         className={`block px-4 py-3 text-base font-medium border-b border-surface-border/50 transition-colors duration-ui ${
           isActive
             ? 'text-bg-primary bg-accent-gold'
             : 'text-text-light hover:text-white hover:bg-bg-primary/10'
         }`}
+        style={{ touchAction: 'manipulation' }}
       >
         {label}
       </Link>

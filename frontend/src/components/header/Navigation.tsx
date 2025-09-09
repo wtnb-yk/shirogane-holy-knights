@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { NavigationItem } from './NavigationItem';
 
 interface NavigationMenuItems {
@@ -19,8 +20,13 @@ const navigationItems: NavigationMenuItems[] = [
 export function Navigation() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -52,9 +58,18 @@ export function Navigation() {
         </svg>
       </button>
 
+      {/* オーバーレイ */}
+      {mounted && isMenuOpen && createPortal(
+        <div 
+          className="fixed inset-0 bg-black/20 z-40"
+          onClick={() => setIsMenuOpen(false)}
+        />,
+        document.body
+      )}
+
       {/* モバイルメニュー */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-surface-primary border-t border-surface-border shadow-lg">
+        <div className="md:hidden absolute top-full left-0 right-0 z-50 bg-surface-primary border-t border-surface-border shadow-lg">
           <nav className="flex flex-col">
             {navigationItems.map((item) => (
               <NavigationItem
