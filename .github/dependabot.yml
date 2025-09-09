@@ -1,0 +1,87 @@
+# Dependabot設定ファイル
+# パッケージの継続的更新を自動化
+
+version: 2
+updates:
+  # フロントエンド (npm/pnpm)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    # セキュリティ更新は即座に適用
+    open-pull-requests-limit: 10
+    # グループ化でPR数を削減
+    groups:
+      next-ecosystem:
+        patterns:
+          - "next"
+          - "@next/*"
+          - "eslint-config-next"
+      react-ecosystem:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+      tailwind-ecosystem:
+        patterns:
+          - "tailwindcss"
+          - "tailwind-*"
+          - "autoprefixer"
+          - "postcss"
+      dev-dependencies:
+        dependency-type: "development"
+    # 自動マージ設定（マイナー・パッチ更新のみ）
+    reviewers:
+      - "yuki_watanabe"
+    assignees:
+      - "yuki_watanabe"
+
+  # バックエンド (Gradle)
+  - package-ecosystem: "gradle"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 10
+    groups:
+      spring-ecosystem:
+        patterns:
+          - "org.springframework*"
+          - "org.springframework.cloud*"
+      kotlin-ecosystem:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "kotlinx*"
+      aws-ecosystem:
+        patterns:
+          - "com.amazonaws*"
+          - "software.amazon.awssdk*"
+    reviewers:
+      - "yuki_watanabe"
+    assignees:
+      - "yuki_watanabe"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "11:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "12:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5

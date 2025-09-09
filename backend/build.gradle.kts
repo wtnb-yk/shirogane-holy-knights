@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    kotlin("plugin.serialization") version "1.9.22"
-    kotlin("plugin.spring") version "1.9.22"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
-    id("org.springframework.boot") version "3.2.5"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.spring") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.allopen") version "2.0.21"
+    id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.4"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
@@ -26,12 +26,12 @@ repositories {
     maven { url = uri("https://jitpack.io") }
 }
 
-val springCloudVersion = "2023.0.0"
+val springCloudVersion = "2024.0.0"
 val logbackVersion = "1.5.13"
-val kotlinxCoroutinesVersion = "1.7.3"
-val kotlinxSerializationVersion = "1.6.2"
-val kotestVersion = "5.8.0"
-val arrowVersion = "1.2.4"
+val kotlinxCoroutinesVersion = "1.9.0"
+val kotlinxSerializationVersion = "1.8.0"
+val kotestVersion = "5.9.1"
+val arrowVersion = "2.0.0"
 val nettyVersion = "4.1.124.Final"
 val commonsLang3Version = "3.18.0"
 
@@ -57,7 +57,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.2")
     
     // Liquibase Migration
-    implementation("org.liquibase:liquibase-core:4.24.0")
+    implementation("org.liquibase:liquibase-core:4.31.0")
     
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")

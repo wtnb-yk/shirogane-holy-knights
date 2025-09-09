@@ -9,7 +9,7 @@ export interface StaggeredItemProps {
   index: number;
   className?: string;
   animationClass?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
 const StaggeredItem = React.forwardRef<
