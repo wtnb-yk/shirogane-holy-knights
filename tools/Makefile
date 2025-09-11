@@ -31,23 +31,23 @@ setup-prd:
 
 ## 統合実行コマンド
 sync-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_pipeline.py
+	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_pipeline.py $(filter-out $@,$(MAKECMDGOALS))
 
 sync-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_pipeline.py
+	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_pipeline.py $(filter-out $@,$(MAKECMDGOALS))
 
 sync-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_pipeline.py
+	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_pipeline.py $(filter-out $@,$(MAKECMDGOALS))
 
 ## データ取得のみ
 fetch-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_fetcher.py
+	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_fetcher.py $(filter-out $@,$(MAKECMDGOALS))
 
 fetch-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_fetcher.py
+	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_fetcher.py $(filter-out $@,$(MAKECMDGOALS))
 
 fetch-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_fetcher.py
+	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_fetcher.py $(filter-out $@,$(MAKECMDGOALS))
 
 ## DBインポートのみ（最新の結果ディレクトリを自動選択）
 import-local:

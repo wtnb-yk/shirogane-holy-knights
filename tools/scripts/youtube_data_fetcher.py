@@ -18,6 +18,7 @@
 """
 
 import os
+import sys
 import csv
 import time
 import datetime
@@ -78,10 +79,32 @@ def get_channel_info(youtube, channel_id):
         'title': channel['snippet']['title']
     }
     
+    # ハンドルを取得（複数の方法を試す）
+    handle = None
+    
+    # 方法1: snippet.customUrl から取得
+    if 'customUrl' in channel['snippet']:
+        handle = channel['snippet']['customUrl']
+        if not handle.startswith('@'):
+            handle = '@' + handle
+    
+    # 方法2: brandingSettings.channel.customChannelUrlから取得
+    if not handle and 'brandingSettings' in channel:
+        branding = channel['brandingSettings']
+        if 'channel' in branding and 'customChannelUrl' in branding['channel']:
+            custom_url = branding['channel']['customChannelUrl']
+            # URLから@handleを抽出
+            if 'youtube.com/@' in custom_url:
+                handle = '@' + custom_url.split('youtube.com/@')[1]
+    
+    # 白銀ノエルの場合のフォールバック
+    if not handle and channel['id'] == CHANNEL_ID:
+        handle = CHANNEL_HANDLE
+    
     # チャンネル詳細情報
     channel_details = {
         'channel_id': channel['id'],
-        'handle': CHANNEL_HANDLE,
+        'handle': handle,
         'description': channel['snippet'].get('description', ''),
         'icon_url': channel['snippet'].get('thumbnails', {}).get('high', {}).get('url', '')
     }
@@ -179,6 +202,9 @@ def get_videos_details(youtube, video_ids, channel_id):
                 published_at = video['snippet']['publishedAt']
                 video_type = 'video'
             
+            # チャンネルIDを決定（引数がNoneの場合は動画から取得）
+            actual_channel_id = channel_id if channel_id is not None else video['snippet']['channelId']
+            
             # 動画基本情報（videosテーブルの全フィールドを含む）
             video_data = {
                 'id': video_id,
@@ -188,7 +214,7 @@ def get_videos_details(youtube, video_ids, channel_id):
                 'thumbnail_url': video['snippet']['thumbnails'].get('high', {}).get('url', ''),
                 'duration': convert_duration_to_hhmmss(video.get('contentDetails', {}).get('duration', '')),
                 'published_at': video['snippet']['publishedAt'],  # 動画でも配信でもsnippet.publishedAtを使用
-                'channel_id': channel_id,
+                'channel_id': actual_channel_id,
                 'video_type': video_type
             }
             videos.append(video_data)
@@ -311,20 +337,42 @@ def main():
         # YouTube Data API サービスを初期化
         youtube = get_youtube_service()
         
-        # チャンネル情報を取得
-        channel_info, channel_details = get_channel_info(youtube, CHANNEL_ID)
-        if not channel_info:
-            print("チャンネル情報の取得に失敗しました")
-            return
-        
-        # すべての動画IDを取得
-        video_ids = get_all_video_ids(youtube, CHANNEL_ID)
-        if not video_ids:
-            print("動画IDが取得できませんでした")
-            return
+        # 動画IDを取得（引数で指定された場合は単一動画、そうでなければ全動画）
+        if len(sys.argv) > 1:
+            # 特定の動画IDが指定された場合
+            specified_video_id = sys.argv[1].strip()
+            print(f"指定された動画ID: {specified_video_id} のみを処理します")
+            video_ids = [specified_video_id]
             
-        # 各動画の詳細情報を取得
-        videos, stream_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
+            # 動画情報を取得してチャンネルIDを特定
+            videos, stream_details = get_videos_details(youtube, video_ids, None)
+            if videos and len(videos) > 0:
+                actual_channel_id = videos[0]['channel_id']
+                print(f"動画のチャンネルID: {actual_channel_id}")
+                
+                # そのチャンネルの情報を取得
+                channel_info, channel_details = get_channel_info(youtube, actual_channel_id)
+                if not channel_info:
+                    print("チャンネル情報の取得に失敗しました")
+                    return
+            else:
+                print("指定された動画IDが無効です")
+                return
+        else:
+            # 白銀ノエルチャンネル全体を処理
+            channel_info, channel_details = get_channel_info(youtube, CHANNEL_ID)
+            if not channel_info:
+                print("チャンネル情報の取得に失敗しました")
+                return
+            
+            # すべての動画IDを取得
+            video_ids = get_all_video_ids(youtube, CHANNEL_ID)
+            if not video_ids:
+                print("動画IDが取得できませんでした")
+                return
+            
+            # 各動画の詳細情報を取得
+            videos, stream_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
         
         # CSVファイルに保存
         save_to_csv([channel_info], 'channels.csv', output_dir)

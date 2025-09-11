@@ -91,18 +91,28 @@ def check_prerequisites():
     
     return True
 
-def run_youtube_data_fetcher():
+def run_youtube_data_fetcher(video_id=None):
     """YouTube動画データ取得スクリプトを実行"""
     print("\n=== YouTube動画データ取得開始 ===")
     print(f"実行時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    if video_id:
+        print(f"対象動画ID: {video_id}")
+    else:
+        print("対象: 白銀ノエルチャンネル全体")
     
     # 環境変数を設定してスクリプトを実行
     env = os.environ.copy()
     env['YOUTUBE_API_KEY'] = YOUTUBE_API_KEY
     
+    # コマンドライン引数を準備
+    cmd = [sys.executable, 'youtube_data_fetcher.py']
+    if video_id:
+        cmd.append(video_id)
+    
     try:
         result = subprocess.run(
-            [sys.executable, 'youtube_data_fetcher.py'],
+            cmd,
             cwd=os.path.dirname(os.path.abspath(__file__)),
             env=env,
             capture_output=True,
@@ -192,6 +202,12 @@ def main():
     print("=== YouTube動画データパイプライン ===")
     print("白銀ノエルさんのYouTube動画データを取得してデータベースにインポートします")
     
+    # 動画ID引数をチェック
+    video_id = None
+    if len(sys.argv) > 1:
+        video_id = sys.argv[1].strip()
+        print(f"指定された動画ID: {video_id}")
+    
     # 環境設定テンプレートファイルの存在確認
     check_env_templates()
     
@@ -203,7 +219,7 @@ def main():
     start_time = time.time()
     
     # 1. YouTube動画データを取得
-    output_dir = run_youtube_data_fetcher()
+    output_dir = run_youtube_data_fetcher(video_id)
     if not output_dir:
         print("\nエラー: YouTube動画データ取得に失敗しました")
         sys.exit(1)
@@ -226,7 +242,6 @@ def main():
     
     # オプション: 古いCSVファイルを削除するか確認
     # バッチ実行時は自動的にCSVファイルを保持
-    import sys
     if sys.stdin.isatty():
         response = input("\nCSVファイルを削除しますか？ (y/N): ")
         if response.lower() == 'y':
