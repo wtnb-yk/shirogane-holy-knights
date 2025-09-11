@@ -81,11 +81,9 @@ data class RecentPerformanceStats(
 )
 
 /**
- * 楽曲ID値オブジェクト
+ * 楽曲コレクション
  */
-class Songs(private val listUnordered: List<Song>): FCC<Song>(
-    listUnordered.sortedWith(compareByDescending{ it.latestSingDate })
-)
+class Songs(songs: List<Song>): FCC<Song>(songs)
 
 @JvmInline
 value class SongId(val value: UUID) {
