@@ -3,6 +3,7 @@ package com.shirogane.holy.knights.adapter.gateway.query
 import com.shirogane.holy.knights.adapter.gateway.QuerySpec
 import com.shirogane.holy.knights.adapter.gateway.model.VideoSearchCriteria
 import com.shirogane.holy.knights.adapter.gateway.model.StreamSearchCriteria
+import com.shirogane.holy.knights.domain.model.Channel
 import org.springframework.stereotype.Component
 import java.time.Instant
 
@@ -39,7 +40,8 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
         
         val bindings = conditions.second + mapOf(
             "limit" to criteria.limit,
-            "offset" to criteria.offset
+            "offset" to criteria.offset,
+            "channelId" to Channel.SHIROGANE_NOEL_ID
         )
         
         return QuerySpec(sql, bindings)
@@ -66,7 +68,11 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
             $whereClause
         """.trimIndent()
         
-        return QuerySpec(sql, conditions.second)
+        val bindings = conditions.second + mapOf(
+            "channelId" to Channel.SHIROGANE_NOEL_ID
+        )
+        
+        return QuerySpec(sql, bindings)
     }
     
     private fun buildSearchConditions(
@@ -113,11 +119,8 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
     }
     
     private fun buildWhereClause(type: String, conditions: List<String>): String {
-        return if (conditions.isNotEmpty()) {
-            "WHERE vt.type = '$type' AND " + conditions.joinToString(" AND ")
-        } else {
-            "WHERE vt.type = '$type'"
-        }
+        val allConditions = listOf("vt.type = '$type'", "v.channel_id = :channelId") + conditions
+        return "WHERE " + allConditions.joinToString(" AND ")
     }
 }
 
@@ -154,7 +157,8 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
         
         val bindings = conditions.second + mapOf(
             "limit" to criteria.limit,
-            "offset" to criteria.offset
+            "offset" to criteria.offset,
+            "channelId" to Channel.SHIROGANE_NOEL_ID
         )
         
         return QuerySpec(sql, bindings)
@@ -181,7 +185,11 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
             $whereClause
         """.trimIndent()
         
-        return QuerySpec(sql, conditions.second)
+        val bindings = conditions.second + mapOf(
+            "channelId" to Channel.SHIROGANE_NOEL_ID
+        )
+        
+        return QuerySpec(sql, bindings)
     }
     
     private fun buildSearchConditions(
@@ -228,10 +236,7 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
     
     private fun buildWhereClause(type: String, conditions: List<String>): String {
         val hiddenCondition = "v.id NOT IN (SELECT video_id FROM hidden_streams)"
-        return if (conditions.isNotEmpty()) {
-            "WHERE vt.type = '$type' AND $hiddenCondition AND " + conditions.joinToString(" AND ")
-        } else {
-            "WHERE vt.type = '$type' AND $hiddenCondition"
-        }
+        val allConditions = listOf("vt.type = '$type'", "v.channel_id = :channelId", hiddenCondition) + conditions
+        return "WHERE " + allConditions.joinToString(" AND ")
     }
 }
