@@ -39,7 +39,7 @@ export const SearchInput = ({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full pl-9 pr-9 py-3 border border-surface-border rounded-lg text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all"
+          className="w-full pl-9 pr-9 py-2.5 border border-surface-border rounded-md bg-bg-primary text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all"
         />
         {value && (
           <button
