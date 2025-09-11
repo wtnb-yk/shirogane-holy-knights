@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header/Header';
@@ -21,6 +21,12 @@ const notoSansJP = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
   preload: true,
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: 'だんいんポータル -白銀ノエル非公式ファンサイト-',

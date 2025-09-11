@@ -49,7 +49,7 @@ export const SearchInput = ({
         placeholder={placeholder}
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
-        className="w-full pl-10 pr-12 py-2 md:py-3 border border-surface-border rounded-lg bg-bg-primary focus:ring-2 focus:ring-text-secondary focus:border-text-secondary transition-all duration-ui shadow-sm text-text-primary placeholder-text-secondary/70 text-sm md:text-base"
+        className="w-full pl-10 pr-12 py-2 md:py-3 border border-surface-border rounded-lg bg-bg-primary focus:ring-2 focus:ring-text-secondary focus:border-text-secondary transition-all duration-ui shadow-sm text-text-primary placeholder-text-secondary/70 text-base"
         disabled={disabled}
       />
       {inputValue && (
