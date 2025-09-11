@@ -117,4 +117,18 @@ concert-songs-import-dev:
 concert-songs-import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 concert_songs_importer.py
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+## チャンネル情報挿入
+channel-insert-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 channel_inserter.py $(filter-out $@,$(MAKECMDGOALS))
+
+channel-insert-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 channel_inserter.py $(filter-out $@,$(MAKECMDGOALS))
+
+channel-insert-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 channel_inserter.py $(filter-out $@,$(MAKECMDGOALS))
+
+# ダミーターゲットを追加（引数として渡されるチャンネルIDを無効化）
+%:
+	@:
+
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
