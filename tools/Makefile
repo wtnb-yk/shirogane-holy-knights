@@ -59,16 +59,6 @@ import-dev:
 import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 csv_to_db_importer.py $$(ls -1d ../output/youtube_data/20*/ | tail -1)
 
-## ニュースデータインポート
-news-import-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 news_importer.py
-
-news-import-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 news_importer.py
-
-news-import-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py
-
 ## ストリームタグ抽出
 stream-tags-extract-local:
 	cd scripts && python3 stream_tag_extractor.py
@@ -82,6 +72,16 @@ stream-tags-import-dev:
 
 stream-tags-import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 stream_tags_importer.py
+
+## ニュースデータインポート
+news-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 news_importer.py
+
+news-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 news_importer.py
+
+news-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py
 
 ## 楽曲情報抽出
 extract-songs:
