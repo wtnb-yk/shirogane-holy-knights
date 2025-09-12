@@ -2,8 +2,6 @@ package com.shirogane.holy.knights.infrastructure.config
 
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration
 import io.r2dbc.postgresql.PostgresqlConnectionFactory
-import io.r2dbc.pool.ConnectionPool
-import io.r2dbc.pool.ConnectionPoolConfiguration
 import io.r2dbc.spi.ConnectionFactory
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -12,7 +10,6 @@ import org.springframework.context.annotation.Primary
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.data.r2dbc.dialect.PostgresDialect
 import org.springframework.r2dbc.core.DatabaseClient
-import java.time.Duration
 
 @Configuration
 class R2dbcConfig() {
@@ -36,45 +33,19 @@ class R2dbcConfig() {
             .database(database)
             .username(username)
             .password(password)
-            .preparedStatementCacheQueries(256)
-            .fetchSize(256)
 
+        // ローカル開発環境かLambda+LocalStack環境を判定
         val isLocalDev = host == "localhost" || host == "host.docker.internal" || host == "postgres"
-        val isLambda = System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null
 
         if (isLocalDev) {
             logger.info("Local development environment detected, SSL disabled for database connection")
+            // ローカル開発環境の場合はSSLを無効にする
         } else {
             logger.info("Production environment detected, enabling SSL for database connection")
             configuration.enableSsl()
         }
 
-        val baseConnectionFactory = PostgresqlConnectionFactory(configuration.build())
-        
-        return if (isLambda) {
-            logger.info("Lambda environment detected, configuring optimized connection pool")
-            val poolConfiguration = ConnectionPoolConfiguration.builder(baseConnectionFactory)
-                .name("lambda-r2dbc-pool")
-                .initialSize(1)
-                .maxSize(3)
-                .maxIdleTime(Duration.ofMinutes(5))
-                .maxCreateConnectionTime(Duration.ofSeconds(5))
-                .acquireRetry(3)
-                .validationQuery("SELECT 1")
-                .build()
-            ConnectionPool(poolConfiguration)
-        } else {
-            logger.info("Non-Lambda environment, configuring standard connection pool")
-            val poolConfiguration = ConnectionPoolConfiguration.builder(baseConnectionFactory)
-                .name("r2dbc-pool")
-                .initialSize(5)
-                .maxSize(20)
-                .maxIdleTime(Duration.ofMinutes(30))
-                .maxCreateConnectionTime(Duration.ofSeconds(10))
-                .validationQuery("SELECT 1")
-                .build()
-            ConnectionPool(poolConfiguration)
-        }
+        return PostgresqlConnectionFactory(configuration.build())
     }
 
     @Bean
