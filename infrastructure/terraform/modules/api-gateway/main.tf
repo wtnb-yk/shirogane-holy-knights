@@ -39,7 +39,7 @@ resource "aws_api_gateway_integration" "root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_invoke_arn
+  uri                     = var.lambda_alias_invoke_arn
 }
 
 # API Gateway Integration - Proxy
@@ -50,7 +50,7 @@ resource "aws_api_gateway_integration" "proxy" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = var.lambda_invoke_arn
+  uri                     = var.lambda_alias_invoke_arn
 }
 
 # API Gateway Deployment
