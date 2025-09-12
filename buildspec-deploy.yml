@@ -56,6 +56,21 @@ phases:
             --function-version "$NEW_VERSION"
           
           echo "✅ Alias 'live' updated to version $NEW_VERSION (SnapStart enabled)"
+          
+          # API Gateway権限を再設定（関数更新後に必要）
+          echo "Ensuring API Gateway permissions..."
+          aws lambda remove-permission \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --statement-id "AllowExecutionFromAPIGateway" 2>/dev/null || echo "Permission not found, proceeding..."
+          
+          aws lambda add-permission \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --statement-id "AllowExecutionFromAPIGateway" \
+            --action "lambda:InvokeFunction" \
+            --principal "apigateway.amazonaws.com" \
+            --source-arn "$API_GATEWAY_EXECUTION_ARN/*/*"
+          
+          echo "✅ API Gateway permissions restored"
         else
           echo "❌ Lambda function $LAMBDA_FUNCTION_NAME not found"
           echo "Please create the infrastructure using Terraform first"
