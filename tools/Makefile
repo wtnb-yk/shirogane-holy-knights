@@ -87,6 +87,12 @@ news-import-prd:
 extract-songs:
 	cd scripts && python3 extract_songs.py
 
+extract-songs-stream:
+	cd scripts && python3 extract_songs_stream.py
+
+extract-songs-live:
+	cd scripts && python3 extract_songs_live.py
+
 ## ストリーム楽曲インポート
 stream-songs-import-local:
 	cd scripts && ENV_FILE=../config/.env.local python3 stream_songs_importer.py
@@ -131,4 +137,4 @@ channel-insert-prd:
 %:
 	@:
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs extract-songs-stream extract-songs-live stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop

@@ -7,7 +7,6 @@ from googleapiclient.discovery import build
 from typing import List, Dict, Tuple
 import time
 from pathlib import Path
-import argparse
 
 def load_env_file(env_path: str):
     """環境設定ファイルを読み込む"""
@@ -23,7 +22,7 @@ def load_env_file(env_path: str):
                     os.environ[key.strip()] = value.strip()
 
 def get_youtube_service():
-    # 設定ファイルから読み込み
+    """YouTube APIサービスを初期化"""
     config_dir = Path(__file__).parent.parent / 'config'
     env_file = config_dir / '.env.local'
     load_env_file(str(env_file))
@@ -34,6 +33,7 @@ def get_youtube_service():
     return build('youtube', 'v3', developerKey=api_key)
 
 def get_video_comments(youtube, video_id: str, max_results: int = 100) -> List[Dict]:
+    """動画のコメントを取得"""
     comments = []
     request = youtube.commentThreads().list(
         part='snippet',
@@ -217,66 +217,3 @@ def process_videos_and_save_to_csv(youtube, videos: List[Tuple[str, str]], csv_f
             time.sleep(1)
     
     print(f"\n{tag_name}の抽出完了！結果を {csv_filename} に保存しました")
-
-def main():
-    # コマンドライン引数のパーサーを設定
-    parser = argparse.ArgumentParser(description='YouTubeコメントから曲情報を抽出')
-    parser.add_argument('--type', choices=['stream', 'live', 'all'],
-                       default='all',
-                       help='処理対象のタイプ: stream(歌枠)、live(ライブ)、all(両方)')
-    args = parser.parse_args()
-    
-    print("YouTube Data APIキーを確認中...")
-    
-    # YouTube APIサービスの初期化
-    try:
-        youtube = get_youtube_service()
-        print("YouTube API接続成功")
-    except ValueError as e:
-        print(f"エラー: {e}")
-        print("環境変数YOUTUBE_API_KEYを設定してください:")
-        print("export YOUTUBE_API_KEY='your-api-key-here'")
-        return
-    
-    # 処理対象のタグを決定
-    if args.type == 'stream':
-        stream_tags = [('歌枠', 'stream')]
-        print("\n=== 歌枠のみを処理します ===")
-    elif args.type == 'live':
-        stream_tags = [('ライブ', 'live')]
-        print("\n=== ライブのみを処理します ===")
-    else:  # all
-        stream_tags = [('歌枠', 'stream'), ('ライブ', 'live')]
-        print("\n=== 歌枠とライブの両方を処理します ===")
-    
-    # 出力ディレクトリの準備
-    output_dir = Path(__file__).parent.parent / 'output' / 'songs'
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    processed_count = 0
-    for tag, suffix in stream_tags:
-        print(f"\nDBから{tag}動画リストを取得中...")
-        videos = get_stream_videos_from_db(tag)
-        print(f"{len(videos)}件の{tag}動画を取得しました")
-        
-        if not videos:
-            print(f"{tag}の動画が見つかりませんでした")
-            continue
-        
-        # CSVファイル名を決定
-        csv_filename = str(output_dir / f'extracted_songs_{suffix}.csv')
-        
-        # 動画を処理してCSVに保存
-        process_videos_and_save_to_csv(youtube, videos, csv_filename, tag)
-        processed_count += 1
-    
-    if processed_count > 0:
-        print("\n全ての抽出が完了しました！")
-        print("出力ファイル:")
-        for tag, suffix in stream_tags:
-            print(f"- extracted_songs_{suffix}.csv ({tag})")
-    else:
-        print("\n処理する動画が見つかりませんでした")
-
-if __name__ == "__main__":
-    main()
