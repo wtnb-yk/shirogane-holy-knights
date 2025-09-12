@@ -6,7 +6,6 @@ phases:
       java: corretto17
   pre_build:
     commands:
-      - echo Lambda deployment started on `date`
       - echo 'Function name: $LAMBDA_FUNCTION_NAME'
   
   build:
