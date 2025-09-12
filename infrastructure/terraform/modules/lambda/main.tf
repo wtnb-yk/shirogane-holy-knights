@@ -127,18 +127,6 @@ resource "aws_lambda_alias" "live" {
   function_version = aws_lambda_function.api.version
 }
 
-# Provisioned Concurrency Configuration
-resource "aws_lambda_provisioned_concurrency_config" "api" {
-  count                                  = var.provisioned_concurrent_executions > 0 ? 1 : 0
-  function_name                          = aws_lambda_function.api.function_name
-  provisioned_concurrent_executions      = var.provisioned_concurrent_executions
-  qualifier                              = aws_lambda_alias.live.name
-
-  depends_on = [
-    aws_lambda_alias.live
-  ]
-}
-
 # Lambda Permission for API Gateway
 resource "aws_lambda_permission" "api_gateway" {
   statement_id  = "AllowExecutionFromAPIGateway"

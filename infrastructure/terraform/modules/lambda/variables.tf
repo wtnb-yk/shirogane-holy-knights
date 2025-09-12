@@ -98,9 +98,3 @@ variable "cors_allowed_origins" {
   type        = string
   default     = "*"
 }
-
-variable "provisioned_concurrent_executions" {
-  description = "Number of provisioned concurrent executions for Lambda"
-  type        = number
-  default     = 0
-}
