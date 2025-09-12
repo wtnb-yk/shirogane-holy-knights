@@ -65,11 +65,19 @@ class ApiGatewayRouter(
     )
     
     suspend fun route(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        val routeKey = RouteKey(request.httpMethod, request.path)
+        val httpMethod = request.httpMethod ?: "UNKNOWN"
+        val path = request.path ?: "/unknown"
+        
+        if (request.httpMethod == null || request.path == null) {
+            logger.warn("Invalid request: httpMethod=${request.httpMethod}, path=${request.path}")
+            return responseBuilder.badRequest("Invalid request: missing httpMethod or path")
+        }
+        
+        val routeKey = RouteKey(httpMethod, path)
         val handler = routes[routeKey]
 
         if (handler == null) {
-            logger.warn("Unknown path: ${request.httpMethod} ${request.path}")
+            logger.warn("Unknown path: $httpMethod $path")
             return responseBuilder.notFound()
         }
         

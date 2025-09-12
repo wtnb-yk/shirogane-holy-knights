@@ -15,12 +15,21 @@ import java.util.function.Function
 class ApiGatewayFunction(
     private val router: ApiGatewayRouter,
     private val corsHandler: CorsHandler,
+    private val responseBuilder: ApiGatewayResponseBuilder,
 ) : Function<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     private val logger = LoggerFactory.getLogger(ApiGatewayFunction::class.java)
 
     override fun apply(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
-        logger.info("Lambda Function called: ${request.httpMethod} ${request.path}")
+        val httpMethod = request.httpMethod ?: "UNKNOWN"
+        val path = request.path ?: "/unknown"
+        logger.info("Lambda Function called: $httpMethod $path")
+        
+        // 不正なリクエストの検証
+        if (request.httpMethod == null) {
+            logger.warn("Invalid request: httpMethod is null")
+            return responseBuilder.badRequest("Invalid request: missing HTTP method")
+        }
         
         // OPTIONSリクエストの処理（プリフライト）
         if (request.httpMethod == "OPTIONS") {

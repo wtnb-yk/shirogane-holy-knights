@@ -17,6 +17,13 @@ class ApiGatewayResponseBuilder(
             .withBody(objectMapper.writeValueAsString(body))
     }
     
+    fun badRequest(message: String = "Bad Request"): APIGatewayProxyResponseEvent {
+        return APIGatewayProxyResponseEvent()
+            .withStatusCode(400)
+            .withHeaders(mapOf("Content-Type" to "application/json"))
+            .withBody(objectMapper.writeValueAsString(mapOf("error" to message)))
+    }
+    
     fun notFound(): APIGatewayProxyResponseEvent {
         return APIGatewayProxyResponseEvent()
             .withStatusCode(404)
