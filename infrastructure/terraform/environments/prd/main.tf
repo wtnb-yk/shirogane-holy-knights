@@ -91,7 +91,6 @@ module "lambda" {
   # Lambda performance settings for Spring Boot + R2DBC
   memory_size = 2048
   timeout     = 30  # 本番環境では30秒に短縮
-  provisioned_concurrent_executions = 2  # プロビジョンド同時実行数を設定
   
   # CORS設定（本番環境専用Origin設定）
   cors_allowed_origins = "https://www.noe-room.com"
