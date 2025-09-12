@@ -108,6 +108,7 @@ module "api_gateway" {
   project_name     = var.project_name
   lambda_function_name = module.lambda.function_name
   lambda_invoke_arn    = module.lambda.invoke_arn
+  lambda_alias_invoke_arn = module.lambda.alias_invoke_arn
   
   # Custom domain settings for dev environment
   custom_domain_name = "api.dev.noe-room.com"

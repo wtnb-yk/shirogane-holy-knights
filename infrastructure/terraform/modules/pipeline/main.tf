@@ -116,7 +116,10 @@ resource "aws_iam_role_policy" "codebuild" {
         Action = [
           "lambda:UpdateFunctionCode",
           "lambda:GetFunction",
-          "lambda:UpdateFunctionConfiguration"
+          "lambda:UpdateFunctionConfiguration",
+          "lambda:PublishVersion",
+          "lambda:UpdateAlias",
+          "lambda:GetAlias"
         ]
         Resource = var.lambda_function_arn
       }

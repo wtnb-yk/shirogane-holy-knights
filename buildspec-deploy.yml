@@ -26,6 +26,24 @@ phases:
             --function-name "$LAMBDA_FUNCTION_NAME"
           
           echo "Lambda function updated successfully"
+          
+          # 新しいバージョンをPublish
+          echo "Publishing new version..."
+          NEW_VERSION=$(aws lambda publish-version \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --query 'Version' \
+            --output text)
+          
+          echo "Published version: $NEW_VERSION"
+          
+          # Aliasを新しいバージョンに更新
+          echo "Updating alias 'live' to version $NEW_VERSION..."
+          aws lambda update-alias \
+            --function-name "$LAMBDA_FUNCTION_NAME" \
+            --name "live" \
+            --function-version "$NEW_VERSION"
+          
+          echo "✅ Alias 'live' updated to version $NEW_VERSION (SnapStart enabled)"
         else
           echo "❌ Lambda function $LAMBDA_FUNCTION_NAME not found"
           echo "Please create the infrastructure using Terraform first"

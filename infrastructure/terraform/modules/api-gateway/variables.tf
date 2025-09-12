@@ -18,6 +18,11 @@ variable "lambda_invoke_arn" {
   type        = string
 }
 
+variable "lambda_alias_invoke_arn" {
+  description = "Lambda alias invoke ARN for SnapStart optimization"
+  type        = string
+}
+
 
 variable "log_retention_days" {
   description = "CloudWatch log retention in days"

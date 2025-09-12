@@ -119,11 +119,20 @@ resource "aws_iam_role_policy_attachment" "secrets_access" {
   policy_arn = var.secrets_access_policy_arn
 }
 
+# Lambda Alias
+resource "aws_lambda_alias" "live" {
+  name             = "live"
+  description      = "Live alias pointing to latest published version"
+  function_name    = aws_lambda_function.api.function_name
+  function_version = aws_lambda_function.api.version
+}
+
 # Lambda Permission for API Gateway
 resource "aws_lambda_permission" "api_gateway" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
+  qualifier     = aws_lambda_alias.live.name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${var.api_gateway_execution_arn}/*/*"
 }
