@@ -129,11 +129,13 @@ resource "aws_lambda_alias" "live" {
 
 # Lambda Permission for API Gateway
 resource "aws_lambda_permission" "api_gateway" {
-  statement_id  = "AllowExecutionFromAPIGateway"
+  statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.api.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${var.api_gateway_execution_arn}/*/*"
   
-  depends_on = [aws_lambda_function.api]
+  lifecycle {
+    create_before_destroy = true
+  }
 }
