@@ -16,7 +16,7 @@ export const YearPresetsSection = ({
   filters,
   onFiltersChange,
   title = '歌唱日',
-  minYear = 2021,
+  minYear = 2020,
 }: YearPresetsSectionProps) => {
   const currentYear = new Date().getFullYear();
   const yearItems = [];
