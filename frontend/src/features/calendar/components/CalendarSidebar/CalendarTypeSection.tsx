@@ -1,0 +1,80 @@
+'use client';
+
+import React from 'react';
+import { EventType } from '../../types';
+
+interface CalendarTypeSectionProps {
+  selectedEventTypes: number[];
+  onEventTypeChange: (types: number[]) => void;
+  eventTypes: EventType[];
+}
+
+export const CalendarTypeSection = ({
+  selectedEventTypes,
+  onEventTypeChange,
+  eventTypes
+}: CalendarTypeSectionProps) => {
+
+  const getEventTypeLabel = (type: string) => {
+    switch (type) {
+      case 'event':
+        return 'イベント';
+      case 'goods':
+        return 'グッズ';
+      default:
+        return type;
+    }
+  };
+
+  const handleEventTypeToggle = (typeId: number) => {
+    if (selectedEventTypes.includes(typeId)) {
+      // 同じタイプをクリックした場合は選択解除（全て状態に戻る）
+      onEventTypeChange([]);
+    } else {
+      // 異なるタイプをクリックした場合は、そのタイプのみを選択
+      onEventTypeChange([typeId]);
+    }
+  };
+
+  const handleClearAll = () => {
+    onEventTypeChange([]);
+  };
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-base font-bold text-text-primary">タイプ</h3>
+
+      <div className="space-y-2">
+        {/* 全てクリアボタン */}
+        <button
+          onClick={handleClearAll}
+          className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
+            selectedEventTypes.length === 0
+              ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+              : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
+          }`}
+        >
+          全て
+        </button>
+
+        {/* イベントタイプボタン */}
+        {eventTypes.map((eventType) => {
+          const isSelected = selectedEventTypes.includes(eventType.id);
+          return (
+            <button
+              key={eventType.id}
+              onClick={() => handleEventTypeToggle(eventType.id)}
+              className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
+                isSelected
+                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
+              }`}
+            >
+              {getEventTypeLabel(eventType.type)}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
