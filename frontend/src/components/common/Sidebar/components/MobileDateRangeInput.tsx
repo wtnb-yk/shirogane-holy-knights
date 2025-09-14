@@ -27,9 +27,9 @@ export const MobileDateRangeInput = ({
           type="date"
           value={startDate || ''}
           onChange={(e) => onDateChange('startDate', e.target.value)}
-          className="w-full px-3 py-2.5 border border-surface-border rounded-lg text-sm 
+          className="w-full px-3 py-2.5 border border-surface-border rounded-lg text-sm
                    focus:outline-none focus:ring-2 focus:ring-accent-gold/20 focus:border-accent-gold
-                   transition-all duration-200 bg-white"
+                   transition-all duration-200 bg-white [-webkit-appearance:none]"
         />
       </div>
       <div className="flex items-center justify-center pt-5">
@@ -43,9 +43,9 @@ export const MobileDateRangeInput = ({
           type="date"
           value={endDate || ''}
           onChange={(e) => onDateChange('endDate', e.target.value)}
-          className="w-full px-3 py-2.5 border border-surface-border rounded-lg text-sm 
+          className="w-full px-3 py-2.5 border border-surface-border rounded-lg text-sm
                    focus:outline-none focus:ring-2 focus:ring-accent-gold/20 focus:border-accent-gold
-                   transition-all duration-200 bg-white"
+                   transition-all duration-200 bg-white [-webkit-appearance:none]"
         />
       </div>
     </div>
