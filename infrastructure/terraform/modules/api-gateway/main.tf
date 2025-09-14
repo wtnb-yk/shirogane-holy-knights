@@ -64,6 +64,7 @@ resource "aws_api_gateway_deployment" "main" {
       aws_api_gateway_method.proxy.id,
       aws_api_gateway_integration.root.id,
       aws_api_gateway_integration.proxy.id,
+      var.lambda_alias_invoke_arn,
     ]))
   }
 
