@@ -3,13 +3,10 @@
 import React from 'react';
 import { Event } from '../types';
 import { CalendarEventItem } from './CalendarEventItem';
-import { EventSegment } from '../utils/weekEventLayout';
 
 interface CalendarDateCellProps {
   date: Date;
   events: Event[];
-  eventBands?: EventSegment[];
-  dayIndex?: number;
   bandReservedHeight?: number;
   isCurrentMonth: boolean;
   isToday: boolean;
@@ -21,8 +18,6 @@ interface CalendarDateCellProps {
 export function CalendarDateCell({
   date,
   events,
-  eventBands = [],
-  dayIndex = 0,
   bandReservedHeight = 0,
   isCurrentMonth,
   isToday,

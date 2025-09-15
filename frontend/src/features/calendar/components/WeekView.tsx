@@ -54,8 +54,6 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick }: Week
             key={dayIndex}
             date={date}
             events={dayEvents}
-            eventBands={[]}
-            dayIndex={dayIndex}
             bandReservedHeight={totalBandHeight}
             isCurrentMonth={isCurrentMonth(date)}
             isToday={isToday(date)}
