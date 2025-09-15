@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ja_JP',
     images: [{
-      url: 'https://www.noe-room.com/og-images/og-calendar.png',
+      url: 'https://www.noe-room.com/og-images/og-home.png',
       width: 1200,
       height: 628,
       alt: 'CALENDAR - 白銀ノエルさんカレンダー',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'CALENDAR - だんいんポータル',
     description: '白銀ノエルさん関連のイベントとグッズ等のスケジュールを確認できます。',
-    images: 'https://www.noe-room.com/og-images/og-calendar.png',
+    images: 'https://www.noe-room.com/og-images/og-home.png',
   },
 };
 
