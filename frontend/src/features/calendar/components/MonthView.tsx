@@ -4,8 +4,8 @@ import React from 'react';
 import { Event } from '../types';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { CalendarWeekHeader } from './CalendarWeekHeader';
-import { CalendarDateCell } from './CalendarDateCell';
-import { getCalendarWeeks, isCurrentMonth, isToday, isDateInRange } from '../utils/dateUtils';
+import { WeekView } from './WeekView';
+import { getCalendarWeeks } from '../utils/dateUtils';
 
 interface MonthViewProps {
   currentDate: Date;
@@ -18,12 +18,15 @@ export function MonthView({ currentDate, events, onEventClick, onDateChange }: M
   const currentMonth = currentDate.getMonth();
   const weeks = getCalendarWeeks(currentDate);
 
-  const getEventsForDate = (date: Date) => {
+  const getEventsForWeek = (weekDates: Date[]) => {
+    const weekStart = weekDates[0];
+    const weekEnd = weekDates[6];
+
     return events.filter(event => {
-      if (!event.endDate) {
-        return isDateInRange(date, event.eventDate);
-      }
-      return isDateInRange(date, event.eventDate, event.endDate);
+      const eventStart = new Date(event.eventDate + 'T00:00:00');
+      const eventEnd = new Date((event.endDate || event.eventDate) + 'T23:59:59');
+
+      return eventStart <= weekEnd && eventEnd >= weekStart;
     });
   };
 
@@ -32,24 +35,17 @@ export function MonthView({ currentDate, events, onEventClick, onDateChange }: M
       <div className="bg-bg-primary border border-surface-border rounded-lg overflow-hidden shadow-sm">
         <CalendarWeekHeader />
 
-        <div className="grid grid-cols-7">
-          {weeks.flat().map((date, dateIndex) => {
-            const dayIndex = dateIndex % 7;
-            const dayEvents = getEventsForDate(date);
-
-            return (
-              <CalendarDateCell
-                key={dateIndex}
-                date={date}
-                events={dayEvents}
-                isCurrentMonth={isCurrentMonth(date, currentMonth)}
-                isToday={isToday(date)}
-                isSunday={dayIndex === 0}
-                isSaturday={dayIndex === 6}
+        <div className="space-y-0">
+          {weeks.map((weekDates, weekIndex) => (
+            <div key={weekIndex} className="border-b border-surface-border/30 last:border-b-0">
+              <WeekView
+                weekDates={weekDates}
+                events={getEventsForWeek(weekDates)}
+                currentMonth={currentMonth}
                 onEventClick={onEventClick}
               />
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </StaggeredItem>
