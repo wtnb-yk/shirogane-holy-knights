@@ -35,7 +35,8 @@ class R2dbcConfig() {
             .password(password)
 
         // ローカル開発環境かLambda+LocalStack環境を判定
-        val isLocalDev = host == "localhost" || host == "host.docker.internal" || host == "postgres"
+        val isLambda = System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null
+        val isLocalDev = (host == "localhost" || host == "host.docker.internal" || host == "postgres") && !isLambda
 
         if (isLocalDev) {
             logger.info("Local development environment detected, SSL disabled for database connection")
