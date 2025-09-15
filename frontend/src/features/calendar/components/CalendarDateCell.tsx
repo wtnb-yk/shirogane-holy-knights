@@ -31,7 +31,7 @@ export function CalendarDateCell({
       className={`
         min-h-[120px] p-2 border-r border-b border-surface-border/30 last:border-r-0
         ${!isCurrentMonth ? 'bg-bg-accent/10' : 'bg-bg-primary'}
-        ${isToday ? 'bg-accent-blue/5 border-accent-blue/20' : ''}
+        ${isToday ? 'bg-accent-gold-light' : ''}
         hover:bg-bg-accent/10 transition-colors duration-200 relative
       `}
     >
@@ -39,7 +39,7 @@ export function CalendarDateCell({
         !isCurrentMonth
           ? 'text-text-muted' :
         isToday
-          ? 'text-accent-blue font-semibold' :
+          ? 'text-text-inverse font-bold bg-accent-gold w-8 h-8 rounded-full flex items-center justify-center' :
         isSunday
           ? 'text-red-500' :
         isSaturday
