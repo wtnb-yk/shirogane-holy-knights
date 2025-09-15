@@ -13,7 +13,6 @@ import { CalendarBottomSheetContent } from '@/features/calendar/components/Calen
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
@@ -35,6 +34,8 @@ export default function CalendarPage() {
     isEventModalOpen,
     setIsEventModalOpen,
     eventTypes,
+    loading,
+    error,
     clearFilters
   } = useCalendar();
 
@@ -62,7 +63,7 @@ export default function CalendarPage() {
       title="CALENDAR"
       description={
         <p>
-          白銀ノエルさん関連のイベントとグッズのスケジュールを確認できます。<br />
+          白銀ノエルさん関連のイベントとグッズ等のスケジュールを確認できます。<br />
           イベントタイプやキーワードで絞り込んで、見逃したくない情報をチェックしましょう。
         </p>
       }
@@ -126,6 +127,8 @@ export default function CalendarPage() {
         currentView={currentView}
         currentDate={currentDate}
         events={filteredEvents}
+        loading={loading}
+        error={error}
         onEventClick={handleEventClick}
         onDateChange={setCurrentDate}
       />

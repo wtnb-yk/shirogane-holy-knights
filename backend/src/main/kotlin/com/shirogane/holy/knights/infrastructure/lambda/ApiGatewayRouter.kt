@@ -7,6 +7,7 @@ import com.shirogane.holy.knights.adapter.controller.HealthController
 import com.shirogane.holy.knights.adapter.controller.NewsController
 import com.shirogane.holy.knights.adapter.controller.VideoController
 import com.shirogane.holy.knights.adapter.controller.SongController
+import com.shirogane.holy.knights.adapter.controller.CalendarController
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.MiddlewareChain
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.ErrorHandlingMiddleware
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.LoggingMiddleware
@@ -18,6 +19,7 @@ class ApiGatewayRouter(
     private val videoController: VideoController,
     private val newsController: NewsController,
     private val songController: SongController,
+    private val calendarController: CalendarController,
     private val healthController: HealthController,
     private val responseBuilder: ApiGatewayResponseBuilder,
     private val middlewareChain: MiddlewareChain,
@@ -61,6 +63,12 @@ class ApiGatewayRouter(
         },
         RouteKey("GET", "/concert-songs/stats") to { _ ->
             songController.getConcertSongsStats()
+        },
+        RouteKey("POST", "/calendar/events") to { request ->
+            calendarController.searchEvents(request.body)
+        },
+        RouteKey("GET", "/calendar/event-types") to { _ ->
+            calendarController.getEventTypes()
         },
     )
     

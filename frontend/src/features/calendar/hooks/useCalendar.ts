@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Event, CalendarView } from '../types';
-import { mockEvents, eventTypes } from '../data/mockData';
+import { useCalendarQuery } from './useCalendarQuery';
+import { useCalendarEventTypes } from './useCalendarEventTypes';
 
 export function useCalendar() {
   const [currentView, setCurrentView] = useState<CalendarView>('month');
@@ -12,45 +13,40 @@ export function useCalendar() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
-  // フィルタリングされたイベント
+  // 現在の月の開始日と終了日を取得（APIフィルタリング用）
+  const currentMonthRange = useMemo(() => {
+    const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+    return {
+      startDate: `${startOfMonth.getFullYear()}-${String(startOfMonth.getMonth() + 1).padStart(2, '0')}-${String(startOfMonth.getDate()).padStart(2, '0')}`,
+      endDate: `${endOfMonth.getFullYear()}-${String(endOfMonth.getMonth() + 1).padStart(2, '0')}-${String(endOfMonth.getDate()).padStart(2, '0')}`
+    };
+  }, [currentDate]);
+
+  // API呼び出し
+  const { events, loading, error } = useCalendarQuery(
+    { pageSize: 100 }, // 月表示なので全件取得
+    {
+      currentPage: 1,
+      searchQuery,
+      filters: {
+        eventTypeIds: selectedEventTypes.length > 0 ? selectedEventTypes : undefined,
+        startDate: currentMonthRange.startDate,
+        endDate: currentMonthRange.endDate
+      }
+    }
+  );
+
+  const { eventTypes } = useCalendarEventTypes();
+
+  // DTOからEvent型に変換
   const filteredEvents = useMemo(() => {
-    let filtered = mockEvents;
-
-    // イベントタイプフィルター
-    if (selectedEventTypes.length > 0) {
-      filtered = filtered.filter(event =>
-        event.eventTypes.some(type => selectedEventTypes.includes(type.id))
-      );
-    }
-
-    // 検索クエリフィルター
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(event =>
-        event.title.toLowerCase().includes(query) ||
-        event.description?.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
-  }, [selectedEventTypes, searchQuery]);
-
-  // 現在の日付に基づいてイベントをフィルタリング
-  const eventsForCurrentView = useMemo(() => {
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-
-    if (currentView === 'month') {
-      return filteredEvents.filter(event => {
-        const eventDate = new Date(event.eventDate);
-        return eventDate.getFullYear() === currentYear &&
-               eventDate.getMonth() === currentMonth;
-      });
-    }
-
-    // 週表示・日表示の場合の処理（今回は月表示のみ実装）
-    return filteredEvents;
-  }, [filteredEvents, currentDate, currentView]);
+    return events.map(event => ({
+      ...event,
+      eventTypes: event.eventTypes.map(type => ({ id: type.id, type: type.type }))
+    } as Event));
+  }, [events]);
 
   const clearFilters = () => {
     setSelectedEventTypes([]);
@@ -66,12 +62,14 @@ export function useCalendar() {
     setSelectedEventTypes,
     searchQuery,
     setSearchQuery,
-    filteredEvents: eventsForCurrentView,
+    filteredEvents,
     selectedEvent,
     setSelectedEvent,
     isEventModalOpen,
     setIsEventModalOpen,
-    eventTypes,
+    eventTypes: eventTypes.map(type => ({ id: type.id, type: type.type })),
+    loading,
+    error,
     clearFilters
   };
 }
