@@ -5,7 +5,8 @@ import { Event } from '../types';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { CalendarWeekHeader } from './CalendarWeekHeader';
 import { WeekView } from './WeekView';
-import { getCalendarWeeks, isDateInRange } from '../utils/dateUtils';
+import { MobileMonthView } from './MobileMonthView';
+import { getCalendarWeeks } from '../utils/dateUtils';
 
 interface MonthViewProps {
   currentDate: Date;
@@ -31,7 +32,8 @@ export function MonthView({ currentDate, events, onEventClick, onDateChange }: M
 
   return (
     <StaggeredItem index={0} className="opacity-0 animate-stagger-fade">
-      <div className="bg-bg-primary border border-surface-border rounded-lg overflow-hidden shadow-sm">
+      {/* デスクトップ・タブレット表示 */}
+      <div className="hidden md:block bg-bg-primary border border-surface-border rounded-lg overflow-hidden shadow-sm">
         <CalendarWeekHeader />
 
         <div className="space-y-0">
@@ -46,6 +48,15 @@ export function MonthView({ currentDate, events, onEventClick, onDateChange }: M
             </div>
           ))}
         </div>
+      </div>
+
+      {/* スマホ表示 */}
+      <div className="block md:hidden">
+        <MobileMonthView
+          currentDate={currentDate}
+          events={events}
+          onEventClick={onEventClick}
+        />
       </div>
     </StaggeredItem>
   );
