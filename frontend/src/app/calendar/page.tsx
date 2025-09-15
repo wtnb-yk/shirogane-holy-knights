@@ -58,13 +58,18 @@ export default function CalendarPage() {
   };
 
   const handleEventClickFromDayModal = (event: any) => {
-    setIsDayEventsModalOpen(false);
-    handleEventClick(event);
+    setSelectedEvent(event);
+    setIsEventModalOpen(true);
+  };
+
+  const handleBackToDayModal = () => {
+    setIsEventModalOpen(false);
   };
 
   const handleCloseModal = () => {
     setSelectedEvent(null);
     setIsEventModalOpen(false);
+    setIsDayEventsModalOpen(false);
   };
 
   const getSelectedEventTypeNames = () => {
@@ -161,6 +166,8 @@ export default function CalendarPage() {
         event={selectedEvent}
         isOpen={isEventModalOpen}
         onClose={handleCloseModal}
+        fromDayModal={isDayEventsModalOpen}
+        onBackToDayModal={handleBackToDayModal}
       />
 
       <BottomSheet

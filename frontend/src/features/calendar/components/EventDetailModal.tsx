@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Clock, ExternalLink } from 'lucide-react';
+import { Clock, ExternalLink, ArrowLeft } from 'lucide-react';
 import { Event } from '../types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { getImageUrl } from '@/utils/imageUrl';
@@ -13,9 +13,11 @@ interface EventDetailModalProps {
   event: Event | null;
   isOpen: boolean;
   onClose: () => void;
+  fromDayModal?: boolean;
+  onBackToDayModal?: () => void;
 }
 
-export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
+export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false, onBackToDayModal }: EventDetailModalProps) {
   if (!event) return null;
 
   const getEventTypeBadgeStyle = (type: string) => {
@@ -126,17 +128,27 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
 
 
           {/* アクションボタン */}
-            {event.url && (
-              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
-                <Button
-                  variant="primary"
-                  onClick={() => window.open(event.url, '_blank', 'noopener noreferrer')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  詳細を確認
-                </Button>
-              </div>
+          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
+            {fromDayModal && onBackToDayModal && (
+              <Button
+                variant="ghost"
+                onClick={onBackToDayModal}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                日付画面に戻る
+              </Button>
             )}
+
+            {event.url && (
+              <Button
+                variant="primary"
+                onClick={() => window.open(event.url, '_blank', 'noopener noreferrer')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                詳細を確認
+              </Button>
+            )}
+          </div>
         </div>
         </div>
       </DialogContent>

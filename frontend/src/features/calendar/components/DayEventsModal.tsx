@@ -68,12 +68,6 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
               ))}
             </div>
           )}
-
-          <div className="flex justify-end gap-3 pt-4 mt-6 border-t border-surface-border">
-            <Button variant="ghost" onClick={onClose}>
-              閉じる
-            </Button>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
