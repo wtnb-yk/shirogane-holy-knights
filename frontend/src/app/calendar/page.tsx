@@ -6,6 +6,7 @@ import { CalendarHeader } from '@/features/calendar/components/CalendarHeader';
 import { CalendarGrid } from '@/features/calendar/components/CalendarGrid';
 import { CalendarSidebar } from '@/features/calendar/components/CalendarSidebar';
 import { EventDetailModal } from '@/features/calendar/components/EventDetailModal';
+import { DayEventsModal } from '@/features/calendar/components/DayEventsModal';
 import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
@@ -18,6 +19,9 @@ import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 export default function CalendarPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDateEvents, setSelectedDateEvents] = useState<any[]>([]);
 
   const {
     currentView,
@@ -45,6 +49,17 @@ export default function CalendarPage() {
   const handleEventClick = (event: any) => {
     setSelectedEvent(event);
     setIsEventModalOpen(true);
+  };
+
+  const handleDateClick = (date: Date, events: any[]) => {
+    setSelectedDate(date);
+    setSelectedDateEvents(events);
+    setIsDayEventsModalOpen(true);
+  };
+
+  const handleEventClickFromDayModal = (event: any) => {
+    setIsDayEventsModalOpen(false);
+    handleEventClick(event);
   };
 
   const handleCloseModal = () => {
@@ -131,6 +146,15 @@ export default function CalendarPage() {
         error={error}
         onEventClick={handleEventClick}
         onDateChange={setCurrentDate}
+        onDateClick={handleDateClick}
+      />
+
+      <DayEventsModal
+        date={selectedDate}
+        events={selectedDateEvents}
+        isOpen={isDayEventsModalOpen}
+        onClose={() => setIsDayEventsModalOpen(false)}
+        onEventClick={handleEventClickFromDayModal}
       />
 
       <EventDetailModal

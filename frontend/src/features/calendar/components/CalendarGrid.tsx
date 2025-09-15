@@ -12,6 +12,7 @@ interface CalendarGridProps {
   error?: string | null;
   onEventClick: (event: Event) => void;
   onDateChange: (date: Date) => void;
+  onDateClick: (date: Date, events: Event[]) => void;
 }
 
 export function CalendarGrid({
@@ -21,7 +22,8 @@ export function CalendarGrid({
   loading,
   error,
   onEventClick,
-  onDateChange
+  onDateChange,
+  onDateClick
 }: CalendarGridProps) {
   if (loading) {
     return (
@@ -46,6 +48,7 @@ export function CalendarGrid({
         events={events}
         onEventClick={onEventClick}
         onDateChange={onDateChange}
+        onDateClick={onDateClick}
       />
     );
   }

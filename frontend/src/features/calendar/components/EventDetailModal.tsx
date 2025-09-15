@@ -126,21 +126,17 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
 
 
           {/* アクションボタン */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
             {event.url && (
-              <Button
-                variant="primary"
-                onClick={() => window.open(event.url, '_blank', 'noopener noreferrer')}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                詳細を確認
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
+                <Button
+                  variant="primary"
+                  onClick={() => window.open(event.url, '_blank', 'noopener noreferrer')}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  詳細を確認
+                </Button>
+              </div>
             )}
-
-            <Button variant="ghost" onClick={onClose}>
-              閉じる
-            </Button>
-          </div>
         </div>
         </div>
       </DialogContent>

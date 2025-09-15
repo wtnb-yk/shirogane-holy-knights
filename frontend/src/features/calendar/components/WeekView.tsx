@@ -12,12 +12,13 @@ interface WeekViewProps {
   events: Event[];
   currentMonth: number;
   onEventClick: (event: Event) => void;
+  onDateClick: (date: Date, events: Event[]) => void;
 }
 
 const BAND_HEIGHT = 24;
 const BAND_MARGIN = 4;
 
-export function WeekView({ weekDates, events, currentMonth, onEventClick }: WeekViewProps) {
+export function WeekView({ weekDates, events, currentMonth, onEventClick, onDateClick }: WeekViewProps) {
   const weekStartDate = weekDates[0];
   const weekEndDate = new Date(weekDates[6]);
   weekEndDate.setHours(23, 59, 59, 999);
@@ -39,6 +40,7 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick }: Week
           isSunday={dayIndex === 0}
           isSaturday={dayIndex === 6}
           onEventClick={onEventClick}
+          onDateClick={onDateClick}
         />
       ))}
 

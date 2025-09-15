@@ -14,6 +14,7 @@ interface CalendarDateCellProps {
   isSunday: boolean;
   isSaturday: boolean;
   onEventClick: (event: Event) => void;
+  onDateClick: (date: Date, allEvents: Event[]) => void;
 }
 
 export function CalendarDateCell({
@@ -25,12 +26,22 @@ export function CalendarDateCell({
   isToday,
   isSunday,
   isSaturday,
-  onEventClick
+  onEventClick,
+  onDateClick
 }: CalendarDateCellProps) {
   // eventsはすでに表示可能なイベントのみが渡される
   const eventsToShow = events;
   const remainingCount = hiddenEvents.length;
+  const allEvents = [...events, ...hiddenEvents];
 
+  const handleDateClick = (e: React.MouseEvent) => {
+    // イベントアイテムがクリックされた場合は、日付クリックを無視
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-event-item]')) {
+      return;
+    }
+    onDateClick(date, allEvents);
+  };
 
   return (
     <div
@@ -38,8 +49,9 @@ export function CalendarDateCell({
         h-[140px] p-2 border-r border-b border-surface-border/30 last:border-r-0
         ${!isCurrentMonth ? 'bg-bg-accent/10' : 'bg-bg-primary'}
         ${isToday ? 'bg-accent-gold-light' : ''}
-        hover:bg-bg-accent/10 transition-colors duration-200 relative overflow-hidden
+        hover:bg-bg-accent/10 transition-colors duration-200 relative overflow-hidden cursor-pointer
       `}
+      onClick={handleDateClick}
     >
       {/* 日付と+N件を横並びに配置 */}
       <div className="flex justify-between items-center h-8">

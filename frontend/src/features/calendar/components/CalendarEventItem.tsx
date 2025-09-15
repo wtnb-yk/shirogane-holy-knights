@@ -28,6 +28,7 @@ export function CalendarEventItem({ event, onClick }: CalendarEventItemProps) {
   return (
     <button
       onClick={() => onClick(event)}
+      data-event-item="true"
       className={`
         w-full text-left px-2 py-1 rounded text-xs font-medium
         border transition-colors duration-200

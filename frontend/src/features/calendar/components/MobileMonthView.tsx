@@ -9,6 +9,7 @@ interface MobileMonthViewProps {
   currentDate: Date;
   events: Event[];
   onEventClick: (event: Event) => void;
+  onDateClick?: (date: Date, events: Event[]) => void;
 }
 
 export function MobileMonthView({ currentDate, events, onEventClick }: MobileMonthViewProps) {
