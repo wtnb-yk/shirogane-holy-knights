@@ -16,16 +16,16 @@ interface EventDetailModalProps {
 export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalProps) {
   if (!event) return null;
 
-  const getEventTypeBadgeVariant = (type: string) => {
+  const getEventTypeBadgeStyle = (type: string) => {
     switch (type) {
       case 'event':
-        return 'secondary' as const;
+        return 'bg-badge-blue/10 text-badge-blue border-badge-blue/20';
       case 'goods':
-        return 'outline' as const;
+        return 'bg-badge-orange/10 text-badge-orange border-badge-orange/20';
       case 'campaign':
-        return 'default' as const;
+        return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20';
       default:
-        return 'secondary' as const;
+        return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20';
     }
   };
 
@@ -78,13 +78,12 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
               {/* イベントタイプバッジ */}
               <div className="flex flex-wrap gap-2">
                 {event.eventTypes.map((type) => (
-                  <Badge
+                  <span
                     key={type.id}
-                    variant={getEventTypeBadgeVariant(type.type)}
-                    className="text-sm"
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getEventTypeBadgeStyle(type.type)}`}
                   >
                     {getEventTypeLabel(type.type)}
-                  </Badge>
+                  </span>
                 ))}
               </div>
             </div>

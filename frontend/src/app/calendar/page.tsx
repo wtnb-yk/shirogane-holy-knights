@@ -84,19 +84,6 @@ export default function CalendarPage() {
           variant="search"
         />
       }
-      primaryTabs={
-        <ContentTypeTabs
-          tabs={[
-            { value: 'month', label: '月' },
-            { value: 'week', label: '週' },
-            { value: 'day', label: '日' }
-          ]}
-          activeTab={currentView}
-          onTabChange={(value) => setCurrentView(value as any)}
-          size="md"
-          variant="compact"
-        />
-      }
       sidebar={
         <ResponsiveSidebar
           isOpen={isSidebarOpen}

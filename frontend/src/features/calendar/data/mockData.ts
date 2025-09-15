@@ -23,7 +23,7 @@ export const mockEvents: Event[] = [
     id: 2,
     title: 'ホロライブ年末ライブ',
     description: 'ホロライブ年末恒例のライブイベント。白銀ノエルも参加予定です。',
-    eventDate: '2024-12-31',
+    eventDate: '2025-09-13',
     eventTime: '19:00:00',
     eventTypes: [{ id: 1, type: 'event' }],
     createdAt: '2024-11-01T10:00:00Z'
@@ -42,7 +42,7 @@ export const mockEvents: Event[] = [
     id: 4,
     title: 'バレンタイングッズ',
     description: 'バレンタイン限定のチョコレートとアクスタのセット',
-    eventDate: '2025-09-04',
+    eventDate: '2025-09-13',
     eventTypes: [{ id: 2, type: 'goods' }],
     createdAt: '2025-01-01T10:00:00Z'
   },

@@ -50,22 +50,7 @@ export const CalendarSidebar = ({
     onSearchChange('');
   };
 
-  const viewTabs = [
-    { value: 'month', label: '月' },
-    { value: 'week', label: '週' },
-    { value: 'day', label: '日' }
-  ];
-
   const sections: SidebarSectionConfig[] = [
-    {
-      id: 'view-tabs',
-      component: ContentTypeTabs,
-      props: {
-        tabs: viewTabs,
-        activeTab: currentView,
-        onTabChange: onViewChange
-      }
-    },
     {
       id: 'calendar-search',
       component: CalendarSearchSection,
