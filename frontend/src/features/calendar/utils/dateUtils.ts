@@ -36,9 +36,9 @@ export function isToday(date: Date) {
 }
 
 export function isDateInRange(date: Date, startDateStr: string, endDateStr?: string) {
-  const targetDate = new Date(date.toISOString().split('T')[0] + 'T00:00:00');
-  const start = new Date(startDateStr + 'T00:00:00');
-  const end = endDateStr ? new Date(endDateStr + 'T00:00:00') : start;
+  // JST基準のYYYY-MM-DD形式で比較するため、文字列で直接比較
+  const targetDateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const endDate = endDateStr || startDateStr;
 
-  return targetDate >= start && targetDate <= end;
+  return targetDateStr >= startDateStr && targetDateStr <= endDate;
 }
