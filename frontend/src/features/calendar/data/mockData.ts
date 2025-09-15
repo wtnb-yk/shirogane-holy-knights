@@ -87,7 +87,7 @@ export const mockEvents: Event[] = [
     id: 9,
     title: 'ファンアートコンテスト',
     description: 'ファンアートコンテスト開催！優秀作品には特別なプレゼントがあります',
-    eventDate: '2025-09-01',
+    eventDate: '2025-02-01',
     endDate: '2025-02-28',
     url: 'https://example.com/fanart-contest',
     eventTypes: [{ id: 3, type: 'campaign' }],
