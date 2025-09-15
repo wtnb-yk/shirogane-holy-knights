@@ -11,6 +11,9 @@ export interface WeekEventLayout {
   eventBands: EventSegment[];
   singleDayEvents: { [dayIndex: number]: Event[] };
   maxLanes: number;
+  hiddenEventsCount: number;
+  hiddenEvents: Event[];
+  hiddenEventsByDay: { [dayIndex: number]: Event[] };
 }
 
 const MAX_LANES = 3;
@@ -21,7 +24,7 @@ export function calculateWeekEventLayout(
   events: Event[]
 ): WeekEventLayout {
   const multiDayEvents: Event[] = [];
-  const singleDayEventsByDay: { [dayIndex: number]: Event[] } = {};
+  const allSingleDayEventsByDay: { [dayIndex: number]: Event[] } = {};
 
   // 単日・複数日イベントを分類
   for (const event of events) {
@@ -33,31 +36,59 @@ export function calculateWeekEventLayout(
       const eventDate = new Date(event.eventDate + 'T00:00:00');
       if (eventDate >= weekStartDate && eventDate <= weekEndDate) {
         const dayIndex = getDayIndexInWeek(eventDate, weekStartDate);
-        if (!singleDayEventsByDay[dayIndex]) {
-          singleDayEventsByDay[dayIndex] = [];
+        if (!allSingleDayEventsByDay[dayIndex]) {
+          allSingleDayEventsByDay[dayIndex] = [];
         }
-        singleDayEventsByDay[dayIndex].push(event);
+        allSingleDayEventsByDay[dayIndex].push(event);
       }
     }
   }
 
   // 複数日イベントをレーンに配置
-  const eventBands = assignEventLanes(multiDayEvents, weekStartDate, weekEndDate);
-  const maxLanes = Math.min(eventBands.length > 0 ? Math.max(...eventBands.map(b => b.laneIndex)) + 1 : 0, MAX_LANES);
+  const { segments: eventBands, hiddenEvents: hiddenMultiDayEvents } = assignEventLanes(multiDayEvents, weekStartDate, weekEndDate);
+  const maxMultiDayLanes = eventBands.length > 0 ? Math.max(...eventBands.map(b => b.laneIndex)) + 1 : 0;
 
-  // 表示制限を超えた場合の処理
-  const visibleBands = eventBands.filter(band => band.laneIndex < MAX_LANES);
-  const hiddenCount = eventBands.length - visibleBands.length;
-
-  // 隠れたイベントがある場合は情報を付加（実装時に活用）
-  if (hiddenCount > 0) {
-    // TODO: +N件表示の処理
+  // 各日について、複数日イベントが占有するレーン数を計算
+  const lanesOccupiedByDay: { [dayIndex: number]: number } = {};
+  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+    lanesOccupiedByDay[dayIndex] = 0;
   }
 
+  for (const segment of eventBands) {
+    for (let day = segment.startDayIndex; day <= segment.endDayIndex; day++) {
+      lanesOccupiedByDay[day] = Math.max(lanesOccupiedByDay[day], segment.laneIndex + 1);
+    }
+  }
+
+  // 各日で表示可能な単日イベント数を計算して振り分け
+  const visibleSingleDayEventsByDay: { [dayIndex: number]: Event[] } = {};
+  const hiddenSingleDayEventsByDay: { [dayIndex: number]: Event[] } = {};
+  let totalHiddenCount = hiddenMultiDayEvents.length;
+
+  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+    const singleDayEvents = allSingleDayEventsByDay[dayIndex] || [];
+    const occupiedLanes = lanesOccupiedByDay[dayIndex];
+    const availableLanes = MAX_LANES - occupiedLanes;
+
+    visibleSingleDayEventsByDay[dayIndex] = singleDayEvents.slice(0, availableLanes);
+    hiddenSingleDayEventsByDay[dayIndex] = singleDayEvents.slice(availableLanes);
+
+    totalHiddenCount += hiddenSingleDayEventsByDay[dayIndex].length;
+  }
+
+  // すべての隠れたイベントをまとめる
+  const allHiddenEvents = [
+    ...hiddenMultiDayEvents,
+    ...Object.values(hiddenSingleDayEventsByDay).flat()
+  ];
+
   return {
-    eventBands: visibleBands,
-    singleDayEvents: singleDayEventsByDay,
-    maxLanes
+    eventBands,
+    singleDayEvents: visibleSingleDayEventsByDay,
+    maxLanes: maxMultiDayLanes,
+    hiddenEventsCount: totalHiddenCount,
+    hiddenEvents: allHiddenEvents,
+    hiddenEventsByDay: hiddenSingleDayEventsByDay
   };
 }
 
@@ -78,8 +109,9 @@ function assignEventLanes(
   events: Event[],
   weekStartDate: Date,
   weekEndDate: Date
-): EventSegment[] {
+): { segments: EventSegment[]; hiddenEvents: Event[] } {
   const segments: EventSegment[] = [];
+  const hiddenEvents: Event[] = [];
   const lanes: EventSegment[][] = [];
 
   for (const event of events) {
@@ -126,10 +158,13 @@ function assignEventLanes(
 
       segments.push(segment);
       lanes[assignedLane].push(segment);
+    } else {
+      // レーンに配置できない場合は隠れたイベントとして記録
+      hiddenEvents.push(event);
     }
   }
 
-  return segments;
+  return { segments, hiddenEvents };
 }
 
 function segmentsOverlap(
