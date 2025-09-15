@@ -16,7 +16,11 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick }: Week
   const weekStartDate = weekDates[0];
   const weekEndDate = weekDates[6];
 
-  const layout = calculateWeekEventLayout(weekStartDate, weekEndDate, events);
+  // 週の終了日を土曜日の23:59:59に設定
+  const actualWeekEndDate = new Date(weekEndDate);
+  actualWeekEndDate.setHours(23, 59, 59, 999);
+
+  const layout = calculateWeekEventLayout(weekStartDate, actualWeekEndDate, events);
 
   const isCurrentMonth = (date: Date) => date.getMonth() === currentMonth;
   const isToday = (date: Date) => {
@@ -70,6 +74,14 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick }: Week
         const widthPercent = ((segment.endDayIndex - segment.startDayIndex + 1) / 7) * 100;
         const topOffset = 40 + segment.laneIndex * (bandHeight + 4); // セル内の日付表示の下
 
+        // マージンと幅を適切に設定
+        const isStart = segment.startDayIndex > 0; // 週の開始ではない
+        const isEnd = segment.endDayIndex < 6; // 週の終了ではない
+        const marginLeft = isStart ? '8px' : '0px';
+
+        // 終了日の場合は幅を8px縮める
+        const adjustedWidthPercent = isEnd ? `calc(${widthPercent}% - 8px)` : `${widthPercent}%`;
+
         return (
           <button
             key={`${segment.event.id}-${index}`}
@@ -82,11 +94,10 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick }: Week
             `}
             style={{
               left: `${leftPercent}%`,
-              width: `${widthPercent}%`,
+              width: adjustedWidthPercent,
               top: `${topOffset}px`,
               height: `${bandHeight}px`,
-              marginLeft: '8px',
-              marginRight: '8px'
+              marginLeft
             }}
             title={`${segment.event.title} (${segment.event.eventDate}${segment.event.endDate ? ` - ${segment.event.endDate}` : ''})`}
           >

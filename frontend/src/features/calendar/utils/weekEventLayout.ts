@@ -84,7 +84,7 @@ function assignEventLanes(
 
   for (const event of events) {
     const eventStart = new Date(event.eventDate + 'T00:00:00');
-    const eventEnd = new Date((event.endDate || event.eventDate) + 'T23:59:59');
+    const eventEnd = new Date((event.endDate || event.eventDate) + 'T00:00:00');
 
     // 週の範囲内でクリップ
     const clippedStart = eventStart > weekStartDate ? eventStart : weekStartDate;
