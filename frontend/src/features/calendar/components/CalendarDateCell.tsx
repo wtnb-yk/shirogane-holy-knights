@@ -3,10 +3,14 @@
 import React from 'react';
 import { Event } from '../types';
 import { CalendarEventItem } from './CalendarEventItem';
+import { EventSegment } from '../utils/weekEventLayout';
 
 interface CalendarDateCellProps {
   date: Date;
   events: Event[];
+  eventBands?: EventSegment[];
+  dayIndex?: number;
+  bandReservedHeight?: number;
   isCurrentMonth: boolean;
   isToday: boolean;
   isSunday: boolean;
@@ -17,14 +21,20 @@ interface CalendarDateCellProps {
 export function CalendarDateCell({
   date,
   events,
+  eventBands = [],
+  dayIndex = 0,
+  bandReservedHeight = 0,
   isCurrentMonth,
   isToday,
   isSunday,
   isSaturday,
   onEventClick
 }: CalendarDateCellProps) {
-  const eventsToShow = events.slice(0, 3);
-  const remainingCount = events.length - 3;
+  // 単日イベントのみ表示（複数日イベントは帯で表示）
+  const singleDayEvents = events.filter(event => !event.endDate || event.endDate === event.eventDate);
+  const eventsToShow = singleDayEvents.slice(0, 3);
+  const remainingCount = singleDayEvents.length - 3;
+
 
   return (
     <div
@@ -49,7 +59,11 @@ export function CalendarDateCell({
         {date.getDate()}
       </div>
 
-      <div className="space-y-1">
+      <div
+        className="space-y-1"
+        style={{ paddingTop: `${bandReservedHeight > 0 ? bandReservedHeight + 8 : 0}px` }}
+      >
+        {/* 単日イベントの通常表示 */}
         {eventsToShow.map((event) => (
           <CalendarEventItem
             key={event.id}

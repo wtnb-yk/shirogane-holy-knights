@@ -5,7 +5,7 @@ import { Event } from '../types';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { CalendarWeekHeader } from './CalendarWeekHeader';
 import { WeekView } from './WeekView';
-import { getCalendarWeeks } from '../utils/dateUtils';
+import { getCalendarWeeks, isDateInRange } from '../utils/dateUtils';
 
 interface MonthViewProps {
   currentDate: Date;
@@ -25,7 +25,6 @@ export function MonthView({ currentDate, events, onEventClick, onDateChange }: M
     return events.filter(event => {
       const eventStart = new Date(event.eventDate + 'T00:00:00');
       const eventEnd = new Date((event.endDate || event.eventDate) + 'T23:59:59');
-
       return eventStart <= weekEnd && eventEnd >= weekStart;
     });
   };
