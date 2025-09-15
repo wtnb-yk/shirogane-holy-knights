@@ -10,6 +10,7 @@ interface MobileDateSectionProps {
   isCurrentMonth: boolean;
   isToday: boolean;
   onEventClick: (event: Event) => void;
+  onShowMoreEvents?: (date: Date, events: Event[]) => void;
 }
 
 export function MobileDateSection({
@@ -17,7 +18,8 @@ export function MobileDateSection({
   events,
   isCurrentMonth,
   isToday,
-  onEventClick
+  onEventClick,
+  onShowMoreEvents
 }: MobileDateSectionProps) {
   const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
   const dayIndex = date.getDay();
@@ -68,9 +70,12 @@ export function MobileDateSection({
             />
           ))}
           {remainingCount > 0 && (
-            <div className="text-text-secondary text-xs py-1 px-2 bg-bg-accent/5 rounded text-center">
+            <button
+              onClick={() => onShowMoreEvents?.(date, events)}
+              className="w-full text-text-secondary hover:text-text-primary hover:bg-bg-accent/10 text-xs py-1 px-2 bg-bg-accent/5 hover:bg-bg-accent/15 rounded text-center transition-all duration-200 cursor-pointer"
+            >
               +{remainingCount}件
-            </div>
+            </button>
           )}
         </div>
       )}

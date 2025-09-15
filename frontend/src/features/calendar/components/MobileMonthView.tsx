@@ -12,7 +12,7 @@ interface MobileMonthViewProps {
   onDateClick?: (date: Date, events: Event[]) => void;
 }
 
-export function MobileMonthView({ currentDate, events, onEventClick }: MobileMonthViewProps) {
+export function MobileMonthView({ currentDate, events, onEventClick, onDateClick }: MobileMonthViewProps) {
   const currentMonth = currentDate.getMonth();
   const weeks = getCalendarWeeks(currentDate);
 
@@ -55,6 +55,7 @@ export function MobileMonthView({ currentDate, events, onEventClick }: MobileMon
             isCurrentMonth={isCurrentMonth(date)}
             isToday={isToday(date)}
             onEventClick={onEventClick}
+            onShowMoreEvents={onDateClick}
           />
         );
       })}

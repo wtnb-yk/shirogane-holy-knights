@@ -7,6 +7,7 @@ import { CalendarGrid } from '@/features/calendar/components/CalendarGrid';
 import { CalendarSidebar } from '@/features/calendar/components/CalendarSidebar';
 import { EventDetailModal } from '@/features/calendar/components/EventDetailModal';
 import { DayEventsModal } from '@/features/calendar/components/DayEventsModal';
+import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
 import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
@@ -20,8 +21,10 @@ export default function CalendarPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
+  const [isDayEventsBottomSheetOpen, setIsDayEventsBottomSheetOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDateEvents, setSelectedDateEvents] = useState<any[]>([]);
+  const [fromDayModalOrSheet, setFromDayModalOrSheet] = useState(false);
 
   const {
     currentView,
@@ -49,6 +52,7 @@ export default function CalendarPage() {
   const handleEventClick = (event: any) => {
     setSelectedEvent(event);
     setIsEventModalOpen(true);
+    setFromDayModalOrSheet(false);
   };
 
   const handleDateClick = (date: Date, events: any[]) => {
@@ -57,10 +61,24 @@ export default function CalendarPage() {
     setIsDayEventsModalOpen(true);
   };
 
+  const handleMobileDateClick = (date: Date, events: any[]) => {
+    setSelectedDate(date);
+    setSelectedDateEvents(events);
+    setIsDayEventsBottomSheetOpen(true);
+  };
+
   const handleEventClickFromDayModal = (event: any) => {
     setIsDayEventsModalOpen(false);
     setSelectedEvent(event);
     setIsEventModalOpen(true);
+    setFromDayModalOrSheet(true);
+  };
+
+  const handleEventClickFromBottomSheet = (event: any) => {
+    setIsDayEventsBottomSheetOpen(false);
+    setSelectedEvent(event);
+    setIsEventModalOpen(true);
+    setFromDayModalOrSheet(true);
   };
 
   const handleBackToDayModal = () => {
@@ -68,10 +86,19 @@ export default function CalendarPage() {
     setIsDayEventsModalOpen(true);
   };
 
+  const handleBackToBottomSheet = () => {
+    setIsEventModalOpen(false);
+    setIsDayEventsBottomSheetOpen(true);
+  };
+
   const handleCloseModal = () => {
     setSelectedEvent(null);
     setIsEventModalOpen(false);
     setIsDayEventsModalOpen(false);
+    setIsDayEventsBottomSheetOpen(false);
+    setSelectedDate(null);
+    setSelectedDateEvents([]);
+    setFromDayModalOrSheet(false);
   };
 
   const getSelectedEventTypeNames = () => {
@@ -152,8 +179,8 @@ export default function CalendarPage() {
         loading={loading}
         error={error}
         onEventClick={handleEventClick}
-        onDateChange={setCurrentDate}
         onDateClick={handleDateClick}
+        onMobileDateClick={handleMobileDateClick}
       />
 
       <DayEventsModal
@@ -164,12 +191,20 @@ export default function CalendarPage() {
         onEventClick={handleEventClickFromDayModal}
       />
 
+      <DayEventsBottomSheet
+        date={selectedDate}
+        events={selectedDateEvents}
+        isOpen={isDayEventsBottomSheetOpen}
+        onClose={() => setIsDayEventsBottomSheetOpen(false)}
+        onEventClick={handleEventClickFromBottomSheet}
+      />
+
       <EventDetailModal
         event={selectedEvent}
         isOpen={isEventModalOpen}
         onClose={handleCloseModal}
-        fromDayModal={selectedDate !== null && selectedDateEvents.length > 0}
-        onBackToDayModal={handleBackToDayModal}
+        fromDayModal={fromDayModalOrSheet}
+        onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
 
       <BottomSheet
