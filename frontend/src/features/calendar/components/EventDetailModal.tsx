@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Clock, ExternalLink, Calendar } from 'lucide-react';
 import { Event } from '../types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 
 interface EventDetailModalProps {
   event: Event | null;
@@ -23,7 +22,7 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
       case 'goods':
         return 'bg-badge-orange/10 text-badge-orange border-badge-orange/20';
       case 'campaign':
-        return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20';
+        return 'bg-badge-green/10 text-badge-green border-badge-green/20';
       default:
         return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20';
     }

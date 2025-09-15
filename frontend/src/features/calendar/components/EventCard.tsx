@@ -75,7 +75,7 @@ export function EventCard({ event, onClick, compact = false }: EventCardProps) {
             ? 'bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20'
             : primaryEventType.type === 'goods'
             ? 'bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20'
-            : 'bg-text-secondary/10 text-text-secondary hover:bg-text-secondary/20'
+            : 'bg-badge-green/10 text-badge-green hover:bg-badge-green/20'
         }`}
       >
         <div className="truncate font-medium text-xs">

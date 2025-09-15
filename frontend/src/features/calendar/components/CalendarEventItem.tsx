@@ -19,7 +19,7 @@ export function CalendarEventItem({ event, onClick }: CalendarEventItemProps) {
       case 'goods':
         return 'bg-badge-orange/10 text-badge-orange border-badge-orange/20 hover:bg-badge-orange/20';
       case 'campaign':
-        return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20 hover:bg-badge-gray/20';
+        return 'bg-badge-green/10 text-badge-green border-badge-green/20 hover:bg-badge-green/20';
       default:
         return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20';
     }
