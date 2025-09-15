@@ -44,7 +44,7 @@ export const CalendarTypeSection = ({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-text-primary">タイプ</h3>
+      <h3 className="text-base font-bold text-text-primary">カテゴリ</h3>
 
       <div className="space-y-2">
         {/* 全てクリアボタン */}

@@ -10,7 +10,6 @@ interface UseCalendarQueryOptions {
 
 interface UseCalendarQueryParams {
   currentPage: number;
-  searchQuery: string;
   filters: CalendarFilterOptions;
 }
 
@@ -30,7 +29,7 @@ export const useCalendarQuery = (
   params: UseCalendarQueryParams
 ): UseCalendarQueryResult => {
   const { pageSize } = options;
-  const { currentPage, searchQuery, filters } = params;
+  const { currentPage, filters } = params;
 
   const [events, setEvents] = useState<EventDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +44,6 @@ export const useCalendarQuery = (
         setError(null);
 
         const result = await CalendarClient.searchCalendar({
-          query: searchQuery.trim() || undefined,
           eventTypeIds: filters.eventTypeIds,
           startDate: filters.startDate,
           endDate: filters.endDate,
@@ -64,7 +62,7 @@ export const useCalendarQuery = (
     };
 
     fetchEvents();
-  }, [currentPage, searchQuery, filters.eventTypeIds, filters.startDate, filters.endDate, pageSize]);
+  }, [currentPage, filters.eventTypeIds, filters.startDate, filters.endDate, pageSize]);
 
   return {
     events,

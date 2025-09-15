@@ -9,7 +9,6 @@ export function useCalendar() {
   const [currentView, setCurrentView] = useState<CalendarView>('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEventTypes, setSelectedEventTypes] = useState<number[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
@@ -29,7 +28,6 @@ export function useCalendar() {
     { pageSize: 100 }, // 月表示なので全件取得
     {
       currentPage: 1,
-      searchQuery,
       filters: {
         eventTypeIds: selectedEventTypes.length > 0 ? selectedEventTypes : undefined,
         startDate: currentMonthRange.startDate,
@@ -50,7 +48,6 @@ export function useCalendar() {
 
   const clearFilters = () => {
     setSelectedEventTypes([]);
-    setSearchQuery('');
   };
 
   return {
@@ -60,8 +57,6 @@ export function useCalendar() {
     setCurrentDate,
     selectedEventTypes,
     setSelectedEventTypes,
-    searchQuery,
-    setSearchQuery,
     filteredEvents,
     selectedEvent,
     setSelectedEvent,

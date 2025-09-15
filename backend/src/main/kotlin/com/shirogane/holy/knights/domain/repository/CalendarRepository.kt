@@ -13,7 +13,6 @@ interface CalendarRepository {
      * イベント検索
      */
     suspend fun search(
-        query: String? = null,
         eventTypeIds: List<Int>? = null,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null,
@@ -25,7 +24,6 @@ interface CalendarRepository {
      * イベント検索結果総件数を取得
      */
     suspend fun countBySearchCriteria(
-        query: String? = null,
         eventTypeIds: List<Int>? = null,
         startDate: LocalDate? = null,
         endDate: LocalDate? = null

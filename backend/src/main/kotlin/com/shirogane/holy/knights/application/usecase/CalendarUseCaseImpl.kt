@@ -22,7 +22,6 @@ class CalendarUseCaseImpl(
             val endDate = params.getEndDateAsLocalDate()
 
             val events = calendarRepository.search(
-                query = params.query,
                 eventTypeIds = params.eventTypeIds,
                 startDate = startDate,
                 endDate = endDate,
@@ -31,7 +30,6 @@ class CalendarUseCaseImpl(
             )
 
             val totalCount = calendarRepository.countBySearchCriteria(
-                query = params.query,
                 eventTypeIds = params.eventTypeIds,
                 startDate = startDate,
                 endDate = endDate

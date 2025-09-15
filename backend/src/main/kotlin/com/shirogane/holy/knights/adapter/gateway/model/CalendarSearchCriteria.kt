@@ -7,7 +7,6 @@ import java.time.LocalDate
  * NewsSearchCriteriaと同じパターンで実装
  */
 data class CalendarSearchCriteria(
-    val query: String? = null,
     val eventTypeIds: List<Int>? = null,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,

@@ -28,13 +28,10 @@ export default function CalendarPage() {
 
   const {
     currentView,
-    setCurrentView,
     currentDate,
     setCurrentDate,
     selectedEventTypes,
     setSelectedEventTypes,
-    searchQuery,
-    setSearchQuery,
     filteredEvents,
     selectedEvent,
     setSelectedEvent,
@@ -46,7 +43,7 @@ export default function CalendarPage() {
     clearFilters
   } = useCalendar();
 
-  const activeFiltersCount = (searchQuery ? 1 : 0) + selectedEventTypes.length;
+  const activeFiltersCount = selectedEventTypes.length;
   const hasActiveFilters = activeFiltersCount > 0;
 
   const handleEventClick = (event: any) => {
@@ -122,7 +119,7 @@ export default function CalendarPage() {
             onClick={() => setIsBottomSheetOpen(true)}
             hasActiveFilters={hasActiveFilters}
             activeFiltersCount={activeFiltersCount}
-            variant="search"
+            variant="filter"
           />
         </div>
       }
@@ -131,7 +128,7 @@ export default function CalendarPage() {
           onClick={() => setIsBottomSheetOpen(true)}
           hasActiveFilters={hasActiveFilters}
           activeFiltersCount={activeFiltersCount}
-          variant="search"
+          variant="filter"
         />
       }
       sidebar={
@@ -140,12 +137,8 @@ export default function CalendarPage() {
           onClose={() => setIsSidebarOpen(false)}
         >
           <CalendarSidebar
-            currentView={currentView}
-            onViewChange={setCurrentView}
             selectedEventTypes={selectedEventTypes}
             onEventTypeChange={setSelectedEventTypes}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
             eventTypes={eventTypes}
           />
         </ResponsiveSidebar>
@@ -163,7 +156,7 @@ export default function CalendarPage() {
       />
 
       <SearchResultsSummary
-        searchQuery={searchQuery}
+        searchQuery=""
         totalCount={filteredEvents.length}
         onClearAllFilters={clearFilters}
         hasFilters={hasActiveFilters}
@@ -212,14 +205,12 @@ export default function CalendarPage() {
         onClose={() => setIsBottomSheetOpen(false)}
       >
         <BottomSheetHeader
-          title="検索・絞り込み"
+          title="絞り込み"
           onClose={() => setIsBottomSheetOpen(false)}
         />
         <CalendarBottomSheetContent
           selectedEventTypes={selectedEventTypes}
           onEventTypeChange={setSelectedEventTypes}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
           eventTypes={eventTypes}
         />
       </BottomSheet>

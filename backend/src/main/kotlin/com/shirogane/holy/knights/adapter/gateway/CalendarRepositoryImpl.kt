@@ -24,7 +24,6 @@ class CalendarRepositoryImpl(
 ) : CalendarRepository {
 
     override suspend fun search(
-        query: String?,
         eventTypeIds: List<Int>?,
         startDate: LocalDate?,
         endDate: LocalDate?,
@@ -32,7 +31,6 @@ class CalendarRepositoryImpl(
         offset: Int
     ): Events {
         val criteria = CalendarSearchCriteria(
-            query = query,
             eventTypeIds = eventTypeIds,
             startDate = startDate,
             endDate = endDate,
@@ -47,13 +45,11 @@ class CalendarRepositoryImpl(
     }
 
     override suspend fun countBySearchCriteria(
-        query: String?,
         eventTypeIds: List<Int>?,
         startDate: LocalDate?,
         endDate: LocalDate?
     ): Int {
         val criteria = CalendarSearchCriteria(
-            query = query,
             eventTypeIds = eventTypeIds,
             startDate = startDate,
             endDate = endDate,

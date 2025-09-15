@@ -10,7 +10,6 @@ class CalendarQueryBuilder : QueryBuilder<CalendarSearchCriteria> {
 
     override fun buildSearchQuery(criteria: CalendarSearchCriteria): QuerySpec {
         val conditions = buildSearchConditions(
-            criteria.query,
             criteria.eventTypeIds,
             criteria.startDate,
             criteria.endDate
@@ -45,7 +44,6 @@ class CalendarQueryBuilder : QueryBuilder<CalendarSearchCriteria> {
 
     override fun buildCountQuery(criteria: CalendarSearchCriteria): QuerySpec {
         val conditions = buildSearchConditions(
-            criteria.query,
             criteria.eventTypeIds,
             criteria.startDate,
             criteria.endDate
@@ -67,18 +65,12 @@ class CalendarQueryBuilder : QueryBuilder<CalendarSearchCriteria> {
     }
 
     private fun buildSearchConditions(
-        query: String?,
         eventTypeIds: List<Int>?,
         startDate: LocalDate?,
         endDate: LocalDate?
     ): Pair<List<String>, Map<String, Any>> {
         val conditions = mutableListOf<String>()
         val bindings = mutableMapOf<String, Any>()
-
-        query?.let {
-            conditions.add("(e.title ILIKE :query OR e.description ILIKE :query)")
-            bindings["query"] = "%$it%"
-        }
 
         eventTypeIds?.takeIf { it.isNotEmpty() }?.let {
             conditions.add("eet.event_type_id = ANY(:eventTypeIds)")

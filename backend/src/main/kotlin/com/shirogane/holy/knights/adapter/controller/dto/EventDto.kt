@@ -72,7 +72,6 @@ data class EventTypeDto(
  * イベント検索パラメータDTO
  */
 data class EventSearchParamsDto(
-    val query: String? = null,
     val eventTypeIds: List<Int>? = null,
     val startDate: String? = null, // YYYY-MM-DD形式
     val endDate: String? = null,   // YYYY-MM-DD形式
