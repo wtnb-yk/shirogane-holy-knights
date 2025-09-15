@@ -49,7 +49,7 @@ export default function SongsList() {
       const randomIndex = Math.floor(Math.random() * currentData.songs.length);
       changeCurrentSong(currentData.songs[randomIndex]);
     }
-  }, [currentData.songs.length > 0, currentSong, changeCurrentSong, currentData.loading]);
+  }, [currentData.songs, currentSong, changeCurrentSong, currentData.loading]);
   
   const handleSongDetailsClick = (song: StreamSong) => {
     // 詳細表示：パフォーマンスモーダルを開く

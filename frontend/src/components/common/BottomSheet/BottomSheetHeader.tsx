@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { X } from 'lucide-react';
 
 interface BottomSheetHeaderProps {
-  title: string;
+  title: ReactNode;
   onClose: () => void;
   showDragHandle?: boolean;
 }
