@@ -83,6 +83,16 @@ news-import-dev:
 news-import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 news_importer.py
 
+## カレンダーイベントデータインポート
+calendar-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 calendar_importer.py
+
+calendar-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 calendar_importer.py
+
+calendar-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 calendar_importer.py
+
 ## 楽曲情報抽出
 extract-songs:
 	cd scripts && python3 extract_songs.py
@@ -137,4 +147,4 @@ channel-insert-prd:
 %:
 	@:
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs extract-songs-stream extract-songs-live stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd calendar-import-local calendar-import-dev calendar-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs extract-songs-stream extract-songs-live stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop

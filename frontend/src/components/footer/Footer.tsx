@@ -45,6 +45,11 @@ export function Footer() {
                       NEWS
                     </Link>
                   </li>
+                  <li>
+                    <Link href="/calendar" className="text-xs text-surface-primary/70 hover:text-accent-primary transition-colors">
+                      CALENDAR
+                    </Link>
+                  </li>
                 </ul>
               </div>
               
