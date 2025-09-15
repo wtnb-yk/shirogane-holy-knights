@@ -48,6 +48,8 @@ export function CalendarBottomSheetContent({
         return 'イベント';
       case 'goods':
         return 'グッズ';
+      case 'campaign':
+        return 'キャンペーン';
       default:
         return type;
     }

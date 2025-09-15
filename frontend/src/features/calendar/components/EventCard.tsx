@@ -20,6 +20,8 @@ export function EventCard({ event, onClick, compact = false }: EventCardProps) {
         return 'secondary' as const;
       case 'goods':
         return 'outline' as const;
+      case 'campaign':
+        return 'default' as const;
       default:
         return 'secondary' as const;
     }
@@ -31,6 +33,8 @@ export function EventCard({ event, onClick, compact = false }: EventCardProps) {
         return 'イベント';
       case 'goods':
         return 'グッズ';
+      case 'campaign':
+        return 'キャンペーン';
       default:
         return type;
     }
@@ -69,7 +73,9 @@ export function EventCard({ event, onClick, compact = false }: EventCardProps) {
         className={`w-full text-left px-1.5 py-1 rounded text-xs transition-all duration-200 hover:shadow-sm ${
           primaryEventType.type === 'event'
             ? 'bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20'
-            : 'bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20'
+            : primaryEventType.type === 'goods'
+            ? 'bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20'
+            : 'bg-text-secondary/10 text-text-secondary hover:bg-text-secondary/20'
         }`}
       >
         <div className="truncate font-medium text-xs">

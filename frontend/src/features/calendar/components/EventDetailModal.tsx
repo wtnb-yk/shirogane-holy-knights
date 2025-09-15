@@ -22,6 +22,8 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
         return 'secondary' as const;
       case 'goods':
         return 'outline' as const;
+      case 'campaign':
+        return 'default' as const;
       default:
         return 'secondary' as const;
     }
@@ -33,6 +35,8 @@ export function EventDetailModal({ event, isOpen, onClose }: EventDetailModalPro
         return 'イベント';
       case 'goods':
         return 'グッズ';
+      case 'campaign':
+        return 'キャンペーン';
       default:
         return type;
     }
