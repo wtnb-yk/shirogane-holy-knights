@@ -58,7 +58,19 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
           <DialogTitle>
             イベント詳細
           </DialogTitle>
-          <DialogClose onClose={() => onClose()} />
+          <div className="flex items-center gap-2">
+            {fromDayModal && onBackToDayModal && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onBackToDayModal}
+                className="px-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+            )}
+            <DialogClose onClose={() => onClose()} />
+          </div>
         </DialogHeader>
 
         <div className="p-6 pt-0">
@@ -128,18 +140,8 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
 
 
           {/* アクションボタン */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
-            {fromDayModal && onBackToDayModal && (
-              <Button
-                variant="ghost"
-                onClick={onBackToDayModal}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                日付画面に戻る
-              </Button>
-            )}
-
-            {event.url && (
+          {event.url && (
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
               <Button
                 variant="primary"
                 onClick={() => window.open(event.url, '_blank', 'noopener noreferrer')}
@@ -147,8 +149,8 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
                 <ExternalLink className="w-4 h-4 mr-2" />
                 詳細を確認
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
         </div>
       </DialogContent>

@@ -58,12 +58,14 @@ export default function CalendarPage() {
   };
 
   const handleEventClickFromDayModal = (event: any) => {
+    setIsDayEventsModalOpen(false);
     setSelectedEvent(event);
     setIsEventModalOpen(true);
   };
 
   const handleBackToDayModal = () => {
     setIsEventModalOpen(false);
+    setIsDayEventsModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -166,7 +168,7 @@ export default function CalendarPage() {
         event={selectedEvent}
         isOpen={isEventModalOpen}
         onClose={handleCloseModal}
-        fromDayModal={isDayEventsModalOpen}
+        fromDayModal={selectedDate !== null && selectedDateEvents.length > 0}
         onBackToDayModal={handleBackToDayModal}
       />
 

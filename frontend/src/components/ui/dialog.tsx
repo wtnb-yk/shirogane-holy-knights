@@ -104,7 +104,7 @@ export const DialogClose = ({ onClose }: DialogCloseProps) => {
   return (
     <button
       onClick={onClose}
-      className="text-text-secondary hover:text-text-secondary transition-colors text-2xl flex items-center justify-center w-8 h-8"
+      className="text-text-secondary hover:text-text-primary hover:bg-bg-accent/10 transition-all duration-200 text-2xl flex items-center justify-center w-8 h-8 rounded"
     >
       ×
     </button>
