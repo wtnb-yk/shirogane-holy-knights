@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Clock, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Clock, ExternalLink, ChevronLeft } from 'lucide-react';
 import { Event } from '../types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { getImageUrl } from '@/utils/imageUrl';
@@ -55,22 +55,20 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            イベント詳細
-          </DialogTitle>
           <div className="flex items-center gap-2">
             {fromDayModal && onBackToDayModal && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={onBackToDayModal}
-                className="px-2"
+                className="text-text-secondary hover:text-text-primary hover:bg-bg-accent/10 transition-all duration-200 flex items-center justify-center w-8 h-8 rounded -ml-1"
               >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
+                <ChevronLeft className="w-5 h-5" />
+              </button>
             )}
-            <DialogClose onClose={() => onClose()} />
+            <DialogTitle>
+              イベント詳細
+            </DialogTitle>
           </div>
+          <DialogClose onClose={() => onClose()} />
         </DialogHeader>
 
         <div className="p-6 pt-0">
