@@ -13,7 +13,7 @@ import java.time.LocalDate
  */
 @Serializable
 data class EventDto(
-    val id: Long,
+    val id: String,
     val title: String,
     val description: String? = null,
     val eventDate: String, // YYYY-MM-DD形式

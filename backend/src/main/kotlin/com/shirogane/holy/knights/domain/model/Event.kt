@@ -33,8 +33,8 @@ class Events(events: List<Event>): FCC<Event>(
  * イベントID値オブジェクト
  */
 @JvmInline
-value class EventId(val value: Long) {
-    override fun toString(): String = value.toString()
+value class EventId(val value: String) {
+    override fun toString(): String = value
 }
 
 /**

@@ -12,7 +12,7 @@ import java.time.LocalTime
  * データベースのeventsテーブルとのマッピング用
  */
 data class EventEntity(
-    val id: Long,
+    val id: String,
     val title: String,
     val description: String?,
     val eventDate: LocalDate,

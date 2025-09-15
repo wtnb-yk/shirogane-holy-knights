@@ -16,6 +16,7 @@ calendar_events.csvファイルからPostgreSQLのeventsテーブルへデータ
 import os
 import sys
 import csv
+import uuid
 import datetime
 import psycopg2
 from psycopg2.extras import execute_batch
@@ -173,6 +174,10 @@ def parse_time(time_str):
     print(f"警告: 時刻形式を解析できませんでした: {time_str}")
     return None
 
+def generate_event_id():
+    """イベント用のユニークなIDを生成"""
+    return str(uuid.uuid4())
+
 def read_calendar_events_csv(csv_file_path):
     """calendar_events.csvファイルを読み込む"""
     if not os.path.exists(csv_file_path):
@@ -268,7 +273,11 @@ def validate_and_prepare_data(df, event_type_mapping):
             if image_url == '':
                 image_url = None
 
+            # IDを生成
+            event_id = generate_event_id()
+
             processed_data.append({
+                'id': event_id,
                 'title': title,
                 'event_type_ids': event_type_ids,  # 複数イベントタイプIDの配列
                 'description': description,
@@ -306,6 +315,7 @@ def import_events_data(conn, events_data):
     # データを準備（event_type_idsは除外）
     data = [
         (
+            item['id'],
             item['title'],
             item['description'],
             item['event_date'],
@@ -318,11 +328,20 @@ def import_events_data(conn, events_data):
         for item in events_data
     ]
 
-    # INSERTクエリ（IDは自動採番）
+    # UPSERT クエリ（IDを指定）
     query = """
-        INSERT INTO events (title, description, event_date, event_time, end_date, end_time, url, image_url)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        RETURNING id
+        INSERT INTO events (id, title, description, event_date, event_time, end_date, end_time, url, image_url)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (id)
+        DO UPDATE SET
+            title = EXCLUDED.title,
+            description = EXCLUDED.description,
+            event_date = EXCLUDED.event_date,
+            event_time = EXCLUDED.event_time,
+            end_date = EXCLUDED.end_date,
+            end_time = EXCLUDED.end_time,
+            url = EXCLUDED.url,
+            image_url = EXCLUDED.image_url
     """
 
     try:
@@ -330,16 +349,13 @@ def import_events_data(conn, events_data):
 
         # イベントタイプ関連データを準備
         event_event_types_data = []
-
-        for i, item in enumerate(events_data):
-            # 単一のレコードをINSERT
-            cursor.execute(query, data[i])
-            event_id = cursor.fetchone()[0]  # 自動生成されたIDを取得
-
-            # イベントタイプ関連データを追加
+        for item in events_data:
             if 'event_type_ids' in item and item['event_type_ids']:
                 for event_type_id in item['event_type_ids']:
-                    event_event_types_data.append((event_id, event_type_id))
+                    event_event_types_data.append((item['id'], event_type_id))
+
+        # バッチでINSERT
+        execute_batch(cursor, query, data)
 
         conn.commit()
         print(f"events: {len(data)}件のデータをインポートしました")

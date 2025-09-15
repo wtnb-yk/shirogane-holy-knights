@@ -21,7 +21,7 @@ class CalendarRowMapper : RowMapper<Event> {
         )
 
         return Event(
-            id = EventId(row.get("id", Long::class.java)!!),
+            id = EventId(row.get("id", String::class.java)!!),
             title = row.get("title", String::class.java)!!,
             description = row.get("description", String::class.java),
             eventDate = row.get("event_date", LocalDate::class.java)!!,
