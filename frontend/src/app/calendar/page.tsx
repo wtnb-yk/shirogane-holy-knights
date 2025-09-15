@@ -13,6 +13,7 @@ import { CalendarBottomSheetContent } from '@/features/calendar/components/Calen
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
+import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
@@ -83,6 +84,19 @@ export default function CalendarPage() {
           variant="search"
         />
       }
+      primaryTabs={
+        <ContentTypeTabs
+          tabs={[
+            { value: 'month', label: '月' },
+            { value: 'week', label: '週' },
+            { value: 'day', label: '日' }
+          ]}
+          activeTab={currentView}
+          onTabChange={(value) => setCurrentView(value as any)}
+          size="md"
+          variant="compact"
+        />
+      }
       sidebar={
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
@@ -144,8 +158,6 @@ export default function CalendarPage() {
           onClose={() => setIsBottomSheetOpen(false)}
         />
         <CalendarBottomSheetContent
-          currentView={currentView}
-          onViewChange={setCurrentView}
           selectedEventTypes={selectedEventTypes}
           onEventTypeChange={setSelectedEventTypes}
           searchQuery={searchQuery}
