@@ -88,10 +88,42 @@ const nextConfig = {
   
   // Security headers
   async headers() {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    
+    // CSP設定
+    const cspDirectives = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: https: blob:",
+      "media-src 'self' https:",
+      "connect-src 'self' https://www.google-analytics.com" + 
+        (process.env.NEXT_PUBLIC_API_URL ? ` ${process.env.NEXT_PUBLIC_API_URL}` : '') +
+        (isDevelopment ? " http://localhost:* ws://localhost:*" : ''),
+      "frame-src 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+      "upgrade-insecure-requests"
+    ];
+    
+    // 開発環境では緩い設定
+    if (isDevelopment) {
+      cspDirectives[1] = "script-src 'self' 'unsafe-eval' 'unsafe-inline'";
+    }
+    
+    const csp = cspDirectives.join('; ');
+    
     return [
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: csp,
+          },
           {
             key: 'X-Frame-Options',
             value: 'DENY',
@@ -101,12 +133,20 @@ const nextConfig = {
             value: 'nosniff',
           },
           {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
           },
         ],
       },
