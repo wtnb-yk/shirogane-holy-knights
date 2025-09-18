@@ -93,12 +93,12 @@ const nextConfig = {
     // CSP設定
     const cspDirectives = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.youtube.com",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.youtube.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
       "media-src 'self' https:",
-      "connect-src 'self' https://www.google-analytics.com https://www.youtube.com https://i.ytimg.com" + 
+      "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.youtube.com https://i.ytimg.com" + 
         (process.env.NEXT_PUBLIC_API_URL ? ` ${process.env.NEXT_PUBLIC_API_URL}` : '') +
         (isDevelopment ? " http://localhost:* ws://localhost:*" : ''),
       "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
