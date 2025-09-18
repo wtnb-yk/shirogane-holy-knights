@@ -3,8 +3,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Event } from '../types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/Button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
 import { EventListItem } from './EventListItem';
 
 interface DayEventsModalProps {

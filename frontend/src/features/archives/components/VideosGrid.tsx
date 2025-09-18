@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { VideoDto } from '../types/types';
 import { VideoCard } from './VideoCard';
 import { SkeletonCard } from './SkeletonCard';
@@ -17,24 +17,32 @@ interface VideosGridProps {
   error?: string | null;
 }
 
-export const VideosGrid = ({ 
+const VideosGridComponent = ({ 
   videos, 
   loading, 
   error
 }: VideosGridProps) => {
-  // グリッド設定を取得
-  const gridColumns = getVideoGridColumns();
-  const gridClassName = generateGridClassName(gridColumns);
+  // Memoize grid configuration
+  const gridConfig = useMemo(() => {
+    const gridColumns = getVideoGridColumns();
+    const gridClassName = generateGridClassName(gridColumns);
+    return {
+      columns: gridColumns,
+      className: gridClassName.replace('grid ', '')
+    };
+  }, []);
   
-  // 通常アイテムのレンダラー
-  const renderItem = (video: VideoDto, index: number) => (
+  // Memoize render functions to prevent unnecessary re-renders
+  const renderItem = useCallback((video: VideoDto, index: number) => (
     <VideoCard key={video.id} video={video} index={index} />
-  );
+  ), []);
   
-  // スケルトンのレンダラー
-  const renderSkeleton = (index: number) => (
+  const renderSkeleton = useCallback((index: number) => (
     <SkeletonCard key={index} index={index} />
-  );
+  ), []);
+  
+  // Memoize empty message
+  const emptyMessage = useMemo(() => DEFAULT_EMPTY_MESSAGE.videos, []);
   
   return (
     <BaseGrid
@@ -43,8 +51,11 @@ export const VideosGrid = ({
       error={error ?? null}
       renderItem={renderItem}
       renderSkeleton={renderSkeleton}
-      emptyMessage={DEFAULT_EMPTY_MESSAGE.videos}
-      gridClassName={gridClassName.replace('grid ', '')}
+      emptyMessage={emptyMessage}
+      gridClassName={gridConfig.className}
     />
   );
 };
+
+// Memoize the entire component
+export const VideosGrid = React.memo(VideosGridComponent);

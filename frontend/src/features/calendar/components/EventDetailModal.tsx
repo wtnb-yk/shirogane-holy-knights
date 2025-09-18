@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Clock, ExternalLink, ChevronLeft } from 'lucide-react';
 import { Event } from '../types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
 import { getImageUrl } from '@/utils/imageUrl';
 import { IMAGE_STYLES } from '@/constants/styles';
 import {Button} from "@/components/ui/Button";

@@ -1,88 +1,59 @@
 'use client';
 
 import React from 'react';
-import { Play, ExternalLink, LucideIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Play, Pause, Volume2, ExternalLink } from 'lucide-react';
 
 interface OverlayIconProps {
-  type: 'play' | 'external-link' | 'custom';
-  icon?: LucideIcon;
+  type: 'play' | 'pause' | 'volume' | 'external-link';
   isVisible?: boolean;
-  size?: 'sm' | 'md' | 'lg';
   className?: string;
-  backgroundClassName?: string;
-  iconClassName?: string;
-  'aria-label'?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-const sizeConfig = {
-  sm: {
-    icon: 'w-4 h-4',
-    background: 'p-2'
-  },
-  md: {
-    icon: 'w-6 h-6',
-    background: 'p-3'
-  },
-  lg: {
-    icon: 'w-8 h-8',
-    background: 'p-4'
-  }
-};
+export const OverlayIcon = ({ 
+  type, 
+  isVisible = true, 
+  className = '', 
+  size = 'md' 
+}: OverlayIconProps) => {
+  const sizeClasses = {
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16'
+  };
 
-const getIconComponent = (type: OverlayIconProps['type'], customIcon?: LucideIcon) => {
-  switch (type) {
-    case 'play':
-      return Play;
-    case 'external-link':
-      return ExternalLink;
-    case 'custom':
-      return customIcon || Play;
-    default:
-      return Play;
-  }
-};
+  const iconSizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8'
+  };
 
-export const OverlayIcon: React.FC<OverlayIconProps> = ({
-  type,
-  icon: customIcon,
-  isVisible = false,
-  size = 'md',
-  className,
-  backgroundClassName,
-  iconClassName,
-  'aria-label': ariaLabel
-}) => {
-  const IconComponent = getIconComponent(type, customIcon);
-  const config = sizeConfig[size];
-
-  const defaultAriaLabel = type === 'play' ? '再生' : type === 'external-link' ? '外部リンクで開く' : '';
+  const IconComponent = {
+    play: Play,
+    pause: Pause,
+    volume: Volume2,
+    'external-link': ExternalLink
+  }[type];
 
   return (
     <div 
-      className={cn(
-        'absolute inset-0 flex items-center justify-center transition-opacity duration-200',
-        isVisible ? 'opacity-100' : 'opacity-0',
-        className
-      )}
-      aria-label={ariaLabel || defaultAriaLabel}
+      className={`
+        absolute inset-0 flex items-center justify-center
+        transition-opacity duration-300
+        ${isVisible ? 'opacity-100' : 'opacity-0'}
+        ${className}
+      `}
     >
-      <div className={cn(
-        'bg-black/50 rounded-full',
-        config.background,
-        backgroundClassName
-      )}>
-        <IconComponent 
-          className={cn(
-            'text-white',
-            config.icon,
-            type === 'play' && 'fill-white',
-            iconClassName
-          )}
-        />
+      <div className={`
+        ${sizeClasses[size]}
+        bg-black/60 backdrop-blur-sm
+        rounded-full flex items-center justify-center
+        text-white
+        transition-all duration-300
+        hover:bg-black/80 hover:scale-110
+      `}>
+        <IconComponent className={iconSizeClasses[size]} />
       </div>
     </div>
   );
 };
-
-OverlayIcon.displayName = 'OverlayIcon';

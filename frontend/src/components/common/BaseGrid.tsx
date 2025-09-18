@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
 interface BaseGridProps<T> {
   items: T[];
@@ -16,19 +16,35 @@ interface BaseGridProps<T> {
   gridClassName?: string;
 }
 
-export function BaseGrid<T>({
+const DEFAULT_EMPTY_MESSAGE = {
+  title: 'データが見つかりませんでした',
+  subtitle: '検索条件を変更してお試しください'
+};
+
+const DEFAULT_GRID_CLASS = 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4';
+
+function BaseGridComponent<T>({
   items,
   loading,
   error,
   renderItem,
   renderSkeleton,
-  emptyMessage = {
-    title: 'データが見つかりませんでした',
-    subtitle: '検索条件を変更してお試しください'
-  },
+  emptyMessage = DEFAULT_EMPTY_MESSAGE,
   skeletonCount = 6,
-  gridClassName = 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+  gridClassName = DEFAULT_GRID_CLASS
 }: BaseGridProps<T>) {
+  // Memoize skeleton array to prevent recreation on every render
+  const skeletonItems = useMemo(() => 
+    Array.from({ length: skeletonCount }, (_, index) => index),
+    [skeletonCount]
+  );
+
+  // Memoize grid classes
+  const gridClasses = useMemo(() => 
+    `grid ${gridClassName} gap-0.5 mb-8 opacity-0 animate-slide-up rounded-lg overflow-hidden`,
+    [gridClassName]
+  );
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-64 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
@@ -41,8 +57,8 @@ export function BaseGrid<T>({
 
   if (loading) {
     return (
-      <div className={`grid ${gridClassName} gap-0.5 mb-8 opacity-0 animate-slide-up rounded-lg overflow-hidden`} style={{ animationDelay: '200ms' }}>
-        {Array.from({ length: skeletonCount }).map((_, index) => (
+      <div className={gridClasses} style={{ animationDelay: '200ms' }}>
+        {skeletonItems.map((index) => (
           <React.Fragment key={index}>
             {renderSkeleton(index)}
           </React.Fragment>
@@ -63,7 +79,7 @@ export function BaseGrid<T>({
   }
 
   return (
-    <div className={`grid ${gridClassName} gap-0.5 mb-8 opacity-0 animate-slide-up rounded-lg overflow-hidden`} style={{ animationDelay: '200ms' }}>
+    <div className={gridClasses} style={{ animationDelay: '200ms' }}>
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {renderItem(item, index)}
@@ -72,3 +88,6 @@ export function BaseGrid<T>({
     </div>
   );
 }
+
+// Export memoized version
+export const BaseGrid = React.memo(BaseGridComponent) as <T>(props: BaseGridProps<T>) => React.ReactElement;

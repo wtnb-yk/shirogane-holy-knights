@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
 import { SortBy, SortOrder, SongFilterOptions } from '../types/types';
 import { SongSortSection } from './SongSortSection';
 import { SongFilterSection } from './SongFilterSection';
