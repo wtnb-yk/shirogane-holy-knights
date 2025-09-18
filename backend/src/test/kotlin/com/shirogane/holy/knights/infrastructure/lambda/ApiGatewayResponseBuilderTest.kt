@@ -32,7 +32,6 @@ class ApiGatewayResponseBuilderTest : DescribeSpec({
                 
                 response.headers!!["X-Content-Type-Options"] shouldBe "nosniff"
                 response.headers!!["X-Frame-Options"] shouldBe "DENY"
-                response.headers!!["Vary"] shouldBe "Accept-Encoding"
             }
         }
         
@@ -49,31 +48,23 @@ class ApiGatewayResponseBuilderTest : DescribeSpec({
             }
         }
         
-        describe("compression") {
+        describe("response format") {
             
-            it("should not compress small responses") {
-                val smallData = mapOf("msg" to "hi")
-                val response = responseBuilder.success(smallData)
+            it("should return uncompressed JSON responses") {
+                val testData = mapOf("msg" to "test data")
+                val response = responseBuilder.success(testData)
                 
                 response.isBase64Encoded shouldBe false
                 response.headers?.get("Content-Encoding") shouldBe null
+                response.headers?.get("Content-Length") shouldNotBe null
             }
             
-            it("should compress large responses") {
-                // Create a large response (over 1KB)
-                val largeData = mapOf(
-                    "data" to (1..100).map { "This is a long string to make the response large enough for compression testing. Item $it" }
-                )
-                val response = responseBuilder.success(largeData)
+            it("should include content length header") {
+                val testData = mapOf("message" to "test")
+                val response = responseBuilder.success(testData)
                 
-                // Check if compression was applied
-                val hasCompression = response.isBase64Encoded == true && 
-                                   response.headers?.get("Content-Encoding") == "gzip"
-                
-                // Compression should be applied for large responses
-                if (response.body!!.length > 1024) {
-                    hasCompression shouldBe true
-                }
+                response.headers?.get("Content-Length") shouldNotBe null
+                response.headers!!["Content-Length"]!!.toInt() shouldBe response.body!!.toByteArray().size
             }
         }
         

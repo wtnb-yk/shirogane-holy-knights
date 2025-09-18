@@ -7,13 +7,12 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.zip.GZIPOutputStream
-import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 
 /**
  * 最適化されたAPI Gateway レスポンスビルダー
- * キャッシュヘッダー、圧縮、レスポンス最適化機能を提供
+ * キャッシュヘッダー、レスポンス最適化機能を提供
+ * 注意: GZIP圧縮はAPI Gatewayレベルで処理されるため、アプリケーションレベルでは無効化
  */
 @Component
 class ApiGatewayResponseBuilder(
@@ -22,7 +21,6 @@ class ApiGatewayResponseBuilder(
     
     companion object {
         private val HTTP_DATE_FORMAT = DateTimeFormatter.RFC_1123_DATE_TIME
-        private const val COMPRESSION_THRESHOLD = 1024 // 1KB以上で圧縮
     }
     
     /**
@@ -31,13 +29,12 @@ class ApiGatewayResponseBuilder(
     fun success(body: Any, cacheMaxAge: Int = 300): APIGatewayProxyResponseEvent {
         val jsonBody = objectMapper.writeValueAsString(body)
         val headers = buildOptimizedHeaders(jsonBody, cacheMaxAge)
-        val responseBody = compressIfNeeded(jsonBody, headers)
         
         return APIGatewayProxyResponseEvent()
             .withStatusCode(200)
             .withHeaders(headers)
-            .withBody(responseBody)
-            .withIsBase64Encoded(headers.containsKey("Content-Encoding"))
+            .withBody(jsonBody)
+            .withIsBase64Encoded(false)
     }
     
     /**
@@ -52,14 +49,13 @@ class ApiGatewayResponseBuilder(
      */
     fun successNoCache(body: Any): APIGatewayProxyResponseEvent {
         val jsonBody = objectMapper.writeValueAsString(body)
-        val headers = buildNoCacheHeaders(jsonBody)
-        val responseBody = compressIfNeeded(jsonBody, headers)
+        val headers = buildNoCacheHeaders()
         
         return APIGatewayProxyResponseEvent()
             .withStatusCode(200)
             .withHeaders(headers)
-            .withBody(responseBody)
-            .withIsBase64Encoded(headers.containsKey("Content-Encoding"))
+            .withBody(jsonBody)
+            .withIsBase64Encoded(false)
     }
     
     fun badRequest(message: String = "Bad Request"): APIGatewayProxyResponseEvent {
@@ -106,7 +102,7 @@ class ApiGatewayResponseBuilder(
             "Expires" to expires.atOffset(ZoneOffset.UTC).format(HTTP_DATE_FORMAT),
             "Last-Modified" to now.atOffset(ZoneOffset.UTC).format(HTTP_DATE_FORMAT),
             "ETag" to "\"${body.hashCode()}\"",
-            "Vary" to "Accept-Encoding",
+            "Content-Length" to body.toByteArray(StandardCharsets.UTF_8).size.toString(),
             "X-Content-Type-Options" to "nosniff",
             "X-Frame-Options" to "DENY"
         )
@@ -115,13 +111,12 @@ class ApiGatewayResponseBuilder(
     /**
      * キャッシュなしヘッダーを構築
      */
-    private fun buildNoCacheHeaders(body: String): MutableMap<String, String> {
+    private fun buildNoCacheHeaders(): MutableMap<String, String> {
         return mutableMapOf(
             "Content-Type" to "application/json; charset=utf-8",
             "Cache-Control" to "no-cache, no-store, must-revalidate",
             "Pragma" to "no-cache",
             "Expires" to "0",
-            "Vary" to "Accept-Encoding",
             "X-Content-Type-Options" to "nosniff",
             "X-Frame-Options" to "DENY"
         )
@@ -139,43 +134,5 @@ class ApiGatewayResponseBuilder(
         )
     }
     
-    /**
-     * 必要に応じてレスポンスを圧縮
-     */
-    private fun compressIfNeeded(body: String, headers: MutableMap<String, String>): String {
-        val bodyBytes = body.toByteArray(StandardCharsets.UTF_8)
-        
-        // 圧縮閾値未満の場合は圧縮しない
-        if (bodyBytes.size < COMPRESSION_THRESHOLD) {
-            headers["Content-Length"] = bodyBytes.size.toString()
-            return body
-        }
-        
-        // GZIP圧縮を実行
-        val compressedBytes = compressGzip(bodyBytes)
-        
-        // 圧縮効果が低い場合は元のデータを使用
-        if (compressedBytes.size >= bodyBytes.size * 0.9) {
-            headers["Content-Length"] = bodyBytes.size.toString()
-            return body
-        }
-        
-        // 圧縮されたデータを使用
-        headers["Content-Encoding"] = "gzip"
-        headers["Content-Length"] = compressedBytes.size.toString()
-        
-        // Base64エンコードして返す
-        return java.util.Base64.getEncoder().encodeToString(compressedBytes)
-    }
-    
-    /**
-     * GZIP圧縮を実行
-     */
-    private fun compressGzip(data: ByteArray): ByteArray {
-        val outputStream = ByteArrayOutputStream()
-        GZIPOutputStream(outputStream).use { gzipStream ->
-            gzipStream.write(data)
-        }
-        return outputStream.toByteArray()
-    }
+
 }
