@@ -7,7 +7,26 @@ import kotlinx.serialization.Serializable
 import java.time.Instant
 
 /**
- * 楽曲検索パラメータDTO
+ * 楽曲検索パラメータDTO（統合版）
+ */
+data class SongSearchParamsDto(
+    val query: String? = null,
+    val sortBy: String? = "singCount", // singCount|latestSingDate|title
+    val sortOrder: String? = "DESC", // DESC|ASC
+    val startDate: Instant? = null,
+    val endDate: Instant? = null,
+    val frequencyCategories: List<SingFrequencyCategory>? = null,
+    val page: Int = 1,  
+    val size: Int = 20
+) {
+    /**
+     * PageRequestインスタンスを生成
+     */
+    fun toPageRequest() = PageRequest(page, size)
+}
+
+/**
+ * 配信楽曲検索パラメータDTO
  */
 data class StreamSongSearchParamsDto(
     val query: String? = null,
