@@ -21,7 +21,28 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
         
         val whereClause = buildWhereClause("video", conditions.first)
         
-        val sql = """
+        // Optimized query using composite indexes and avoiding unnecessary JOINs when no tag filtering
+        val sql = if (criteria.tags.isNullOrEmpty()) {
+            """
+            SELECT 
+                v.id, v.title, v.description, v.url, v.thumbnail_url, 
+                v.duration, v.channel_id, v.published_at,
+                COALESCE(tag_data.tags, '') as tags
+            FROM videos v
+            JOIN video_video_types vvt ON v.id = vvt.video_id
+            JOIN video_types vt ON vvt.video_type_id = vt.id
+            LEFT JOIN (
+                SELECT vtg.video_id, STRING_AGG(t.name, ',' ORDER BY t.name) as tags
+                FROM video_video_tags vtg
+                JOIN video_tags t ON vtg.tag_id = t.id
+                GROUP BY vtg.video_id
+            ) tag_data ON v.id = tag_data.video_id
+            $whereClause
+            ORDER BY v.published_at DESC NULLS LAST, v.created_at DESC
+            LIMIT :limit OFFSET :offset
+            """.trimIndent()
+        } else {
+            """
             SELECT 
                 v.id, v.title, v.description, v.url, v.thumbnail_url, 
                 v.duration, v.channel_id, v.published_at,
@@ -29,14 +50,15 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
             FROM videos v
             JOIN video_video_types vvt ON v.id = vvt.video_id
             JOIN video_types vt ON vvt.video_type_id = vt.id
-            LEFT JOIN video_video_tags vtg ON v.id = vtg.video_id
-            LEFT JOIN video_tags t ON vtg.tag_id = t.id
+            JOIN video_video_tags vtg ON v.id = vtg.video_id
+            JOIN video_tags t ON vtg.tag_id = t.id
             $whereClause
             GROUP BY v.id, v.title, v.description, v.url, v.thumbnail_url, 
                      v.duration, v.channel_id, v.created_at, v.published_at
             ORDER BY v.published_at DESC NULLS LAST, v.created_at DESC
             LIMIT :limit OFFSET :offset
-        """.trimIndent()
+            """.trimIndent()
+        }
         
         val bindings = conditions.second + mapOf(
             "limit" to criteria.limit,
@@ -101,12 +123,14 @@ class VideoQueryBuilder : QueryBuilder<VideoSearchCriteria> {
         }
         
         tags?.takeIf { it.isNotEmpty() }?.let {
+            // Optimized tag filtering using EXISTS instead of IN subquery
             conditions.add("""
-                v.id IN (
-                    SELECT vtg.video_id
+                EXISTS (
+                    SELECT 1
                     FROM video_video_tags vtg
                     JOIN video_tags t ON vtg.tag_id = t.id
-                    WHERE t.name = ANY(:tags)
+                    WHERE vtg.video_id = v.id 
+                    AND t.name = ANY(:tags)
                     GROUP BY vtg.video_id
                     HAVING COUNT(DISTINCT t.name) = :tagCount
                 )
@@ -217,12 +241,14 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
         }
         
         tags?.takeIf { it.isNotEmpty() }?.let {
+            // Optimized tag filtering using EXISTS instead of IN subquery
             conditions.add("""
-                v.id IN (
-                    SELECT vst.video_id
+                EXISTS (
+                    SELECT 1
                     FROM video_stream_tags vst
                     JOIN stream_tags t ON vst.tag_id = t.id
-                    WHERE t.name = ANY(:tags)
+                    WHERE vst.video_id = v.id 
+                    AND t.name = ANY(:tags)
                     GROUP BY vst.video_id
                     HAVING COUNT(DISTINCT t.name) = :tagCount
                 )
@@ -235,7 +261,8 @@ class StreamQueryBuilder : QueryBuilder<StreamSearchCriteria> {
     }
     
     private fun buildWhereClause(type: String, conditions: List<String>): String {
-        val hiddenCondition = "v.id NOT IN (SELECT video_id FROM hidden_streams)"
+        // Optimized hidden streams filtering using NOT EXISTS for better performance
+        val hiddenCondition = "NOT EXISTS (SELECT 1 FROM hidden_streams hs WHERE hs.video_id = v.id)"
         val allConditions = listOf("vt.type = '$type'", "v.channel_id = :channelId", hiddenCondition) + conditions
         return "WHERE " + allConditions.joinToString(" AND ")
     }

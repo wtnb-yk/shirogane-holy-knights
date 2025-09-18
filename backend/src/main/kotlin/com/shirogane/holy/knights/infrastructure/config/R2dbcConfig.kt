@@ -35,14 +35,14 @@ class R2dbcConfig() {
             .password(password)
 
         // ローカル開発環境かLambda+LocalStack環境を判定
-        val isLambda = System.getenv("AWS_LAMBDA_FUNCTION_NAME") != null
-        val isLocalDev = (host == "localhost" || host == "host.docker.internal" || host == "postgres") && !isLambda
+        val isLocalStack = host == "host.docker.internal"
+        val isLocalDev = host == "localhost" || host == "postgres" || isLocalStack
 
         if (isLocalDev) {
-            logger.info("Local development environment detected, SSL disabled for database connection")
+            logger.info("Local development environment detected (host: $host), SSL disabled for database connection")
             // ローカル開発環境の場合はSSLを無効にする
         } else {
-            logger.info("Production environment detected, enabling SSL for database connection")
+            logger.info("Production environment detected (host: $host), enabling SSL for database connection")
             configuration.enableSsl()
         }
 

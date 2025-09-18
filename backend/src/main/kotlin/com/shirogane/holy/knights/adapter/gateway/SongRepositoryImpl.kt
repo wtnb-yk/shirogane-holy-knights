@@ -74,38 +74,49 @@ class SongRepositoryImpl(
         topSongsLimit: Int,
         recentPerformancesLimit: Int
     ): SongStats {
-        val totalSongsQuery = """
-            SELECT COUNT(DISTINCT s.id)
-            FROM songs s
-            LEFT JOIN stream_songs ss ON s.id = ss.song_id
-            LEFT JOIN concert_songs cs ON s.id = cs.song_id
-            WHERE ss.song_id IS NOT NULL OR cs.song_id IS NOT NULL
-        """.trimIndent()
-
-        val totalSongs = template.databaseClient.sql(totalSongsQuery)
-            .map { row -> (row.get(0) as Number).toInt() }
-            .awaitSingle()
-
-        val totalPerformancesQuery = """
+        // Optimized single query for total counts using UNION ALL
+        val totalCountsQuery = """
             SELECT 
-                (SELECT COUNT(*) FROM stream_songs) + 
-                (SELECT COUNT(*) FROM concert_songs) as total
+                COUNT(DISTINCT song_id) as total_songs,
+                COUNT(*) as total_performances
+            FROM (
+                SELECT song_id FROM stream_songs
+                UNION ALL
+                SELECT song_id FROM concert_songs
+            ) all_performances
         """.trimIndent()
 
-        val totalPerformances = template.databaseClient.sql(totalPerformancesQuery)
-            .map { row -> (row.get(0) as Number).toInt() }
-            .awaitSingle()
+        val totalCounts = template.databaseClient.sql(totalCountsQuery)
+            .map { row ->
+                Pair(
+                    (row.get("total_songs") as Number).toInt(),
+                    (row.get("total_performances") as Number).toInt()
+                )
+            }.awaitSingle()
 
+        // Optimized top songs query using composite index
         val topSongsQuery = """
             SELECT 
                 s.id,
                 s.title,
                 s.artist,
-                COUNT(*) as sing_count
+                (stream_count + concert_count) as sing_count
             FROM songs s
-            LEFT JOIN stream_songs ss ON s.id = ss.song_id
-            LEFT JOIN concert_songs cs ON s.id = cs.song_id
-            WHERE ss.song_id IS NOT NULL OR cs.song_id IS NOT NULL
+            JOIN (
+                SELECT 
+                    song_id,
+                    COUNT(*) as stream_count,
+                    0 as concert_count
+                FROM stream_songs
+                GROUP BY song_id
+                UNION ALL
+                SELECT 
+                    song_id,
+                    0 as stream_count,
+                    COUNT(*) as concert_count
+                FROM concert_songs
+                GROUP BY song_id
+            ) counts ON s.id = counts.song_id
             GROUP BY s.id, s.title, s.artist
             ORDER BY sing_count DESC
             LIMIT :topSongsLimit
@@ -122,31 +133,39 @@ class SongRepositoryImpl(
                 )
             }.all().asFlow().toList()
 
+        // Optimized recent performances query using LATERAL JOIN
         val recentPerformancesQuery = """
-            SELECT 
+            SELECT DISTINCT ON (s.id)
                 s.id,
                 s.title,
                 s.artist,
-                MAX(COALESCE(ss.created_at, cs.created_at)) as latest_performance,
-                FIRST_VALUE(COALESCE(ss.video_id, cs.video_id)) OVER (
-                    PARTITION BY s.id 
-                    ORDER BY COALESCE(ss.created_at, cs.created_at) DESC
-                ) as latest_video_id,
-                FIRST_VALUE(v.title) OVER (
-                    PARTITION BY s.id 
-                    ORDER BY COALESCE(ss.created_at, cs.created_at) DESC
-                ) as latest_video_title,
-                FIRST_VALUE(v.url) OVER (
-                    PARTITION BY s.id 
-                    ORDER BY COALESCE(ss.created_at, cs.created_at) DESC
-                ) as latest_video_url
+                latest.latest_performance,
+                latest.latest_video_id,
+                latest.latest_video_title,
+                latest.latest_video_url
             FROM songs s
-            LEFT JOIN stream_songs ss ON s.id = ss.song_id
-            LEFT JOIN concert_songs cs ON s.id = cs.song_id
-            LEFT JOIN videos v ON v.id = COALESCE(ss.video_id, cs.video_id)
-            WHERE ss.song_id IS NOT NULL OR cs.song_id IS NOT NULL
-            GROUP BY s.id, s.title, s.artist, ss.video_id, cs.video_id, ss.created_at, cs.created_at, v.title, v.url
-            ORDER BY latest_performance DESC
+            JOIN LATERAL (
+                SELECT 
+                    ss.created_at as latest_performance,
+                    ss.video_id as latest_video_id,
+                    v.title as latest_video_title,
+                    v.url as latest_video_url
+                FROM stream_songs ss
+                JOIN videos v ON v.id = ss.video_id
+                WHERE ss.song_id = s.id
+                UNION ALL
+                SELECT 
+                    cs.created_at as latest_performance,
+                    cs.video_id as latest_video_id,
+                    v.title as latest_video_title,
+                    v.url as latest_video_url
+                FROM concert_songs cs
+                JOIN videos v ON v.id = cs.video_id
+                WHERE cs.song_id = s.id
+                ORDER BY latest_performance DESC
+                LIMIT 1
+            ) latest ON true
+            ORDER BY s.id, latest.latest_performance DESC
             LIMIT :recentPerformancesLimit
         """.trimIndent()
 
@@ -165,8 +184,8 @@ class SongRepositoryImpl(
             }.all().asFlow().toList()
 
         return SongStats(
-            totalSongs = totalSongs,
-            totalPerformances = totalPerformances,
+            totalSongs = totalCounts.first,
+            totalPerformances = totalCounts.second,
             topSongs = topSongs,
             recentPerformances = recentPerformances
         )
