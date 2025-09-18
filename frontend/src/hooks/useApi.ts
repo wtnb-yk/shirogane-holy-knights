@@ -16,6 +16,7 @@ interface UseApiState<T> {
   data: T | null;
   loading: boolean;
   error: ApiError | null;
+  isInitialLoad: boolean;
 }
 
 interface UseApiReturn<T> extends UseApiState<T> {
@@ -42,7 +43,8 @@ export function useApi<T>(
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
     loading: false,
-    error: null
+    error: null,
+    isInitialLoad: true
   });
 
   const execute = useCallback(async (...args: any[]): Promise<T | null> => {
@@ -53,7 +55,7 @@ export function useApi<T>(
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         const result = await apiCall(...args);
-        setState({data: result, loading: false, error: null});
+        setState({data: result, loading: false, error: null, isInitialLoad: false});
         return result;
       } catch (error) {
         const apiError = error as ApiError;
@@ -75,7 +77,7 @@ export function useApi<T>(
       }
     }
 
-    setState({data: null, loading: false, error: lastError});
+    setState({data: null, loading: false, error: lastError, isInitialLoad: false});
 
     if (lastError && onError) {
       onError(lastError);
@@ -85,7 +87,7 @@ export function useApi<T>(
   }, [apiCall, retries, retryDelay, isOnline, onError]);
 
   const reset = useCallback(() => {
-    setState({data: null, loading: false, error: null});
+    setState({data: null, loading: false, error: null, isInitialLoad: true});
   }, []);
 
   // immediate実行
@@ -114,6 +116,10 @@ export function useApiQuery<T, P>(
   const apiHook = useApi(apiCall, {...apiOptions, immediate: false});
   const prevParamsRef = useRef<string>('');
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isMountedRef = useRef(false);
+
+  // 初期ローディング状態を設定
+  const [isInitialMount, setIsInitialMount] = useState(true);
 
   // パラメータの変更を検出
   const paramsString = useMemo(() => JSON.stringify(params), [params]);
@@ -122,8 +128,12 @@ export function useApiQuery<T, P>(
   const {execute} = apiHook;
 
   useEffect(() => {
-    // 前回のパラメータと比較して変更があった場合のみ実行
-    if (prevParamsRef.current !== paramsString) {
+    // 初回マウント時または前回のパラメータと異なる場合に実行
+    const isFirstMount = !isMountedRef.current;
+    const isParamsChanged = prevParamsRef.current !== paramsString;
+
+    if (isFirstMount || isParamsChanged) {
+      isMountedRef.current = true;
       prevParamsRef.current = paramsString;
 
       // 既存のタイマーをクリア
@@ -131,10 +141,13 @@ export function useApiQuery<T, P>(
         clearTimeout(timeoutRef.current);
       }
 
-      // デバウンス処理
+      // 初回マウント時はデバウンスなし、パラメータ変更時はデバウンスあり
+      const delay = isFirstMount ? 0 : debounceMs;
+
       timeoutRef.current = setTimeout(() => {
         execute(params);
-      }, debounceMs);
+        setIsInitialMount(false);
+      }, delay);
     }
   }, [paramsString, params, execute, debounceMs]);
 
@@ -144,10 +157,17 @@ export function useApiQuery<T, P>(
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
+      // アンマウント時にリセット
+      isMountedRef.current = false;
+      prevParamsRef.current = '';
     };
   }, []);
 
-  return apiHook;
+  // 初回マウント時はローディング状態を返す
+  return {
+    ...apiHook,
+    loading: isInitialMount || apiHook.loading
+  };
 }
 
 /**
