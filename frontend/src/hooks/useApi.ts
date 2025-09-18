@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { ApiError, isRetryableError, logApiError } from '@/utils/apiClient';
-import { useNetworkStatus } from './useNetworkStatus';
+import {useState, useEffect, useCallback, useMemo, useRef} from 'react';
+import {ApiError, isRetryableError, logApiError} from '@/utils/apiClient';
+import {useNetworkStatus} from './useNetworkStatus';
 
 interface UseApiOptions {
   immediate?: boolean;
   retries?: number;
   retryDelay?: number;
+  debounceMs?: number;
   onError?: (error: ApiError) => void;
 }
 
@@ -37,7 +38,7 @@ export function useApi<T>(
     onError
   } = options;
 
-  const { isOnline } = useNetworkStatus();
+  const {isOnline} = useNetworkStatus();
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
     loading: false,
@@ -45,19 +46,19 @@ export function useApi<T>(
   });
 
   const execute = useCallback(async (...args: any[]): Promise<T | null> => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState(prev => ({...prev, loading: true, error: null}));
 
     let lastError: ApiError | null = null;
-    
+
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         const result = await apiCall(...args);
-        setState({ data: result, loading: false, error: null });
+        setState({data: result, loading: false, error: null});
         return result;
       } catch (error) {
         const apiError = error as ApiError;
         lastError = apiError;
-        
+
         logApiError(apiError, `Attempt ${attempt}/${retries}`);
 
         // オフラインまたは再試行不可能なエラーの場合は即座に終了
@@ -67,15 +68,15 @@ export function useApi<T>(
 
         // 最後の試行でない場合は待機
         if (attempt < retries) {
-          await new Promise(resolve => 
+          await new Promise(resolve =>
             setTimeout(resolve, retryDelay * Math.pow(2, attempt - 1))
           );
         }
       }
     }
 
-    setState({ data: null, loading: false, error: lastError });
-    
+    setState({data: null, loading: false, error: lastError});
+
     if (lastError && onError) {
       onError(lastError);
     }
@@ -84,7 +85,7 @@ export function useApi<T>(
   }, [apiCall, retries, retryDelay, isOnline, onError]);
 
   const reset = useCallback(() => {
-    setState({ data: null, loading: false, error: null });
+    setState({data: null, loading: false, error: null});
   }, []);
 
   // immediate実行
@@ -109,11 +110,42 @@ export function useApiQuery<T, P>(
   params: P,
   options: UseApiOptions = {}
 ): UseApiReturn<T> {
-  const apiHook = useApi(apiCall, { ...options, immediate: false });
+  const {debounceMs = 300, ...apiOptions} = options;
+  const apiHook = useApi(apiCall, {...apiOptions, immediate: false});
+  const prevParamsRef = useRef<string>('');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // パラメータの変更を検出
+  const paramsString = useMemo(() => JSON.stringify(params), [params]);
+
+  // execute関数を安定化
+  const {execute} = apiHook;
 
   useEffect(() => {
-    apiHook.execute(params);
-  }, [apiHook, apiHook.execute, params]); // パラメータが変更されたら再実行
+    // 前回のパラメータと比較して変更があった場合のみ実行
+    if (prevParamsRef.current !== paramsString) {
+      prevParamsRef.current = paramsString;
+
+      // 既存のタイマーをクリア
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // デバウンス処理
+      timeoutRef.current = setTimeout(() => {
+        execute(params);
+      }, debounceMs);
+    }
+  }, [paramsString, params, execute, debounceMs]);
+
+  // クリーンアップ
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return apiHook;
 }
@@ -133,11 +165,14 @@ export function useApiPagination<T>(
   prevPage: () => void;
 } {
   const [page, setPage] = useState(initialPage);
-  const apiHook = useApi(apiCall, { ...options, immediate: false });
+  const apiHook = useApi(apiCall, {...options, immediate: false});
+
+  // execute関数を安定化
+  const {execute} = apiHook;
 
   useEffect(() => {
-    apiHook.execute(page, pageSize);
-  }, [page, pageSize, apiHook.execute, apiHook]);
+    execute(page, pageSize);
+  }, [page, pageSize, execute]);
 
   const nextPage = useCallback(() => {
     setPage(prev => prev + 1);
