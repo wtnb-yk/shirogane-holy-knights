@@ -70,3 +70,10 @@ phases:
         aws lambda get-function --function-name "$LAMBDA_FUNCTION_NAME" \
           --query 'Configuration.{FunctionName:FunctionName,Runtime:Runtime,LastModified:LastModified,CodeSize:CodeSize}' \
           --output table
+      
+      # デプロイメント完了判定
+      - echo "Starting deployment health check..."
+      - chmod +x scripts/health-check-deployment.sh
+      - scripts/health-check-deployment.sh
+      
+      - echo "🎉 Deployment completed successfully with health check validation"

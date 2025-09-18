@@ -57,7 +57,7 @@ class MiddlewareChain(
             // 検索結果（短期キャッシュ）
             "/videos", "/streams", "/news", "/calendar/events" -> 300 // 5分
             // ヘルスチェック（キャッシュなし）
-            "/health" -> 0
+            "/health", "/health/basic", "/health/detailed", "/health/complete", "/health/ready" -> 0
             // デフォルト（短期キャッシュ）
             else -> 300
         }

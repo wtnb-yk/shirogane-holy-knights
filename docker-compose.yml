@@ -90,9 +90,26 @@ services:
       - ./backend/build.gradle.kts:/app/build.gradle.kts
       - ./scripts:/scripts
       - ./frontend:/frontend
-    command: ["bash", "-c", "cd /app && bash /scripts/setup-lambda.sh && bash /scripts/create-api-gateway.sh && tail -f /dev/null"]
+    command:
+      [
+        "bash",
+        "-c",
+        "cd /app && bash /scripts/setup-lambda.sh && bash /scripts/create-api-gateway.sh && tail -f /dev/null",
+      ]
     networks:
       - shirogane-network
+    healthcheck:
+      test: |
+        API_ID=$$(aws --endpoint-url=http://localstack:4566 apigateway get-rest-apis --query 'items[0].id' --output text 2>/dev/null) &&
+        if [ -n "$$API_ID" ] && [ "$$API_ID" != "None" ]; then
+          curl -f "http://localstack:4566/restapis/$$API_ID/dev/_user_request_/health" || exit 1
+        else
+          exit 1
+        fi
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   # フロントエンドサービス
   frontend:

@@ -31,8 +31,23 @@ class ApiGatewayRouter(
     data class RouteKey(val method: String, val path: String)
     
     private val routes: Map<RouteKey, suspend (APIGatewayProxyRequestEvent) -> ApiResponse> = mapOf(
+        // 基本ヘルスチェック（従来の軽量チェック）
         RouteKey("GET", "/health") to { _ -> 
             healthController.checkHealth()
+        },
+        // 段階的ヘルスチェック
+        RouteKey("GET", "/health/basic") to { _ ->
+            healthController.checkBasicHealth()
+        },
+        RouteKey("GET", "/health/detailed") to { _ ->
+            healthController.checkDetailedHealth()
+        },
+        RouteKey("GET", "/health/complete") to { _ ->
+            healthController.checkCompleteHealth()
+        },
+        // デプロイメント完了判定
+        RouteKey("GET", "/health/ready") to { _ ->
+            healthController.checkDeploymentReadiness()
         },
         // 最適化されたエンドポイント（軽量レスポンス）
         RouteKey("POST", "/videos") to { request ->
