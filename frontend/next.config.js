@@ -101,7 +101,7 @@ const nextConfig = {
       "connect-src 'self' https://www.google-analytics.com" + 
         (process.env.NEXT_PUBLIC_API_URL ? ` ${process.env.NEXT_PUBLIC_API_URL}` : '') +
         (isDevelopment ? " http://localhost:* ws://localhost:*" : ''),
-      "frame-src 'none'",
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
