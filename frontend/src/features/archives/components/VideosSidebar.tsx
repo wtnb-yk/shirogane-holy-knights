@@ -7,7 +7,7 @@ import { ContentTypeTabs, Tab } from '@/components/common/Sidebar/components/Con
 import { SearchSection } from './VideosSidebar/SearchSection';
 import { CategoryFilter } from './VideosSidebar/CategoryFilter';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
-import { FilterOptions } from './filter/VideoFilterSection';
+import { FilterOptions } from './filter/ArchiveFilterSection';
 
 interface VideosSidebarConfig {
   displayCategories?: string[];

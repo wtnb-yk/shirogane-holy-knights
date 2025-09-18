@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Clock, ExternalLink, ChevronLeft } from 'lucide-react';
 import { Event } from '../types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
 import { getImageUrl } from '@/utils/imageUrl';
 import { IMAGE_STYLES } from '@/constants/styles';
 import {Button} from "@/components/ui/Button";
@@ -70,8 +70,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
           </div>
           <DialogClose onClose={() => onClose()} />
         </DialogHeader>
-
-        <div className="p-6 pt-0">
+        <DialogBody>
           <div className="space-y-6">
             {/* イベントタイトル */}
             <div>
@@ -149,8 +148,8 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
               </Button>
             </div>
           )}
-        </div>
-        </div>
+          </div>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

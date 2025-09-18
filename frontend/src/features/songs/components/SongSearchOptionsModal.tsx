@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
 import { SortBy, SortOrder, SongFilterOptions } from '../types/types';
 import { SongSortSection } from './SongSortSection';
 import { SongFilterSection } from './SongFilterSection';
@@ -70,8 +70,7 @@ export const SongSearchOptionsModal = ({
           <DialogTitle>検索オプション</DialogTitle>
           <DialogClose onClose={() => handleOpenChange(false)} />
         </DialogHeader>
-        <div className="p-6 pt-0">
-          
+        <DialogBody>
           <div className="space-y-6">
             <SongSortSection
               sortBy={tempSortBy}
@@ -85,7 +84,7 @@ export const SongSearchOptionsModal = ({
               onFiltersChange={setTempFilters}
             />
           </div>
-          
+
           <div className="mt-6 pt-4 border-t border-surface-border flex gap-3">
             <button
               onClick={handleApply}
@@ -94,7 +93,7 @@ export const SongSearchOptionsModal = ({
               適用
             </button>
           </div>
-        </div>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

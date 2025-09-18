@@ -7,7 +7,7 @@ import {useVideoFilters} from './useVideoFilters';
 import {useAllVideoTags} from './useAllVideoTags';
 import {useVideoQuery} from './useVideoQuery';
 import {VideoDto} from '../types/types';
-import {FilterOptions} from '../components/filter/VideoFilterSection';
+import {FilterOptions} from '../components/filter/ArchiveFilterSection';
 
 interface UseVideosResult {
   videos: VideoDto[];

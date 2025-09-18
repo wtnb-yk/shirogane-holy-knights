@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { StreamSong, Performance } from '../types/types';
@@ -53,13 +53,14 @@ export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePl
           </DialogTitle>
           <DialogClose onClose={handleClose} />
         </DialogHeader>
-        
-        <PerformanceListContent
-          song={song}
-          onPerformancePlay={onPerformancePlay}
-          onClose={handleClose}
-          isMobile={false}
-        />
+        <DialogBody className="p-0">
+          <PerformanceListContent
+            song={song}
+            onPerformancePlay={onPerformancePlay}
+            onClose={handleClose}
+            isMobile={false}
+          />
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

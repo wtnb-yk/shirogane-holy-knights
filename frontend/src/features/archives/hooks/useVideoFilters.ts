@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FilterOptions } from '../components/filter/VideoFilterSection';
+import { FilterOptions } from '../components/filter/ArchiveFilterSection';
 
 interface UseVideoFiltersResult {
   filters: FilterOptions;

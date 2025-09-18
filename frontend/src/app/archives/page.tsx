@@ -5,7 +5,7 @@ import { useVideos } from '@/features/archives/hooks/useVideos';
 import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ContentType } from '@/features/archives/types/types';
 import { VideosSidebar } from '@/features/archives/components/VideosSidebar';
-import { SearchOptionsModal } from '@/features/archives/components/filter/SearchOptionsModal';
+import { ArchiveSearchOptionsModal } from '@/features/archives/components/filter/ArchiveSearchOptionsModal';
 import { SearchResultsSummary } from '@/features/archives/components/results/SearchResultsSummary';
 import { StatsSummary } from '@/features/archives/components/results/StatsSummary';
 import { VideosGrid } from '@/features/archives/components/VideosGrid';
@@ -146,7 +146,7 @@ export default function VideosList() {
             loading={currentData.loading}
           />
 
-        <SearchOptionsModal
+        <ArchiveSearchOptionsModal
           isOpen={showFilterModal}
           onClose={() => setShowFilterModal(false)}
           filters={currentData.filters}

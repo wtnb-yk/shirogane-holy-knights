@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ContentType } from '@/features/archives/types/types';
-import { FilterOptions } from '@/features/archives/components/filter/VideoFilterSection';
+import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
 import { SearchInput } from './components/SearchInput';
 import { ContentTypeTabs } from './components/ContentTypeTabs';
 import { CategoryButtons } from './components/CategoryButtons';

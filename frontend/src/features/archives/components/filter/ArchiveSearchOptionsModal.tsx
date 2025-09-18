@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
-import { VideoFilterSection, FilterOptions } from './VideoFilterSection';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
+import { ArchiveFilterSection, FilterOptions } from './ArchiveFilterSection';
 
 interface SearchOptionsModalProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ interface SearchOptionsModalProps {
   availableTags: string[];
 }
 
-export const SearchOptionsModal = ({
+export const ArchiveSearchOptionsModal = ({
   isOpen,
   onClose,
   filters,
@@ -49,16 +49,15 @@ export const SearchOptionsModal = ({
           <DialogTitle>検索オプション</DialogTitle>
           <DialogClose onClose={() => handleOpenChange(false)} />
         </DialogHeader>
-        <div className="p-6 pt-0">
-          
+        <DialogBody>
           <div className="space-y-6">
-            <VideoFilterSection
+            <ArchiveFilterSection
               filters={tempFilters}
               onFiltersChange={setTempFilters}
               availableTags={availableTags}
             />
           </div>
-          
+
           <div className="mt-6 pt-4 border-t border-surface-border flex gap-3">
             <button
               onClick={handleApply}
@@ -67,7 +66,7 @@ export const SearchOptionsModal = ({
               適用
             </button>
           </div>
-        </div>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

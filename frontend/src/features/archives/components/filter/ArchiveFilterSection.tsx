@@ -10,19 +10,19 @@ export interface FilterOptions {
   endDate?: string;
 }
 
-interface VideoFilterSectionProps {
+interface ArchiveFilterSectionProps {
   filters: FilterOptions;
   onFiltersChange: (filters: FilterOptions) => void;
   availableTags?: string[];
   className?: string;
 }
 
-export function VideoFilterSection({
+export function ArchiveFilterSection({
   filters, 
   onFiltersChange, 
   availableTags = [], 
   className = '' 
-}: VideoFilterSectionProps) {
+}: ArchiveFilterSectionProps) {
   const handleTagToggle = (tag: string) => {
     const newTags = filters.selectedTags.includes(tag)
       ? filters.selectedTags.filter(t => t !== tag)

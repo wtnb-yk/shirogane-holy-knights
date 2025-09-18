@@ -3,7 +3,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Event } from '../types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
 import { EventListItem } from './EventListItem';
 
 interface DayEventsModalProps {
@@ -46,8 +46,7 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
           </DialogTitle>
           <DialogClose onClose={onClose} />
         </DialogHeader>
-
-        <div className="p-6 pt-0">
+        <DialogBody>
           {sortedEvents.length === 0 ? (
             <div className="text-center py-8 text-text-secondary">
               この日の予定はありません
@@ -67,7 +66,7 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
               ))}
             </div>
           )}
-        </div>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

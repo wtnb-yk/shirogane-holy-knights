@@ -102,17 +102,37 @@ export const ModalContent = ({ children, className = '' }: ModalContentProps) =>
   </div>
 );
 
-// Legacy compatibility exports
+// Dialog components for better compatibility
 export const Dialog = Modal;
-export const DialogContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={className}>{children}</div>
+
+export const DialogContent = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+  return (
+    <div className={`bg-white rounded-lg shadow-xl ${className}`}>
+      {children}
+    </div>
+  );
+};
+
+export const DialogHeader = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex items-center justify-between p-6 pb-4 border-b border-surface-border">
+    {children}
+  </div>
 );
-export const DialogHeader = ModalHeader;
-export const DialogTitle = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-export const DialogClose = ({ onClick, onClose }: { onClick?: () => void; onClose?: () => void }) => (
-  <button 
-    onClick={onClick || onClose} 
-    className="absolute top-4 right-4 p-1 hover:bg-gray-100 rounded-full"
+
+export const DialogBody = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`p-6 ${className}`}>
+    {children}
+  </div>
+);
+
+export const DialogTitle = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="text-lg font-semibold">{children}</h2>
+);
+
+export const DialogClose = ({ onClose }: { onClose?: () => void }) => (
+  <button
+    onClick={onClose}
+    className="p-1 hover:bg-gray-100 rounded-full"
   >
     <X className="w-5 h-5" />
   </button>
