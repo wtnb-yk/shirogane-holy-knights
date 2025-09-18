@@ -53,7 +53,7 @@ export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePl
           </DialogTitle>
           <DialogClose onClose={handleClose} />
         </DialogHeader>
-        <DialogBody className="p-0">
+        <DialogBody>
           <PerformanceListContent
             song={song}
             onPerformancePlay={onPerformancePlay}
