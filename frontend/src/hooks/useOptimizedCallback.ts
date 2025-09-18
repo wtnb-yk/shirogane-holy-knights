@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useRef, useMemo } from 'react';
+import React, {useCallback, useMemo, useRef} from 'react';
 
 interface UseOptimizedCallbackOptions {
   debounceMs?: number;
@@ -16,12 +16,12 @@ export const useOptimizedCallback = <T extends (...args: any[]) => any>(
   dependencies: React.DependencyList,
   options: UseOptimizedCallbackOptions = {}
 ): T => {
-  const { debounceMs, throttleMs, maxWait } = options;
+  const { debounceMs, throttleMs } = options;
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastCallRef = useRef<number>(0);
   const lastArgsRef = useRef<Parameters<T> | undefined>(undefined);
 
-  const optimizedCallback = useCallback(
+  return useCallback(
     (...args: Parameters<T>) => {
       const now = Date.now();
       lastArgsRef.current = args;
@@ -56,8 +56,6 @@ export const useOptimizedCallback = <T extends (...args: any[]) => any>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     dependencies
   ) as T;
-
-  return optimizedCallback;
 };
 
 /**

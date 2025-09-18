@@ -38,7 +38,7 @@ function createStreamSpecialItems(): SpecialItemConfig[] {
     },
     {
       type: 'pickup',
-      dataIndex: pickupIndices[0],
+      dataIndex: pickupIndices[0] ?? 0,
       gridPlacement: {
         colSpan: 2,
         rowSpan: 2
@@ -46,7 +46,7 @@ function createStreamSpecialItems(): SpecialItemConfig[] {
     },
     {
       type: 'pickup',
-      dataIndex: pickupIndices[1],
+      dataIndex: pickupIndices[1] ?? 1,
       gridPlacement: {
         colSpan: 2,
         rowSpan: 2
@@ -54,7 +54,7 @@ function createStreamSpecialItems(): SpecialItemConfig[] {
     },
     {
       type: 'pickup',
-      dataIndex: pickupIndices[2],
+      dataIndex: pickupIndices[2] ?? 2,
       gridPlacement: {
         colSpan: 2,
         rowSpan: 2

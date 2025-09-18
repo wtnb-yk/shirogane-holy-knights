@@ -24,7 +24,7 @@ interface SongsBottomSheetContentProps {
 
 export const SongsBottomSheetContent = ({
   songContentType,
-  onSongContentTypeChange,
+
   searchValue,
   onSearch,
   onClearSearch,

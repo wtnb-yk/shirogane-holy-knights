@@ -18,7 +18,7 @@ export interface SearchResultsSummaryProps {
 
 export const SearchResultsSummary = ({
   searchQuery,
-  filterSummary,
+
   totalCount,
   onClearAllFilters,
   hasFilters,

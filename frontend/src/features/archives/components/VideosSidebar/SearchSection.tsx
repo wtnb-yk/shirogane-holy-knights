@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Settings } from 'lucide-react';
-import { SearchInput } from '@/components/common/Sidebar/components/SearchInput';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 interface SearchSectionProps {
   searchValue: string;
@@ -21,19 +21,6 @@ export const SearchSection = ({
   hasActiveOptions,
   title = 'アーカイブ検索',
 }: SearchSectionProps) => {
-  const [inputValue, setInputValue] = React.useState(searchValue);
-
-  React.useEffect(() => {
-    setInputValue(searchValue);
-  }, [searchValue]);
-
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-    if (!value) {
-      onClearSearch();
-    }
-  };
-
   return (
     <div>
       <h3 className="text-base font-bold text-text-primary mb-3">
@@ -41,14 +28,17 @@ export const SearchSection = ({
       </h3>
 
       <SearchInput
-        value={inputValue}
-        onChange={handleInputChange}
-        onSubmit={() => onSearch(inputValue.trim())}
-        onClear={() => {
-          setInputValue('');
-          onClearSearch();
+        searchValue={searchValue}
+        onSearchChange={(value) => {
+          if (!value) {
+            onClearSearch();
+          }
         }}
+        onSearch={onSearch}
+        onClearSearch={onClearSearch}
         placeholder="キーワードを入力"
+        variant="sidebar"
+        size="sm"
         className="mb-3"
       />
       

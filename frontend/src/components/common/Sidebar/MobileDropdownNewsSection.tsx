@@ -4,7 +4,7 @@ import React from 'react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
-import { SearchInput } from './components/SearchInput';
+import { SearchInput } from '@/components/ui/SearchInput';
 import { CategoryButtons } from './components/CategoryButtons';
 
 interface MobileDropdownNewsSectionProps {
@@ -22,28 +22,14 @@ export const MobileDropdownNewsSection = ({
   filters,
   setFilters
 }: MobileDropdownNewsSectionProps) => {
-  const [inputValue, setInputValue] = React.useState(searchValue);
   const { categories, loading } = useNewsCategories();
   const selectedCategoryIds = filters.categoryIds || [];
-
-  React.useEffect(() => {
-    setInputValue(searchValue);
-  }, [searchValue]);
-
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-    if (!value) {
-      onClearSearch();
-    }
-  };
 
   const handleCategoryToggle = (categoryId: string) => {
     const id = parseInt(categoryId);
     if (selectedCategoryIds.includes(id)) {
-      setFilters({
-        ...filters,
-        categoryIds: undefined,
-      });
+      const { categoryIds, ...restFilters } = filters;
+      setFilters(restFilters);
     } else {
       setFilters({
         ...filters,
@@ -53,21 +39,25 @@ export const MobileDropdownNewsSection = ({
   };
 
   const handleClearAll = () => {
-    setFilters({
-      ...filters,
-      categoryIds: undefined,
-    });
+    const { categoryIds, ...restFilters } = filters;
+    setFilters(restFilters);
   };
 
   return (
     <div className="space-y-6">
       {/* 検索セクション */}
       <SearchInput
-        value={inputValue}
-        onChange={handleInputChange}
-        onSubmit={onSearch}
-        onClear={onClearSearch}
+        searchValue={searchValue}
+        onSearchChange={(value) => {
+          if (!value) {
+            onClearSearch();
+          }
+        }}
+        onSearch={onSearch}
+        onClearSearch={onClearSearch}
         placeholder="気になるニュースを探す"
+        variant="compact"
+        size="sm"
       />
 
       {/* カテゴリセクション */}

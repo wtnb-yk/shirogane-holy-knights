@@ -3,7 +3,7 @@
 import React from 'react';
 import { ContentType } from '@/features/archives/types/types';
 import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
-import { SearchInput } from './components/SearchInput';
+import { SearchInput } from '@/components/ui/SearchInput';
 import { ContentTypeTabs } from './components/ContentTypeTabs';
 import { CategoryButtons } from './components/CategoryButtons';
 import { TagBadges } from './components/TagBadges';
@@ -32,18 +32,7 @@ export const MobileDropdownVideosSection = ({
   availableTags = [],
   displayCategories = ['雑談', 'ゲーム','ASMR', '歌枠', 'コラボ']
 }: MobileDropdownVideosSectionProps) => {
-  const [inputValue, setInputValue] = React.useState(searchValue);
 
-  React.useEffect(() => {
-    setInputValue(searchValue);
-  }, [searchValue]);
-
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-    if (!value) {
-      onClearSearch();
-    }
-  };
 
   const handleTagToggle = (tag: string) => {
     const currentTags = filters.selectedTags || [];
@@ -68,7 +57,12 @@ export const MobileDropdownVideosSection = ({
   };
 
   const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
-    setFilters({ ...filters, [field]: value || undefined });
+    if (value) {
+      setFilters({ ...filters, [field]: value });
+    } else {
+      const { [field]: _, ...restFilters } = filters;
+      setFilters(restFilters);
+    }
   };
 
   const contentTypeOptions = [
@@ -87,11 +81,17 @@ export const MobileDropdownVideosSection = ({
 
       {/* 検索セクション */}
       <SearchInput
-        value={inputValue}
-        onChange={handleInputChange}
-        onSubmit={onSearch}
-        onClear={onClearSearch}
+        searchValue={searchValue}
+        onSearchChange={(value) => {
+          if (!value) {
+            onClearSearch();
+          }
+        }}
+        onSearch={onSearch}
+        onClearSearch={onClearSearch}
         placeholder="キーワードを入力"
+        variant="compact"
+        size="sm"
       />
 
       {/* カテゴリフィルター - 配信タブでのみ表示 */}

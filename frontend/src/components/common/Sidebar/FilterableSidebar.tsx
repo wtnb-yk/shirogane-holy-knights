@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { GenericSidebar, SidebarWidth } from './GenericSidebar';
-import { SidebarSection } from './SidebarSection';
+import { SidebarSection } from '@/components';
 
 export interface SidebarSectionConfig<T = any> {
   id: string;
@@ -11,7 +11,7 @@ export interface SidebarSectionConfig<T = any> {
   noBorder?: boolean;
 }
 
-interface FilterableSidebarProps<TFilters = any> {
+interface FilterableSidebarProps {
   sections: SidebarSectionConfig[];
   width?: SidebarWidth | string;
   className?: string;
@@ -23,14 +23,14 @@ export const FilterableSidebar = <TFilters = any>({
   width = 'md',
   className,
   style
-}: FilterableSidebarProps<TFilters>) => {
+}: FilterableSidebarProps) => {
   return (
     <GenericSidebar
       width={width}
       className={className}
       style={style}
     >
-      {sections.map((section, index) => {
+      {sections.map((section: any, index: number) => {
         const Component = section.component;
         const isLast = index === sections.length - 1;
         

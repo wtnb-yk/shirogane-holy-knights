@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { NewsDto, NewsSearchParamsDto, NewsSearchResultDto, NewsFilterOptions } from '../types/types';
+import { NewsDto, NewsFilterOptions } from '../types/types';
 import { NewsClient } from '../api/newsClient';
 
 interface UseNewsQueryOptions {

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ChevronUp, ChevronDown, TrendingUp, Calendar } from 'lucide-react';
+import { TrendingUp, Calendar } from 'lucide-react';
 import { SortBy, SortOrder } from '../types/types';
 
 interface SongSortSectionProps {
