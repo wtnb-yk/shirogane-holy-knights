@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ReactElement } from 'react';
+import { ErrorDisplay } from '@/components/common/ErrorDisplay';
 
 interface NewsListGridProps<T> {
   items: T[];
@@ -29,10 +30,12 @@ export function NewsListGrid<T>({
 }: NewsListGridProps<T>) {
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
-        <div className="text-center">
-          <div className="text-error text-lg font-medium">エラーが発生しました</div>
-        </div>
+      <div className="opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
+        <ErrorDisplay 
+          error={error} 
+          context="ニュース一覧の取得"
+          size="md"
+        />
       </div>
     );
   }

@@ -56,7 +56,7 @@ export function calculateWeekEventLayout(
 
   for (const segment of eventBands) {
     for (let day = segment.startDayIndex; day <= segment.endDayIndex; day++) {
-      lanesOccupiedByDay[day] = Math.max(lanesOccupiedByDay[day], segment.laneIndex + 1);
+      lanesOccupiedByDay[day] = Math.max(lanesOccupiedByDay[day] || 0, segment.laneIndex + 1);
     }
   }
 
@@ -67,13 +67,13 @@ export function calculateWeekEventLayout(
 
   for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
     const singleDayEvents = allSingleDayEventsByDay[dayIndex] || [];
-    const occupiedLanes = lanesOccupiedByDay[dayIndex];
+    const occupiedLanes = lanesOccupiedByDay[dayIndex] || 0;
     const availableLanes = MAX_LANES - occupiedLanes;
 
     visibleSingleDayEventsByDay[dayIndex] = singleDayEvents.slice(0, availableLanes);
     hiddenSingleDayEventsByDay[dayIndex] = singleDayEvents.slice(availableLanes);
 
-    totalHiddenCount += hiddenSingleDayEventsByDay[dayIndex].length;
+    totalHiddenCount += hiddenSingleDayEventsByDay[dayIndex]?.length || 0;
   }
 
   // すべての隠れたイベントをまとめる
@@ -132,7 +132,7 @@ function assignEventLanes(
         lanes[laneIndex] = [];
       }
 
-      const hasConflict = lanes[laneIndex].some(existingSegment =>
+      const hasConflict = lanes[laneIndex]?.some(existingSegment =>
         segmentsOverlap(
           { startDayIndex, endDayIndex },
           {
@@ -157,7 +157,7 @@ function assignEventLanes(
       };
 
       segments.push(segment);
-      lanes[assignedLane].push(segment);
+      lanes[assignedLane]?.push(segment);
     } else {
       // レーンに配置できない場合は隠れたイベントとして記録
       hiddenEvents.push(event);

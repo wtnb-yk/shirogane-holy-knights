@@ -1,77 +1,39 @@
-import {VideoSearchParams, VideoSearchResult, StreamSearchParams, StreamSearchResult, ApiError} from '../types/types';
+import { VideoSearchParams, VideoSearchResult, StreamSearchParams, StreamSearchResult } from '../types/types';
+import { apiClient } from '@/utils/apiClient';
 
 /**
- * Lambda関数のエンドポイント設定
+ * 動画検索API
  */
-const API_CONFIG = {
-  // 環境変数から取得するか、デフォルトとしてlocalhostを使用
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+export const VideoApi = {
+  /**
+   * 動画検索
+   */
+  search: (params: VideoSearchParams): Promise<VideoSearchResult> => {
+    return apiClient.post<VideoSearchResult>('/videos', params);
+  }
 };
 
 /**
- * Lambda関数クライアント
- * Spring Cloud Functionで実装されたLambda関数を呼び出すためのクライアント
+ * 配信検索API
  */
-export class VideoClient {
-
+export const StreamApi = {
   /**
-   * 動画検索Lambda関数を呼び出す
-   * @param params 検索パラメータ
-   * @returns 検索結果
+   * 配信検索
    */
-  static async callVideoSearchFunction(
-    params: VideoSearchParams
-  ): Promise<VideoSearchResult> {
-    // Spring Cloud Functionのエンドポイント
-    const response = await fetch(`${API_CONFIG.baseUrl}/videos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
+  search: (params: StreamSearchParams): Promise<StreamSearchResult> => {
+    return apiClient.post<StreamSearchResult>('/streams', params);
+  }
+};
 
-    if (!response.ok) {
-      throw {
-        error: '動画検索中にエラーが発生しました。',
-        statusCode: response.status,
-      } as ApiError;
-    }
-
-    return response.json();
+// 後方互換性のため既存のクラスも残す
+export class VideoClient {
+  static async callVideoSearchFunction(params: VideoSearchParams): Promise<VideoSearchResult> {
+    return VideoApi.search(params);
   }
 }
 
-/**
- * 配信Lambda関数クライアント
- * Spring Cloud Functionで実装された配信Lambda関数を呼び出すためのクライアント
- */
 export class StreamClient {
-
-  /**
-   * 配信検索Lambda関数を呼び出す
-   * @param params 検索パラメータ
-   * @returns 検索結果
-   */
-  static async callStreamSearchFunction(
-    params: StreamSearchParams
-  ): Promise<StreamSearchResult> {
-    // Spring Cloud Functionのエンドポイント
-    const response = await fetch(`${API_CONFIG.baseUrl}/streams`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-      throw {
-        error: '配信検索中にエラーが発生しました。',
-        statusCode: response.status,
-      } as ApiError;
-    }
-
-    return response.json();
+  static async callStreamSearchFunction(params: StreamSearchParams): Promise<StreamSearchResult> {
+    return StreamApi.search(params);
   }
 }

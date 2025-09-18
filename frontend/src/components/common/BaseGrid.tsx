@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ReactNode, useMemo } from 'react';
+import { ErrorDisplay } from '@/components';
 
 interface BaseGridProps<T> {
   items: T[];
@@ -47,10 +48,12 @@ function BaseGridComponent<T>({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
-        <div className="text-center">
-          <div className="text-error text-lg font-medium">エラーが発生しました</div>
-        </div>
+      <div className="opacity-0 animate-slide-up" style={{ animationDelay: '200ms' }}>
+        <ErrorDisplay 
+          error={error} 
+          context="データの取得"
+          size="md"
+        />
       </div>
     );
   }

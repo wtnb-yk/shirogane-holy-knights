@@ -20,7 +20,10 @@ const BAND_MARGIN = 4;
 
 export function WeekView({ weekDates, events, currentMonth, onEventClick, onDateClick }: WeekViewProps) {
   const weekStartDate = weekDates[0];
-  const weekEndDate = new Date(weekDates[6]);
+  const lastDate = weekDates[6];
+  if (!weekStartDate || !lastDate) return null;
+  
+  const weekEndDate = new Date(lastDate);
   weekEndDate.setHours(23, 59, 59, 999);
 
   const layout = calculateWeekEventLayout(weekStartDate, weekEndDate, events);

@@ -27,7 +27,7 @@ export function MonthView({ currentDate, events, onEventClick, onDateClick, onMo
     return events.filter(event => {
       const eventStart = new Date(event.eventDate + 'T00:00:00');
       const eventEnd = new Date((event.endDate || event.eventDate) + 'T23:59:59');
-      return eventStart <= weekEnd && eventEnd >= weekStart;
+      return weekEnd && weekStart && eventStart <= weekEnd && eventEnd >= weekStart;
     });
   };
 

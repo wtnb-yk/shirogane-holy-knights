@@ -6,6 +6,9 @@ import { Footer } from '@/components/footer/Footer';
 import { FloatingYouTubeLink } from '@/components/common/FloatingYouTubeLink';
 import { WebSiteSchema, OrganizationSchema } from '@/components/seo/JsonLd';
 import { GoogleAnalyticsWrapper } from '@/components/analytics/GoogleAnalytics';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
+import { OfflineIndicator } from '@/components/common/OfflineIndicator';
+import { ToastProvider } from '@/components/common/Toast';
 
 const mplusRounded = M_PLUS_Rounded_1c({
   weight: ['400', '700'],
@@ -65,12 +68,17 @@ export default function RootLayout({
         <GoogleAnalyticsWrapper />
         <WebSiteSchema />
         <OrganizationSchema />
-        <Header />
-        <main className="flex-grow pt-16">
-          {children}
-        </main>
-        <Footer />
-        <FloatingYouTubeLink />
+        <ToastProvider>
+          <OfflineIndicator />
+          <ErrorBoundary>
+            <Header />
+            <main className="flex-grow pt-16">
+              {children}
+            </main>
+            <Footer />
+            <FloatingYouTubeLink />
+          </ErrorBoundary>
+        </ToastProvider>
       </body>
     </html>
   );

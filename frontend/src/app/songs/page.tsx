@@ -47,7 +47,10 @@ export default function SongsList() {
   React.useEffect(() => {
     if (currentData.songs.length > 0 && !currentSong && !currentData.loading) {
       const randomIndex = Math.floor(Math.random() * currentData.songs.length);
-      changeCurrentSong(currentData.songs[randomIndex]);
+      const selectedSong = currentData.songs[randomIndex];
+      if (selectedSong) {
+        changeCurrentSong(selectedSong);
+      }
     }
   }, [currentData.songs, currentSong, changeCurrentSong, currentData.loading]);
   

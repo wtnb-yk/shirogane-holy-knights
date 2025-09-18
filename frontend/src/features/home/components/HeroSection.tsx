@@ -60,7 +60,7 @@ export default function HeroSection() {
           {/* 無限ループ用の最初の画像の複製 */}
           <div className="relative w-screen h-full flex-shrink-0">
             <Image
-              src={heroImages[0]}
+              src={heroImages[0]!}
               alt="ヒーロー背景 1（ループ用）"
               fill
               className="object-cover"

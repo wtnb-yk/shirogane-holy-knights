@@ -104,12 +104,16 @@ export const STORAGE_KEYS = {
 
 // エラーメッセージ
 export const ERROR_MESSAGES = {
-  NETWORK_ERROR: 'ネットワークエラーが発生しました',
-  VALIDATION_ERROR: '入力内容に誤りがあります',
-  NOT_FOUND: 'データが見つかりません',
-  UNAUTHORIZED: '認証が必要です',
-  FORBIDDEN: 'アクセス権限がありません',
-  SERVER_ERROR: 'サーバーエラーが発生しました'
+  NETWORK_ERROR: 'インターネット接続を確認してください',
+  VALIDATION_ERROR: '入力内容を確認してください',
+  NOT_FOUND: 'お探しのデータが見つかりませんでした',
+  UNAUTHORIZED: 'ログインが必要です',
+  FORBIDDEN: 'このページにアクセスする権限がありません',
+  SERVER_ERROR: 'サーバーで問題が発生しました。しばらく時間をおいてから再度お試しください',
+  TIMEOUT_ERROR: '処理に時間がかかっています。しばらく時間をおいてから再度お試しください',
+  OFFLINE_ERROR: 'インターネットに接続されていません',
+  GENERIC_ERROR: '予期しないエラーが発生しました',
+  RETRY_MESSAGE: '問題が解決しない場合は、ページを再読み込みしてください'
 } as const;
 
 // 成功メッセージ

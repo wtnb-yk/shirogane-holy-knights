@@ -71,9 +71,9 @@ export function EventCard({ event, onClick, compact = false }: EventCardProps) {
           onClick(event);
         }}
         className={`w-full text-left px-1.5 py-1 rounded text-xs transition-all duration-200 hover:shadow-sm ${
-          primaryEventType.type === 'event'
+          primaryEventType?.type === 'event'
             ? 'bg-accent-blue/10 text-accent-blue hover:bg-accent-blue/20'
-            : primaryEventType.type === 'goods'
+            : primaryEventType?.type === 'goods'
             ? 'bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20'
             : 'bg-badge-green/10 text-badge-green hover:bg-badge-green/20'
         }`}
