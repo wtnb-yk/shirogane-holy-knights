@@ -105,12 +105,12 @@ data class StreamDto(
                 id = stream.id.value,
                 title = stream.title,
                 channelId = stream.channelId.value,
-                url = "https://www.youtube.com/watch?v=${stream.id.value}",
+                url = stream.streamDetails?.url ?: "https://www.youtube.com/watch?v=${stream.id.value}",
                 startedAt = stream.startedAt.toString(),
                 description = stream.contentDetails?.description,
                 tags = stream.streamTags.map { it.name },
-                duration = null,
-                thumbnailUrl = null,
+                duration = stream.streamDetails?.duration?.value,
+                thumbnailUrl = stream.streamDetails?.thumbnailUrl,
             )
         }
     }

@@ -21,10 +21,11 @@ class VideoController(
                 { result ->
                     // 最適化されたDTOに変換
                     val optimizedResult = OptimizedSearchResultDto.of(
-                        items = result.items.map { 
+                        items = result.items.map {
                             OptimizedVideoDto(
                                 id = it.id,
                                 title = it.title,
+                                url = it.url,
                                 publishedAt = it.publishedAt,
                                 thumbnailUrl = it.thumbnailUrl,
                                 duration = it.duration,
@@ -48,10 +49,11 @@ class VideoController(
                 { result ->
                     // 最適化されたDTOに変換
                     val optimizedResult = OptimizedSearchResultDto.of(
-                        items = result.items.map { 
+                        items = result.items.map {
                             OptimizedStreamDto(
                                 id = it.id,
                                 title = it.title,
+                                url = it.url,
                                 startedAt = it.startedAt,
                                 thumbnailUrl = it.thumbnailUrl,
                                 tags = it.tags

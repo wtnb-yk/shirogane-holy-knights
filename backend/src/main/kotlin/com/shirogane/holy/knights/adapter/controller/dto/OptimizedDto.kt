@@ -13,6 +13,7 @@ import kotlinx.serialization.Serializable
 data class OptimizedVideoDto(
     val id: String,
     val title: String,
+    val url: String,
     val publishedAt: String,
     val thumbnailUrl: String? = null,
     val duration: String? = null,
@@ -23,6 +24,7 @@ data class OptimizedVideoDto(
             return OptimizedVideoDto(
                 id = video.id.value,
                 title = video.title,
+                url = video.videoDetails?.url ?: "https://www.youtube.com/watch?v=${video.id.value}",
                 publishedAt = video.publishedAt.toString(),
                 thumbnailUrl = video.videoDetails?.thumbnailUrl,
                 duration = video.videoDetails?.duration?.value,
@@ -39,6 +41,7 @@ data class OptimizedVideoDto(
 data class OptimizedStreamDto(
     val id: String,
     val title: String,
+    val url: String,
     val startedAt: String?,
     val thumbnailUrl: String? = null,
     val tags: List<String> = emptyList()
@@ -48,8 +51,9 @@ data class OptimizedStreamDto(
             return OptimizedStreamDto(
                 id = stream.id.value,
                 title = stream.title,
+                url = stream.streamDetails?.url ?: "https://www.youtube.com/watch?v=${stream.id.value}",
                 startedAt = stream.startedAt.toString(),
-                thumbnailUrl = null, // 配信のサムネイルは通常不要
+                thumbnailUrl = stream.streamDetails?.thumbnailUrl,
                 tags = stream.streamTags.map { it.name }
             )
         }
