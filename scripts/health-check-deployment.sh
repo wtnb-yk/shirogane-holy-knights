@@ -5,10 +5,27 @@
 
 set -e
 
-# 環境変数の確認
+# 環境変数の確認とフォールバック
 : "${LAMBDA_FUNCTION_NAME:?Environment variable LAMBDA_FUNCTION_NAME is required}"
-: "${API_GATEWAY_NAME:?Environment variable API_GATEWAY_NAME is required}"
-: "${ENVIRONMENT:?Environment variable ENVIRONMENT is required}"
+
+# API_GATEWAY_NAMEが設定されていない場合はLAMBDA_FUNCTION_NAMEを使用
+if [[ -z "${API_GATEWAY_NAME:-}" ]]; then
+    log "API_GATEWAY_NAME not set, using LAMBDA_FUNCTION_NAME: $LAMBDA_FUNCTION_NAME"
+    export API_GATEWAY_NAME="$LAMBDA_FUNCTION_NAME"
+fi
+
+# ENVIRONMENTが設定されていない場合はLAMBDA_FUNCTION_NAMEから推測
+if [[ -z "${ENVIRONMENT:-}" ]]; then
+    if [[ "$LAMBDA_FUNCTION_NAME" == *"-prd-"* ]]; then
+        export ENVIRONMENT="prod"
+    elif [[ "$LAMBDA_FUNCTION_NAME" == *"-stg-"* ]]; then
+        export ENVIRONMENT="staging"
+    else
+        export ENVIRONMENT="dev"
+    fi
+    log "ENVIRONMENT not set, inferred from function name: $ENVIRONMENT"
+fi
+
 : "${AWS_DEFAULT_REGION:?Environment variable AWS_DEFAULT_REGION is required}"
 
 # デフォルト設定
@@ -50,6 +67,7 @@ check_lambda_function() {
 # API Gateway URLの取得
 get_api_gateway_url() {
     log "Getting API Gateway URL..."
+    log "Looking for API Gateway with name: $API_GATEWAY_NAME"
     
     local api_id
     api_id=$(aws apigateway get-rest-apis \
@@ -57,10 +75,21 @@ get_api_gateway_url() {
         --output text 2>/dev/null)
     
     if [[ -z "$api_id" ]] || [[ "$api_id" == "None" ]]; then
-        error "API Gateway not found: $API_GATEWAY_NAME"
-        return 1
+        log "Exact name match not found, trying pattern matching..."
+        # パターンマッチングで再試行
+        api_id=$(aws apigateway get-rest-apis \
+            --query "items[?contains(name, '$(echo $API_GATEWAY_NAME | cut -d'-' -f1-3)')].id" \
+            --output text 2>/dev/null | head -n1)
+        
+        if [[ -z "$api_id" ]] || [[ "$api_id" == "None" ]]; then
+            error "API Gateway not found with name pattern: $API_GATEWAY_NAME"
+            log "Available API Gateways:"
+            aws apigateway get-rest-apis --query "items[].{Name:name,Id:id}" --output table 2>/dev/null || true
+            return 1
+        fi
     fi
     
+    log "Found API Gateway ID: $api_id"
     echo "https://${api_id}.execute-api.${AWS_DEFAULT_REGION}.amazonaws.com/${ENVIRONMENT}"
 }
 

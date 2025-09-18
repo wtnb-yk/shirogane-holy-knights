@@ -74,6 +74,12 @@ phases:
       # デプロイメント完了判定
       - echo "Starting deployment health check..."
       - chmod +x scripts/health-check-deployment.sh
-      - scripts/health-check-deployment.sh
+      - |
+        # 環境変数の設定
+        export API_GATEWAY_NAME="$LAMBDA_FUNCTION_NAME"  # Lambda関数名と同じ命名規則を使用
+        export ENVIRONMENT="${ENVIRONMENT:-dev}"
+        
+        # ヘルスチェック実行
+        scripts/health-check-deployment.sh
       
       - echo "🎉 Deployment completed successfully with health check validation"
