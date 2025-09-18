@@ -75,35 +75,42 @@ export const SearchInput = ({
   const currentVariant = variantStyles[variant];
 
   return (
-    <form onSubmit={handleSubmit} className={cn('relative', className)}>
-      <Search className={cn(
-        'absolute top-1/2 transform -translate-y-1/2 text-text-secondary',
-        currentSize.icon,
-        currentSize.iconLeft
-      )} />
+    <form onSubmit={handleSubmit} className={cn('relative', className)} role="search">
+      <Search 
+        className={cn(
+          'absolute top-1/2 transform -translate-y-1/2 text-text-secondary pointer-events-none',
+          currentSize.icon,
+          currentSize.iconLeft
+        )}
+        aria-hidden="true"
+      />
       <input
-        type="text"
+        type="search"
         placeholder={placeholder}
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
         className={cn(
-          'w-full rounded-lg bg-bg-primary transition-all duration-200 shadow-sm text-text-primary placeholder-text-secondary/70',
+          'w-full rounded-lg bg-bg-primary transition-all duration-200 shadow-sm text-text-primary placeholder-text-secondary/70 focus:outline-none focus:ring-2 focus:ring-offset-2',
           currentSize.input,
           currentVariant,
           disabled && 'opacity-50 cursor-not-allowed'
         )}
         disabled={disabled}
+        aria-label={placeholder}
+        autoComplete="off"
+        spellCheck="false"
       />
       {inputValue && !disabled && (
         <button
           type="button"
           onClick={handleClear}
           className={cn(
-            'absolute top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors duration-200',
+            'absolute top-1/2 transform -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 rounded-sm',
             currentSize.icon,
             currentSize.iconRight
           )}
           aria-label="検索をクリア"
+          tabIndex={0}
         >
           <X className={currentSize.icon} />
         </button>

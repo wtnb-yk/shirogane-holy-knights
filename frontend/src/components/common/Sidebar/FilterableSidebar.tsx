@@ -18,7 +18,7 @@ interface FilterableSidebarProps {
   style?: React.CSSProperties;
 }
 
-export const FilterableSidebar = <TFilters = any>({
+export const FilterableSidebar = ({
   sections,
   width = 'md',
   className,

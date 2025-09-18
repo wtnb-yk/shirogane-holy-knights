@@ -9,6 +9,7 @@ import { GoogleAnalyticsWrapper } from '@/components/analytics/GoogleAnalytics';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { OfflineIndicator } from '@/components/common/OfflineIndicator';
 import { ToastProvider } from '@/components/common/Toast';
+import { PerformanceOptimizations } from '@/components/seo/PerformanceOptimizations';
 
 const mplusRounded = M_PLUS_Rounded_1c({
   weight: ['400', '700'],
@@ -63,8 +64,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html lang="ja" dir="ltr">
       <body className={`min-h-screen flex flex-col ${mplusRounded.variable} ${notoSansJP.variable}`}>
+        <PerformanceOptimizations />
         <GoogleAnalyticsWrapper />
         <WebSiteSchema />
         <OrganizationSchema />
@@ -72,7 +74,10 @@ export default function RootLayout({
           <OfflineIndicator />
           <ErrorBoundary>
             <Header />
-            <main className="flex-grow pt-16">
+            <main
+              className="flex-grow pt-16"
+              role="main"
+            >
               {children}
             </main>
             <Footer />

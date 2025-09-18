@@ -23,12 +23,13 @@ export function NavigationItem({ href, label, isActive, isMobile, onClick }: Nav
         }}
         onTouchStart={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
-        className={`block px-4 py-3 text-base font-medium border-b border-surface-border/50 transition-colors duration-ui ${
+        className={`block px-4 py-3 text-base font-medium border-b border-surface-border/50 transition-colors duration-ui focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-inset ${
           isActive
             ? 'text-bg-primary bg-accent-gold'
             : 'text-text-light hover:text-white hover:bg-bg-primary/10'
         }`}
         style={{ touchAction: 'manipulation' }}
+        aria-current={isActive ? 'page' : undefined}
       >
         {label}
       </Link>
@@ -38,11 +39,12 @@ export function NavigationItem({ href, label, isActive, isMobile, onClick }: Nav
   return (
     <Link
       href={href}
-      className={`px-3 py-2 rounded-md text-sm sm:text-base font-medium transition-all duration-ui hover:scale-105 hover:-translate-y-0.5 ${
+      className={`px-3 py-2 rounded-md text-sm sm:text-base font-medium transition-all duration-ui hover:scale-105 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 focus:ring-offset-surface-primary ${
         isActive
           ? 'text-surface-primary bg-bg-primary shadow-sm'
           : 'text-text-light hover:text-white hover:bg-bg-primary/20'
       }`}
+      aria-current={isActive ? 'page' : undefined}
     >
       {label}
     </Link>
