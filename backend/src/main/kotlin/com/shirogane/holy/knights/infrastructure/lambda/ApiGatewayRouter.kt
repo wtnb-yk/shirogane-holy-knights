@@ -49,19 +49,11 @@ class ApiGatewayRouter(
         RouteKey("GET", "/health/ready") to { _ ->
             healthController.checkDeploymentReadiness()
         },
-        // 最適化されたエンドポイント（軽量レスポンス）
         RouteKey("POST", "/videos") to { request ->
             videoController.searchVideos(request.body)
         },
         RouteKey("POST", "/streams") to { request ->
             videoController.searchStreams(request.body)
-        },
-        // 詳細情報付きエンドポイント（完全なレスポンス）
-        RouteKey("POST", "/videos/detailed") to { request ->
-            videoController.searchVideosDetailed(request.body)
-        },
-        RouteKey("POST", "/streams/detailed") to { request ->
-            videoController.searchStreamsDetailed(request.body)
         },
 
         RouteKey("GET", "/stream-tags") to { _ ->
