@@ -92,6 +92,6 @@ class CorsHandler(
     
     private fun isProductionEnvironment(): Boolean {
         val activeProfiles = environment.activeProfiles
-        return activeProfiles.contains("prod") || activeProfiles.contains("production") || activeProfiles.contains("lambda")
+        return activeProfiles.contains("lambda")
     }
 }
