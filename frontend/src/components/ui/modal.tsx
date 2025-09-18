@@ -3,7 +3,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 
-export const Dialog = ({ open, onOpenChange, children }: { open?: boolean; onOpenChange?: (open: boolean) => void; children: React.ReactNode }) => {
+export const Modal = ({ open, onOpenChange, children }: { open?: boolean; onOpenChange?: (open: boolean) => void; children: React.ReactNode }) => {
   const handleClose = useCallback(() => {
     onOpenChange?.(false);
   }, [onOpenChange]);
@@ -57,7 +57,7 @@ export const Dialog = ({ open, onOpenChange, children }: { open?: boolean; onOpe
   );
 };
 
-export const DialogContent = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+export const ModalContent = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
   return (
     <div className={`bg-white rounded-lg shadow-xl ${className}`}>
       {children}
@@ -65,23 +65,23 @@ export const DialogContent = ({ children, className = '' }: { children: React.Re
   );
 };
 
-export const DialogHeader = ({ children }: { children: React.ReactNode }) => (
+export const ModalHeader = ({ children }: { children: React.ReactNode }) => (
   <div className="flex items-center justify-between p-6 pb-4 border-b border-surface-border">
     {children}
   </div>
 );
 
-export const DialogBody = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+export const ModalBody = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
   <div className={`p-6 ${className}`}>
     {children}
   </div>
 );
 
-export const DialogTitle = ({ children }: { children: React.ReactNode }) => (
+export const ModalTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="text-lg font-semibold">{children}</h2>
 );
 
-export const DialogClose = ({ onClose }: { onClose?: () => void }) => (
+export const ModalClose = ({ onClose }: { onClose?: () => void }) => (
   <button
     onClick={onClose}
     className="p-1 hover:bg-gray-100 rounded-full"

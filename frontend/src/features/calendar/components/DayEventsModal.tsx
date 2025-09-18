@@ -3,7 +3,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Event } from '../types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
+import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
 import { EventListItem } from './EventListItem';
 
 interface DayEventsModalProps {
@@ -35,18 +35,18 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
   });
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+    <Modal open={isOpen} onOpenChange={onClose}>
+      <ModalContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <ModalHeader>
+          <ModalTitle>
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-text-secondary" />
               <span>{formatDate(date)}</span>
             </div>
-          </DialogTitle>
-          <DialogClose onClose={onClose} />
-        </DialogHeader>
-        <DialogBody>
+          </ModalTitle>
+          <ModalClose onClose={onClose} />
+        </ModalHeader>
+        <ModalBody>
           {sortedEvents.length === 0 ? (
             <div className="text-center py-8 text-text-secondary">
               この日の予定はありません
@@ -66,8 +66,8 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
               ))}
             </div>
           )}
-        </DialogBody>
-      </DialogContent>
-    </Dialog>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }

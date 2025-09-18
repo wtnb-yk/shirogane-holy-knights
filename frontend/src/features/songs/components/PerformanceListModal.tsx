@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
+import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { StreamSong, Performance } from '../types/types';
@@ -44,24 +44,24 @@ export const PerformanceListModal = ({ song, open, onOpenChange, onPerformancePl
 
   // デスクトップの場合はDialogを表示
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
+    <Modal open={open} onOpenChange={onOpenChange}>
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>
             <span className="font-bold text-gray-900">{song.title}</span>
             <span className="ml-3 font-medium text-gray-600 text-base">{song.artist}</span>
-          </DialogTitle>
-          <DialogClose onClose={handleClose} />
-        </DialogHeader>
-        <DialogBody>
+          </ModalTitle>
+          <ModalClose onClose={handleClose} />
+        </ModalHeader>
+        <ModalBody>
           <PerformanceListContent
             song={song}
             onPerformancePlay={onPerformancePlay}
             onClose={handleClose}
             isMobile={false}
           />
-        </DialogBody>
-      </DialogContent>
-    </Dialog>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };

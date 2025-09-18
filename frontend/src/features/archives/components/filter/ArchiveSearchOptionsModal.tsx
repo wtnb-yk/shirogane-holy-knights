@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
+import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
 import { ArchiveFilterSection, FilterOptions } from './ArchiveFilterSection';
 
 interface SearchOptionsModalProps {
@@ -43,13 +43,13 @@ export const ArchiveSearchOptionsModal = ({
 
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>検索オプション</DialogTitle>
-          <DialogClose onClose={() => handleOpenChange(false)} />
-        </DialogHeader>
-        <DialogBody>
+    <Modal open={isOpen} onOpenChange={handleOpenChange}>
+      <ModalContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <ModalHeader>
+          <ModalTitle>検索オプション</ModalTitle>
+          <ModalClose onClose={() => handleOpenChange(false)} />
+        </ModalHeader>
+        <ModalBody>
           <div className="space-y-6">
             <ArchiveFilterSection
               filters={tempFilters}
@@ -66,8 +66,8 @@ export const ArchiveSearchOptionsModal = ({
               適用
             </button>
           </div>
-        </DialogBody>
-      </DialogContent>
-    </Dialog>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };

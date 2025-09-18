@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Clock, ExternalLink, ChevronLeft } from 'lucide-react';
 import { Event } from '../types';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogBody } from '@/components/ui/modal';
+import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
 import { getImageUrl } from '@/utils/imageUrl';
 import { IMAGE_STYLES } from '@/constants/styles';
 import {Button} from "@/components/ui/Button";
@@ -52,9 +52,9 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+    <Modal open={isOpen} onOpenChange={onClose}>
+      <ModalContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <ModalHeader>
           <div className="flex items-center gap-2">
             {fromDayModal && onBackToDayModal && (
               <button
@@ -64,13 +64,13 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
                 <ChevronLeft className="w-5 h-5" />
               </button>
             )}
-            <DialogTitle>
+            <ModalTitle>
               イベント詳細
-            </DialogTitle>
+            </ModalTitle>
           </div>
-          <DialogClose onClose={() => onClose()} />
-        </DialogHeader>
-        <DialogBody>
+          <ModalClose onClose={() => onClose()} />
+        </ModalHeader>
+        <ModalBody>
           <div className="space-y-6">
             {/* イベントタイトル */}
             <div>
@@ -149,8 +149,8 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
             </div>
           )}
           </div>
-        </DialogBody>
-      </DialogContent>
-    </Dialog>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }
