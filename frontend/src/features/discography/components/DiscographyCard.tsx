@@ -9,7 +9,6 @@ import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
-import { IMAGE_STYLES } from '@/constants/styles';
 
 interface DiscographyCardProps {
   album: AlbumDto;
@@ -30,7 +29,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
             src={imageUrl}
             alt={album.title}
             fill
-            className={`${IMAGE_STYLES.objectCover} ${IMAGE_STYLES.rounded}`}
+            className="object-cover rounded-lg"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
         ) : (
@@ -40,7 +39,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
         )}
 
         {/* オーバーレイアイコン */}
-        <OverlayIcon icon={Music} className="absolute top-2 right-2" />
+        <OverlayIcon type="play" className="absolute top-2 right-2" />
       </div>
 
       {/* アルバム情報 */}
@@ -79,7 +78,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
   );
 
   return (
-    <StaggeredItem index={index} delay={50}>
+    <StaggeredItem index={index}>
       {cardContent}
     </StaggeredItem>
   );

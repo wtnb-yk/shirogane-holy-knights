@@ -21,7 +21,12 @@ class ApiClient {
     private defaultTimeout: number;
 
     constructor(baseUrl?: string, timeout = 30000) {
-        this.baseUrl = baseUrl || process.env.NEXT_PUBLIC_API_URL || '';
+        // 開発環境ではプロキシ経由
+        if (process.env.NODE_ENV === 'development') {
+            this.baseUrl = '/api';
+        } else {
+            this.baseUrl = baseUrl || process.env.NEXT_PUBLIC_API_URL || '';
+        }
         this.defaultTimeout = timeout;
     }
 

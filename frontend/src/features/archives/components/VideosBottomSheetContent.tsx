@@ -3,6 +3,7 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
 import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
+import { VideoTagDto, StreamTagDto } from '@/features/archives/types/types';
 import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
 import { MobileDateRangeInput } from '@/components/common/Sidebar/components/MobileDateRangeInput';
 
@@ -12,7 +13,7 @@ interface VideosBottomSheetContentProps {
   onClearSearch: () => void;
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
-  availableTags?: string[];
+  availableTags?: VideoTagDto[] | StreamTagDto[];
 }
 
 export const VideosBottomSheetContent = ({

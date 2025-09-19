@@ -1,6 +1,7 @@
 import {
   AlbumSearchParamsDto,
-  AlbumSearchResultDto
+  AlbumSearchResultDto,
+  AlbumTypeDto
 } from '../types/types';
 import { apiClient } from '@/utils/apiClient';
 
@@ -23,12 +24,13 @@ export const AlbumApi = {
     };
 
     return apiClient.post<AlbumSearchResultDto>('/albums', requestParams);
+  },
+
+  /**
+   * アルバムタイプ一覧を取得
+   */
+  getTypes: (): Promise<AlbumTypeDto[]> => {
+    return apiClient.get<AlbumTypeDto[]>('/albums/types');
   }
 };
 
-// 後方互換性のため既存のクラスも残す
-export class DiscographyClient {
-  static async searchAlbums(params: AlbumSearchParamsDto = {}): Promise<AlbumSearchResultDto> {
-    return AlbumApi.search(params);
-  }
-}

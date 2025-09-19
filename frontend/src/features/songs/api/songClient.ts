@@ -1,18 +1,10 @@
 import {
   StreamSongSearchParams,
   StreamSongSearchResult,
-  StreamSongStats,
   ConcertSongSearchParams,
   ConcertSongSearchResult,
-  ConcertSongStats
 } from '../types/types';
-
-/**
- * API設定
- */
-const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
-};
+import { apiClient } from '@/utils/apiClient';
 
 /**
  * 楽曲API関連のエラー型
@@ -36,44 +28,7 @@ export class SongClient {
   static async callStreamSongsSearchFunction(
     params: StreamSongSearchParams
   ): Promise<StreamSongSearchResult> {
-    const response = await fetch(`${API_CONFIG.baseUrl}/stream-songs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-      throw {
-        error: '楽曲検索中にエラーが発生しました。',
-        statusCode: response.status,
-      } as ApiError;
-    }
-
-    return response.json();
-  }
-
-  /**
-   * 楽曲統計情報Lambda関数を呼び出す
-   * @returns 統計情報
-   */
-  static async callStreamSongsStatsFunction(): Promise<StreamSongStats> {
-    const response = await fetch(`${API_CONFIG.baseUrl}/stream-songs/stats`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw {
-        error: '楽曲統計情報取得中にエラーが発生しました。',
-        statusCode: response.status,
-      } as ApiError;
-    }
-
-    return response.json();
+    return await apiClient.post<StreamSongSearchResult>('/stream-songs', params);
   }
 }
 
@@ -91,43 +46,6 @@ export class ConcertSongClient {
   static async callConcertSongsSearchFunction(
     params: ConcertSongSearchParams
   ): Promise<ConcertSongSearchResult> {
-    const response = await fetch(`${API_CONFIG.baseUrl}/concert-songs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-      throw {
-        error: 'コンサート楽曲検索中にエラーが発生しました。',
-        statusCode: response.status,
-      } as ApiError;
-    }
-
-    return response.json();
-  }
-
-  /**
-   * コンサート楽曲統計情報Lambda関数を呼び出す
-   * @returns 統計情報
-   */
-  static async callConcertSongsStatsFunction(): Promise<ConcertSongStats> {
-    const response = await fetch(`${API_CONFIG.baseUrl}/concert-songs/stats`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw {
-        error: 'コンサート楽曲統計情報取得中にエラーが発生しました。',
-        statusCode: response.status,
-      } as ApiError;
-    }
-
-    return response.json();
+    return await apiClient.post<ConcertSongSearchResult>('/concert-songs', params);
   }
 }

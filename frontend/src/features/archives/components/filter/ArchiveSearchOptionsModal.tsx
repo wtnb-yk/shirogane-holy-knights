@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
 import { ArchiveFilterSection, FilterOptions } from './ArchiveFilterSection';
+import { VideoTagDto, StreamTagDto } from '../../types/types';
 
 interface SearchOptionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   filters: FilterOptions;
   onFiltersChange: (filters: FilterOptions) => void;
-  availableTags: string[];
+  availableTags: VideoTagDto[] | StreamTagDto[];
 }
 
 export const ArchiveSearchOptionsModal = ({

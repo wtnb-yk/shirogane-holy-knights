@@ -46,6 +46,24 @@ export interface VideoSearchResult {
 }
 
 /**
+ * 動画タグDTOの型定義
+ */
+export interface VideoTagDto {
+  id: number;
+  name: string;
+  sortOrder: number;
+}
+
+/**
+ * 配信タグDTOの型定義
+ */
+export interface StreamTagDto {
+  id: number;
+  name: string;
+  sortOrder: number;
+}
+
+/**
  * 配信DTOの型定義
  */
 export interface StreamDto {

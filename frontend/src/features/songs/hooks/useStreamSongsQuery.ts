@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { SongClient } from '../api/songClient';
-import { 
-  StreamSong, 
-  SortBy, 
+import {
+  StreamSong,
+  SortBy,
   SortOrder,
-  SongFilterOptions
+  SongFilterOptions,
+  StreamSongSearchParams
 } from '../types/types';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseStreamSongsQueryOptions {
   pageSize?: number;
@@ -37,49 +39,36 @@ export const useStreamSongsQuery = (
   const { pageSize = 20 } = options;
   const { currentPage, searchQuery, sortBy, sortOrder, filters } = state;
 
-  const [songs, setSongs] = useState<StreamSong[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
+  // APIパラメータをメモ化
+  const apiParams = useMemo((): StreamSongSearchParams => ({
+    query: searchQuery || undefined,
+    sortBy,
+    sortOrder,
+    startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
+    endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
+    frequencyCategories: filters.frequencyCategories,
+    page: currentPage,
+    size: pageSize,
+  }), [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate, filters.frequencyCategories]);
 
-  useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const result = await SongClient.callStreamSongsSearchFunction({
-          query: searchQuery || undefined,
-          sortBy,
-          sortOrder,
-          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
-          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
-          frequencyCategories: filters.frequencyCategories,
-          page: currentPage,
-          size: pageSize,
-        });
-        
-        setSongs(result.items);
-        setTotalCount(result.totalCount);
-      } catch (err: any) {
-        setError('楽曲の取得に失敗しました。');
-        setSongs([]);
-        setTotalCount(0);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useApiQueryを使用
+  const { data, loading, error } = useApiQuery(
+    SongClient.callStreamSongsSearchFunction,
+    apiParams,
+    {
+      retries: 3,
+      retryDelay: 1000
+    }
+  );
 
-    fetchSongs();
-  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate, filters.frequencyCategories]);
-
+  const totalCount = data?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / pageSize);
   const hasMore = currentPage * pageSize < totalCount;
 
   return {
-    songs,
+    songs: data?.items || [],
     loading,
-    error,
+    error: error?.message || null,
     totalCount,
     totalPages,
     hasMore,

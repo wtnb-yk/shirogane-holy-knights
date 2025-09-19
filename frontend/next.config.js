@@ -108,14 +108,9 @@ const nextConfig = {
       "frame-ancestors 'none'",
       "upgrade-insecure-requests"
     ];
-    
-    // 開発環境では緩い設定
-    if (isDevelopment) {
-      cspDirectives[1] = "script-src 'self' 'unsafe-eval' 'unsafe-inline'";
-    }
-    
+
     const csp = cspDirectives.join('; ');
-    
+
     return [
       {
         source: '/(.*)',
@@ -149,6 +144,17 @@ const nextConfig = {
             value: 'max-age=31536000; includeSubDomains; preload',
           },
         ],
+      },
+    ];
+  },
+
+  // APIプロキシ設定（開発環境用）
+  async rewrites() {
+    // フロントエンドはDocker内で実行されているため、localstack:4566でアクセス
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localstack:4566/restapis/shirogane-api/dev/_user_request_/:path*',
       },
     ];
   },

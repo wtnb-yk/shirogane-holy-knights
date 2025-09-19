@@ -1,42 +1,27 @@
 'use client';
 
-import useSWR from 'swr';
+import { VideoApi } from '../api/lambdaClient';
+import { VideoTagDto } from '../types/types';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseAllVideoTagsResult {
-  tags: string[];
+  tags: VideoTagDto[];
   loading: boolean;
   error: string | null;
 }
-
-const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
-};
-
-const fetcher = async (url: string): Promise<string[]> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('動画タグの取得に失敗しました');
-  }
-  return response.json();
-};
 
 /**
  * 全ての動画タグを取得するhook
  */
 export const useAllVideoTags = (): UseAllVideoTagsResult => {
-  const { data, error, isLoading } = useSWR(
-    `${API_CONFIG.baseUrl}/video-tags`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 300000, // 5分間キャッシュ
-    }
-  );
+  const { data, loading, error } = useApiQuery(VideoApi.getAllTags, {}, {
+    retries: 3,
+    retryDelay: 1000
+  });
 
   return {
     tags: data || [],
-    loading: isLoading,
+    loading,
     error: error?.message || null,
   };
 };

@@ -46,8 +46,8 @@ export const useDiscographyQuery = (
 
   // 新しいAPIフックを使用
   const { data, loading, error } = useApiQuery(AlbumApi.search, apiParams, {
-    retries: 3,
-    retryDelay: 1000
+    retries: 2,
+    retryDelay: 2000
   });
 
   return {

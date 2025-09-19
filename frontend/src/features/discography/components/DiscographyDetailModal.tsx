@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlbumDto } from '../types/types';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@/components/ui/modal';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Music, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
@@ -24,7 +24,7 @@ export const DiscographyDetailModal = ({
   const imageUrl = getImageUrl(album.coverImageUrl);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="アルバム詳細">
+    <Modal open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <div className="space-y-6">
         {/* アルバム基本情報 */}
         <div className="flex flex-col md:flex-row gap-6">
@@ -130,7 +130,7 @@ export const DiscographyDetailModal = ({
                   {release.platformIconUrl && (
                     <div className="w-8 h-8 relative">
                       <Image
-                        src={getImageUrl(release.platformIconUrl)}
+                        src={getImageUrl(release.platformIconUrl) || ''}
                         alt={release.platformName}
                         fill
                         className="object-contain"
