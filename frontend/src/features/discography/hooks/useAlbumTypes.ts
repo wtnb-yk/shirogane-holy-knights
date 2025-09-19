@@ -18,21 +18,18 @@ export const useAlbumTypes = (): UseAlbumTypesResult => {
     const fetchAlbumTypes = async () => {
       try {
         setLoading(true);
-        // TODO: アルバムタイプ取得APIの実装
-        // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/album-types`);
-        // const albumTypes = await response.json();
-        // setAlbumTypes(albumTypes);
+        setError(null);
 
-        // 仮のダミーデータ
-        setAlbumTypes([
-          { id: 1, name: 'オリジナルアルバム', description: 'オリジナル楽曲アルバム' },
-          { id: 2, name: 'シングル', description: 'シングルリリース' },
-          { id: 3, name: 'コンピレーション', description: 'コンピレーションアルバム' },
-          { id: 4, name: 'ライブアルバム', description: 'ライブ録音アルバム' }
-        ]);
-      } catch (err) {
-        setError('アルバムタイプの取得に失敗しました');
-      } finally {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${baseUrl}/albums/types`);
+
+        if (!response.ok) {
+          throw new Error('アルバムタイプ一覧の取得に失敗しました');
+        }
+
+        const data: AlbumTypeDto[] = await response.json();
+        setAlbumTypes(data);
+      }  finally {
         setLoading(false);
       }
     };

@@ -14,6 +14,7 @@ import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHe
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
+import { DiscographyStatsSummary } from '@/features/discography/components/DiscographyStatsSummary';
 import { AlbumDto } from '@/features/discography/types/types';
 
 export default function DiscographyPage() {
@@ -121,6 +122,13 @@ export default function DiscographyPage() {
           size="sm"
         />
       )}
+
+      <DiscographyStatsSummary
+        currentPage={currentPage}
+        totalCount={totalCount}
+        pageSize={10}
+        loading={loading}
+      />
 
       <BottomSheet
         isOpen={isBottomSheetOpen}
