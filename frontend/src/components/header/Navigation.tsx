@@ -14,6 +14,7 @@ const navigationItems: NavigationMenuItems[] = [
   { href: '/about', label: 'ABOUT' },
   { href: '/archives', label: 'ARCHIVE' },
   { href: '/songs', label: 'SONG' },
+  { href: '/discography', label: 'DISCOGRAPHY' },
   { href: '/news', label: 'NEWS' },
   { href: '/calendar', label: 'CALENDAR' },
 ];
