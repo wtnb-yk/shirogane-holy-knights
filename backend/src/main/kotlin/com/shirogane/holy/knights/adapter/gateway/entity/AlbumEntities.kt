@@ -16,7 +16,7 @@ data class AlbumEntity(
     val coverImageUrl: String?,
     val albumType: AlbumTypeEntity? = null,
     val tracks: List<AlbumTrackEntity> = emptyList(),
-    val musicReleases: List<MusicReleaseEntity> = emptyList()
+    val albumReleases: List<AlbumReleaseEntity> = emptyList()
 ) {
     /**
      * エンティティからドメインモデルへの変換
@@ -30,7 +30,7 @@ data class AlbumEntity(
             releaseDate = releaseDate,
             coverImageUrl = coverImageUrl,
             tracks = tracks.map { it.toDomain() },
-            musicReleases = musicReleases.map { it.toDomain() }
+            albumReleases = albumReleases.map { it.toDomain() }
         )
     }
 }
@@ -82,10 +82,10 @@ data class AlbumTrackEntity(
 }
 
 /**
- * 音楽リリースエンティティ
- * データベースのmusic_releasesテーブルとのマッピング用
+ * アルバムリリースエンティティ
+ * データベースのalbum_releasesテーブルとのマッピング用
  */
-data class MusicReleaseEntity(
+data class AlbumReleaseEntity(
     val id: String,
     val platformName: String,
     val platformUrl: String,
@@ -95,9 +95,9 @@ data class MusicReleaseEntity(
     /**
      * エンティティからドメインモデルへの変換
      */
-    fun toDomain(): MusicRelease {
-        return MusicRelease(
-            id = MusicReleaseId(id),
+    fun toDomain(): AlbumRelease {
+        return AlbumRelease(
+            id = AlbumReleaseId(id),
             platformName = platformName,
             platformUrl = platformUrl,
             platformIconUrl = platformIconUrl,

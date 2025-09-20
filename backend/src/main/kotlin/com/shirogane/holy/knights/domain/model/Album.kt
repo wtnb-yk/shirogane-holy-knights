@@ -14,7 +14,7 @@ data class Album(
     val releaseDate: LocalDate?,
     val coverImageUrl: String? = null,
     val tracks: List<AlbumTrack>? = null,
-    val musicReleases: List<MusicRelease>? = null
+    val albumReleases: List<AlbumRelease>? = null
 )
 
 /**
@@ -52,10 +52,10 @@ data class AlbumTrack(
 )
 
 /**
- * 音楽プラットフォームリリース
+ * アルバムリリース
  */
-data class MusicRelease(
-    val id: MusicReleaseId,
+data class AlbumRelease(
+    val id: AlbumReleaseId,
     val platformName: String,
     val platformUrl: String,
     val platformIconUrl: String? = null,
@@ -63,9 +63,9 @@ data class MusicRelease(
 )
 
 /**
- * 音楽リリースID値オブジェクト
+ * アルバムリリースID値オブジェクト
  */
 @JvmInline
-value class MusicReleaseId(val value: String) {
+value class AlbumReleaseId(val value: String) {
     override fun toString(): String = value
 }

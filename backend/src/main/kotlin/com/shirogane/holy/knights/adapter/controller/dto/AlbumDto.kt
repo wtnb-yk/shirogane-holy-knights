@@ -15,12 +15,12 @@ data class AlbumDto(
     val id: String,
     val title: String,
     val artist: String,
-    val albumType: String,
+    val albumType: AlbumTypeDto,
     val releaseDate: String?, // YYYY-MM-DD形式
     val coverImageUrl: String? = null,
     val trackCount: Int? = null,
     val tracks: List<AlbumTrackDto>? = null,
-    val musicReleases: List<MusicReleaseDto>? = null
+    val albumReleases: List<AlbumReleaseDto>? = null
 ) {
     companion object {
         /**
@@ -31,12 +31,12 @@ data class AlbumDto(
                 id = album.id.value,
                 title = album.title,
                 artist = album.artist,
-                albumType = album.albumType.name,
+                albumType = AlbumTypeDto.fromDomain(album.albumType),
                 releaseDate = album.releaseDate?.toString(), // YYYY-MM-DD
                 coverImageUrl = album.coverImageUrl,
                 trackCount = album.tracks?.size,
                 tracks = album.tracks?.map { AlbumTrackDto.fromDomain(it) },
-                musicReleases = album.musicReleases?.map { MusicReleaseDto.fromDomain(it) }
+                albumReleases = album.albumReleases?.map { AlbumReleaseDto.fromDomain(it) }
             )
         }
     }
@@ -68,10 +68,10 @@ data class AlbumTrackDto(
 }
 
 /**
- * 音楽リリースDTO
+ * アルバムリリースDTO
  */
 @Serializable
-data class MusicReleaseDto(
+data class AlbumReleaseDto(
     val id: String,
     val platformName: String,
     val platformUrl: String,
@@ -82,8 +82,8 @@ data class MusicReleaseDto(
         /**
          * ドメインモデルからDTOへの変換
          */
-        fun fromDomain(release: MusicRelease): MusicReleaseDto {
-            return MusicReleaseDto(
+        fun fromDomain(release: AlbumRelease): AlbumReleaseDto {
+            return AlbumReleaseDto(
                 id = release.id.value,
                 platformName = release.platformName,
                 platformUrl = release.platformUrl,

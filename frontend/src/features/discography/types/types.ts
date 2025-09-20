@@ -9,7 +9,7 @@ export interface AlbumDto {
   releaseDate?: string;
   coverImageUrl?: string;
   tracks: AlbumTrackDto[];
-  musicReleases: MusicReleaseDto[];
+  albumReleases: AlbumReleaseDto[];
 }
 
 /**
@@ -17,7 +17,7 @@ export interface AlbumDto {
  */
 export interface AlbumTypeDto {
   id: number;
-  name: string;
+  typeName: string;
   description?: string;
 }
 
@@ -32,9 +32,9 @@ export interface AlbumTrackDto {
 }
 
 /**
- * 音楽リリースDTOの型定義
+ * アルバムリリースDTOの型定義
  */
-export interface MusicReleaseDto {
+export interface AlbumReleaseDto {
   id: string;
   platformName: string;
   platformUrl: string;
