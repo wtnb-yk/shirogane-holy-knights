@@ -27,13 +27,14 @@ class AlbumQueryBuilder : QueryBuilder<AlbumSearchCriteria> {
                 a.id, a.title, a.artist, a.album_type_id, a.release_date, a.cover_image_url,
                 at.type_name as album_type_name,
                 at.description as album_type_description,
-                COALESCE(STRING_AGG(DISTINCT CONCAT(s.id, ':', s.title, ':', s.artist, ':', als.track_number), '|' ORDER BY als.track_number), '') as tracks,
-                COALESCE(STRING_AGG(DISTINCT CONCAT(mr.id, ':', mr.platform_name, ':', mr.platform_url, ':', COALESCE(mr.platform_icon_url, ''), ':', mr.release_date), '|'), '') as music_releases
+                COALESCE(STRING_AGG(CONCAT(s.id, ':', s.title, ':', s.artist, ':', atr.track_number), '|' ORDER BY atr.track_number), '') as tracks,
+                COALESCE(STRING_AGG(DISTINCT CONCAT(ar.id, ':', mp.platform_name, ':', ar.platform_url, ':', COALESCE(mp.icon_url, ''), ':', ar.release_date), '|'), '') as music_releases
             FROM albums a
             LEFT JOIN album_types at ON a.album_type_id = at.id
-            LEFT JOIN album_songs als ON a.id = als.album_id
-            LEFT JOIN songs s ON als.song_id = s.id
-            LEFT JOIN music_releases mr ON a.id = mr.album_id
+            LEFT JOIN album_tracks atr ON a.id = atr.album_id
+            LEFT JOIN songs s ON atr.song_id = s.id
+            LEFT JOIN album_releases ar ON a.id = ar.album_id
+            LEFT JOIN music_platforms mp ON ar.platform_id = mp.id
             $whereClause
             GROUP BY a.id, a.title, a.artist, a.album_type_id, a.release_date, a.cover_image_url, at.type_name, at.description
             $orderClause
@@ -76,13 +77,14 @@ class AlbumQueryBuilder : QueryBuilder<AlbumSearchCriteria> {
                 a.id, a.title, a.artist, a.album_type_id, a.release_date, a.cover_image_url,
                 at.type_name as album_type_name,
                 at.description as album_type_description,
-                COALESCE(STRING_AGG(DISTINCT CONCAT(s.id, ':', s.title, ':', s.artist, ':', als.track_number), '|' ORDER BY als.track_number), '') as tracks,
-                COALESCE(STRING_AGG(DISTINCT CONCAT(mr.id, ':', mr.platform_name, ':', mr.platform_url, ':', COALESCE(mr.platform_icon_url, ''), ':', mr.release_date), '|'), '') as music_releases
+                COALESCE(STRING_AGG(CONCAT(s.id, ':', s.title, ':', s.artist, ':', atr.track_number), '|' ORDER BY atr.track_number), '') as tracks,
+                COALESCE(STRING_AGG(DISTINCT CONCAT(ar.id, ':', mp.platform_name, ':', ar.platform_url, ':', COALESCE(mp.icon_url, ''), ':', ar.release_date), '|'), '') as music_releases
             FROM albums a
             LEFT JOIN album_types at ON a.album_type_id = at.id
-            LEFT JOIN album_songs als ON a.id = als.album_id
-            LEFT JOIN songs s ON als.song_id = s.id
-            LEFT JOIN music_releases mr ON a.id = mr.album_id
+            LEFT JOIN album_tracks atr ON a.id = atr.album_id
+            LEFT JOIN songs s ON atr.song_id = s.id
+            LEFT JOIN album_releases ar ON a.id = ar.album_id
+            LEFT JOIN music_platforms mp ON ar.platform_id = mp.id
             WHERE a.id = :albumId
             GROUP BY a.id, a.title, a.artist, a.album_type_id, a.release_date, a.cover_image_url, at.type_name, at.description
         """.trimIndent()
