@@ -45,8 +45,8 @@ export function Navigation() {
   return (
     <>
       {/* デスクトップナビゲーション */}
-      <nav 
-        className="hidden md:flex items-center space-x-6"
+      <nav
+        className="hidden lg:flex items-center space-x-3 xl:space-x-4"
         role="navigation"
         aria-label="メインナビゲーション"
       >
@@ -65,7 +65,7 @@ export function Navigation() {
       <button
         onClick={toggleMenu}
         onKeyDown={handleKeyDown}
-        className="md:hidden flex items-center justify-center w-10 h-10 p-1 rounded-md text-white hover:text-white hover:bg-bg-primary/30 transition-all duration-ui active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 focus:ring-offset-surface-primary"
+        className="lg:hidden flex items-center justify-center w-10 h-10 p-1 rounded-md text-white hover:text-white hover:bg-bg-primary/30 transition-all duration-ui active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent-gold focus:ring-offset-2 focus:ring-offset-surface-primary"
         aria-label={isMenuOpen ? "メニューを閉じる" : "メニューを開く"}
         aria-expanded={isMenuOpen}
         aria-controls="mobile-menu"
@@ -99,9 +99,9 @@ export function Navigation() {
 
       {/* モバイルメニュー */}
       {isMenuOpen && (
-        <div 
+        <div
           id="mobile-menu"
-          className="md:hidden absolute top-full left-0 right-0 z-50 bg-surface-primary border-t border-surface-border shadow-lg"
+          className="lg:hidden absolute top-full left-0 right-0 z-50 bg-surface-primary border-t border-surface-border shadow-lg animate-slide-down max-h-[calc(100vh-80px)] overflow-y-auto"
           onKeyDown={handleKeyDown}
         >
           <nav 
