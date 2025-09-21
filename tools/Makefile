@@ -31,23 +31,23 @@ setup-prd:
 
 ## 統合実行コマンド
 sync-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_pipeline.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_pipeline.py $(if $(VIDEO_ID),$(VIDEO_ID))
 
 sync-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_pipeline.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_pipeline.py $(if $(VIDEO_ID),$(VIDEO_ID))
 
 sync-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_pipeline.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_pipeline.py $(if $(VIDEO_ID),$(VIDEO_ID))
 
 ## データ取得のみ
 fetch-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_fetcher.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.local python3 youtube_data_fetcher.py $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 fetch-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_fetcher.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.dev python3 youtube_data_fetcher.py $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 fetch-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_fetcher.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.prd python3 youtube_data_fetcher.py $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 ## DBインポートのみ（最新の結果ディレクトリを自動選択）
 import-local:
@@ -135,16 +135,26 @@ concert-songs-import-prd:
 
 ## チャンネル情報挿入
 channel-insert-local:
-	cd scripts && ENV_FILE=../config/.env.local python3 channel_inserter.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.local python3 channel_inserter.py $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 channel-insert-dev:
-	cd scripts && ENV_FILE=../config/.env.dev python3 channel_inserter.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.dev python3 channel_inserter.py $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
 channel-insert-prd:
-	cd scripts && ENV_FILE=../config/.env.prd python3 channel_inserter.py $(filter-out $@,$(MAKECMDGOALS))
+	cd scripts && ENV_FILE=../config/.env.prd python3 channel_inserter.py $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+
+## ミュージックビデオデータインポート
+music-videos-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 music_videos_importer.py ../data/music_videos.csv
+
+music-videos-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 music_videos_importer.py ../data/music_videos.csv
+
+music-videos-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 music_videos_importer.py ../data/music_videos.csv
 
 # ダミーターゲットを追加（引数として渡されるチャンネルIDを無効化）
 %:
 	@:
 
-.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd calendar-import-local calendar-import-dev calendar-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs extract-songs-stream extract-songs-live stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
+.PHONY: setup-dev setup-prd sync-local sync-dev sync-prd fetch-local fetch-dev fetch-prd import-local import-dev import-prd news-import-local news-import-dev news-import-prd calendar-import-local calendar-import-dev calendar-import-prd stream-tags-extract-local stream-tags-import-local stream-tags-import-dev stream-tags-import-prd extract-songs extract-songs-stream extract-songs-live stream-songs-import-local stream-songs-import-dev stream-songs-import-prd update-artists-local update-artists-dev update-artists-prd concert-songs-import-local concert-songs-import-dev concert-songs-import-prd channel-insert-local channel-insert-dev channel-insert-prd music-videos-import-local music-videos-import-dev music-videos-import-prd db-dev db-dev-status db-dev-stop db-prd db-prd-status db-prd-stop
