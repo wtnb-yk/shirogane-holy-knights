@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'ディスコグラフィー | だんいんポータル -白銀ノエル非公式ファンサイト-',
-  description: '白銀聖騎士団の音楽リリースをまとめています。アルバムタイプやキーワードで検索して楽曲をチェックできます。',
+  description: '白銀ノエルさんの配信楽曲や歌ってみたを検索・閲覧できます。楽曲名での検索、配信日での並び替えができます。',
   openGraph: {
     title: 'ディスコグラフィー | だんいんポータル -白銀ノエル非公式ファンサイト-',
-    description: '白銀聖騎士団の音楽リリースをまとめています。アルバムタイプやキーワードで検索して楽曲をチェックできます。',
+    description: '白銀ノエルさんの配信楽曲や歌ってみたを検索・閲覧できます。楽曲名での検索、配信日での並び替えができます。',
     type: 'website',
     locale: 'ja_JP',
     images: [{
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'ディスコグラフィー | だんいんポータル -白銀ノエル非公式ファンサイト-',
-    description: '白銀聖騎士団の音楽リリースをまとめています。アルバムタイプやキーワードで検索して楽曲をチェックできます。',
+    description: '白銀ノエルさんの配信楽曲や歌ってみたを検索・閲覧できます。楽曲名での検索、配信日での並び替えができます。',
     images: 'https://www.noe-room.com/og-images/og-home.png',
   },
   alternates: {

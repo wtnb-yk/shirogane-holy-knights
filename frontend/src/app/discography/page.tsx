@@ -58,8 +58,8 @@ export default function DiscographyPage() {
       title="DISCOGRAPHY"
       description={
         <p>
-          白銀聖騎士団の音楽リリースをまとめています。<br />
-          アルバムタイプやキーワードで検索して楽曲をチェックできます。
+          白銀ノエルさんの配信楽曲や歌ってみたを検索・閲覧できます。<br />
+          楽曲名での検索、配信日での並び替えができます。
         </p>
       }
       headerActions={
