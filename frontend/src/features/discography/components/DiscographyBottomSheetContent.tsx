@@ -5,6 +5,7 @@ import { Search, X } from 'lucide-react';
 import { AlbumFilterOptions } from '@/features/discography/types/types';
 import { useAlbumTypes } from '@/features/discography/hooks/useAlbumTypes';
 import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
+import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 
 interface DiscographyBottomSheetContentProps {
   searchValue: string;
@@ -47,7 +48,7 @@ export const DiscographyBottomSheetContent = ({
   };
 
   const handleTagToggle = (tag: string) => {
-    const albumType = albumTypes.find(at => at.name === tag);
+    const albumType = albumTypes.find(at => at.typeName === tag);
     if (!albumType) return;
 
     const albumTypeId = albumType.id.toString();
@@ -64,10 +65,10 @@ export const DiscographyBottomSheetContent = ({
     }
   };
 
-  const tags = albumTypes.map(at => at.name);
+  const tags = albumTypes.map(at => getAlbumTypeDisplayName(at.typeName));
   const selectedTags = albumTypes
     .filter(at => selectedAlbumTypes.includes(at.id.toString()))
-    .map(at => at.name);
+    .map(at => getAlbumTypeDisplayName(at.typeName));
 
   return (
     <div className="flex-1 overflow-y-auto min-h-0">
