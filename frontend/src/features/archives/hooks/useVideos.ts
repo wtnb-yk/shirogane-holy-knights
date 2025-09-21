@@ -6,7 +6,7 @@ import {useVideoSearch} from './useVideoSearch';
 import {useVideoFilters} from './useVideoFilters';
 import {useAllVideoTags} from './useAllVideoTags';
 import {useVideoQuery} from './useVideoQuery';
-import {VideoDto, VideoTagDto} from '../types/types';
+import {VideoDto} from '../types/types';
 import {FilterOptions} from '../components/filter/ArchiveFilterSection';
 
 interface UseVideosResult {
@@ -24,7 +24,7 @@ interface UseVideosResult {
   clearSearch: () => void;
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
-  availableTags: VideoTagDto[];
+  availableTags: string[];
   clearAllFilters: () => void;
   hasActiveFilters: boolean;
 }

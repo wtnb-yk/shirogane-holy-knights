@@ -3,8 +3,6 @@
 import React from 'react';
 import { TagFilterSection } from '@/components/common/TagFilterSection';
 import { DateRangeSection } from '@/components/common/DateRangeSection';
-import { VideoTagDto, StreamTagDto } from '../../types/types';
-
 export interface FilterOptions {
   selectedTags: string[];
   startDate?: string;
@@ -14,7 +12,7 @@ export interface FilterOptions {
 interface ArchiveFilterSectionProps {
   filters: FilterOptions;
   onFiltersChange: (filters: FilterOptions) => void;
-  availableTags?: VideoTagDto[] | StreamTagDto[];
+  availableTags?: string[];
   className?: string;
 }
 

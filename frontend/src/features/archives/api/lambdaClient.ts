@@ -2,8 +2,7 @@ import {
   VideoSearchParams,
   VideoSearchResult,
   StreamSearchParams,
-  StreamSearchResult,
-  VideoTagDto, StreamTagDto
+  StreamSearchResult
 } from '../types/types';
 import { apiClient } from '@/utils/apiClient';
 
@@ -21,8 +20,8 @@ export const VideoApi = {
   /**
    * 動画タグ一覧を取得
    */
-  getAllTags: (): Promise<VideoTagDto[]> => {
-    return apiClient.get<VideoTagDto[]>('/video-tags');
+  getAllTags: (): Promise<string[]> => {
+    return apiClient.get<string[]>('/video-tags');
   }
 };
 
@@ -40,8 +39,8 @@ export const StreamApi = {
   /**
    * 配信タグ一覧を取得
    */
-  getAllTags: (): Promise<StreamTagDto[]> => {
-    return apiClient.get<StreamTagDto[]>('/stream-tags');
+  getAllTags: (): Promise<string[]> => {
+    return apiClient.get<string[]>('/stream-tags');
   }
 };
 

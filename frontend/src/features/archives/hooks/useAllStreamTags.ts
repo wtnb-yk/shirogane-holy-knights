@@ -1,11 +1,10 @@
 'use client';
 
 import { StreamApi } from '../api/lambdaClient';
-import { StreamTagDto } from '../types/types';
 import { useApiQuery } from '@/hooks/useApi';
 
 interface UseAllStreamTagsResult {
-  tags: StreamTagDto[];
+  tags: string[];
   loading: boolean;
   error: string | null;
 }

@@ -2,11 +2,9 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { VideoTagDto, StreamTagDto } from '@/features/archives/types/types';
-
 interface TagFilterSectionProps {
   selectedTags: string[];
-  availableTags: VideoTagDto[] | StreamTagDto[];
+  availableTags: string[];
   onTagToggle: (tag: string) => void;
   title?: string;
 }
@@ -26,21 +24,19 @@ export const TagFilterSection = ({
         {title}
       </h4>
       <div className="flex flex-wrap gap-2">
-        {availableTags.map((tag) => {
-          const tagName = tag.name;
-          const tagKey = tag.id.toString();
+        {availableTags.map((tag, index) => {
           return (
             <Badge
-              key={tagKey}
-              variant={selectedTags.includes(tagName) ? "default" : "outline"}
+              key={index}
+              variant={selectedTags.includes(tag) ? "default" : "outline"}
               className={`cursor-pointer transition-all duration-200 text-sm px-3 py-2 ${
-                selectedTags.includes(tagName)
+                selectedTags.includes(tag)
                   ? 'bg-accent-gold text-white hover:bg-accent-gold/90'
                   : 'border-surface-border text-text-secondary hover:border-accent-gold hover:text-text-primary hover:bg-accent-gold/10'
               }`}
-              onClick={() => onTagToggle(tagName)}
+              onClick={() => onTagToggle(tag)}
             >
-              {tagName}
+              {tag}
             </Badge>
           );
         })}

@@ -1,11 +1,10 @@
 'use client';
 
 import { VideoApi } from '../api/lambdaClient';
-import { VideoTagDto } from '../types/types';
 import { useApiQuery } from '@/hooks/useApi';
 
 interface UseAllVideoTagsResult {
-  tags: VideoTagDto[];
+  tags: string[];
   loading: boolean;
   error: string | null;
 }
