@@ -21,7 +21,7 @@ export const SongFilterSection = ({
     <div>
       {/* 歌唱日フィルター */}
       <div>
-        <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+        <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
           <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
           歌唱日
         </h4>

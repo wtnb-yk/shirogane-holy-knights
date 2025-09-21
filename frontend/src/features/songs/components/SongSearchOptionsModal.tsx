@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
+import { SkeletonModal, SkeletonModalContent } from '@/components/ui/skeleton-modal';
+import { ModalButton } from '@/components/ui/ModalButton';
 import { SortBy, SortOrder, SongFilterOptions } from '../types/types';
 import { SongSortSection } from './SongSortSection';
 import { SongFilterSection } from './SongFilterSection';
@@ -64,37 +65,28 @@ export const SongSearchOptionsModal = ({
 
 
   return (
-    <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <ModalHeader>
-          <ModalTitle>検索オプション</ModalTitle>
-          <ModalClose onClose={() => handleOpenChange(false)} />
-        </ModalHeader>
-        <ModalBody>
-          <div className="space-y-6">
-            <SongSortSection
-              sortBy={tempSortBy}
-              sortOrder={tempSortOrder}
-              onSortByChange={handleSortByChange}
-              onSortOrderChange={handleSortOrderChange}
-            />
+    <SkeletonModal open={isOpen} onOpenChange={handleOpenChange}>
+      <SkeletonModalContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <h2 className="text-lg font-semibold text-white">検索オプション</h2>
 
-            <SongFilterSection
-              filters={tempFilters}
-              onFiltersChange={setTempFilters}
-            />
-          </div>
+        <SongSortSection
+          sortBy={tempSortBy}
+          sortOrder={tempSortOrder}
+          onSortByChange={handleSortByChange}
+          onSortOrderChange={handleSortOrderChange}
+        />
 
-          <div className="mt-6 pt-4 border-t border-surface-border flex gap-3">
-            <button
-              onClick={handleApply}
-              className="flex-1 px-4 py-2 bg-text-secondary text-white rounded-md hover:bg-text-secondary/90 transition-colors"
-            >
-              適用
-            </button>
-          </div>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        <SongFilterSection
+          filters={tempFilters}
+          onFiltersChange={setTempFilters}
+        />
+
+        <div className="flex justify-center">
+          <ModalButton onClick={handleApply}>
+            適用
+          </ModalButton>
+        </div>
+      </SkeletonModalContent>
+    </SkeletonModal>
   );
 };

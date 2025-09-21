@@ -20,7 +20,7 @@ export const MobileDateRangeInput = ({
   return (
     <div className="flex gap-4 items-center">
       <div className="flex-1">
-        <label className="block text-xs font-medium text-text-secondary mb-1">
+        <label className="block text-xs font-medium text-white mb-1">
           {startLabel}
         </label>
         <input
@@ -36,7 +36,7 @@ export const MobileDateRangeInput = ({
         <div className="w-3 h-px bg-text-tertiary"></div>
       </div>
       <div className="flex-1">
-        <label className="block text-xs font-medium text-text-secondary mb-1">
+        <label className="block text-xs font-medium text-white mb-1">
           {endLabel}
         </label>
         <input
