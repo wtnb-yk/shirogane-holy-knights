@@ -7,7 +7,7 @@ import { StreamSongsList } from '@/features/songs/components/StreamSongsList';
 import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
 import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOptionsModal';
-import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
+import { SongDetailModal } from '@/features/songs/components/SongDetailModal';
 import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
 import { PlayerSection } from '@/features/songs/components/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
@@ -24,7 +24,7 @@ export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
-  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  const [showSongDetailModal, setShowSongDetailModal] = useState(false);
   const [songContentType, setSongContentType] = useState<SongContentType>(SongContentType.CONCERT);
   
   // 楽曲データの取得
@@ -55,9 +55,9 @@ export default function SongsList() {
   }, [currentData.songs, currentSong, changeCurrentSong, currentData.loading]);
   
   const handleSongDetailsClick = (song: StreamSong) => {
-    // 詳細表示：パフォーマンスモーダルを開く
+    // 詳細表示：楽曲詳細モーダルを開く
     setSelectedSong(song);
-    setShowPerformanceModal(true);
+    setShowSongDetailModal(true);
   };
 
   // アクティブなフィルター数を計算
@@ -230,10 +230,10 @@ export default function SongsList() {
             onFiltersChange={currentData.setFilters}
           />
           
-        <PerformanceListModal 
+        <SongDetailModal
           song={selectedSong}
-          open={showPerformanceModal}
-          onOpenChange={setShowPerformanceModal}
+          isOpen={showSongDetailModal}
+          onClose={() => setShowSongDetailModal(false)}
           onPerformancePlay={(song, performance) => {
             playSong(song, performance);
           }}

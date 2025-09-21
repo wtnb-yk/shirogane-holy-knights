@@ -54,13 +54,6 @@ export const DynamicYouTubePlayer = dynamic(
   }
 );
 
-export const DynamicPerformanceListModal = dynamic(
-  () => import('@/features/songs/components/PerformanceListModal').then(mod => ({ default: mod.PerformanceListModal })),
-  {
-    loading: ModalSkeleton,
-    ssr: false,
-  }
-);
 
 export const DynamicEventDetailModal = dynamic(
   () => import('@/features/calendar/components/EventDetailModal').then(mod => ({ default: mod.EventDetailModal })),
