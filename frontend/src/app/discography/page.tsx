@@ -17,6 +17,8 @@ import { DiscographyDetailModal } from '@/features/discography/components/Discog
 import { DiscographyStatsSummary } from '@/features/discography/components/DiscographyStatsSummary';
 import { AlbumDto } from '@/features/discography/types/types';
 
+const PAGE_SIZE = 12;
+
 export default function DiscographyPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function DiscographyPage() {
     filters,
     setFilters,
     clearAllFilters
-  } = useDiscography({ pageSize: 10 });
+  } = useDiscography({ pageSize: PAGE_SIZE });
 
   const activeFiltersCount = (searchQuery ? 1 : 0) +
     (filters.albumTypes?.length || 0);
@@ -113,7 +115,7 @@ export default function DiscographyPage() {
         onAlbumClick={handleAlbumClick}
       />
 
-      {totalCount > 10 && (
+      {totalCount > PAGE_SIZE && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -126,7 +128,7 @@ export default function DiscographyPage() {
       <DiscographyStatsSummary
         currentPage={currentPage}
         totalCount={totalCount}
-        pageSize={10}
+        pageSize={PAGE_SIZE}
         loading={loading}
       />
 

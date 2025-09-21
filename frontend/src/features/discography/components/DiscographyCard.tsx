@@ -2,14 +2,14 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Calendar, Music } from 'lucide-react';
+import { Calendar, Music, ExternalLink } from 'lucide-react';
 import { AlbumDto } from '../types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
-import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
+import { getAlbumTypeBadgeStyle } from '../utils/albumTypeBadgeStyles';
 
 interface DiscographyCardProps {
   album: AlbumDto;
@@ -23,7 +23,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
 
   const cardContent = (
     <InteractiveCard hoverScale="sm" className="border-0 rounded-lg bg-bg-primary overflow-hidden" onClick={onClick}>
-      <div className="aspect-square relative mb-3">
+      <div className="aspect-square relative mb-3 group">
         {/* カバー画像 */}
         {imageUrl ? (
           <Image
@@ -39,41 +39,45 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
           </div>
         )}
 
-        {/* オーバーレイアイコン */}
-        <OverlayIcon type="play" className="absolute top-2 right-2" />
+        {/* オーバーレイアイコン - ホバー時のみ表示 */}
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="rounded-full bg-white/90 p-1">
+            <ExternalLink className="w-6 h-6 text-text-primary" />
+          </div>
+        </div>
       </div>
 
       {/* アルバム情報 */}
-      <div className="p-4">
-        <div className="flex items-start justify-between mb-2">
-          <Badge variant="secondary" className="text-xs">
-            {getAlbumTypeDisplayName(album.albumType.typeName)}
-          </Badge>
-        </div>
+      <div className="p-3">
+        <Badge
+          variant="outline"
+          className={`text-xs mb-1.5 border ${getAlbumTypeBadgeStyle(album.albumType.typeName)}`}
+        >
+          {getAlbumTypeDisplayName(album.albumType.typeName)}
+        </Badge>
 
-        <h3 className="font-bold text-text-primary text-sm mb-1 line-clamp-2">
+        <h3 className="font-bold text-text-primary text-base mb-0.5 line-clamp-2">
           {album.title}
         </h3>
 
-        <p className="text-text-secondary text-xs mb-2">
+        <p className="text-text-secondary text-sm mb-1.5">
           {album.artist}
         </p>
 
-        {album.releaseDate && (
-          <div className="flex items-center text-text-muted text-xs">
-            <Calendar className="w-3 h-3 mr-1" />
-            <time dateTime={album.releaseDate}>
-              {new Date(album.releaseDate).toLocaleDateString('ja-JP')}
-            </time>
-          </div>
-        )}
+        <div className="flex items-center justify-between text-xs text-text-muted">
+          {album.releaseDate && (
+            <div className="flex items-center">
+              <Calendar className="w-3 h-3 mr-1" />
+              <time dateTime={album.releaseDate}>
+                {new Date(album.releaseDate).toLocaleDateString('ja-JP')}
+              </time>
+            </div>
+          )}
 
-        {/* トラック数表示 */}
-        {album.tracks && album.tracks.length > 0 && (
-          <div className="text-text-muted text-xs mt-2">
-            {album.tracks.length} トラック
-          </div>
-        )}
+          {album.tracks && album.tracks.length > 0 && (
+            <span>{album.tracks.length} トラック</span>
+          )}
+        </div>
       </div>
     </InteractiveCard>
   );
