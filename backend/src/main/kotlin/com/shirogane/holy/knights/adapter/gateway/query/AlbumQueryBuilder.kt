@@ -107,8 +107,8 @@ class AlbumQueryBuilder : QueryBuilder<AlbumSearchCriteria> {
         }
 
         albumTypes?.takeIf { it.isNotEmpty() }?.let {
-            conditions.add("at.type_name = ANY(:albumTypes)")
-            bindings["albumTypes"] = it.toTypedArray()
+            conditions.add("a.album_type_id = ANY(:albumTypes)")
+            bindings["albumTypes"] = it.map { typeId -> typeId.toInt() }.toTypedArray()
         }
 
         startDate?.let {
