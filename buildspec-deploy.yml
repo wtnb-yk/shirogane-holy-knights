@@ -52,7 +52,11 @@ phases:
           fi
           
           echo "Published version: $NEW_VERSION"
-          
+
+          # Spring Boot初期化待機時間
+          echo "⏳ Waiting 90 seconds for Spring Boot initialization..."
+          sleep 90
+
           # Aliasを新しいバージョンに更新
           echo "Updating alias 'live' to version $NEW_VERSION..."
           aws lambda update-alias \
