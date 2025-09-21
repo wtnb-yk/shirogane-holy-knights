@@ -28,7 +28,7 @@ class AlbumQueryBuilder : QueryBuilder<AlbumSearchCriteria> {
                 at.type_name as album_type_name,
                 at.description as album_type_description,
                 COALESCE(STRING_AGG(CONCAT(s.id, ':', s.title, ':', s.artist, ':', atr.track_number), '|' ORDER BY atr.track_number), '') as tracks,
-                COALESCE(STRING_AGG(DISTINCT CONCAT(ar.id, ':', mp.platform_name, ':', ar.platform_url, ':', COALESCE(mp.icon_url, ''), ':', ar.release_date), '|'), '') as music_releases
+                COALESCE(STRING_AGG(DISTINCT CONCAT(ar.album_id, '-', ar.platform_id, ':', mp.platform_name, ':', ar.platform_url, ':', COALESCE(mp.icon_url, ''), ':', ar.release_date), '|'), '') as music_releases
             FROM albums a
             LEFT JOIN album_types at ON a.album_type_id = at.id
             LEFT JOIN album_tracks atr ON a.id = atr.album_id
@@ -78,7 +78,7 @@ class AlbumQueryBuilder : QueryBuilder<AlbumSearchCriteria> {
                 at.type_name as album_type_name,
                 at.description as album_type_description,
                 COALESCE(STRING_AGG(CONCAT(s.id, ':', s.title, ':', s.artist, ':', atr.track_number), '|' ORDER BY atr.track_number), '') as tracks,
-                COALESCE(STRING_AGG(DISTINCT CONCAT(ar.id, ':', mp.platform_name, ':', ar.platform_url, ':', COALESCE(mp.icon_url, ''), ':', ar.release_date), '|'), '') as music_releases
+                COALESCE(STRING_AGG(DISTINCT CONCAT(ar.album_id, '-', ar.platform_id, ':', mp.platform_name, ':', ar.platform_url, ':', COALESCE(mp.icon_url, ''), ':', ar.release_date), '|'), '') as music_releases
             FROM albums a
             LEFT JOIN album_types at ON a.album_type_id = at.id
             LEFT JOIN album_tracks atr ON a.id = atr.album_id

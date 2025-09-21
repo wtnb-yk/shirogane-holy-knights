@@ -3,6 +3,7 @@
 import React from 'react';
 import { AlbumFilterOptions } from '../../types/types';
 import { useAlbumTypes } from '../../hooks/useAlbumTypes';
+import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 
 interface DiscographyFilterSectionProps {
   filters: AlbumFilterOptions;
@@ -42,7 +43,7 @@ export const DiscographyFilterSection = ({
   if (loading) {
     return (
       <div className="space-y-4">
-        <h3 className="text-base font-bold text-text-primary">アルバムタイプ</h3>
+        <h3 className="text-base font-bold text-text-primary">カテゴリ</h3>
         <div className="space-y-2">
           {Array.from({ length: 4 }).map((_, index) => (
             <div
@@ -57,7 +58,7 @@ export const DiscographyFilterSection = ({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-base font-bold text-text-primary">アルバムタイプ</h3>
+      <h3 className="text-base font-bold text-text-primary">カテゴリ</h3>
 
       <div className="space-y-2">
         {/* 全てクリアボタン */}
@@ -72,7 +73,7 @@ export const DiscographyFilterSection = ({
           全て
         </button>
 
-        {/* アルバムタイプボタン */}
+        {/* カテゴリボタン */}
         {albumTypes.map((albumType) => {
           const isSelected = selectedAlbumTypes.includes(albumType.id.toString());
           return (
@@ -85,7 +86,7 @@ export const DiscographyFilterSection = ({
                   : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
               }`}
             >
-              {albumType.name}
+              {getAlbumTypeDisplayName(albumType.typeName)}
             </button>
           );
         })}

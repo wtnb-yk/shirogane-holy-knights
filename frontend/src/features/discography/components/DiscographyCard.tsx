@@ -9,6 +9,7 @@ import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { OverlayIcon } from '@/components/ui/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
+import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 
 interface DiscographyCardProps {
   album: AlbumDto;
@@ -46,7 +47,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <Badge variant="secondary" className="text-xs">
-            {album.albumType.name}
+            {getAlbumTypeDisplayName(album.albumType.typeName)}
           </Badge>
         </div>
 

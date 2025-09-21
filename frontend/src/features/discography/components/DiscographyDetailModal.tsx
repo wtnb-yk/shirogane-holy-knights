@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Music, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import { getImageUrl } from '@/utils/imageUrl';
+import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 
 interface DiscographyDetailModalProps {
   album: AlbumDto | null;
@@ -50,7 +51,7 @@ export const DiscographyDetailModal = ({
           <div className="flex-1">
             <div className="mb-3">
               <Badge variant="secondary" className="text-sm">
-                {album.albumType.name}
+                {getAlbumTypeDisplayName(album.albumType.typeName)}
               </Badge>
             </div>
 

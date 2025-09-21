@@ -13,7 +13,7 @@ export interface AlbumDto {
 }
 
 /**
- * アルバムタイプDTOの型定義
+ * カテゴリDTOの型定義
  */
 export interface AlbumTypeDto {
   id: number;

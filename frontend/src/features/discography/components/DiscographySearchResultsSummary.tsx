@@ -4,6 +4,7 @@ import React from 'react';
 import { SearchResultsSummary as BaseSearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { AlbumFilterOptions } from '../types/types';
 import { useAlbumTypes } from '../hooks/useAlbumTypes';
+import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 
 interface DiscographySearchResultsSummaryProps {
   searchQuery: string;
@@ -25,11 +26,11 @@ export const DiscographySearchResultsSummary = ({
   const getAlbumTypeName = (albumTypeId?: string) => {
     if (!albumTypeId) return null;
     const albumType = albumTypes.find(at => at.id.toString() === albumTypeId);
-    return albumType ? albumType.name : '';
+    return albumType ? getAlbumTypeDisplayName(albumType.typeName) : '';
   };
 
   const albumTypeNames = filters.albumTypes?.map(getAlbumTypeName).filter(Boolean).join(', ');
-  const filterSummary = albumTypeNames ? `アルバムタイプ: ${albumTypeNames}` : undefined;
+  const filterSummary = albumTypeNames ? `カテゴリ: ${albumTypeNames}` : undefined;
 
   return (
     <BaseSearchResultsSummary

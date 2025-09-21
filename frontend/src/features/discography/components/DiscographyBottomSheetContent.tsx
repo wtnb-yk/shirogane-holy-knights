@@ -98,9 +98,9 @@ export const DiscographyBottomSheetContent = ({
             </form>
           </div>
 
-          {/* アルバムタイプ */}
+          {/* カテゴリ */}
           <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">アルバムタイプ</h3>
+            <h3 className="text-sm font-bold text-text-primary mb-2">カテゴリ</h3>
             {loading ? (
               <div className="flex flex-wrap gap-2">
                 {Array.from({ length: 4 }).map((_, index) => (

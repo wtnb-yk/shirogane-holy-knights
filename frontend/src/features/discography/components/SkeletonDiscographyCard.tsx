@@ -20,7 +20,7 @@ const SkeletonDiscographyCardComponent = ({ index }: SkeletonDiscographyCardProp
 
         {/* アルバム情報部分 */}
         <div className="p-4">
-          {/* アルバムタイプバッジ */}
+          {/* カテゴリバッジ */}
           <div className="mb-2">
             <Skeleton className="h-4 w-16" />
           </div>

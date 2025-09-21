@@ -11,7 +11,7 @@ interface UseAlbumTypesResult {
 }
 
 /**
- * アルバムタイプ一覧を取得するフック
+ * カテゴリ一覧を取得するフック
  */
 export const useAlbumTypes = (): UseAlbumTypesResult => {
   const { data, loading, error } = useApiQuery(AlbumApi.getTypes, {}, {

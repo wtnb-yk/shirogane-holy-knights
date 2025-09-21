@@ -59,7 +59,7 @@ export default function DiscographyPage() {
       description={
         <p>
           白銀ノエルさんの配信楽曲や歌ってみたを検索・閲覧できます。<br />
-          楽曲名での検索、配信日での並び替えができます。
+          楽曲名での検索や配信日での並び替え、カテゴリでの絞り込みができます。
         </p>
       }
       headerActions={

@@ -27,7 +27,7 @@ export const AlbumApi = {
   },
 
   /**
-   * アルバムタイプ一覧を取得
+   * カテゴリ一覧を取得
    */
   getTypes: (): Promise<AlbumTypeDto[]> => {
     return apiClient.get<AlbumTypeDto[]>('/albums/types');
