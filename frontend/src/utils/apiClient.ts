@@ -20,7 +20,7 @@ class ApiClient {
     private readonly baseUrl: string;
     private defaultTimeout: number;
 
-    constructor(baseUrl?: string, timeout = 30000) {
+    constructor(baseUrl?: string, timeout = 60000) {
         // 開発環境ではプロキシ経由
         if (process.env.NODE_ENV === 'development') {
             this.baseUrl = '/api';
