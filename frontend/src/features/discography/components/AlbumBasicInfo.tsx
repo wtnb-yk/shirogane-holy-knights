@@ -4,6 +4,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from 'lucide-react';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
+import { getAlbumTypeBadgeModalStyle } from '../utils/albumTypeBadgeStyles';
 import { AlbumTypeDto } from '../types/types';
 
 interface AlbumBasicInfoProps {
@@ -22,21 +23,21 @@ export const AlbumBasicInfo = ({
   return (
     <div className="flex-1">
       <div className="mb-3">
-        <Badge variant="secondary" className="text-sm">
+        <Badge variant="outline" className={`text-sm ${getAlbumTypeBadgeModalStyle(albumType.typeName)}`}>
           {getAlbumTypeDisplayName(albumType.typeName)}
         </Badge>
       </div>
 
-      <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-2">
+      <h2 className="text-xl sm:text-2xl font-bold text-text-inverse mb-2">
         {title}
       </h2>
 
-      <p className="text-base sm:text-lg text-text-secondary mb-3 sm:mb-4">
+      <p className="text-base sm:text-lg text-text-inverse mb-3 sm:mb-4">
         {artist}
       </p>
 
       {releaseDate && (
-        <div className="flex items-center text-text-muted mb-4">
+        <div className="flex items-center text-text-inverse mb-4">
           <Calendar className="w-4 h-4 mr-2" />
           <time dateTime={releaseDate}>
             {new Date(releaseDate).toLocaleDateString('ja-JP', {
@@ -48,11 +49,6 @@ export const AlbumBasicInfo = ({
         </div>
       )}
 
-      {albumType.description && (
-        <p className="text-text-secondary text-sm">
-          {albumType.description}
-        </p>
-      )}
     </div>
   );
 };

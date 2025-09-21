@@ -31,14 +31,14 @@ const PlatformLink = ({ release }: { release: AlbumReleaseDto }) => {
         </div>
       )}
       <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm sm:text-base text-text-primary truncate">
+        <div className="font-medium text-sm sm:text-base text-text-inverse truncate">
           {release.platformName}
         </div>
-        <div className="text-xs sm:text-sm text-text-secondary">
+        <div className="text-xs sm:text-sm text-text-inverse">
           {new Date(release.releaseDate).toLocaleDateString('ja-JP')}
         </div>
       </div>
-      <ExternalLink className="w-4 h-4 text-text-muted" />
+      <ExternalLink className="w-4 h-4 text-text-inverse" />
     </a>
   );
 };
@@ -48,7 +48,7 @@ export const AlbumPlatformLinks = ({ albumReleases }: AlbumPlatformLinksProps) =
 
   return (
     <div>
-      <h3 className="text-base sm:text-lg font-bold text-text-primary mb-2 sm:mb-3">
+      <h3 className="text-base sm:text-lg font-bold text-text-inverse mb-2 sm:mb-3">
         配信プラットフォーム
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
