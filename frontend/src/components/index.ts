@@ -42,6 +42,10 @@ export { SearchResultsSummary } from './common/SearchResultsSummary';
 export { Header } from './header/Header';
 export { Navigation } from './header/Navigation';
 export { NavigationItem } from './header/NavigationItem';
+export { DesktopNavigation } from './header/DesktopNavigation';
+export { HamburgerButton } from './header/HamburgerButton';
+export { MobileMenu } from './header/MobileMenu';
+export { Overlay } from './header/Overlay';
 export { Footer } from './footer/Footer';
 
 // SEOコンポーネント
