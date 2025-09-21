@@ -108,13 +108,38 @@ def read_csv_files(directory):
         if len(files) > 1:
             dfs = []
             for file in sorted(files):
-                df = pd.read_csv(file)
-                dfs.append(df)
-            csv_files[key] = pd.concat(dfs, ignore_index=True)
-            print(f"{key}: {len(files)}個のファイルを結合しました")
+                # ファイルが空でないかチェック
+                if os.path.getsize(file) > 1:  # 1バイトより大きい場合のみ処理
+                    try:
+                        df = pd.read_csv(file)
+                        if not df.empty:
+                            dfs.append(df)
+                    except pd.errors.EmptyDataError:
+                        print(f"警告: {file} は空のファイルのためスキップします")
+                        continue
+                else:
+                    print(f"警告: {file} は空のファイルのためスキップします")
+
+            if dfs:
+                csv_files[key] = pd.concat(dfs, ignore_index=True)
+                print(f"{key}: {len(dfs)}個のファイルを結合しました")
+            else:
+                print(f"警告: {key} に有効なデータが見つかりませんでした")
         else:
-            csv_files[key] = pd.read_csv(files[0])
-            print(f"{key}: {files[0]} を読み込みました")
+            # ファイルが空でないかチェック
+            file_path = files[0]
+            if os.path.getsize(file_path) > 1:  # 1バイトより大きい場合のみ処理
+                try:
+                    df = pd.read_csv(file_path)
+                    if not df.empty:
+                        csv_files[key] = df
+                        print(f"{key}: {file_path} を読み込みました")
+                    else:
+                        print(f"警告: {file_path} は空のデータのためスキップします")
+                except pd.errors.EmptyDataError:
+                    print(f"警告: {file_path} は空のファイルのためスキップします")
+            else:
+                print(f"警告: {file_path} は空のファイルのためスキップします")
     
     return csv_files
 

@@ -1,8 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { ConcertSongClient } from '../api/songClient';
-import { ConcertSong, SortBy, SortOrder, SongFilterOptions } from '../types/types';
+import {
+  ConcertSong,
+  SortBy,
+  SortOrder,
+  SongFilterOptions,
+  ConcertSongSearchParams
+} from '../types/types';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseConcertSongsQueryOptions {
   pageSize?: number;
@@ -35,48 +42,36 @@ export const useConcertSongsQuery = (
 ): UseConcertSongsQueryResult => {
   const { pageSize = 20 } = options;
   const { currentPage, searchQuery, sortBy, sortOrder, filters } = params;
-  
-  const [songs, setSongs] = useState<ConcertSong[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
 
-  useEffect(() => {
-    const fetchConcertSongs = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const searchResult = await ConcertSongClient.callConcertSongsSearchFunction({
-          page: currentPage,
-          size: pageSize,
-          query: searchQuery || undefined,
-          sortBy,
-          sortOrder,
-          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
-          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
-          frequencyCategories: filters.frequencyCategories || undefined,
-        });
-        
-        setSongs(searchResult.items || []);
-        setTotalCount(searchResult.totalCount);
-        setHasMore((currentPage * pageSize) < searchResult.totalCount);
-        
-      } catch (err) {
-        setError('コンサート楽曲の取得に失敗しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // APIパラメータをメモ化
+  const apiParams = useMemo((): ConcertSongSearchParams => ({
+    page: currentPage,
+    size: pageSize,
+    query: searchQuery || undefined,
+    sortBy,
+    sortOrder,
+    startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
+    endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
+    frequencyCategories: filters.frequencyCategories || undefined,
+  }), [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate, filters.frequencyCategories]);
 
-    fetchConcertSongs();
-  }, [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters]);
+  // useApiQueryを使用
+  const { data, loading, error } = useApiQuery(
+    ConcertSongClient.callConcertSongsSearchFunction,
+    apiParams,
+    {
+      retries: 3,
+      retryDelay: 1000
+    }
+  );
+
+  const totalCount = data?.totalCount || 0;
+  const hasMore = (currentPage * pageSize) < totalCount;
 
   return {
-    songs,
+    songs: data?.items || [],
     loading,
-    error,
+    error: error?.message || null,
     totalCount,
     hasMore,
   };

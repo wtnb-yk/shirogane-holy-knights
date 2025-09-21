@@ -1,42 +1,27 @@
 'use client';
 
-import useSWR from 'swr';
+import { StreamApi } from '../api/lambdaClient';
+import { StreamTagDto } from '../types/types';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseAllStreamTagsResult {
-  tags: string[];
+  tags: StreamTagDto[];
   loading: boolean;
   error: string | null;
 }
-
-const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
-};
-
-const fetcher = async (url: string): Promise<string[]> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('配信タグの取得に失敗しました');
-  }
-  return response.json();
-};
 
 /**
  * 全ての配信タグを取得するhook
  */
 export const useAllStreamTags = (): UseAllStreamTagsResult => {
-  const { data, error, isLoading } = useSWR(
-    `${API_CONFIG.baseUrl}/stream-tags`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 300000, // 5分間キャッシュ
-    }
-  );
+  const { data, loading, error } = useApiQuery(StreamApi.getAllTags, {}, {
+    retries: 3,
+    retryDelay: 1000
+  });
 
   return {
     tags: data || [],
-    loading: isLoading,
+    loading,
     error: error?.message || null,
   };
 };

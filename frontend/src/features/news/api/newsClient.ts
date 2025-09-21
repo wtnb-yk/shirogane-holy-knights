@@ -1,6 +1,7 @@
 import {
   NewsSearchParamsDto,
-  NewsSearchResultDto
+  NewsSearchResultDto,
+  NewsCategoryDto
 } from '../types/types';
 import { apiClient } from '@/utils/apiClient';
 
@@ -22,12 +23,13 @@ export const NewsApi = {
     };
 
     return apiClient.post<NewsSearchResultDto>('/news', requestParams);
+  },
+
+  /**
+   * ニュースカテゴリ一覧を取得
+   */
+  getCategories: (): Promise<NewsCategoryDto[]> => {
+    return apiClient.get<NewsCategoryDto[]>('/news/categories');
   }
 };
 
-// 後方互換性のため既存のクラスも残す
-export class NewsClient {
-  static async searchNews(params: NewsSearchParamsDto = {}): Promise<NewsSearchResultDto> {
-    return NewsApi.search(params);
-  }
-}

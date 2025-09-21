@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { VideoClient } from '../api/lambdaClient';
-import { VideoDto } from '../types/types';
+import { useMemo } from 'react';
+import { VideoApi } from '../api/lambdaClient';
+import { VideoDto, VideoSearchParams } from '../types/types';
 import { FilterOptions } from '../components/filter/ArchiveFilterSection';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseVideoQueryOptions {
   pageSize?: number;
@@ -34,47 +35,28 @@ export const useVideoQuery = (
 ): UseVideoQueryResult => {
   const { pageSize = 20 } = options;
   const { currentPage, searchQuery, filters } = params;
-  
-  const [videos, setVideos] = useState<VideoDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const searchResult = await VideoClient.callVideoSearchFunction({
-          page: currentPage,
-          pageSize: pageSize,
-          query: searchQuery || undefined,
-          tags: filters.selectedTags.length > 0 ? filters.selectedTags : undefined,
-          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
-          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
-        });
-        
-        setVideos(searchResult.items || []);
-        setTotalCount(searchResult.totalCount);
-        setHasMore(searchResult.hasMore);
-        
-      } catch (err) {
-        setError('動画の取得に失敗しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // APIパラメータをメモ化
+  const apiParams = useMemo((): VideoSearchParams => ({
+    page: currentPage,
+    pageSize: pageSize,
+    query: searchQuery || undefined,
+    tags: filters.selectedTags.length > 0 ? filters.selectedTags : undefined,
+    startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
+    endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
+  }), [currentPage, pageSize, searchQuery, filters.selectedTags, filters.startDate, filters.endDate]);
 
-    fetchVideos();
-  }, [currentPage, pageSize, searchQuery, filters]);
+  // 新しいAPIフックを使用
+  const { data, loading, error } = useApiQuery(VideoApi.search, apiParams, {
+    retries: 3,
+    retryDelay: 1000
+  });
 
   return {
-    videos,
+    videos: data?.items || [],
     loading,
-    error,
-    totalCount,
-    hasMore,
+    error: error?.message || null,
+    totalCount: data?.totalCount || 0,
+    hasMore: data?.hasMore || false,
   };
 };

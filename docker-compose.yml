@@ -7,13 +7,13 @@ services:
       - "4567:4566"
     environment:
       - DEBUG=1
-      - LAMBDA_EXECUTOR=local
+      - LAMBDA_EXECUTOR=local  # コンテナを作成せずにLocalStack内で実行
       - DOCKER_HOST=unix:///var/run/docker.sock
       - HOST_TMP_FOLDER=${TMPDIR:-/tmp}/localstack
       - EXTRA_CORS_ALLOWED_ORIGINS=http://localhost:3001
       - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=60
       - LAMBDA_KEEPALIVE_MS=600000
-      - LAMBDA_RUNTIME_EXECUTOR=docker-reuse
+      - LAMBDA_REMOVE_CONTAINERS=true
       - LAMBDA_JAVA_OPTS=-XX:+TieredCompilation -XX:TieredStopAtLevel=1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -98,7 +98,18 @@ services:
       ]
     networks:
       - shirogane-network
-
+    healthcheck:
+      test: |
+        API_ID=$$(aws --endpoint-url=http://localstack:4566 apigateway get-rest-apis --query 'items[0].id' --output text 2>/dev/null) &&
+        if [ -n "$$API_ID" ] && [ "$$API_ID" != "None" ]; then
+          curl -f "http://localstack:4566/restapis/$$API_ID/dev/_user_request_/health" || exit 1
+        else
+          exit 1
+        fi
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   # フロントエンドサービス
   frontend:

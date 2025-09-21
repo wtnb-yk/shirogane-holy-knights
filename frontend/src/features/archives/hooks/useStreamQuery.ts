@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { StreamClient } from '../api/lambdaClient';
-import { StreamDto } from '../types/types';
+import { useMemo } from 'react';
+import { StreamApi } from '../api/lambdaClient';
+import { StreamDto, StreamSearchParams } from '../types/types';
 import { FilterOptions } from '../components/filter/ArchiveFilterSection';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseStreamQueryOptions {
   pageSize?: number;
@@ -34,47 +35,28 @@ export const useStreamQuery = (
 ): UseStreamQueryResult => {
   const { pageSize = 20 } = options;
   const { currentPage, searchQuery, filters } = params;
-  
-  const [streams, setStreams] = useState<StreamDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
 
-  useEffect(() => {
-    const fetchStreams = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const searchResult = await StreamClient.callStreamSearchFunction({
-          page: currentPage,
-          pageSize: pageSize,
-          query: searchQuery || undefined,
-          tags: filters.selectedTags.length > 0 ? filters.selectedTags : undefined,
-          startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
-          endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
-        });
-        
-        setStreams(searchResult.items || []);
-        setTotalCount(searchResult.totalCount);
-        setHasMore(searchResult.hasMore);
-        
-      } catch (err) {
-        setError('配信の取得に失敗しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // APIパラメータをメモ化
+  const apiParams = useMemo((): StreamSearchParams => ({
+    page: currentPage,
+    pageSize: pageSize,
+    query: searchQuery || undefined,
+    tags: filters.selectedTags.length > 0 ? filters.selectedTags : undefined,
+    startDate: filters.startDate ? new Date(filters.startDate).toISOString() : undefined,
+    endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
+  }), [currentPage, pageSize, searchQuery, filters.selectedTags, filters.startDate, filters.endDate]);
 
-    fetchStreams();
-  }, [currentPage, pageSize, searchQuery, filters]);
+  // 新しいAPIフックを使用
+  const { data, loading, error } = useApiQuery(StreamApi.search, apiParams, {
+    retries: 3,
+    retryDelay: 1000
+  });
 
   return {
-    streams,
+    streams: data?.items || [],
     loading,
-    error,
-    totalCount,
-    hasMore,
+    error: error?.message || null,
+    totalCount: data?.totalCount || 0,
+    hasMore: data?.hasMore || false,
   };
 };

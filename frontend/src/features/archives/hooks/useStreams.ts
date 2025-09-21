@@ -6,7 +6,7 @@ import {useVideoSearch} from './useVideoSearch';
 import {useVideoFilters} from './useVideoFilters';
 import {useAllStreamTags} from './useAllStreamTags';
 import {useStreamQuery} from './useStreamQuery';
-import {StreamDto} from '../types/types';
+import {StreamDto, StreamTagDto} from '../types/types';
 import {FilterOptions} from '../components/filter/ArchiveFilterSection';
 
 interface UseStreamsResult {
@@ -24,7 +24,7 @@ interface UseStreamsResult {
   clearSearch: () => void;
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
-  availableTags: string[];
+  availableTags: StreamTagDto[];
   clearAllFilters: () => void;
   hasActiveFilters: boolean;
 }

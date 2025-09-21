@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { EventDto, CalendarFilterOptions } from '../types';
-import { CalendarClient } from '../api/calendarClient';
+import { useMemo } from 'react';
+import { EventDto, CalendarFilterOptions, CalendarSearchParamsDto } from '../types';
+import { CalendarApi } from '../api/calendarClient';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseCalendarQueryOptions {
   pageSize: number;
@@ -31,44 +32,26 @@ export const useCalendarQuery = (
   const { pageSize } = options;
   const { currentPage, filters } = params;
 
-  const [events, setEvents] = useState<EventDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
+  // APIパラメータをメモ化
+  const apiParams = useMemo((): CalendarSearchParamsDto => ({
+    eventTypeIds: filters.eventTypeIds,
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+    page: currentPage,
+    pageSize,
+  }), [currentPage, filters.eventTypeIds, filters.startDate, filters.endDate, pageSize]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const result = await CalendarClient.searchCalendar({
-          eventTypeIds: filters.eventTypeIds,
-          startDate: filters.startDate,
-          endDate: filters.endDate,
-          page: currentPage,
-          pageSize,
-        });
-
-        setEvents(result.items);
-        setTotalCount(result.totalCount);
-        setHasMore(result.hasMore);
-      } catch (err) {
-        setError('カレンダーの取得に失敗しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, [currentPage, filters.eventTypeIds, filters.startDate, filters.endDate, pageSize]);
+  // 新しいAPIフックを使用
+  const { data, loading, error } = useApiQuery(CalendarApi.search, apiParams, {
+    retries: 3,
+    retryDelay: 1000
+  });
 
   return {
-    events,
+    events: data?.items || [],
     loading,
-    error,
-    totalCount,
-    hasMore,
+    error: error?.message || null,
+    totalCount: data?.totalCount || 0,
+    hasMore: data?.hasMore || false,
   };
 };

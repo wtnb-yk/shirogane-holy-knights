@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { EventTypeDto } from '../types';
-import { CalendarClient } from '../api/calendarClient';
+import { CalendarApi } from '../api/calendarClient';
+import { useApiQuery } from '@/hooks/useApi';
 
 interface UseCalendarEventTypesResult {
   eventTypes: EventTypeDto[];
@@ -14,31 +14,14 @@ interface UseCalendarEventTypesResult {
  * イベントタイプ一覧取得のフック
  */
 export const useCalendarEventTypes = (): UseCalendarEventTypesResult => {
-  const [eventTypes, setEventTypes] = useState<EventTypeDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchEventTypes = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const result = await CalendarClient.getEventTypes();
-        setEventTypes(result);
-      } catch (err) {
-        setError('イベントタイプの取得に失敗しました。');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventTypes();
-  }, []);
+  const { data, loading, error } = useApiQuery(CalendarApi.getEventTypes, {}, {
+    retries: 3,
+    retryDelay: 1000
+  });
 
   return {
-    eventTypes,
+    eventTypes: data || [],
     loading,
-    error,
+    error: error?.message || null,
   };
 };

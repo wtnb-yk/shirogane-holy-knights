@@ -1,4 +1,10 @@
-import { VideoSearchParams, VideoSearchResult, StreamSearchParams, StreamSearchResult } from '../types/types';
+import {
+  VideoSearchParams,
+  VideoSearchResult,
+  StreamSearchParams,
+  StreamSearchResult,
+  VideoTagDto, StreamTagDto
+} from '../types/types';
 import { apiClient } from '@/utils/apiClient';
 
 /**
@@ -10,6 +16,13 @@ export const VideoApi = {
    */
   search: (params: VideoSearchParams): Promise<VideoSearchResult> => {
     return apiClient.post<VideoSearchResult>('/videos', params);
+  },
+
+  /**
+   * 動画タグ一覧を取得
+   */
+  getAllTags: (): Promise<VideoTagDto[]> => {
+    return apiClient.get<VideoTagDto[]>('/video-tags');
   }
 };
 
@@ -22,18 +35,13 @@ export const StreamApi = {
    */
   search: (params: StreamSearchParams): Promise<StreamSearchResult> => {
     return apiClient.post<StreamSearchResult>('/streams', params);
+  },
+
+  /**
+   * 配信タグ一覧を取得
+   */
+  getAllTags: (): Promise<StreamTagDto[]> => {
+    return apiClient.get<StreamTagDto[]>('/stream-tags');
   }
 };
 
-// 後方互換性のため既存のクラスも残す
-export class VideoClient {
-  static async callVideoSearchFunction(params: VideoSearchParams): Promise<VideoSearchResult> {
-    return VideoApi.search(params);
-  }
-}
-
-export class StreamClient {
-  static async callStreamSearchFunction(params: StreamSearchParams): Promise<StreamSearchResult> {
-    return StreamApi.search(params);
-  }
-}
