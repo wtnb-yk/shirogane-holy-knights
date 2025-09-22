@@ -11,7 +11,7 @@ import { StatsSummary } from '@/features/archives/components/results/StatsSummar
 import { VideosGrid } from '@/features/archives/components/VideosGrid';
 import { StreamsGrid } from '@/features/archives/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
@@ -20,7 +20,7 @@ import { PageLayout } from '@/components/common/PageLayout';
 import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
-export default function VideosList() {
+export default function ArchivesPage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -45,9 +45,9 @@ export default function VideosList() {
           最新の配信はYouTubeチャンネルをご確認ください。
         </p>
       }
-      headerActions={
+      desktopActions={
         <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton 
+          <FilterToggleButton
             onClick={() => setIsBottomSheetOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
@@ -56,7 +56,7 @@ export default function VideosList() {
         </div>
       }
       mobileActions={
-        <MobileSidebarButton 
+        <FilterToggleButton
           onClick={() => setIsBottomSheetOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
@@ -146,6 +146,7 @@ export default function VideosList() {
             loading={currentData.loading}
           />
 
+        {/* Search Modal */}
         <ArchiveSearchOptionsModal
           isOpen={showFilterModal}
           onClose={() => setShowFilterModal(false)}

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Filter, Search } from 'lucide-react';
 
-interface MobileSidebarButtonProps {
+interface FilterToggleButtonProps {
   onClick: () => void;
   hasActiveFilters?: boolean;
   activeFiltersCount?: number;
@@ -11,13 +11,13 @@ interface MobileSidebarButtonProps {
   className?: string;
 }
 
-export const MobileSidebarButton = ({
+export const FilterToggleButton = ({
   onClick,
   hasActiveFilters = false,
   activeFiltersCount = 0,
   variant = 'filter',
   className = ''
-}: MobileSidebarButtonProps) => {
+}: FilterToggleButtonProps) => {
   const Icon = variant === 'search' ? Search : Filter;
   const buttonText = variant === 'search' ? '検索・絞り込み' : '絞り込み';
 

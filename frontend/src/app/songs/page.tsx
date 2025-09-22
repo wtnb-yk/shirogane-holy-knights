@@ -12,7 +12,7 @@ import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
 import { PlayerSection } from '@/features/songs/components/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong, SongContentType } from '@/features/songs/types/types';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
@@ -74,11 +74,11 @@ export default function SongsList() {
           楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
         </p>
       }
-      headerActions={
+      desktopActions={
         <>
           {/* タブレット用メニューボタン（lg未満のみ表示） */}
           <div className="lg:hidden relative">
-            <MobileSidebarButton 
+            <FilterToggleButton
               onClick={() => setIsSidebarOpen(true)}
               hasActiveFilters={activeFiltersCount > 0}
               activeFiltersCount={activeFiltersCount}
@@ -120,14 +120,13 @@ export default function SongsList() {
         </>
       }
       mobileActions={
-        <MobileSidebarButton 
+        <FilterToggleButton
           onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
         />
       }
-      mobileRightActions={null}
       primaryTabs={
         <ContentTypeTabs
           tabs={[

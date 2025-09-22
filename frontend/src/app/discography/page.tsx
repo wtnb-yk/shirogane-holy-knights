@@ -6,7 +6,7 @@ import { DiscographyGrid } from '@/features/discography/components/DiscographyGr
 import { Pagination } from '@/components/ui/Pagination';
 import { DiscographySearchResultsSummary } from "@/features/discography/components/DiscographySearchResultsSummary";
 import { DiscographySidebar } from '@/features/discography/components/DiscographySidebar';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
@@ -64,9 +64,9 @@ export default function DiscographyPage() {
           楽曲名での検索や配信日での並び替え、カテゴリでの絞り込みができます。
         </p>
       }
-      headerActions={
+      desktopActions={
         <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton
+          <FilterToggleButton
             onClick={() => setIsBottomSheetOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
@@ -75,7 +75,7 @@ export default function DiscographyPage() {
         </div>
       }
       mobileActions={
-        <MobileSidebarButton
+        <FilterToggleButton
           onClick={() => setIsBottomSheetOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}

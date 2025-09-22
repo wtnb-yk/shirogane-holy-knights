@@ -7,7 +7,7 @@ import { Pagination } from '@/components/ui/Pagination';
 import { NewsStatsSummary } from '@/features/news/components/NewsStatsSummary';
 import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
 import { NewsSidebar } from '@/features/news/components/NewsSidebar';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
@@ -48,9 +48,9 @@ export default function NewsPage() {
           カテゴリやキーワードで検索して最新情報をチェックできます。
         </p>
       }
-      headerActions={
+      desktopActions={
         <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton 
+          <FilterToggleButton
             onClick={() => setIsBottomSheetOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
@@ -59,7 +59,7 @@ export default function NewsPage() {
         </div>
       }
       mobileActions={
-        <MobileSidebarButton 
+        <FilterToggleButton
           onClick={() => setIsBottomSheetOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}

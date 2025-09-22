@@ -5,20 +5,18 @@ interface PageLayoutProps {
   description: React.ReactNode;
   children: React.ReactNode;
   sidebar?: React.ReactNode;
-  headerActions?: React.ReactNode;
+  desktopActions?: React.ReactNode;
   mobileActions?: React.ReactNode;
-  mobileRightActions?: React.ReactNode;
   primaryTabs?: React.ReactNode;
 }
 
-export const PageLayout: React.FC<PageLayoutProps> = ({ 
-  title, 
+export const PageLayout: React.FC<PageLayoutProps> = ({
+  title,
   description,
   children,
   sidebar,
-  headerActions,
+  desktopActions,
   mobileActions,
-  mobileRightActions,
   primaryTabs
 }) => {
   return (
@@ -35,11 +33,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
             
             
             {/* モバイル: タブ+検索+グリッド切り替え全て左揃え */}
-            {(primaryTabs || mobileActions || mobileRightActions) && (
+            {(primaryTabs || mobileActions) && (
               <div className="lg:hidden mb-3 flex items-center gap-2">
                 {primaryTabs}
                 {mobileActions}
-                {mobileRightActions}
               </div>
             )}
             
@@ -48,7 +45,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               <div className="text-base text-gray-600 leading-relaxed flex-1">
                 {description}
               </div>
-              {headerActions}
+              {desktopActions}
             </div>
           </div>
           

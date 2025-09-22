@@ -25,7 +25,7 @@ export { GenericSidebar } from './common/Sidebar/GenericSidebar';
 export { ResponsiveSidebar } from './common/Sidebar/ResponsiveSidebar';
 export { FilterableSidebar } from './common/Sidebar/FilterableSidebar';
 export { SidebarSection } from './common/Sidebar/SidebarSection';
-export { MobileSidebarButton } from './common/Sidebar/MobileSidebarButton';
+export { FilterToggleButton } from './common/Sidebar/FilterToggleButton';
 
 // ボトムシートコンポーネント
 export { BottomSheet } from './common/BottomSheet/BottomSheet';
