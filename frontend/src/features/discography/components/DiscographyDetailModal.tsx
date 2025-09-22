@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlbumDto } from '../types/types';
-import { SkeletonModal, SkeletonModalContent } from '@/components/ui/skeleton-modal';
+import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
 import { AlbumCoverImage } from './AlbumCoverImage';
 import { AlbumBasicInfo } from './AlbumBasicInfo';
 import { AlbumTrackList } from './AlbumTrackList';

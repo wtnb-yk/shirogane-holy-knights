@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { SearchOptionsModal } from '@/components/common/SearchOptionsModal/SearchOptionsModal';
 import { ArchiveFilterSection, FilterOptions } from './ArchiveFilterSection';
 
-interface SearchOptionsModalProps {
+interface ArchiveSearchOptionsModalProps {
   isOpen: boolean;
   onClose: () => void;
   filters: FilterOptions;
@@ -18,7 +18,7 @@ export const ArchiveSearchOptionsModal = ({
   filters,
   onFiltersChange,
   availableTags,
-}: SearchOptionsModalProps) => {
+}: ArchiveSearchOptionsModalProps) => {
   const [tempFilters, setTempFilters] = useState<FilterOptions>(filters);
 
   // モーダルが開かれたときに現在のフィルターを一時状態にコピー

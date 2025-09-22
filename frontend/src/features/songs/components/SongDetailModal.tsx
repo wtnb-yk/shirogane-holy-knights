@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StreamSong, Performance } from '../types/types';
-import { SkeletonModal, SkeletonModalContent } from '@/components/ui/skeleton-modal';
+import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
 import { SongBasicInfo } from './SongBasicInfo';
 import { SongPerformanceList } from './SongPerformanceList';
 

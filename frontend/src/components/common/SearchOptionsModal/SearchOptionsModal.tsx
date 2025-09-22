@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SkeletonModal, SkeletonModalContent } from '@/components/ui/skeleton-modal';
+import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
 import { ModalButton } from '@/components/ui/ModalButton';
 
 interface SearchOptionsModalProps {
