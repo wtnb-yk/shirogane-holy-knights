@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Clock, ChevronLeft } from 'lucide-react';
 import { Event } from '../types';
-import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
+import { Modal, ModalContent } from '@/components/ui/Modal';
 import { LinkText } from '@/components/ui/LinkText';
 import { Badge } from '@/components/ui/badge';
 import { getEventTypeBadgeStyle } from '../utils/eventBadgeStyles';
@@ -48,8 +48,8 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
   };
 
   return (
-    <SkeletonModal open={isOpen} onOpenChange={handleOpenChange}>
-      <SkeletonModalContent className="p-4 sm:p-6 space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+    <Modal open={isOpen} onOpenChange={handleOpenChange}>
+      <ModalContent className="p-4 sm:p-6 space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center gap-2 px-4 py-2">
           {fromDayModal && onBackToDayModal && (
             <button
@@ -144,7 +144,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
             </div>
           )}
         </div>
-      </SkeletonModalContent>
-    </SkeletonModal>
+      </ModalContent>
+    </Modal>
   );
 }

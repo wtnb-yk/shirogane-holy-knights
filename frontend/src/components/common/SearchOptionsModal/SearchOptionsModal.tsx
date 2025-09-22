@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
+import { Modal, ModalContent } from '@/components/ui/Modal';
 import { ModalButton } from '@/components/ui/ModalButton';
 
 interface SearchOptionsModalProps {
@@ -26,8 +26,8 @@ export const SearchOptionsModal = ({
   };
 
   return (
-    <SkeletonModal open={isOpen} onOpenChange={handleOpenChange}>
-      <SkeletonModalContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+    <Modal open={isOpen} onOpenChange={handleOpenChange}>
+      <ModalContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         <h2 className="text-lg font-semibold text-white">{title}</h2>
 
         {children}
@@ -37,7 +37,7 @@ export const SearchOptionsModal = ({
             適用
           </ModalButton>
         </div>
-      </SkeletonModalContent>
-    </SkeletonModal>
+      </ModalContent>
+    </Modal>
   );
 };

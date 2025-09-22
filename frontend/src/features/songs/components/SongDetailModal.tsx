@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StreamSong, Performance } from '../types/types';
-import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
+import { Modal, ModalContent } from '@/components/ui/Modal';
 import { SongBasicInfo } from './SongBasicInfo';
 import { SongPerformanceList } from './SongPerformanceList';
 
@@ -22,8 +22,8 @@ export const SongDetailModal = ({
   if (!song) return null;
 
   return (
-    <SkeletonModal open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SkeletonModalContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+    <Modal open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <ModalContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         <SongBasicInfo
           title={song.title}
           artist={song.artist}
@@ -37,7 +37,7 @@ export const SongDetailModal = ({
           onClose={onClose}
           song={song}
         />
-      </SkeletonModalContent>
-    </SkeletonModal>
+      </ModalContent>
+    </Modal>
   );
 };
