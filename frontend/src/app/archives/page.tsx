@@ -6,7 +6,7 @@ import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ContentType } from '@/features/archives/types/types';
 import { ArchiveSidebar } from '@/features/archives/components/ArchiveSidebar';
 import { ArchiveSearchOptionsModal } from '@/features/archives/components/filter/ArchiveSearchOptionsModal';
-import { SearchResultsSummary } from '@/features/archives/components/results/SearchResultsSummary';
+import { ArchiveSearchResultsSummary } from '@/features/archives/components/results/ArchiveSearchResultsSummary';
 import { ArchiveStatsSummary } from '@/features/archives/components/results/ArchiveStatsSummary';
 import { VideosGrid } from '@/features/archives/components/VideosGrid';
 import { StreamsGrid } from '@/features/archives/components/StreamsGrid';
@@ -97,7 +97,7 @@ export default function ArchivePage() {
           { name: 'アーカイブ', url: 'https://www.noe-room.com/archives' }
         ]} />
 
-          <SearchResultsSummary
+          <ArchiveSearchResultsSummary
             searchQuery={currentData.searchQuery}
             filters={currentData.filters}
             totalCount={currentData.totalCount}

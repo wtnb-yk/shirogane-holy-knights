@@ -11,7 +11,7 @@ interface SearchResultsSummaryProps {
   onClearAllFilters: () => void;
 }
 
-export const SearchResultsSummary = ({
+export const ArchiveSearchResultsSummary = ({
   searchQuery,
   filters,
   totalCount,
