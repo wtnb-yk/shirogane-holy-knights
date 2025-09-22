@@ -70,7 +70,7 @@ export const Modal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div
-        className={`absolute inset-0 bg-transparent ${
+        className={`absolute inset-0 bg-gray-900/20 ${
           isVisible ? 'animate-modal-fade-in' : 'animate-modal-fade-out'
         }`}
         onClick={handleBackdropClick}
@@ -80,11 +80,11 @@ export const Modal = ({
           isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
         }`}
         style={{
-          background: 'rgba(50, 67, 83, 0.1)',
+          background: 'rgba(255, 255, 255, 0.05)',
           backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(50, 67, 83, 0.2)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: '16px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 16px rgba(0, 0, 0, 0.08)'
+          boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
         }}
       >
         {children}

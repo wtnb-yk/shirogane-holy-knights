@@ -31,8 +31,8 @@ export const TagFilterSection = ({
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               className={`cursor-pointer transition-all duration-200 text-sm px-3 py-2 ${
                 selectedTags.includes(tag)
-                  ? 'bg-accent-gold text-white border-0 hover:bg-accent-gold-hover'
-                  : 'bg-white text-surface-primary border border-white/20 hover:bg-gray-100'
+                  ? 'bg-accent-gold/90 text-white border-0 hover:bg-accent-gold-hover'
+                  : 'bg-white/90 text-surface-primary border border-white/20 hover:bg-gray-100'
               }`}
               onClick={() => onTagToggle(tag)}
             >
