@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useVideos } from '@/features/archives/hooks/useVideos';
 import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ContentType } from '@/features/archives/types/types';
-import { VideosSidebar } from '@/features/archives/components/VideosSidebar';
+import { ArchiveSidebar } from '@/features/archives/components/ArchiveSidebar';
 import { ArchiveSearchOptionsModal } from '@/features/archives/components/filter/ArchiveSearchOptionsModal';
 import { SearchResultsSummary } from '@/features/archives/components/results/SearchResultsSummary';
 import { StatsSummary } from '@/features/archives/components/results/StatsSummary';
@@ -18,7 +18,7 @@ import { PageLayout } from '@/components/common/PageLayout';
 import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
-export default function ArchivesPage() {
+export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
@@ -87,7 +87,7 @@ export default function ArchivesPage() {
             />
           }
         >
-          <VideosSidebar
+          <ArchiveSidebar
             contentType={contentType}
             onContentTypeChange={setContentType}
             searchValue={currentData.searchQuery}

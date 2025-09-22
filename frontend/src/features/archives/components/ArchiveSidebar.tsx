@@ -9,7 +9,7 @@ import { CategoryFilter } from './VideosSidebar/CategoryFilter';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { FilterOptions } from './filter/ArchiveFilterSection';
 
-interface VideosSidebarConfig {
+interface ArchiveSidebarConfig {
   displayCategories?: string[];
   searchSection?: {
     title?: string;
@@ -18,7 +18,7 @@ interface VideosSidebarConfig {
   width?: 'sm' | 'md' | 'lg' | string;
 }
 
-interface VideosSidebarProps {
+interface ArchiveSidebarProps {
   contentType: ContentType;
   onContentTypeChange: (type: ContentType) => void;
   searchValue: string;
@@ -28,10 +28,10 @@ interface VideosSidebarProps {
   hasActiveOptions: boolean;
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
-  config?: VideosSidebarConfig;
+  config?: ArchiveSidebarConfig;
 }
 
-export const VideosSidebar = ({
+export const ArchiveSidebar = ({
   contentType,
   onContentTypeChange,
   searchValue,
@@ -42,7 +42,7 @@ export const VideosSidebar = ({
   filters,
   setFilters,
   config = {}
-}: VideosSidebarProps) => {
+}: ArchiveSidebarProps) => {
   const {
     displayCategories = ['雑談', 'ゲーム','ASMR', '歌枠', 'コラボ'],
     searchSection = {},
