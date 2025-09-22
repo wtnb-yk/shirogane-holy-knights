@@ -17,13 +17,13 @@ export const DateRangeSection = ({
 }: DateRangeSectionProps) => {
   return (
     <div>
-      <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+      <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
         <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
         {title}
       </h4>
       <div className="flex gap-4 items-center">
         <div className="flex-1">
-          <label className="block text-xs font-medium text-text-secondary mb-1">開始日</label>
+          <label className="block text-xs font-medium text-white/70 mb-1">開始日</label>
           <input
             type="date"
             value={startDate || ''}
@@ -34,10 +34,10 @@ export const DateRangeSection = ({
           />
         </div>
         <div className="flex items-center justify-center pt-5">
-          <div className="w-3 h-px bg-text-tertiary"></div>
+          <div className="w-3 h-px bg-white/30"></div>
         </div>
         <div className="flex-1">
-          <label className="block text-xs font-medium text-text-secondary mb-1">終了日</label>
+          <label className="block text-xs font-medium text-white/70 mb-1">終了日</label>
           <input
             type="date"
             value={endDate || ''}

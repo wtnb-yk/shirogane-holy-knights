@@ -19,7 +19,7 @@ export const TagFilterSection = ({
 
   return (
     <div>
-      <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+      <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
         <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
         {title}
       </h4>
@@ -31,8 +31,8 @@ export const TagFilterSection = ({
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               className={`cursor-pointer transition-all duration-200 text-sm px-3 py-2 ${
                 selectedTags.includes(tag)
-                  ? 'bg-accent-gold text-white hover:bg-accent-gold/90'
-                  : 'border-surface-border text-text-secondary hover:border-accent-gold hover:text-text-primary hover:bg-accent-gold/10'
+                  ? 'bg-accent-gold text-white border-0 hover:bg-accent-gold-hover'
+                  : 'bg-white text-surface-primary border border-white/20 hover:bg-gray-100'
               }`}
               onClick={() => onTagToggle(tag)}
             >
