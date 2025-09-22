@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Search, X } from 'lucide-react';
 import { SortBy, SortOrder, SongFilterOptions, SongContentType } from '@/features/songs/types/types';
 import { SongSortSection } from '@/features/songs/components/SongSortSection';
 import { SongFilterSection } from '@/features/songs/components/SongFilterSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { SongFrequencySection } from '@/features/songs/components/SongsSidebar/SongFrequencySection';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 interface SongsBottomSheetContentProps {
   songContentType: SongContentType;
@@ -24,7 +24,6 @@ interface SongsBottomSheetContentProps {
 
 export const SongsBottomSheetContent = ({
   songContentType,
-
   searchValue,
   onSearch,
   onClearSearch,
@@ -34,27 +33,10 @@ export const SongsBottomSheetContent = ({
   onSortChange,
   onFiltersChange
 }: SongsBottomSheetContentProps) => {
-  const [inputValue, setInputValue] = React.useState(searchValue);
-
-  React.useEffect(() => {
-    setInputValue(searchValue);
-  }, [searchValue]);
-
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
+  const handleSearchChange = (value: string) => {
     if (!value) {
       onClearSearch();
     }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(inputValue.trim());
-  };
-
-  const handleClear = () => {
-    setInputValue('');
-    onClearSearch();
   };
 
   return (
@@ -64,27 +46,15 @@ export const SongsBottomSheetContent = ({
 
           {/* 楽曲検索セクション */}
           <div>
-            <form onSubmit={handleSubmit}>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary w-3.5 h-3.5" />
-                <input
-                  type="text"
-                  placeholder="楽曲名・アーティスト名を入力"
-                  value={inputValue}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  className="w-full pl-8 pr-8 py-2 border border-surface-border rounded-md text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all"
-                />
-                {inputValue && (
-                  <button
-                    type="button"
-                    onClick={handleClear}
-                    className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary hover:text-text-secondary transition-colors"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            </form>
+            <SearchInput
+              searchValue={searchValue}
+              onSearchChange={handleSearchChange}
+              onSearch={onSearch}
+              onClearSearch={onClearSearch}
+              placeholder="楽曲名・アーティスト名を入力"
+              variant="sidebar"
+              size="sm"
+            />
           </div>
 
           {/* 並び替えセクション */}

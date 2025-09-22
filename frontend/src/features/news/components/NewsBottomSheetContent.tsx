@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Search, X } from 'lucide-react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
 import { TagBadges } from '@/components/common/Sidebar/TagBadges';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 interface NewsBottomSheetContentProps {
   searchValue: string;
@@ -22,29 +22,13 @@ export const NewsBottomSheetContent = ({
   filters,
   setFilters
 }: NewsBottomSheetContentProps) => {
-  const [inputValue, setInputValue] = React.useState(searchValue);
   const { categories, loading } = useNewsCategories();
   const selectedCategoryIds = filters.categoryIds || [];
 
-  React.useEffect(() => {
-    setInputValue(searchValue);
-  }, [searchValue]);
-
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
+  const handleSearchChange = (value: string) => {
     if (!value) {
       onClearSearch();
     }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(inputValue.trim());
-  };
-
-  const handleClear = () => {
-    setInputValue('');
-    onClearSearch();
   };
 
   const handleTagToggle = (tag: string) => {
@@ -75,27 +59,15 @@ export const NewsBottomSheetContent = ({
         <div className="space-y-6">
           {/* ニュース検索セクション */}
           <div>
-            <form onSubmit={handleSubmit}>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary w-3.5 h-3.5" />
-                <input
-                  type="text"
-                  placeholder="気になるニュースを探す"
-                  value={inputValue}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  className="w-full pl-8 pr-8 py-2 border border-surface-border rounded-md text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all"
-                />
-                {inputValue && (
-                  <button
-                    type="button"
-                    onClick={handleClear}
-                    className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary hover:text-text-secondary transition-colors"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            </form>
+            <SearchInput
+              searchValue={searchValue}
+              onSearchChange={handleSearchChange}
+              onSearch={onSearch}
+              onClearSearch={onClearSearch}
+              placeholder="気になるニュースを探す"
+              variant="sidebar"
+              size="sm"
+            />
           </div>
 
           {/* カテゴリ */}
