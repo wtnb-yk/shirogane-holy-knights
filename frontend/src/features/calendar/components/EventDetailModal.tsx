@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Clock, ExternalLink, ChevronLeft } from 'lucide-react';
+import { Clock, ChevronLeft } from 'lucide-react';
 import { Event } from '../types';
 import { SkeletonModal, SkeletonModalContent } from '@/components/ui/SkeletonModal';
-import { ModalButton } from '@/components/ui/ModalButton';
+import { LinkText } from '@/components/ui/LinkText';
 import { Badge } from '@/components/ui/badge';
 import { getEventTypeBadgeStyle } from '../utils/eventBadgeStyles';
 import { getImageUrl } from '@/utils/imageUrl';
@@ -119,25 +119,28 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
           {/* 説明 */}
           {event.description && (
             <div>
-              <h4 className="text-lg font-semibold text-white mb-3">
-                詳細
-              </h4>
               <p className="text-gray-200 whitespace-pre-line leading-relaxed">
                 {event.description}
+                {event.url && (
+                  <>
+                    <br />
+                    <span className="block text-right">
+                      <LinkText href={event.url}>
+                        詳細を見る
+                      </LinkText>
+                    </span>
+                  </>
+                )}
               </p>
             </div>
           )}
 
-
-          {/* アクションボタン */}
-          {event.url && (
-            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-border">
-              <ModalButton
-                onClick={() => window.open(event.url, '_blank', 'noopener noreferrer')}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                詳細を確認
-              </ModalButton>
+          {/* 外部リンク（説明がない場合） */}
+          {!event.description && event.url && (
+            <div className="text-right">
+              <LinkText href={event.url}>
+                詳細はこちら
+              </LinkText>
             </div>
           )}
         </div>
