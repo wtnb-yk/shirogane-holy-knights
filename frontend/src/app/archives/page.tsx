@@ -13,7 +13,7 @@ import { StreamsGrid } from '@/features/archives/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
-import { VideosBottomSheetContent } from '@/features/archives/components/VideosBottomSheetContent';
+import { ArchiveBottomSheetContent } from '@/features/archives/components/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
@@ -77,7 +77,7 @@ export default function ArchivePage() {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           mobileContent={
-            <VideosBottomSheetContent
+            <ArchiveBottomSheetContent
               searchValue={currentData.searchQuery}
               onSearch={currentData.handleSearch}
               onClearSearch={currentData.clearSearch}

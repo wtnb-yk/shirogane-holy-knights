@@ -6,7 +6,7 @@ import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilt
 import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
 import { MobileDateRangeInput } from '@/components/common/Sidebar/components/MobileDateRangeInput';
 
-interface VideosBottomSheetContentProps {
+interface ArchiveBottomSheetContentProps {
   searchValue: string;
   onSearch: (query: string) => void;
   onClearSearch: () => void;
@@ -15,14 +15,14 @@ interface VideosBottomSheetContentProps {
   availableTags?: string[];
 }
 
-export const VideosBottomSheetContent = ({
+export const ArchiveBottomSheetContent = ({
   searchValue,
   onSearch,
   onClearSearch,
   filters,
   setFilters,
   availableTags = []
-}: VideosBottomSheetContentProps) => {
+}: ArchiveBottomSheetContentProps) => {
   const [inputValue, setInputValue] = React.useState(searchValue);
 
   React.useEffect(() => {
