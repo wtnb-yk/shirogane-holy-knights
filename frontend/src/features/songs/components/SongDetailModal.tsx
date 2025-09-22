@@ -23,7 +23,7 @@ export const SongDetailModal = ({
 
   return (
     <Modal open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <ModalContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <ModalContent className="space-y-4 sm:space-y-6">
         <SongBasicInfo
           title={song.title}
           artist={song.artist}

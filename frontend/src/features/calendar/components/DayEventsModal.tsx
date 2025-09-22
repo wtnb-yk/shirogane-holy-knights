@@ -42,7 +42,7 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
 
   return (
     <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent className="p-4 sm:p-6 space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+      <ModalContent className="space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center gap-2 px-4 py-2">
           <Calendar className="w-5 h-5 text-gray-300" />
           <h2 className="text-lg font-semibold text-white">{formatDate(date)}</h2>

@@ -49,7 +49,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
 
   return (
     <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent className="p-4 sm:p-6 space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+      <ModalContent className="space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center gap-2 px-4 py-2">
           {fromDayModal && onBackToDayModal && (
             <button
