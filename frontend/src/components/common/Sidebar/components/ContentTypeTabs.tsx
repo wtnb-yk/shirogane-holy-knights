@@ -32,91 +32,27 @@ const contentTypeTabsVariants = cva(
 );
 
 const buttonVariants = cva(
-  "font-medium transition-all rounded-md",
-  {
-    variants: {
-      size: {
-        sm: "flex-1",
-        md: "flex-1", 
-        lg: "flex-1"
-      },
-      variant: {
-        default: "",
-        compact: "",
-        minimal: ""
-      }
-    },
-    defaultVariants: {
-      size: "md",
-      variant: "default"
-    }
-  }
+  "font-medium transition-all rounded-md flex-1"
 );
 
-interface ContentTypeOption {
-  key: string;
-  label: string;
-}
-
-interface ContentTypeTabsPropsWithOptions extends VariantProps<typeof contentTypeTabsVariants> {
-  options: ContentTypeOption[];
-  selectedType: string;
-  onTypeChange: (type: string) => void;
-  className?: string;
-  tabs?: never;
-  activeTab?: never;
-  onTabChange?: never;
-}
-
-interface ContentTypeTabsPropsWithTabs extends VariantProps<typeof contentTypeTabsVariants> {
+interface ContentTypeTabsProps extends VariantProps<typeof contentTypeTabsVariants> {
   tabs: Tab[];
   activeTab: string;
   onTabChange: (value: string) => void;
   className?: string;
-  options?: never;
-  selectedType?: never;
-  onTypeChange?: never;
 }
 
-type ContentTypeTabsProps = ContentTypeTabsPropsWithOptions | ContentTypeTabsPropsWithTabs;
-
-export const ContentTypeTabs = (props: ContentTypeTabsProps) => {
-  const { className, size, variant } = props;
-  
-  // Tab[]形式の場合
-  if ('tabs' in props && props.tabs) {
-    const { tabs, activeTab, onTabChange } = props;
-    const options = tabs.map(tab => ({ key: tab.value, label: tab.label }));
-    return renderTabs(options, activeTab, onTabChange, size, variant, className);
-  }
-  
-  // ContentTypeOption[]形式の場合
-  if ('options' in props && props.options) {
-    const { options, selectedType, onTypeChange } = props;
-    return renderTabs(options, selectedType, onTypeChange, size, variant, className);
-  }
-  
-  return null;
-};
-
-const renderTabs = (
-  options: ContentTypeOption[],
-  selectedType: string,
-  onTypeChange: (type: string) => void,
-  size: VariantProps<typeof contentTypeTabsVariants>['size'],
-  variant: VariantProps<typeof contentTypeTabsVariants>['variant'],
-  className?: string
-) => {
+export const ContentTypeTabs = ({ tabs, activeTab, onTabChange, size, variant, className }: ContentTypeTabsProps) => {
   return (
     <div className={cn(contentTypeTabsVariants({ size, variant }), className)}>
       <div className="flex w-full">
-        {options.map(({ key, label }) => (
+        {tabs.map(({ value, label }) => (
           <button
-            key={key}
-            onClick={() => onTypeChange(key)}
+            key={value}
+            onClick={() => onTabChange(value)}
             className={cn(
-              buttonVariants({ size, variant }),
-              selectedType === key
+              buttonVariants(),
+              activeTab === value
                 ? 'bg-white text-text-primary shadow-sm'
                 : 'text-text-secondary hover:text-text-primary'
             )}
