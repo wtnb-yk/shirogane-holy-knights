@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 
 interface ModalProps {
   open?: boolean;
@@ -13,6 +13,9 @@ export const Modal = ({
   onOpenChange,
   children
 }: ModalProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+
   const handleClose = useCallback(() => {
     onOpenChange?.(false);
   }, [onOpenChange]);
@@ -25,9 +28,20 @@ export const Modal = ({
 
   useEffect(() => {
     if (open) {
+      setShouldRender(true);
       document.body.style.overflow = 'hidden';
+      // 次のフレームでアニメーション開始
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
     } else {
+      setIsVisible(false);
       document.body.style.overflow = 'unset';
+      // アニメーション完了後にコンポーネントをアンマウント
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 200);
+      return () => clearTimeout(timer);
     }
 
     return () => {
@@ -51,16 +65,20 @@ export const Modal = ({
     };
   }, [open, handleClose]);
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div
-        className="absolute inset-0 bg-transparent transition-all duration-300"
+        className={`absolute inset-0 bg-transparent ${
+          isVisible ? 'animate-modal-fade-in' : 'animate-modal-fade-out'
+        }`}
         onClick={handleBackdropClick}
       />
       <div
-        className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto"
+        className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto ${
+          isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
+        }`}
         style={{
           background: 'rgba(50, 67, 83, 0.1)',
           backdropFilter: 'blur(8px)',
