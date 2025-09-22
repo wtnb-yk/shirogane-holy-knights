@@ -3,8 +3,8 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
 import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
-import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
-import { MobileDateRangeInput } from '@/components/common/Sidebar/components/MobileDateRangeInput';
+import { TagBadges } from '@/components/common/Sidebar/TagBadges';
+import { MobileDateRangeInput } from '@/components/common/Sidebar/MobileDateRangeInput';
 
 interface ArchiveBottomSheetContentProps {
   searchValue: string;

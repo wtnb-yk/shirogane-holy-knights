@@ -15,7 +15,7 @@ import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButt
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { ArchiveBottomSheetContent } from '@/features/archives/components/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
+import { ContentTypeTabs } from '@/components/common/Sidebar/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function ArchivePage() {

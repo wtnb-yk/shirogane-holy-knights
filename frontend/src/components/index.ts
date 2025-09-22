@@ -21,10 +21,8 @@ export { BaseGrid } from './common/BaseGrid';
 export { BaseSkeleton } from './common/BaseSkeleton';
 
 // サイドバーコンポーネント
-export { GenericSidebar } from './common/Sidebar/GenericSidebar';
 export { ResponsiveSidebar } from './common/Sidebar/ResponsiveSidebar';
 export { FilterableSidebar } from './common/Sidebar/FilterableSidebar';
-export { SidebarSection } from './common/Sidebar/SidebarSection';
 export { FilterToggleButton } from './common/Sidebar/FilterToggleButton';
 
 // ボトムシートコンポーネント

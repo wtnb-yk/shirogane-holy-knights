@@ -17,7 +17,7 @@ import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar
 import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
+import { ContentTypeTabs } from '@/components/common/Sidebar/ContentTypeTabs';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function SongsList() {

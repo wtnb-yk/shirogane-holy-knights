@@ -4,7 +4,7 @@ import React from 'react';
 import { Search, X } from 'lucide-react';
 import { AlbumFilterOptions } from '@/features/discography/types/types';
 import { useAlbumTypes } from '@/features/discography/hooks/useAlbumTypes';
-import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
+import { TagBadges } from '@/components/common/Sidebar/TagBadges';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 
 interface DiscographyBottomSheetContentProps {

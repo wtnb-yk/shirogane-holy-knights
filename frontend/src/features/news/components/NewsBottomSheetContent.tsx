@@ -4,7 +4,7 @@ import React from 'react';
 import { Search, X } from 'lucide-react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
-import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
+import { TagBadges } from '@/components/common/Sidebar/TagBadges';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 
 interface NewsBottomSheetContentProps {

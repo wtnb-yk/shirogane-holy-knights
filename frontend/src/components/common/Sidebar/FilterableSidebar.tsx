@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { GenericSidebar, SidebarWidth } from './GenericSidebar';
-import { SidebarSection } from '@/components';
+import { GenericSidebar, SidebarWidth } from './internals/GenericSidebar';
+import { SidebarSection } from './internals/SidebarSection';
 
 export interface SidebarSectionConfig<T = any> {
   id: string;

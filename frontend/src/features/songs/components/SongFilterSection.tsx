@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SongFilterOptions } from '../types/types';
-import { MobileDateRangeInput } from '@/components/common/Sidebar/components/MobileDateRangeInput';
+import { MobileDateRangeInput } from '@/components/common/Sidebar/MobileDateRangeInput';
 
 interface SongFilterSectionProps {
   filters: SongFilterOptions;
