@@ -42,16 +42,6 @@ export default function ArchivePage() {
           最新の配信はYouTubeチャンネルをご確認ください。
         </p>
       }
-      desktopActions={
-        <div className="lg:hidden ml-4 relative">
-          <FilterToggleButton
-            onClick={() => setIsSidebarOpen(true)}
-            hasActiveFilters={activeFiltersCount > 0}
-            activeFiltersCount={activeFiltersCount}
-            variant="search"
-          />
-        </div>
-      }
       mobileActions={
         <FilterToggleButton
           onClick={() => setIsSidebarOpen(true)}

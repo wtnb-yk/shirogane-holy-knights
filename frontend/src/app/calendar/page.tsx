@@ -118,16 +118,6 @@ export default function CalendarPage() {
           カテゴリで絞り込んで、見逃したくない情報をチェックしましょう。
         </p>
       }
-      desktopActions={
-        <div className="lg:hidden flex items-center gap-2 ml-4">
-          <FilterToggleButton
-            onClick={() => setIsSidebarOpen(true)}
-            hasActiveFilters={hasActiveFilters}
-            activeFiltersCount={activeFiltersCount}
-            variant="filter"
-          />
-        </div>
-      }
       mobileActions={
         <FilterToggleButton
           onClick={() => setIsSidebarOpen(true)}

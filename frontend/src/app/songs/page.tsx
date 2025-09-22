@@ -74,51 +74,6 @@ export default function SongsList() {
           楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
         </p>
       }
-      desktopActions={
-        <>
-          {/* タブレット用メニューボタン（lg未満のみ表示） */}
-          <div className="lg:hidden relative">
-            <FilterToggleButton
-              onClick={() => setIsSidebarOpen(true)}
-              hasActiveFilters={activeFiltersCount > 0}
-              activeFiltersCount={activeFiltersCount}
-              variant="search"
-            />
-            
-            {/* レスポンシブサイドバー */}
-            <ResponsiveSidebar 
-              isOpen={isSidebarOpen}
-              onClose={() => setIsSidebarOpen(false)}
-              mobileContent={
-                <SongsBottomSheetContent
-                  searchValue={currentData.searchQuery}
-                  onSearch={currentData.handleSearch}
-                  onClearSearch={currentData.clearSearch}
-                  sortBy={currentData.sortBy}
-                  sortOrder={currentData.sortOrder}
-                  filters={currentData.filters}
-                  onSortChange={currentData.handleSortChange}
-                  onFiltersChange={currentData.setFilters}
-                  songContentType={songContentType}
-                  onSongContentTypeChange={setSongContentType}
-                />
-              }
-            >
-              <SongsSidebar
-                songContentType={songContentType}
-                onSongContentTypeChange={setSongContentType}
-                searchValue={currentData.searchQuery}
-                onSearch={currentData.handleSearch}
-                onClearSearch={currentData.clearSearch}
-                onOptionsClick={() => setShowOptionsModal(true)}
-                hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC')}
-                filters={currentData.filters}
-                onFiltersChange={currentData.setFilters}
-              />
-            </ResponsiveSidebar>
-          </div>
-        </>
-      }
       mobileActions={
         <FilterToggleButton
           onClick={() => setIsSidebarOpen(true)}

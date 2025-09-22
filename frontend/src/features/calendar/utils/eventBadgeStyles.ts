@@ -1,8 +1,8 @@
-import { createBadgeStyle } from '@/utils/badgeStyleUtils';
+import { createBadgeStyle, BadgeColor } from '@/utils/badgeStyleUtils';
 
 type BadgeVariant = 'light' | 'modal' | 'outline';
 
-const EVENT_TYPE_COLOR_MAP: Record<string, string> = {
+const EVENT_TYPE_COLOR_MAP: Record<string, BadgeColor> = {
   event: 'blue',
   goods: 'orange',
   campaign: 'green'
@@ -15,6 +15,6 @@ const EVENT_TYPE_COLOR_MAP: Record<string, string> = {
  * @returns CSS class string for the badge
  */
 export const getEventTypeBadgeStyle = (eventType: string, variant: BadgeVariant): string => {
-  const color = EVENT_TYPE_COLOR_MAP[eventType.toLowerCase()] || 'gray';
+  const color: BadgeColor = EVENT_TYPE_COLOR_MAP[eventType.toLowerCase()] || 'gray';
   return createBadgeStyle(color, variant);
 };

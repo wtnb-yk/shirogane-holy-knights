@@ -1,4 +1,5 @@
-type BadgeVariant = 'light' | 'modal' | 'outline';
+export type BadgeColor = 'blue' | 'green' | 'orange' | 'purple' | 'gray';
+export type BadgeVariant = 'light' | 'modal' | 'outline';
 
 interface BadgePattern {
   light: string;
@@ -6,7 +7,7 @@ interface BadgePattern {
   outline: string;
 }
 
-const BADGE_PATTERNS: Record<string, BadgePattern> = {
+const BADGE_PATTERNS: Record<BadgeColor, BadgePattern> = {
   blue: {
     light: 'bg-badge-blue/20 text-badge-blue border-badge-blue/30 hover:bg-badge-blue/30 transition-all duration-ui',
     modal: 'bg-badge-blue/80 text-white border-badge-blue hover:bg-badge-blue transition-all duration-ui',
@@ -40,7 +41,7 @@ const BADGE_PATTERNS: Record<string, BadgePattern> = {
  * @param variant - Display variant (light, modal, outline)
  * @returns CSS class string for the badge
  */
-export const createBadgeStyle = (color: string, variant: BadgeVariant): string => {
+export const createBadgeStyle = (color: BadgeColor, variant: BadgeVariant): string => {
   const pattern = BADGE_PATTERNS[color] || BADGE_PATTERNS.gray;
   return pattern[variant];
 };

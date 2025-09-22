@@ -61,16 +61,6 @@ export default function DiscographyPage() {
           楽曲名での検索や配信日での並び替え、カテゴリでの絞り込みができます。
         </p>
       }
-      desktopActions={
-        <div className="lg:hidden ml-4 relative">
-          <FilterToggleButton
-            onClick={() => setIsSidebarOpen(true)}
-            hasActiveFilters={activeFiltersCount > 0}
-            activeFiltersCount={activeFiltersCount}
-            variant="search"
-          />
-        </div>
-      }
       mobileActions={
         <FilterToggleButton
           onClick={() => setIsSidebarOpen(true)}

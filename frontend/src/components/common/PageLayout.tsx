@@ -5,7 +5,6 @@ interface PageLayoutProps {
   description: React.ReactNode;
   children: React.ReactNode;
   sidebar?: React.ReactNode;
-  desktopActions?: React.ReactNode;
   mobileActions?: React.ReactNode;
   primaryTabs?: React.ReactNode;
 }
@@ -15,7 +14,6 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   description,
   children,
   sidebar,
-  desktopActions,
   mobileActions,
   primaryTabs
 }) => {
@@ -45,7 +43,6 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               <div className="text-base text-gray-600 leading-relaxed flex-1">
                 {description}
               </div>
-              {desktopActions}
             </div>
           </div>
           

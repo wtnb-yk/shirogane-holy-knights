@@ -1,8 +1,8 @@
-import { createBadgeStyle } from '@/utils/badgeStyleUtils';
+import {BadgeColor, createBadgeStyle} from '@/utils/badgeStyleUtils';
 
 type BadgeVariant = 'light' | 'modal' | 'outline';
 
-const ALBUM_TYPE_COLOR_MAP: Record<string, string> = {
+const ALBUM_TYPE_COLOR_MAP: Record<string, BadgeColor> = {
   single: 'blue',
   album: 'green',
   compilation: 'orange',
