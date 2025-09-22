@@ -51,7 +51,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
       <div className="p-3">
         <Badge
           variant="outline"
-          className={`text-xs mb-1.5 border ${getAlbumTypeBadgeStyle(album.albumType.typeName)}`}
+          className={`text-xs mb-1.5 border ${getAlbumTypeBadgeStyle(album.albumType.typeName, 'light')}`}
         >
           {getAlbumTypeDisplayName(album.albumType.typeName)}
         </Badge>

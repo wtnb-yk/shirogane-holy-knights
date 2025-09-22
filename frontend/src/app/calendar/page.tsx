@@ -12,6 +12,7 @@ import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
+import { CalendarSearchOptionsModal } from '@/features/calendar/components/CalendarSearchOptionsModal';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
@@ -20,6 +21,7 @@ import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 export default function CalendarPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isSearchOptionsModalOpen, setIsSearchOptionsModalOpen] = useState(false);
   const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
   const [isDayEventsBottomSheetOpen, setIsDayEventsBottomSheetOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -45,6 +47,12 @@ export default function CalendarPage() {
 
   const activeFiltersCount = selectedEventTypes.length;
   const hasActiveFilters = activeFiltersCount > 0;
+
+  const handleFiltersChange = (filters: { eventTypeIds?: number[] }) => {
+    if (filters.eventTypeIds !== undefined) {
+      setSelectedEventTypes(filters.eventTypeIds);
+    }
+  };
 
   const handleEventClick = (event: any) => {
     setSelectedEvent(event);
@@ -114,7 +122,13 @@ export default function CalendarPage() {
         </p>
       }
       headerActions={
-        <div className="lg:hidden ml-4 relative">
+        <div className="lg:hidden flex items-center gap-2 ml-4">
+          <MobileSidebarButton
+            onClick={() => setIsSearchOptionsModalOpen(true)}
+            hasActiveFilters={hasActiveFilters}
+            activeFiltersCount={activeFiltersCount}
+            variant="search"
+          />
           <MobileSidebarButton
             onClick={() => setIsBottomSheetOpen(true)}
             hasActiveFilters={hasActiveFilters}
@@ -124,12 +138,20 @@ export default function CalendarPage() {
         </div>
       }
       mobileActions={
-        <MobileSidebarButton
-          onClick={() => setIsBottomSheetOpen(true)}
-          hasActiveFilters={hasActiveFilters}
-          activeFiltersCount={activeFiltersCount}
-          variant="filter"
-        />
+        <div className="flex items-center gap-2">
+          <MobileSidebarButton
+            onClick={() => setIsSearchOptionsModalOpen(true)}
+            hasActiveFilters={hasActiveFilters}
+            activeFiltersCount={activeFiltersCount}
+            variant="search"
+          />
+          <MobileSidebarButton
+            onClick={() => setIsBottomSheetOpen(true)}
+            hasActiveFilters={hasActiveFilters}
+            activeFiltersCount={activeFiltersCount}
+            variant="filter"
+          />
+        </div>
       }
       sidebar={
         <ResponsiveSidebar
@@ -198,6 +220,14 @@ export default function CalendarPage() {
         onClose={handleCloseModal}
         fromDayModal={fromDayModalOrSheet}
         onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
+      />
+
+      <CalendarSearchOptionsModal
+        isOpen={isSearchOptionsModalOpen}
+        onClose={() => setIsSearchOptionsModalOpen(false)}
+        filters={{ eventTypeIds: selectedEventTypes }}
+        onFiltersChange={handleFiltersChange}
+        eventTypes={eventTypes}
       />
 
       <BottomSheet
