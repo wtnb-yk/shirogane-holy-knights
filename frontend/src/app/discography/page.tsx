@@ -9,8 +9,6 @@ import { DiscographySidebar } from '@/features/discography/components/Discograph
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
@@ -21,7 +19,6 @@ const PAGE_SIZE = 12;
 
 export default function DiscographyPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState<AlbumDto | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
@@ -67,7 +64,7 @@ export default function DiscographyPage() {
       desktopActions={
         <div className="lg:hidden ml-4 relative">
           <FilterToggleButton
-            onClick={() => setIsBottomSheetOpen(true)}
+            onClick={() => setIsSidebarOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
             variant="search"
@@ -76,7 +73,7 @@ export default function DiscographyPage() {
       }
       mobileActions={
         <FilterToggleButton
-          onClick={() => setIsBottomSheetOpen(true)}
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
@@ -86,6 +83,15 @@ export default function DiscographyPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <DiscographyBottomSheetContent
+              searchValue={searchQuery}
+              onSearch={handleSearch}
+              onClearSearch={clearSearch}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          }
         >
           <DiscographySidebar
             searchValue={searchQuery}
@@ -131,23 +137,6 @@ export default function DiscographyPage() {
         pageSize={PAGE_SIZE}
         loading={loading}
       />
-
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-      >
-        <BottomSheetHeader
-          title="検索・絞り込み"
-          onClose={() => setIsBottomSheetOpen(false)}
-        />
-        <DiscographyBottomSheetContent
-          searchValue={searchQuery}
-          onSearch={handleSearch}
-          onClearSearch={clearSearch}
-          filters={filters}
-          setFilters={setFilters}
-        />
-      </BottomSheet>
 
       <DiscographyDetailModal
         album={selectedAlbum}

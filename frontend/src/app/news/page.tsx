@@ -10,14 +10,11 @@ import { NewsSidebar } from '@/features/news/components/NewsSidebar';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function NewsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   
   const {
     news,
@@ -51,7 +48,7 @@ export default function NewsPage() {
       desktopActions={
         <div className="lg:hidden ml-4 relative">
           <FilterToggleButton
-            onClick={() => setIsBottomSheetOpen(true)}
+            onClick={() => setIsSidebarOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
             variant="search"
@@ -60,16 +57,25 @@ export default function NewsPage() {
       }
       mobileActions={
         <FilterToggleButton
-          onClick={() => setIsBottomSheetOpen(true)}
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
         />
       }
       sidebar={
-        <ResponsiveSidebar 
+        <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <NewsBottomSheetContent
+              searchValue={searchQuery}
+              onSearch={handleSearch}
+              onClearSearch={clearSearch}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          }
         >
           <NewsSidebar
             searchValue={searchQuery}
@@ -114,23 +120,6 @@ export default function NewsPage() {
         pageSize={10}
         loading={loading}
       />
-
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-      >
-        <BottomSheetHeader
-          title="検索・絞り込み"
-          onClose={() => setIsBottomSheetOpen(false)}
-        />
-        <NewsBottomSheetContent
-          searchValue={searchQuery}
-          onSearch={handleSearch}
-          onClearSearch={clearSearch}
-          filters={filters}
-          setFilters={setFilters}
-        />
-      </BottomSheet>
     </PageLayout>
   );
 }

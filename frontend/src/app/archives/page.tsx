@@ -13,8 +13,6 @@ import { StreamsGrid } from '@/features/archives/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { VideosBottomSheetContent } from '@/features/archives/components/VideosBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
@@ -23,7 +21,6 @@ import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 export default function ArchivesPage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
   
   const videosData = useVideos({ pageSize: 20 });
@@ -48,7 +45,7 @@ export default function ArchivesPage() {
       desktopActions={
         <div className="lg:hidden ml-4 relative">
           <FilterToggleButton
-            onClick={() => setIsBottomSheetOpen(true)}
+            onClick={() => setIsSidebarOpen(true)}
             hasActiveFilters={activeFiltersCount > 0}
             activeFiltersCount={activeFiltersCount}
             variant="search"
@@ -57,7 +54,7 @@ export default function ArchivesPage() {
       }
       mobileActions={
         <FilterToggleButton
-          onClick={() => setIsBottomSheetOpen(true)}
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
@@ -76,9 +73,19 @@ export default function ArchivesPage() {
         />
       }
       sidebar={
-        <ResponsiveSidebar 
+        <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <VideosBottomSheetContent
+              searchValue={currentData.searchQuery}
+              onSearch={currentData.handleSearch}
+              onClearSearch={currentData.clearSearch}
+              filters={currentData.filters}
+              setFilters={currentData.setFilters}
+              availableTags={currentData.availableTags}
+            />
+          }
         >
           <VideosSidebar
             contentType={contentType}
@@ -154,25 +161,6 @@ export default function ArchivesPage() {
           onFiltersChange={currentData.setFilters}
           availableTags={currentData.availableTags}
         />
-
-        {/* BottomSheet */}
-        <BottomSheet
-          isOpen={isBottomSheetOpen}
-          onClose={() => setIsBottomSheetOpen(false)}
-        >
-          <BottomSheetHeader
-            title="検索・絞り込み"
-            onClose={() => setIsBottomSheetOpen(false)}
-          />
-          <VideosBottomSheetContent
-            searchValue={currentData.searchQuery}
-            onSearch={currentData.handleSearch}
-            onClearSearch={currentData.clearSearch}
-            filters={currentData.filters}
-            setFilters={currentData.setFilters}
-            availableTags={currentData.availableTags}
-          />
-        </BottomSheet>
       </>
     </PageLayout>
   );

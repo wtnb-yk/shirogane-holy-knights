@@ -13,14 +13,11 @@ import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButt
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
 import { CalendarSearchOptionsModal } from '@/features/calendar/components/CalendarSearchOptionsModal';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isSearchOptionsModalOpen, setIsSearchOptionsModalOpen] = useState(false);
   const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
   const [isDayEventsBottomSheetOpen, setIsDayEventsBottomSheetOpen] = useState(false);
@@ -124,7 +121,7 @@ export default function CalendarPage() {
       desktopActions={
         <div className="lg:hidden flex items-center gap-2 ml-4">
           <FilterToggleButton
-            onClick={() => setIsBottomSheetOpen(true)}
+            onClick={() => setIsSidebarOpen(true)}
             hasActiveFilters={hasActiveFilters}
             activeFiltersCount={activeFiltersCount}
             variant="filter"
@@ -133,7 +130,7 @@ export default function CalendarPage() {
       }
       mobileActions={
         <FilterToggleButton
-          onClick={() => setIsBottomSheetOpen(true)}
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={hasActiveFilters}
           activeFiltersCount={activeFiltersCount}
           variant="filter"
@@ -143,6 +140,13 @@ export default function CalendarPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <CalendarBottomSheetContent
+              selectedEventTypes={selectedEventTypes}
+              onEventTypeChange={setSelectedEventTypes}
+              eventTypes={eventTypes}
+            />
+          }
         >
           <CalendarSidebar
             selectedEventTypes={selectedEventTypes}
@@ -216,22 +220,6 @@ export default function CalendarPage() {
         onFiltersChange={handleFiltersChange}
         eventTypes={eventTypes}
       />
-
-      {/* BottomSheet */}
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-      >
-        <BottomSheetHeader
-          title="絞り込み"
-          onClose={() => setIsBottomSheetOpen(false)}
-        />
-        <CalendarBottomSheetContent
-          selectedEventTypes={selectedEventTypes}
-          onEventTypeChange={setSelectedEventTypes}
-          eventTypes={eventTypes}
-        />
-      </BottomSheet>
     </PageLayout>
   );
 }
