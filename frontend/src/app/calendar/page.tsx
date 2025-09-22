@@ -186,6 +186,7 @@ export default function CalendarPage() {
         onEventClick={handleEventClickFromDayModal}
       />
 
+      {/*　TODO: 開くように修正する */}
       <DayEventsBottomSheet
         date={selectedDate}
         events={selectedDateEvents}

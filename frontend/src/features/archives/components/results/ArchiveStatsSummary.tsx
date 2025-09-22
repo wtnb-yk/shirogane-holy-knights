@@ -9,7 +9,7 @@ interface StatsSummaryProps {
   loading: boolean;
 }
 
-export const StatsSummary = ({
+export const ArchiveStatsSummary = ({
   currentPage,
   totalCount,
   pageSize = 20,

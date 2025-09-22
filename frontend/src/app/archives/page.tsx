@@ -7,7 +7,7 @@ import { ContentType } from '@/features/archives/types/types';
 import { ArchiveSidebar } from '@/features/archives/components/ArchiveSidebar';
 import { ArchiveSearchOptionsModal } from '@/features/archives/components/filter/ArchiveSearchOptionsModal';
 import { SearchResultsSummary } from '@/features/archives/components/results/SearchResultsSummary';
-import { StatsSummary } from '@/features/archives/components/results/StatsSummary';
+import { ArchiveStatsSummary } from '@/features/archives/components/results/ArchiveStatsSummary';
 import { VideosGrid } from '@/features/archives/components/VideosGrid';
 import { StreamsGrid } from '@/features/archives/components/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
@@ -136,7 +136,7 @@ export default function ArchivePage() {
             />
           )}
 
-          <StatsSummary
+          <ArchiveStatsSummary
             currentPage={currentData.currentPage}
             totalCount={currentData.totalCount}
             pageSize={20}
