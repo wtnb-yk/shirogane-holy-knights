@@ -90,7 +90,7 @@ export const SearchInput = ({
         value={inputValue}
         onChange={(e) => handleInputChange(e.target.value)}
         className={cn(
-          'w-full border rounded-lg bg-bg-primary transition-all duration-200 shadow-sm text-text-primary placeholder-text-secondary/70 focus:outline-none focus:ring-2',
+          'w-full border rounded-lg bg-bg-primary transition-all duration-200 shadow-sm text-text-primary placeholder-text-secondary/70 focus:outline-none focus:ring-2 [&::-webkit-search-cancel-button]:appearance-none',
           currentSize.input,
           currentVariant,
           disabled && 'opacity-50 cursor-not-allowed'

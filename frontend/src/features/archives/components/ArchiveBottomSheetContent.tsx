@@ -49,17 +49,15 @@ export const ArchiveBottomSheetContent = ({
         <div className="space-y-6">
 
           {/* アーカイブ検索セクション */}
-          <div>
-            <SearchInput
-              searchValue={searchValue}
-              onSearchChange={handleSearchChange}
-              onSearch={onSearch}
-              onClearSearch={onClearSearch}
-              placeholder="キーワードを入力"
-              variant="sidebar"
-              size="sm"
-            />
-          </div>
+          <SearchInput
+            searchValue={searchValue}
+            onSearchChange={handleSearchChange}
+            onSearch={onSearch}
+            onClearSearch={onClearSearch}
+            placeholder="キーワードを入力"
+            variant="sidebar"
+            size="sm"
+          />
 
 
           {/* 高度なタグフィルター */}
