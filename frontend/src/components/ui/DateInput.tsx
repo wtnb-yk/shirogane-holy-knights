@@ -21,7 +21,8 @@ export const DateInput = ({
   ...props
 }: DateInputProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+    const newValue = e.target.value;
+    onChange(newValue);
   };
 
   // バリアント別のスタイル
@@ -54,7 +55,7 @@ export const DateInput = ({
       <input
         id={inputId}
         type="date"
-        value={value}
+        value={value || ''}
         onChange={handleChange}
         placeholder={placeholder}
         disabled={disabled}
