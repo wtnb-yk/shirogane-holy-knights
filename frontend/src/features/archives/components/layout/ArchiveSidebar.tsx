@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { ContentType } from '../types/types';
+import { ContentType } from '../../types/types';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
 import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
-import { ArchiveSearchSection } from './VideosSidebar/ArchiveSearchSection';
+import { ArchiveSearchSection } from '../search/internals/ArchiveSearchSection';
 import { SelectableList } from '@/components/common/SelectableList';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
-import { FilterOptions } from './filter/ArchiveFilterSection';
+import { FilterOptions } from '../search/filter/ArchiveFilterSection';
 
 interface ArchiveSidebarConfig {
   displayCategories?: string[];

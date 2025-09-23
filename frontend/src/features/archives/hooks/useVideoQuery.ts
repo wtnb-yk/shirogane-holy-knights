@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { VideoApi } from '../api/archiveClient';
 import { VideoDto, VideoSearchParams } from '../types/types';
-import { FilterOptions } from '../components/filter/ArchiveFilterSection';
+import { FilterOptions } from '../components/search/filter/ArchiveFilterSection';
 import { useApiQuery } from '@/hooks/useApi';
 
 interface UseVideoQueryOptions {

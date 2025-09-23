@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar, Tag } from 'lucide-react';
-import { VideoDto } from '../types/types';
+import { VideoDto } from '../../../types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';

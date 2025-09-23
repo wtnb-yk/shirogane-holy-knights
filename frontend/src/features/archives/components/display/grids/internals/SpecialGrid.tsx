@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { BaseGrid } from '@/components/common/BaseGrid';
-import { SpecialGridProps } from '../../types/specialGridTypes';
-import { 
-  generateGridClassName, 
-  isSpecialItem, 
-} from '../../utils/gridLayoutCalculator';
+import { SpecialGridProps } from '../../../../types/specialGridTypes';
+import {
+  generateGridClassName,
+  isSpecialItem,
+} from '../../../../utils/gridLayoutCalculator';
 
 /**
  * 特別表示対応のグリッドコンポーネント

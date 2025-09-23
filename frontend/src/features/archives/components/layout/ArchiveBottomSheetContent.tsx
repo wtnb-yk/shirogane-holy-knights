@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
+import { FilterOptions } from '../search/filter/ArchiveFilterSection';
 import { MultiSelectSection } from '@/components/common/MultiSelectSection';
 import { DateRangeSection } from '@/components/ui/DateRangeSection';
 import { SearchInput } from '@/components/ui/SearchInput';

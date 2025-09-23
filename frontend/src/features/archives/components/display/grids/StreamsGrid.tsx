@@ -1,18 +1,16 @@
 'use client';
 
 import React from 'react';
-import { StreamDto } from '../types/types';
-import { SpecialItemType } from '../types/specialGridTypes';
-import { StreamCard } from './StreamCard';
-import { FeaturedStreamCard } from './FeaturedStreamCard';
-import { PickupStreamCard } from './PickupStreamCard';
-import { SkeletonCard } from './SkeletonCard';
-import { SpecialGrid } from './grid/SpecialGrid';
+import { StreamDto } from '../../../types/types';
+import { SpecialItemType } from '../../../types/specialGridTypes';
+import { StreamCard } from '../cards/StreamCard';
+import { SkeletonCard } from '../cards/SkeletonCard';
+import { SpecialGrid } from './internals/SpecialGrid';
 import { 
   getStreamSpecialLayout, 
   getStreamGridColumns, 
   DEFAULT_EMPTY_MESSAGE 
-} from '../config/specialGridConfig';
+} from '../../../config/specialGridConfig';
 
 interface StreamsGridProps {
   streams: StreamDto[];
@@ -42,9 +40,9 @@ export const StreamsGrid = ({
   const renderSpecialItem = (stream: StreamDto, index: number, type: SpecialItemType) => {
     switch (type) {
       case 'featured':
-        return <FeaturedStreamCard key={stream.id} stream={stream} index={index} />;
+        return <StreamCard key={stream.id} stream={stream} index={index} variant="featured" />;
       case 'pickup':
-        return <PickupStreamCard key={stream.id} stream={stream} index={index} />;
+        return <StreamCard key={stream.id} stream={stream} index={index} variant="pickup" />;
       default:
         return renderNormalItem(stream, index);
     }

@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Radio, Tag } from 'lucide-react';
-import { StreamDto } from '../types/types';
+import { Radio, Tag, PlayCircle, Star } from 'lucide-react';
+import { StreamDto } from '../../../types/types';
 import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
@@ -12,11 +12,14 @@ import { IMAGE_STYLES } from '@/constants/styles';
 interface StreamCardProps {
   stream: StreamDto;
   index: number;
+  variant?: 'default' | 'featured' | 'pickup';
 }
 
-const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
+const StreamCardComponent = ({ stream, index, variant = 'default' }: StreamCardProps) => {
+  const isLarge = variant === 'featured' || variant === 'pickup';
+
   return (
-    <StaggeredItem index={index} className="group">
+    <StaggeredItem index={index} className={`group ${isLarge ? 'col-span-2 row-span-2' : ''}`}>
       <InteractiveCard
         href={stream.url}
         target="_blank"
@@ -27,17 +30,36 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
       >
         {stream.thumbnailUrl ? (
           <div className="relative w-full aspect-video overflow-hidden bg-black">
-            <Image 
-              src={stream.thumbnailUrl} 
-              alt={stream.title} 
+            <Image
+              src={stream.thumbnailUrl}
+              alt={stream.title}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              loading={variant === 'featured' ? 'eager' : 'lazy'}
+              priority={variant === 'featured'}
+              sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"}
               placeholder="blur"
               blurDataURL={IMAGE_STYLES.placeholder}
             />
-            
+
+            {/* バッジ */}
+            {variant === 'featured' && (
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-none px-3 py-1 text-sm font-bold shadow-lg">
+                  <PlayCircle className="w-4 h-4 mr-2" />
+                  LATEST
+                </Badge>
+              </div>
+            )}
+            {variant === 'pickup' && (
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-none px-3 py-1 text-sm font-bold shadow-lg">
+                  <Star className="w-4 h-4 mr-2" />
+                  PICKUP
+                </Badge>
+              </div>
+            )}
+
             {/* オーバーレイ情報 */}
             <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
               <div className="flex items-center gap-1">
@@ -88,10 +110,28 @@ const StreamCardComponent = ({ stream, index }: StreamCardProps) => {
           </div>
         ) : (
           <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-purple-500 via-blue-500 to-teal-400 flex items-center justify-center">
+            {/* バッジ（プレースホルダー用） */}
+            {variant === 'featured' && (
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-none px-3 py-1 text-sm font-bold shadow-lg">
+                  <PlayCircle className="w-4 h-4 mr-2" />
+                  LATEST
+                </Badge>
+              </div>
+            )}
+            {variant === 'pickup' && (
+              <div className="absolute top-4 left-4 z-10">
+                <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-none px-3 py-1 text-sm font-bold shadow-lg">
+                  <Star className="w-4 h-4 mr-2" />
+                  PICKUP
+                </Badge>
+              </div>
+            )}
+
             <div className="text-white text-sm font-medium text-center px-4">
               サムネイル画像
             </div>
-            
+
             {/* プレースホルダーオーバーレイ */}
             <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
               <div className="flex items-center gap-1">
