@@ -30,7 +30,7 @@ export { BottomSheet } from './common/BottomSheet/BottomSheet';
 export { BottomSheetHeader } from './common/BottomSheet/BottomSheetHeader';
 
 // フィルターコンポーネント
-export { TagFilterSection } from './common/TagFilterSection';
+export { MultiSelectSection } from './common/MultiSelectSection';
 export { DateRangeSection } from './common/DateRangeSection';
 export { DatePresetsSection } from './common/DatePresetsSection';
 export { YearPresetsSection } from './common/YearPresetsSection';

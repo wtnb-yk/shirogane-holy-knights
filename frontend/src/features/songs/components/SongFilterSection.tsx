@@ -20,14 +20,12 @@ export const SongFilterSection = ({
   return (
     <div>
       {/* 歌唱日フィルター */}
-      <div>
-        <DateRangeSection
-          title="歌唱日"
-          startDate={filters.startDate}
-          endDate={filters.endDate}
-          onDateChange={handleDateChange}
-        />
-      </div>
+      <DateRangeSection
+        title="歌唱日"
+        startDate={filters.startDate}
+        endDate={filters.endDate}
+        onDateChange={handleDateChange}
+      />
     </div>
   );
 };

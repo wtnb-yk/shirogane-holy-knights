@@ -19,6 +19,7 @@
     "health-check": "node scripts/health-check.js"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.1.7",
     "@radix-ui/react-tooltip": "^1.2.7",
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TagFilterSection } from '@/components/common/TagFilterSection';
+import { MultiSelectSection } from '@/components/common/MultiSelectSection';
 import { DateRangeSection } from '@/components/common/DateRangeSection';
 export interface FilterOptions {
   selectedTags: string[];
@@ -22,11 +22,7 @@ export function ArchiveFilterSection({
   availableTags = [], 
   className = '' 
 }: ArchiveFilterSectionProps) {
-  const handleTagToggle = (tag: string) => {
-    const newTags = filters.selectedTags.includes(tag)
-      ? filters.selectedTags.filter(t => t !== tag)
-      : [...filters.selectedTags, tag];
-    
+  const handleTagsChange = (newTags: string[]) => {
     onFiltersChange({ ...filters, selectedTags: newTags });
   };
 
@@ -37,10 +33,12 @@ export function ArchiveFilterSection({
   return (
     <div className={className}>
       <div className="space-y-4">
-        <TagFilterSection
-          selectedTags={filters.selectedTags}
-          availableTags={availableTags}
-          onTagToggle={handleTagToggle}
+        <MultiSelectSection
+          value={filters.selectedTags}
+          options={availableTags}
+          onChange={handleTagsChange}
+          title="タグ"
+          placeholder="タグを選択"
         />
         
         <DateRangeSection

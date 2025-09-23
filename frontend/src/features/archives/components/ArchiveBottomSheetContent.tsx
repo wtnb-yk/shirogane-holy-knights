@@ -81,14 +81,12 @@ export const ArchiveBottomSheetContent = ({
           )}
 
           {/* 日付フィルター */}
-          <div>
-            <DateRangeSection
-              title="配信日"
-              startDate={filters.startDate}
-              endDate={filters.endDate}
-              onDateChange={handleDateChange}
-            />
-          </div>
+          <DateRangeSection
+            title="配信日"
+            startDate={filters.startDate}
+            endDate={filters.endDate}
+            onDateChange={handleDateChange}
+          />
         </div>
       </div>
     </div>
