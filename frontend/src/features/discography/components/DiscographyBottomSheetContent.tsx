@@ -3,7 +3,7 @@
 import React from 'react';
 import { AlbumFilterOptions } from '@/features/discography/types/types';
 import { useAlbumTypes } from '@/features/discography/hooks/useAlbumTypes';
-import { TagBadges } from '@/components/common/Sidebar/TagBadges';
+import { MultiSelectSection } from '@/components/common/MultiSelectSection';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 import { SearchInput } from '@/components/ui/SearchInput';
 
@@ -31,20 +31,21 @@ export const DiscographyBottomSheetContent = ({
     }
   };
 
-  const handleTagToggle = (tag: string) => {
-    const albumType = albumTypes.find(at => at.typeName === tag);
-    if (!albumType) return;
-
-    const albumTypeId = albumType.id.toString();
-    if (selectedAlbumTypes.includes(albumTypeId)) {
+  const handleTagChange = (tags: string[]) => {
+    if (tags.length === 0) {
       setFilters({
         ...filters,
         albumTypes: undefined,
       });
     } else {
+      const albumTypeIds = tags.map(tag => {
+        const albumType = albumTypes.find(at => getAlbumTypeDisplayName(at.typeName) === tag);
+        return albumType ? albumType.id.toString() : null;
+      }).filter(Boolean) as string[];
+
       setFilters({
         ...filters,
-        albumTypes: [albumTypeId],
+        albumTypes: albumTypeIds,
       });
     }
   };
@@ -72,25 +73,14 @@ export const DiscographyBottomSheetContent = ({
           </div>
 
           {/* カテゴリ */}
-          <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">カテゴリ</h3>
-            {loading ? (
-              <div className="flex flex-wrap gap-2">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-6 w-16 bg-bg-tertiary rounded animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : (
-              <TagBadges
-                tags={tags}
-                selectedTags={selectedTags}
-                onTagToggle={handleTagToggle}
-              />
-            )}
-          </div>
+          <MultiSelectSection
+            options={tags}
+            value={selectedTags}
+            onChange={handleTagChange}
+            title="カテゴリ"
+            placeholder="カテゴリを選択"
+            loading={loading}
+          />
         </div>
       </div>
     </div>

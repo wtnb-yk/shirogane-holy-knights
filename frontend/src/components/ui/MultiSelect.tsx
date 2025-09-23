@@ -21,7 +21,7 @@ export const MultiSelect = ({
   className
 }: MultiSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0, showAbove: false });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -40,10 +40,25 @@ export const MultiSelect = ({
   const updateDropdownPosition = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const maxDropdownHeight = 320; // max-h-80 = 20rem = 320px
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      // 下側に表示できるかチェック
+      const canShowBelow = spaceBelow >= Math.min(maxDropdownHeight, 200); // 最低200px必要
+      const canShowAbove = spaceAbove >= Math.min(maxDropdownHeight, 200);
+
+      // より多くのスペースがある方向を選択、または下側を優先
+      const showAbove = !canShowBelow && canShowAbove;
+
       setDropdownPosition({
-        top: rect.bottom + window.scrollY + 4,
+        top: showAbove
+          ? rect.top + window.scrollY - 4
+          : rect.bottom + window.scrollY + 4,
         left: rect.left + window.scrollX,
-        width: rect.width
+        width: rect.width,
+        showAbove
       });
     }
   };
@@ -110,16 +125,15 @@ export const MultiSelect = ({
                 className="inline-flex items-center gap-1 rounded-md bg-accent-gold/90 px-2 py-1 text-xs text-white"
               >
                 {item}
-                <button
-                  type="button"
+                <span
                   onClick={(e) => {
                     e.stopPropagation();
                     handleRemove(item);
                   }}
-                  className="hover:bg-white/20 rounded-full p-0.5"
+                  className="hover:bg-white/20 rounded-full p-0.5 cursor-pointer"
                 >
                   <X className="h-3 w-3" />
-                </button>
+                </span>
               </span>
             ))
           )}
@@ -131,11 +145,14 @@ export const MultiSelect = ({
       {isOpen && typeof window !== 'undefined' && createPortal(
         <div
           ref={dropdownRef}
-          className="fixed z-50 max-h-80 overflow-auto rounded-md border border-surface-border bg-white shadow-lg"
+          className="fixed z-52 max-h-80 overflow-auto rounded-md border border-surface-border bg-white shadow-lg"
           style={{
-            top: dropdownPosition.top,
+            [dropdownPosition.showAbove ? 'bottom' : 'top']: dropdownPosition.showAbove
+              ? window.innerHeight - dropdownPosition.top
+              : dropdownPosition.top,
             left: dropdownPosition.left,
-            width: dropdownPosition.width,
+          width: dropdownPosition.width,
+            pointerEvents: 'auto',
           }}
         >
             <div className="p-1">

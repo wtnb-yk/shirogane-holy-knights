@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
-import { TagBadges } from '@/components/common/Sidebar/TagBadges';
+import { MultiSelectSection } from '@/components/common/MultiSelectSection';
 import { DateRangeSection } from '@/components/ui/DateRangeSection';
 import { SearchInput } from '@/components/ui/SearchInput';
 
@@ -13,6 +13,7 @@ interface ArchiveBottomSheetContentProps {
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
   availableTags?: string[];
+  loading?: boolean;
 }
 
 export const ArchiveBottomSheetContent = ({
@@ -21,7 +22,8 @@ export const ArchiveBottomSheetContent = ({
   onClearSearch,
   filters,
   setFilters,
-  availableTags = []
+  availableTags = [],
+  loading = false
 }: ArchiveBottomSheetContentProps) => {
   const handleSearchChange = (value: string) => {
     if (!value) {
@@ -29,19 +31,11 @@ export const ArchiveBottomSheetContent = ({
     }
   };
 
-  const handleTagToggle = (tag: string) => {
-    const currentTags = filters.selectedTags || [];
-    if (currentTags.includes(tag)) {
-      setFilters({
-        ...filters,
-        selectedTags: []
-      });
-    } else {
-      setFilters({
-        ...filters,
-        selectedTags: [tag]
-      });
-    }
+  const handleTagChange = (tags: string[]) => {
+    setFilters({
+      ...filters,
+      selectedTags: tags
+    });
   };
 
 
@@ -69,16 +63,14 @@ export const ArchiveBottomSheetContent = ({
 
 
           {/* 高度なタグフィルター */}
-          {availableTags.length > 0 && (
-            <div>
-              <h3 className="text-sm font-bold text-text-primary mb-2">タグ</h3>
-              <TagBadges
-                tags={availableTags}
-                selectedTags={filters.selectedTags}
-                onTagToggle={handleTagToggle}
-              />
-            </div>
-          )}
+          <MultiSelectSection
+            options={availableTags}
+            value={filters.selectedTags || []}
+            onChange={handleTagChange}
+            title="タグ"
+            placeholder="タグを選択"
+            loading={loading}
+          />
 
           {/* 日付フィルター */}
           <DateRangeSection

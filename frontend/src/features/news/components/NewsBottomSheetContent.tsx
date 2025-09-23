@@ -3,7 +3,7 @@
 import React from 'react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
-import { TagBadges } from '@/components/common/Sidebar/TagBadges';
+import { MultiSelectSection } from '@/components/common/MultiSelectSection';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { SearchInput } from '@/components/ui/SearchInput';
 
@@ -31,19 +31,20 @@ export const NewsBottomSheetContent = ({
     }
   };
 
-  const handleTagToggle = (tag: string) => {
-    const categoryId = categories.find(c => getCategoryDisplayName(c.name) === tag)?.id;
-    if (!categoryId) return;
-
-    if (selectedCategoryIds.includes(categoryId)) {
+  const handleTagChange = (tags: string[]) => {
+    if (tags.length === 0) {
       setFilters({
         ...filters,
         categoryIds: undefined,
       });
     } else {
+      const categoryIds = tags.map(tag => {
+        return categories.find(c => getCategoryDisplayName(c.name) === tag)?.id;
+      }).filter(Boolean) as number[];
+
       setFilters({
         ...filters,
-        categoryIds: [categoryId],
+        categoryIds,
       });
     }
   };
@@ -71,25 +72,14 @@ export const NewsBottomSheetContent = ({
           </div>
 
           {/* カテゴリ */}
-          <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">カテゴリ</h3>
-            {loading ? (
-              <div className="flex flex-wrap gap-2">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-6 w-16 bg-bg-tertiary rounded animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : (
-              <TagBadges
-                tags={tags}
-                selectedTags={selectedTags}
-                onTagToggle={handleTagToggle}
-              />
-            )}
-          </div>
+          <MultiSelectSection
+            options={tags}
+            value={selectedTags}
+            onChange={handleTagChange}
+            title="カテゴリ"
+            placeholder="カテゴリを選択"
+            loading={loading}
+          />
         </div>
       </div>
     </div>
