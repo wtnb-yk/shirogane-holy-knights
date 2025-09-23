@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { StreamApi } from '../api/lambdaClient';
+import { StreamApi } from '../api/archiveClient';
 import { StreamDto, StreamSearchParams } from '../types/types';
 import { FilterOptions } from '../components/filter/ArchiveFilterSection';
 import { useApiQuery } from '@/hooks/useApi';

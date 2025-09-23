@@ -1,6 +1,6 @@
 'use client';
 
-import { StreamApi } from '../api/lambdaClient';
+import { StreamApi } from '../api/archiveClient';
 import { useApiQuery } from '@/hooks/useApi';
 
 interface UseAllStreamTagsResult {
