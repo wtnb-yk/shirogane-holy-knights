@@ -57,17 +57,15 @@ export const NewsBottomSheetContent = ({
   return (
     <>
       {/* ニュース検索セクション */}
-      <div>
-        <SearchInput
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          onSearch={onSearch}
-          onClearSearch={onClearSearch}
-          placeholder="気になるニュースを探す"
-          variant="sidebar"
-          size="sm"
-        />
-      </div>
+      <SearchInput
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onSearch={onSearch}
+        onClearSearch={onClearSearch}
+        placeholder="気になるニュースを探す"
+        variant="sidebar"
+        size="sm"
+      />
 
       {/* カテゴリ */}
       <MultiSelectSection
