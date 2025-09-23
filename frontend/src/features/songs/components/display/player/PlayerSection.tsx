@@ -4,6 +4,7 @@ import React from 'react';
 import { Music, Clock } from 'lucide-react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
 import { YouTubePlayer } from './YouTubePlayer';
+import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
 
 interface PlayerSectionProps {
   currentSong: StreamSong | null;
@@ -13,18 +14,6 @@ interface PlayerSectionProps {
 }
 
 export const PlayerSection = ({ currentSong, currentPerformance, autoplay = false, onStateChange }: PlayerSectionProps) => {
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return '歌唱日不明';
-    try {
-      return new Date(dateStr).toLocaleDateString('ja-JP', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch {
-      return '歌唱日不明';
-    }
-  };
 
   return (
     <div className="w-full bg-bg-primary rounded-xl border border-gray-100 shadow-lg">
@@ -65,7 +54,7 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
                   <Clock className="w-4 h-4 text-accent-blue" />
                 </div>
                 <span className="text-sm text-gray-600">
-                  {currentPerformance ? '歌唱日' : '最新'}: {formatDate(currentPerformance?.performedAt || currentSong.latestSingDate)}
+                  {currentPerformance ? '歌唱日' : '最新'}: {formatDateOnly(currentPerformance?.performedAt || currentSong.latestSingDate)}
                 </span>
               </div>
             )}

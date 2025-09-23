@@ -12,6 +12,19 @@ export const formatDate = (dateStr: string): string => {
   }
 };
 
+export const formatDateOnly = (dateStr: string | null): string => {
+  if (!dateStr) return '歌唱日不明';
+  try {
+    return new Date(dateStr).toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch {
+    return '歌唱日不明';
+  }
+};
+
 export const formatDuration = (seconds: number): string => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;

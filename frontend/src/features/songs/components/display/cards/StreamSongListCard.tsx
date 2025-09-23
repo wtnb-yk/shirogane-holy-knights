@@ -6,6 +6,7 @@ import { CardContent } from '@/components/ui/card';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { SongCardThumbnail } from './SongCardThumbnail';
 import { StreamSong } from "@/features/songs/types/types";
+import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
 
 interface StreamSongListCardProps {
   song: StreamSong;
@@ -15,19 +16,6 @@ interface StreamSongListCardProps {
 
 const StreamSongListCardComponent = ({ song, index = 0, onClick }: StreamSongListCardProps) => {
   const latestPerformance = song.performances[0];
-  
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return '歌唱日不明';
-    try {
-      return new Date(dateStr).toLocaleDateString('ja-JP', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch {
-      return '歌唱日不明';
-    }
-  };
 
   return (
     <StaggeredItem index={index} className="group">
@@ -84,7 +72,7 @@ const StreamSongListCardComponent = ({ song, index = 0, onClick }: StreamSongLis
                   {song.latestSingDate && (
                     <div className="flex items-center space-x-1 sm:space-x-2 whitespace-nowrap">
                       <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                      <span>{formatDate(song.latestSingDate)}</span>
+                      <span>{formatDateOnly(song.latestSingDate)}</span>
                     </div>
                   )}
                 </div>
