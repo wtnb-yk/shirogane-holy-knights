@@ -31,7 +31,7 @@ const VideoSkeleton = () => (
 
 // Dynamic imports for heavy components with loading states
 export const DynamicSearchOptionsModal = dynamic(
-  () => import('@/features/archives/components/search/filter/ArchiveSearchOptionsModal').then(mod => ({ default: mod.ArchiveSearchOptionsModal })),
+  () => import('@/features/archives/components/search/ArchiveSearchOptionsModal').then(mod => ({ default: mod.ArchiveSearchOptionsModal })),
   {
     loading: ModalSkeleton,
     ssr: false,

@@ -41,7 +41,8 @@ export const ArchiveSearchSection = ({
         size="sm"
         className="mb-3"
       />
-      
+
+      {/* TODO: 共通化*/}
       <button
         onClick={onFilterClick}
         className={`w-full py-2.5 px-4 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all border ${

@@ -5,7 +5,7 @@ import { useVideos } from '@/features/archives/hooks/useVideos';
 import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ContentType } from '@/features/archives/types/types';
 import { ArchiveSidebar } from '@/features/archives/components/layout/ArchiveSidebar';
-import { ArchiveSearchOptionsModal } from '@/features/archives/components/search/filter/ArchiveSearchOptionsModal';
+import { ArchiveSearchOptionsModal } from '@/features/archives/components/search/ArchiveSearchOptionsModal';
 import { ArchiveSearchResultsSummary } from '@/features/archives/components/display/results/ArchiveSearchResultsSummary';
 import { ArchiveStatsSummary } from '@/features/archives/components/display/results/ArchiveStatsSummary';
 import { VideosGrid } from '@/features/archives/components/display/grids/VideosGrid';
