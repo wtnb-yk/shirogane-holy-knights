@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
-import { ContentTypeTabs, Tab } from '@/components/common/Sidebar/ContentTypeTabs';
+import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
 import { SongSearchSection } from './SongsSidebar/SongSearchSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';
@@ -54,7 +54,7 @@ export const SongsSidebar = ({
   const baseSections: SidebarSectionConfig[] = [
     {
       id: 'content-tabs',
-      component: ContentTypeTabs,
+      component: SegmentedControl,
       props: {
         tabs: songContentTypeTabs,
         activeTab: songContentType,

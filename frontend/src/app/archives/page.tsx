@@ -15,7 +15,7 @@ import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButt
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { ArchiveBottomSheetContent } from '@/features/archives/components/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/ContentTypeTabs';
+import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function ArchivePage() {
@@ -51,15 +51,13 @@ export default function ArchivePage() {
         />
       }
       primaryTabs={
-        <ContentTypeTabs
+        <SegmentedControl
           tabs={[
             { value: ContentType.STREAMS, label: '配信' },
             { value: ContentType.VIDEOS, label: '動画' }
           ]}
           activeTab={contentType}
           onTabChange={(value) => setContentType(value as ContentType)}
-          size="md"
-          variant="compact"
         />
       }
       sidebar={

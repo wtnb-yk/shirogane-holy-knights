@@ -17,7 +17,7 @@ import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar
 import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/ContentTypeTabs';
+import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function SongsList() {
@@ -83,15 +83,13 @@ export default function SongsList() {
         />
       }
       primaryTabs={
-        <ContentTypeTabs
+        <SegmentedControl
           tabs={[
             { value: SongContentType.CONCERT, label: 'ライブ' },
             { value: SongContentType.STREAM, label: '歌枠' }
           ]}
           activeTab={songContentType}
           onTabChange={(value) => setSongContentType(value as SongContentType)}
-          size="md"
-          variant="compact"
         />
       }
       sidebar={

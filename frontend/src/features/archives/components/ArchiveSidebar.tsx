@@ -3,7 +3,7 @@
 import React from 'react';
 import { ContentType } from '../types/types';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
-import { ContentTypeTabs, Tab } from '@/components/common/Sidebar/ContentTypeTabs';
+import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
 import { SearchSection } from './VideosSidebar/SearchSection';
 import { CategoryFilter } from './VideosSidebar/CategoryFilter';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
@@ -79,7 +79,7 @@ export const ArchiveSidebar = ({
   const sections: SidebarSectionConfig[] = [
     {
       id: 'content-tabs',
-      component: ContentTypeTabs,
+      component: SegmentedControl,
       props: {
         tabs: contentTypeTabs,
         activeTab: contentType,
