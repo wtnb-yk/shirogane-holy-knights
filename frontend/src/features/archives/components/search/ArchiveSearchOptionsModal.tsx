@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SearchOptionsModal } from '@/components/common/SearchOptionsModal/SearchOptionsModal';
-import { ArchiveFilterSection, FilterOptions } from './ArchiveFilterSection';
+import { ArchiveFilterSection, FilterOptions } from './internals/ArchiveFilterSection';
 
 interface ArchiveSearchOptionsModalProps {
   isOpen: boolean;

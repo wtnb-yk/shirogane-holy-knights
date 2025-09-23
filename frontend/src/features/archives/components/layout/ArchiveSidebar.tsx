@@ -7,7 +7,7 @@ import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedCont
 import { ArchiveSearchSection } from '../search/internals/ArchiveSearchSection';
 import { SelectableList } from '@/components/common/SelectableList';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
-import { FilterOptions } from '../search/ArchiveFilterSection';
+import { FilterOptions } from '../search/internals/ArchiveFilterSection';
 
 interface ArchiveSidebarConfig {
   displayCategories?: string[];

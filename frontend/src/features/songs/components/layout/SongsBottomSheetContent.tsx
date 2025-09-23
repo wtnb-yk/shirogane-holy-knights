@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { SortBy, SortOrder, SongFilterOptions, SongContentType } from '@/features/songs/types/types';
-import { SongSortSection } from '@/features/songs/components/search/SongSortSection';
-import { SongFilterSection } from '@/features/songs/components/search/SongFilterSection';
+import { SongSortSection } from '@/features/songs/components/search/internals/SongSortSection';
+import { SongFilterSection } from '@/features/songs/components/search/internals/SongFilterSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { SongFrequencySection } from '@/features/songs/components/search/internals/SongFrequencySection';

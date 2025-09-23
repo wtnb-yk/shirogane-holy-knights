@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { StreamApi } from '../api/archiveClient';
 import { StreamDto, StreamSearchParams } from '../types/types';
-import { FilterOptions } from '../components/search/ArchiveFilterSection';
+import { FilterOptions } from '../components/search/internals/ArchiveFilterSection';
 import { useApiQuery } from '@/hooks/useApi';
 
 interface UseStreamQueryOptions {

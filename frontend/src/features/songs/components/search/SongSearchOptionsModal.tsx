@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { SearchOptionsModal } from '@/components/common/SearchOptionsModal/SearchOptionsModal';
 import { SortBy, SortOrder, SongFilterOptions } from '@/features/songs/types/types';
-import { SongSortSection } from './SongSortSection';
-import { SongFilterSection } from './SongFilterSection';
+import { SongSortSection } from './internals/SongSortSection';
+import { SongFilterSection } from './internals/SongFilterSection';
 
 interface SongSearchOptionsModalProps {
   isOpen: boolean;
