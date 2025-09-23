@@ -3,7 +3,7 @@
 import React from 'react';
 import { FilterOptions } from '@/features/archives/components/filter/ArchiveFilterSection';
 import { TagBadges } from '@/components/common/Sidebar/TagBadges';
-import { MobileDateRangeInput } from '@/components/common/Sidebar/MobileDateRangeInput';
+import { DateRangeSection } from '@/components/ui/DateRangeSection';
 import { SearchInput } from '@/components/ui/SearchInput';
 
 interface ArchiveBottomSheetContentProps {
@@ -82,8 +82,8 @@ export const ArchiveBottomSheetContent = ({
 
           {/* 日付フィルター */}
           <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">配信日</h3>
-            <MobileDateRangeInput
+            <DateRangeSection
+              title="配信日"
               startDate={filters.startDate}
               endDate={filters.endDate}
               onDateChange={handleDateChange}

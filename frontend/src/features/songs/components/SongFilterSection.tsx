@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SongFilterOptions } from '../types/types';
-import { MobileDateRangeInput } from '@/components/common/Sidebar/MobileDateRangeInput';
+import { DateRangeSection } from '@/components/ui/DateRangeSection';
 
 interface SongFilterSectionProps {
   filters: SongFilterOptions;
@@ -21,11 +21,8 @@ export const SongFilterSection = ({
     <div>
       {/* 歌唱日フィルター */}
       <div>
-        <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-          <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-          歌唱日
-        </h4>
-        <MobileDateRangeInput
+        <DateRangeSection
+          title="歌唱日"
           startDate={filters.startDate}
           endDate={filters.endDate}
           onDateChange={handleDateChange}

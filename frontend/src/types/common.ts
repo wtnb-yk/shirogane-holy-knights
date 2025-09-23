@@ -84,6 +84,43 @@ export interface SearchInputProps {
 }
 
 /**
+ * 日付入力コンポーネントProps
+ */
+export interface DateInputProps {
+  value?: string;
+  onChange: (value: string) => void;
+  label?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  className?: string;
+  variant?: 'default' | 'sidebar' | 'compact';
+  size?: 'sm' | 'md' | 'lg';
+  'aria-label'?: string;
+}
+
+/**
+ * 日付範囲入力コンポーネントProps
+ */
+export interface DateRangeInputProps extends DateRangeFilter {
+  onDateChange: (field: 'startDate' | 'endDate', value: string) => void;
+  startLabel?: string;
+  endLabel?: string;
+  disabled?: boolean;
+  className?: string;
+  variant?: 'default' | 'sidebar' | 'compact';
+  size?: 'sm' | 'md' | 'lg';
+}
+
+/**
+ * セクション付き日付範囲コンポーネントProps
+ */
+export interface DateRangeSectionProps extends DateRangeInputProps {
+  title: string;
+  description?: string;
+  icon?: React.ReactNode;
+}
+
+/**
  * ページネーションコンポーネントProps
  */
 export interface PaginationProps {
