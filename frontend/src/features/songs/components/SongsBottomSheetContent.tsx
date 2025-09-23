@@ -42,27 +42,23 @@ export const SongsBottomSheetContent = ({
   return (
     <>
       {/* 楽曲検索セクション */}
-      <div>
-        <SearchInput
-          searchValue={searchValue}
-          onSearchChange={handleSearchChange}
-          onSearch={onSearch}
-          onClearSearch={onClearSearch}
-          placeholder="楽曲名・アーティスト名を入力"
-          variant="sidebar"
-          size="sm"
-        />
-      </div>
+      <SearchInput
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onSearch={onSearch}
+        onClearSearch={onClearSearch}
+        placeholder="楽曲名・アーティスト名を入力"
+        variant="sidebar"
+        size="sm"
+      />
 
       {/* 並び替えセクション */}
-      <div>
-        <SongSortSection
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          onSortByChange={(sortBy) => onSortChange(sortBy, sortOrder)}
-          onSortOrderChange={(sortOrder) => onSortChange(sortBy, sortOrder)}
-        />
-      </div>
+      <SongSortSection
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortByChange={(sortBy) => onSortChange(sortBy, sortOrder)}
+        onSortOrderChange={(sortOrder) => onSortChange(sortBy, sortOrder)}
+      />
 
       {/* 歌唱日 */}
       <div>
