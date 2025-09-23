@@ -2,6 +2,14 @@
 
 import React from 'react';
 import { SongFilterOptions, SingFrequencyCategory } from '../../types/types';
+import { SelectableList } from '@/components/common/SelectableList';
+
+interface FrequencyItem {
+  id: string;
+  category: SingFrequencyCategory;
+  label: string;
+  description: string;
+}
 
 interface SongFrequencySectionProps {
   filters: SongFilterOptions;
@@ -9,33 +17,32 @@ interface SongFrequencySectionProps {
   title?: string;
 }
 
-const FREQUENCY_OPTIONS = [
+const FREQUENCY_OPTIONS: FrequencyItem[] = [
   {
+    id: 'low',
     category: SingFrequencyCategory.LOW,
     label: '1-2回',
     description: 'あまり歌われていない'
   },
   {
+    id: 'medium',
     category: SingFrequencyCategory.MEDIUM,
     label: '3-5回',
     description: '時々歌われる'
   },
   {
+    id: 'high',
     category: SingFrequencyCategory.HIGH,
     label: '6-10回',
     description: 'よく歌われる'
   },
   {
+    id: 'very_high',
     category: SingFrequencyCategory.VERY_HIGH,
     label: '11回以上',
     description: '定番楽曲'
   }
 ];
-
-const ALL_OPTION = {
-  id: 'all',
-  label: 'すべて'
-};
 
 export const SongFrequencySection = ({
   filters = {},
@@ -44,65 +51,42 @@ export const SongFrequencySection = ({
 }: SongFrequencySectionProps) => {
   const selectedCategories = filters?.frequencyCategories || [];
 
-  const hasId = (item: any): item is typeof ALL_OPTION => 'id' in item;
+  const handleItemToggle = (frequencyItem: FrequencyItem) => {
+    const category = frequencyItem.category;
 
-  const handleItemClick = (item: typeof ALL_OPTION | typeof FREQUENCY_OPTIONS[0]) => {
-    if (hasId(item) && item.id === 'all') {
-      // 頻度のみクリア、他のフィルターは保持
-      onFiltersChange({ 
-        ...filters, 
-        frequencyCategories: undefined 
-      });
-    } else {
-      // 既存のカテゴリ処理
-      const category = (item as typeof FREQUENCY_OPTIONS[0]).category;
-      let newCategories: SingFrequencyCategory[];
-      
-      if (selectedCategories.includes(category)) {
-        newCategories = selectedCategories.filter(c => c !== category);
-      } else {
-        newCategories = [...selectedCategories, category];
-      }
-      
-      onFiltersChange({ 
-        ...filters, 
-        frequencyCategories: newCategories.length > 0 ? newCategories : undefined 
-      });
-    }
+    // 択一選択：同じカテゴリが選択されていればクリア、そうでなければ単一選択
+    const newCategories = selectedCategories.includes(category)
+      ? undefined
+      : [category];
+
+    onFiltersChange({
+      ...filters,
+      frequencyCategories: newCategories
+    });
   };
 
-  const isSelected = (item: typeof ALL_OPTION | typeof FREQUENCY_OPTIONS[0]) => {
-    if (hasId(item) && item.id === 'all') {
-      return selectedCategories.length === 0;
-    }
-    const category = (item as typeof FREQUENCY_OPTIONS[0]).category;
-    return selectedCategories.includes(category);
+  const handleClearAll = () => {
+    onFiltersChange({
+      ...filters,
+      frequencyCategories: undefined
+    });
   };
 
-  const allItems = [ALL_OPTION, ...FREQUENCY_OPTIONS];
+  // 現在選択されている頻度アイテムを判定
+  const selectedItems: FrequencyItem[] = FREQUENCY_OPTIONS.filter(item =>
+    selectedCategories.includes(item.category)
+  );
 
   return (
-    <div>
-      <h3 className="text-base font-bold text-text-primary mb-3">
-        {title}
-      </h3>
-
-      <ul className="space-y-1">
-        {allItems.map((item) => (
-          <li key={hasId(item) ? item.id : (item as typeof FREQUENCY_OPTIONS[0]).category}>
-            <button
-              onClick={() => handleItemClick(item)}
-              className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
-                isSelected(item)
-                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
-                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
-              }`}
-            >
-              {item.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <SelectableList<FrequencyItem>
+      title={title}
+      items={FREQUENCY_OPTIONS}
+      selectedItems={selectedItems}
+      onItemToggle={handleItemToggle}
+      onClearAll={handleClearAll}
+      getDisplayName={(item) => item.label}
+      getItemKey={(item) => item.id}
+      allOptionLabel="すべて"
+    />
   );
 };

@@ -1,6 +1,14 @@
 'use client';
 
 import React from 'react';
+import { SelectableList } from './SelectableList';
+
+interface YearItem {
+  id: string;
+  label: string;
+  startDate: string;
+  endDate: string;
+}
 
 interface YearPresetsSectionProps {
   filters: {
@@ -19,8 +27,8 @@ export const YearPresetsSection = ({
   minYear = 2020,
 }: YearPresetsSectionProps) => {
   const currentYear = new Date().getFullYear();
-  const yearItems = [];
-  
+  const yearItems: YearItem[] = [];
+
   for (let year = currentYear; year >= minYear; year--) {
     yearItems.push({
       id: `year-${year}`,
@@ -30,55 +38,46 @@ export const YearPresetsSection = ({
     });
   }
 
-  const handleItemClick = (startDate?: string, endDate?: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      startDate, 
-      endDate 
+  const handleItemToggle = (yearItem: YearItem) => {
+    onFiltersChange({
+      ...filters,
+      startDate: yearItem.startDate,
+      endDate: yearItem.endDate
     });
   };
 
-  const isSelected = (startDate?: string, endDate?: string) => {
-    if (!startDate && !endDate) {
-      return !filters?.startDate && !filters?.endDate;
-    }
-    return filters?.startDate === startDate && filters?.endDate === endDate;
+  const handleClearAll = () => {
+    onFiltersChange({
+      ...filters,
+      startDate: undefined,
+      endDate: undefined
+    });
   };
 
-  return (
-    <div>
-      <h3 className="text-base font-bold text-text-primary mb-3">
-        {title}
-      </h3>
+  // 現在の日付フィルターに対応する年を判定
+  const selectedItems: YearItem[] = [];
 
-      <ul className="space-y-1">
-        <li>
-          <button
-            onClick={() => handleItemClick(undefined, undefined)}
-            className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
-              isSelected(undefined, undefined)
-                ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
-                : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
-            }`}
-          >
-            すべて
-          </button>
-        </li>
-        {yearItems.map((item) => (
-          <li key={item.id}>
-            <button
-              onClick={() => handleItemClick(item.startDate, item.endDate)}
-              className={`w-full text-left py-2 px-3 rounded-md text-sm transition-all ${
-                isSelected(item.startDate, item.endDate)
-                  ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
-                  : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
-              }`}
-            >
-              {item.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+  if (filters?.startDate && filters?.endDate) {
+    const matchingYear = yearItems.find(yearItem =>
+      yearItem.startDate === filters.startDate &&
+      yearItem.endDate === filters.endDate
+    );
+
+    if (matchingYear) {
+      selectedItems.push(matchingYear);
+    }
+  }
+
+  return (
+    <SelectableList<YearItem>
+      title={title}
+      items={yearItems}
+      selectedItems={selectedItems}
+      onItemToggle={handleItemToggle}
+      onClearAll={handleClearAll}
+      getDisplayName={(yearItem) => yearItem.label}
+      getItemKey={(yearItem) => yearItem.id}
+      allOptionLabel="すべて"
+    />
   );
 };
