@@ -28,6 +28,7 @@ interface ArchiveSidebarProps {
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
   config?: ArchiveSidebarConfig;
+  loading?: boolean;
 }
 
 export const ArchiveSidebar = ({
@@ -40,7 +41,8 @@ export const ArchiveSidebar = ({
   hasActiveOptions,
   filters,
   setFilters,
-  config = {}
+  config = {},
+  loading = false
 }: ArchiveSidebarProps) => {
   const {
     displayCategories = ['雑談', 'ゲーム','ASMR', '歌枠', 'コラボ'],
@@ -108,7 +110,8 @@ export const ArchiveSidebar = ({
         selectedItems: filters.selectedTags || [],
         onItemToggle: handleTagToggle,
         onClearAll: handleTagClear,
-        allOptionLabel: 'すべて'
+        allOptionLabel: 'すべて',
+        loading: loading
       }
     }] : []),
     {

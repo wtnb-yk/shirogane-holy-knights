@@ -14,6 +14,7 @@ interface SelectableListProps<T = string> {
   getItemKey?: (item: T) => string | number;
   allOptionLabel?: string;
   className?: string;
+  loading?: boolean;
 }
 
 const SelectableListComponent = <T = string,>({
@@ -26,10 +27,27 @@ const SelectableListComponent = <T = string,>({
   getItemKey = (item: T) => String(item),
   allOptionLabel = 'すべて',
   className = '',
+  loading = false,
 }: SelectableListProps<T>) => {
   const handleItemToggle = useCallback((item: T) => {
     onItemToggle(item);
   }, [onItemToggle]);
+
+  if (loading) {
+    return (
+      <div className={className}>
+        <SelectableListHeader title={title} />
+        <div className="space-y-1">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-8 bg-bg-tertiary rounded animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={className}>

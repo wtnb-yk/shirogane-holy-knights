@@ -84,6 +84,7 @@ export default function ArchivePage() {
             hasActiveOptions={currentData.hasActiveFilters}
             filters={currentData.filters}
             setFilters={currentData.setFilters}
+            loading={currentData.loading}
           />
         </ResponsiveSidebar>
       }
