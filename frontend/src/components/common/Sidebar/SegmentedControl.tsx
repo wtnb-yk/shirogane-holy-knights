@@ -10,7 +10,7 @@ export interface Tab {
 }
 
 const segmentedControlVariants = cva(
-  "flex rounded-lg border p-1 transition-all text-sm gap-1 border-surface-border bg-bg-secondary [&>div]:inline-flex [&_button]:flex-none [&_button]:min-w-[80px] [&_button]:py-2 [&_button]:px-3"
+  "flex rounded-lg border p-1 transition-all text-sm gap-1 border-surface-border bg-bg-secondary [&>div]:flex [&_button]:flex-1 [&_button]:min-w-[80px] [&_button]:py-2 [&_button]:px-3"
 );
 
 const buttonVariants = cva(
