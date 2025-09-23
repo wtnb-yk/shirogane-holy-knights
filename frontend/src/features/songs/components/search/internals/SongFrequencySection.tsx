@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { SongFilterOptions, SingFrequencyCategory } from '../../types/types';
 import { SelectableList } from '@/components/common/SelectableList';
+import { SingFrequencyCategory, SongFilterOptions } from "@/features/songs/types/types";
 
 interface FrequencyItem {
   id: string;

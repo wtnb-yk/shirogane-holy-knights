@@ -3,11 +3,11 @@
 import React from 'react';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
 import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
-import { SongSearchSection } from './SongsSidebar/SongSearchSection';
+import { SongSearchSection } from '../search/internals/SongSearchSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';
-import { SongFrequencySection } from './SongsSidebar/SongFrequencySection';
-import { SongFilterOptions, SongContentType } from '../types/types';
+import { SongFrequencySection } from '../search/internals/SongFrequencySection';
+import { SongFilterOptions, SongContentType } from '@/features/songs/types/types';
 
 interface SongsSidebarConfig {
   searchSection?: {

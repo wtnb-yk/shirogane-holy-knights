@@ -2,7 +2,7 @@
 
 import React from 'react';
 import YouTube from 'react-youtube';
-import { StreamSong, Performance } from '../types/types';
+import { StreamSong, Performance } from '@/features/songs/types/types';
 
 interface YouTubePlayerProps {
   song: StreamSong;

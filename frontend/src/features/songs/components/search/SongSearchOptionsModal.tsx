@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SearchOptionsModal } from '@/components/common/SearchOptionsModal/SearchOptionsModal';
-import { SortBy, SortOrder, SongFilterOptions } from '../types/types';
+import { SortBy, SortOrder, SongFilterOptions } from '@/features/songs/types/types';
 import { SongSortSection } from './SongSortSection';
 import { SongFilterSection } from './SongFilterSection';
 

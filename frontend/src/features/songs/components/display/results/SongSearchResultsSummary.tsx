@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Calendar, TrendingUp, Search } from 'lucide-react';
-import { SongFilterOptions, SearchTarget, SingFrequencyCategory } from '../types/types';
+import { SongFilterOptions, SearchTarget, SingFrequencyCategory } from '@/features/songs/types/types';
 
 interface SongSearchResultsSummaryProps {
   searchQuery: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback } from 'react';
-import { Performance, StreamSong } from '../types/types';
+import { Performance, StreamSong } from '@/features/songs/types/types';
 import { SongPerformanceListHeader } from './SongPerformanceListHeader';
 import { SongPerformanceListEmpty } from './SongPerformanceListEmpty';
 import { SongPerformanceItem } from './SongPerformanceItem';

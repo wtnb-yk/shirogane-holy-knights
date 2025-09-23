@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { TrendingUp, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
-import { SortBy, SortOrder } from '../../types/types';
+import { SortBy, SortOrder } from '@/features/songs/types/types';
 
 interface SortBySectionProps {
   sortBy: SortBy;

@@ -1,6 +1,6 @@
-import { StreamSong } from '../types/types';
-import { StreamSongListCard } from './StreamSongListCard';
-import { SkeletonSongCard } from './SkeletonSongCard';
+import { StreamSong } from '@/features/songs/types/types';
+import { StreamSongListCard } from '../cards/StreamSongListCard';
+import { SkeletonSongCard } from '../cards/SkeletonSongCard';
 import { BaseGrid } from '@/components/common/BaseGrid';
 
 interface StreamSongsListProps {

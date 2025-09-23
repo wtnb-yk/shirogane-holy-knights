@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { SortBy, SortOrder, SongFilterOptions, SongContentType } from '@/features/songs/types/types';
-import { SongSortSection } from '@/features/songs/components/SongSortSection';
-import { SongFilterSection } from '@/features/songs/components/SongFilterSection';
+import { SongSortSection } from '@/features/songs/components/search/SongSortSection';
+import { SongFilterSection } from '@/features/songs/components/search/SongFilterSection';
 import { YearPresetsSection } from '@/components/common/YearPresetsSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
-import { SongFrequencySection } from '@/features/songs/components/SongsSidebar/SongFrequencySection';
+import { SongFrequencySection } from '@/features/songs/components/search/internals/SongFrequencySection';
 import { SearchInput } from '@/components/ui/SearchInput';
 
 interface SongsBottomSheetContentProps {

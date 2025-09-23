@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { StreamSong, Performance } from '../types/types';
+import { StreamSong, Performance } from '@/features/songs/types/types';
 import { Modal, ModalContent } from '@/components/ui/Modal';
 import { SongBasicInfo } from './SongBasicInfo';
-import { SongPerformanceList } from './SongPerformanceList';
+import { SongPerformanceList } from '../lists/SongPerformanceList';
 
 interface SongDetailModalProps {
   song: StreamSong | null;

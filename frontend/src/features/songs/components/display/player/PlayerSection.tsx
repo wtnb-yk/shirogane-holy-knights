@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Music, Clock } from 'lucide-react';
-import { StreamSong, Performance } from '../types/types';
+import { StreamSong, Performance } from '@/features/songs/types/types';
 import { YouTubePlayer } from './YouTubePlayer';
 
 interface PlayerSectionProps {

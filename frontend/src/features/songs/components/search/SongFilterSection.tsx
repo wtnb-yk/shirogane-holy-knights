@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SongFilterOptions } from '../types/types';
+import { SongFilterOptions } from '@/features/songs/types/types';
 import { DateRangeSection } from '@/components/ui/DateRangeSection';
 
 interface SongFilterSectionProps {

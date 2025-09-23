@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Music, Calendar, Clock } from 'lucide-react';
-import { StreamSong } from '../types/types';
 import { CardContent } from '@/components/ui/card';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { SongCardThumbnail } from './SongCardThumbnail';
+import { StreamSong } from "@/features/songs/types/types";
 
 interface StreamSongListCardProps {
   song: StreamSong;

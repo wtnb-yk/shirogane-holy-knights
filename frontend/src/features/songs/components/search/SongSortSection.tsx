@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Select } from '@/components/ui/Select';
-import { SortBy, SortOrder } from '../types/types';
+import { SortBy, SortOrder } from '@/features/songs/types/types';
 
 interface SongSortSectionProps {
   sortBy: SortBy;
