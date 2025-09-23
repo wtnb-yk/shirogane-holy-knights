@@ -5,7 +5,6 @@ import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
 import { useConcertSongs } from '@/features/songs/hooks/useConcertSongs';
 import { StreamSongsList } from '@/features/songs/components/display/lists/StreamSongsList';
 import { SongSearchResultsSummary } from '@/features/songs/components/display/results/SongSearchResultsSummary';
-import { SongStatsSummary } from '@/features/songs/components/display/results/SongStatsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/search/SongSearchOptionsModal';
 import { SongDetailModal } from '@/features/songs/components/display/modals/SongDetailModal';
 import { SongsSidebar } from '@/features/songs/components/layout/SongsSidebar';
@@ -155,18 +154,11 @@ export default function SongsList() {
           onSongClick={handleSongDetailsClick}
         />
 
-        {currentData.totalCount > 20 && (
-          <Pagination
-            currentPage={currentData.currentPage}
-            totalPages={currentData.totalPages}
-            hasMore={currentData.hasMore}
-            onPageChange={currentData.setCurrentPage}
-            size="sm"
-          />
-        )}
-
-        <SongStatsSummary
+        <Pagination
           currentPage={currentData.currentPage}
+          totalPages={currentData.totalPages}
+          hasMore={currentData.hasMore}
+          onPageChange={currentData.setCurrentPage}
           totalCount={currentData.totalCount}
           pageSize={20}
           loading={currentData.loading}

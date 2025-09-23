@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useNews } from '@/features/news/hooks/useNews';
 import { NewsGrid } from '@/features/news/components/NewsGrid';
 import { Pagination } from '@/components/ui/Pagination';
-import { NewsStatsSummary } from '@/features/news/components/NewsStatsSummary';
 import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
 import { NewsSidebar } from '@/features/news/components/NewsSidebar';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
@@ -94,18 +93,11 @@ export default function NewsPage() {
         error={error} 
       />
 
-      {totalCount > 10 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hasMore={hasMore}
-          onPageChange={setCurrentPage}
-          size="sm"
-        />
-      )}
-
-      <NewsStatsSummary
+      <Pagination
         currentPage={currentPage}
+        totalPages={totalPages}
+        hasMore={hasMore}
+        onPageChange={setCurrentPage}
         totalCount={totalCount}
         pageSize={10}
         loading={loading}

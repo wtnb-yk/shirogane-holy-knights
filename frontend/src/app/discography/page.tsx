@@ -12,7 +12,6 @@ import { DiscographyBottomSheetContent } from '@/features/discography/components
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
-import { DiscographyStatsSummary } from '@/features/discography/components/DiscographyStatsSummary';
 import { AlbumDto } from '@/features/discography/types/types';
 
 const PAGE_SIZE = 12;
@@ -111,18 +110,11 @@ export default function DiscographyPage() {
         onAlbumClick={handleAlbumClick}
       />
 
-      {totalCount > PAGE_SIZE && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hasMore={hasMore}
-          onPageChange={setCurrentPage}
-          size="sm"
-        />
-      )}
-
-      <DiscographyStatsSummary
+      <Pagination
         currentPage={currentPage}
+        totalPages={totalPages}
+        hasMore={hasMore}
+        onPageChange={setCurrentPage}
         totalCount={totalCount}
         pageSize={PAGE_SIZE}
         loading={loading}

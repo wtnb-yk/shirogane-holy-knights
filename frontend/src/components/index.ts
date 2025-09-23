@@ -10,6 +10,7 @@ export { Badge } from './ui/badge';
 export { InteractiveCard } from './ui/InteractiveCard';
 export { OptimizedImage } from './ui/OptimizedImage';
 export { Pagination } from './ui/Pagination';
+export { StatsSummary } from './ui/StatsSummary';
 export { StaggeredItem } from './ui/StaggeredItem';
 export { OverlayIcon } from './ui/OverlayIcon';
 export { SearchOptionsButton } from './ui/SearchOptionsButton';

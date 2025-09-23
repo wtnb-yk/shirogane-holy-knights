@@ -126,8 +126,13 @@ export interface DateRangeSectionProps extends DateRangeInputProps {
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  hasMore: boolean;
   onPageChange: (page: number) => void;
-  disabled?: boolean;
+  loading?: boolean;
+  animationDelay?: string;
+  className?: string;
+  totalCount?: number;
+  pageSize?: number;
 }
 
 /**
@@ -162,6 +167,9 @@ export interface StatsSummaryProps {
   currentPage: number;
   totalCount: number;
   pageSize: number;
+  loading?: boolean;
+  animationDelay?: string;
+  className?: string;
 }
 
 // ===== ユーティリティ型 =====

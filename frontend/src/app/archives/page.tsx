@@ -7,7 +7,6 @@ import { ContentType } from '@/features/archives/types/types';
 import { ArchiveSidebar } from '@/features/archives/components/layout/ArchiveSidebar';
 import { ArchiveSearchOptionsModal } from '@/features/archives/components/search/ArchiveSearchOptionsModal';
 import { ArchiveSearchResultsSummary } from '@/features/archives/components/display/results/ArchiveSearchResultsSummary';
-import { ArchiveStatsSummary } from '@/features/archives/components/display/results/ArchiveStatsSummary';
 import { VideosGrid } from '@/features/archives/components/display/grids/VideosGrid';
 import { StreamsGrid } from '@/features/archives/components/display/grids/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
@@ -124,18 +123,11 @@ export default function ArchivePage() {
           />
         )}
 
-        {currentData.totalCount > 20 && (
-          <Pagination
-            currentPage={currentData.currentPage}
-            totalPages={currentData.totalPages}
-            hasMore={currentData.hasMore}
-            onPageChange={currentData.setCurrentPage}
-            size="sm"
-          />
-        )}
-
-        <ArchiveStatsSummary
+        <Pagination
           currentPage={currentData.currentPage}
+          totalPages={currentData.totalPages}
+          hasMore={currentData.hasMore}
+          onPageChange={currentData.setCurrentPage}
           totalCount={currentData.totalCount}
           pageSize={20}
           loading={currentData.loading}
