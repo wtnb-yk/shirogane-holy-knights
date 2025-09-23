@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { Performance, StreamSong } from '@/features/songs/types/types';
 import { SongPerformanceListHeader } from './SongPerformanceListHeader';
 import { SongPerformanceListEmpty } from './SongPerformanceListEmpty';
-import { SongPerformanceItem } from './SongPerformanceItem';
+import { SongPerformanceItem } from './internals/SongPerformanceItem';
 
 interface SongPerformanceListProps {
   performances: Performance[];

@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Music, Calendar, Clock } from 'lucide-react';
 import { CardContent } from '@/components/ui/card';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { SongCardThumbnail } from './SongCardThumbnail';
 import { StreamSong } from "@/features/songs/types/types";
-import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
+import { StreamSongInfo } from './internals/StreamSongInfo';
+import { StreamSongStats } from './internals/StreamSongStats';
 
 interface StreamSongListCardProps {
   song: StreamSong;
@@ -41,41 +41,13 @@ const StreamSongListCardComponent = ({ song, index = 0, onClick }: StreamSongLis
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
                 {/* 楽曲情報 */}
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-text-primary font-semibold text-sm sm:text-lg mb-1 line-clamp-1 group-hover:text-accent-gold transition-colors duration-ui">
-                    {song.title}
-                  </h3>
-                  <p className="text-text-secondary text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-1">
-                    {song.artist}
-                  </p>
-                  
-                  {/* 最新パフォーマンス情報 */}
-                  {latestPerformance && (
-                    <div className="mb-2 sm:mb-3">
-                      <div className="flex items-center space-x-1 mb-1">
-                        <Clock className="w-3 h-3 text-text-tertiary" />
-                        <span className="text-xs text-text-tertiary">最新</span>
-                      </div>
-                      <p className="text-text-secondary text-xs sm:text-sm line-clamp-2">
-                        {latestPerformance.videoTitle}
-                      </p>
-                    </div>
-                  )}
-                </div>
-                
+                <StreamSongInfo
+                  song={song}
+                  latestPerformance={latestPerformance}
+                />
+
                 {/* 統計情報 */}
-                <div className="flex flex-row sm:flex-col gap-2 sm:gap-2 text-xs sm:text-sm text-text-tertiary">
-                  <div className="flex items-center space-x-1 sm:space-x-2 whitespace-nowrap">
-                    <Music className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                    <span className="font-medium">{song.performances.length}回</span>
-                  </div>
-                  {song.latestSingDate && (
-                    <div className="flex items-center space-x-1 sm:space-x-2 whitespace-nowrap">
-                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                      <span>{formatDateOnly(song.latestSingDate)}</span>
-                    </div>
-                  )}
-                </div>
+                <StreamSongStats song={song} />
               </div>
             </div>
           </div>
