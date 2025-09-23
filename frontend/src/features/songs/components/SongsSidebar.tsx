@@ -13,7 +13,6 @@ interface SongsSidebarConfig {
   searchSection?: {
     title?: string;
   };
-  width?: 'sm' | 'md' | 'lg' | string;
 }
 
 interface SongsSidebarProps {
@@ -44,8 +43,7 @@ export const SongsSidebar = ({
   const {
     searchSection = {
       title: '楽曲検索'
-    },
-    width = 'lg'
+    }
   } = config;
 
   const songContentTypeTabs: Tab[] = [
@@ -115,7 +113,6 @@ export const SongsSidebar = ({
   return (
     <FilterableSidebar
       sections={sections}
-      width={width}
     />
   );
 };

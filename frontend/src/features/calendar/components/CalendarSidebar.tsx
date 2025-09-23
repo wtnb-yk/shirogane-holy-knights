@@ -5,9 +5,7 @@ import { EventType } from '../types';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
 import { CalendarTypeSection } from './CalendarSidebar/CalendarTypeSection';
 
-interface CalendarSidebarConfig {
-  width?: 'sm' | 'md' | 'lg' | string;
-}
+interface CalendarSidebarConfig {}
 
 interface CalendarSidebarProps {
   selectedEventTypes: number[];
@@ -22,9 +20,7 @@ export const CalendarSidebar = ({
   eventTypes,
   config = {}
 }: CalendarSidebarProps) => {
-  const {
-    width = 'lg'
-  } = config;
+  const {} = config;
 
   const sections: SidebarSectionConfig[] = [
     {
@@ -41,7 +37,6 @@ export const CalendarSidebar = ({
   return (
     <FilterableSidebar
       sections={sections}
-      width={width}
     />
   );
 };

@@ -15,7 +15,6 @@ interface ArchiveSidebarConfig {
     title?: string;
     description?: string;
   };
-  width?: 'sm' | 'md' | 'lg' | string;
 }
 
 interface ArchiveSidebarProps {
@@ -45,8 +44,7 @@ export const ArchiveSidebar = ({
 }: ArchiveSidebarProps) => {
   const {
     displayCategories = ['雑談', 'ゲーム','ASMR', '歌枠', 'コラボ'],
-    searchSection = {},
-    width = 'lg'
+    searchSection = {}
   } = config;
 
   const handleTagToggle = (tag: string) => {
@@ -125,7 +123,6 @@ export const ArchiveSidebar = ({
   return (
     <FilterableSidebar
        sections={sections}
-      width={width}
     />
   );
 };

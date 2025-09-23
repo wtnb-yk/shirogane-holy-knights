@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { GenericSidebar, SidebarWidth } from './internals/GenericSidebar';
+import { GenericSidebar } from './internals/GenericSidebar';
 import { SidebarSection } from './internals/SidebarSection';
 
 export interface SidebarSectionConfig<T = any> {
@@ -13,20 +13,17 @@ export interface SidebarSectionConfig<T = any> {
 
 interface FilterableSidebarProps {
   sections: SidebarSectionConfig[];
-  width?: SidebarWidth | string;
   className?: string;
   style?: React.CSSProperties;
 }
 
 export const FilterableSidebar = ({
   sections,
-  width = 'md',
   className,
   style
 }: FilterableSidebarProps) => {
   return (
     <GenericSidebar
-      width={width}
       className={className}
       style={style}
     >
