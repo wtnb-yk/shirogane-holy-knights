@@ -4,8 +4,8 @@ import React from 'react';
 import { ContentType } from '../types/types';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
 import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
-import { SearchSection } from './VideosSidebar/SearchSection';
-import { CategoryFilter } from './VideosSidebar/CategoryFilter';
+import { ArchiveSearchSection } from './VideosSidebar/ArchiveSearchSection';
+import { SelectableList } from '@/components/common/SelectableList';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { FilterOptions } from './filter/ArchiveFilterSection';
 
@@ -88,7 +88,7 @@ export const ArchiveSidebar = ({
     },
     {
       id: 'search',
-      component: SearchSection,
+      component: ArchiveSearchSection,
       props: {
         searchValue,
         onSearch,
@@ -101,12 +101,14 @@ export const ArchiveSidebar = ({
     },
     ...(contentType === ContentType.STREAMS ? [{
       id: 'category-filter',
-      component: CategoryFilter,
+      component: SelectableList,
       props: {
-        categories: displayCategories,
-        selectedCategories: filters.selectedTags || [],
-        onCategoryToggle: handleTagToggle,
-        onClearAll: handleTagClear
+        title: 'タグ',
+        items: displayCategories,
+        selectedItems: filters.selectedTags || [],
+        onItemToggle: handleTagToggle,
+        onClearAll: handleTagClear,
+        allOptionLabel: 'すべて'
       }
     }] : []),
     {

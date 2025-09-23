@@ -4,7 +4,7 @@ import React from 'react';
 import { Settings } from 'lucide-react';
 import { SearchInput } from '@/components/ui/SearchInput';
 
-interface SearchSectionProps {
+interface ArchiveSearchSectionProps {
   searchValue: string;
   onSearch: (query: string) => void;
   onClearSearch: () => void;
@@ -13,14 +13,14 @@ interface SearchSectionProps {
   title?: string;
 }
 
-export const SearchSection = ({
+export const ArchiveSearchSection = ({
   searchValue,
   onSearch,
   onClearSearch,
   onFilterClick,
   hasActiveOptions,
   title = 'アーカイブ検索',
-}: SearchSectionProps) => {
+}: ArchiveSearchSectionProps) => {
   return (
     <div>
       <h3 className="text-base font-bold text-text-primary mb-3">
