@@ -131,56 +131,56 @@ export default function SongsList() {
           { name: '楽曲', url: 'https://www.noe-room.com/songs' }
         ]} />
 
-          <SongSearchResultsSummary
-            searchQuery={currentData.searchQuery}
-            totalCount={currentData.totalCount}
-            filters={currentData.filters}
-            onClearSearch={currentData.clearSearch}
-            onClearAllFilters={currentData.clearAllFilters}
+        <SongSearchResultsSummary
+          searchQuery={currentData.searchQuery}
+          totalCount={currentData.totalCount}
+          filters={currentData.filters}
+          onClearSearch={currentData.clearSearch}
+          onClearAllFilters={currentData.clearAllFilters}
+        />
+
+        {/* YouTube プレイヤーセクション */}
+        <div className="mb-4 -mx-2 lg:mx-0">
+          <PlayerSection
+            currentSong={currentSong}
+            currentPerformance={currentPerformance}
+            autoplay={autoplay}
           />
+        </div>
 
-          {/* YouTube プレイヤーセクション */}
-          <div className="mb-4 -mx-2 lg:mx-0">
-            <PlayerSection 
-              currentSong={currentSong} 
-              currentPerformance={currentPerformance}
-              autoplay={autoplay}
-            />
-          </div>
+        <StreamSongsList
+          songs={currentData.songs}
+          loading={currentData.loading}
+          error={currentData.error}
+          onSongClick={handleSongDetailsClick}
+        />
 
-          <StreamSongsList 
-            songs={currentData.songs} 
-            loading={currentData.loading} 
-            error={currentData.error}
-            onSongClick={handleSongDetailsClick}
-          />
-
-          {currentData.totalCount > 20 && (
-            <Pagination
-              currentPage={currentData.currentPage}
-              totalPages={currentData.totalPages}
-              hasMore={currentData.hasMore}
-              onPageChange={currentData.setCurrentPage}
-              size="sm"
-            />
-          )}
-
-          <SongStatsSummary
+        {currentData.totalCount > 20 && (
+          <Pagination
             currentPage={currentData.currentPage}
-            totalCount={currentData.totalCount}
-            pageSize={20}
-            loading={currentData.loading}
+            totalPages={currentData.totalPages}
+            hasMore={currentData.hasMore}
+            onPageChange={currentData.setCurrentPage}
+            size="sm"
           />
+        )}
 
-          <SongSearchOptionsModal
-            isOpen={showOptionsModal}
-            onClose={() => setShowOptionsModal(false)}
-            sortBy={currentData.sortBy}
-            sortOrder={currentData.sortOrder}
-            filters={currentData.filters}
-            onSortChange={currentData.handleSortChange}
-            onFiltersChange={currentData.setFilters}
-          />
+        <SongStatsSummary
+          currentPage={currentData.currentPage}
+          totalCount={currentData.totalCount}
+          pageSize={20}
+          loading={currentData.loading}
+        />
+
+        <SongSearchOptionsModal
+          isOpen={showOptionsModal}
+          onClose={() => setShowOptionsModal(false)}
+          sortBy={currentData.sortBy}
+          sortOrder={currentData.sortOrder}
+          filters={currentData.filters}
+          onSortChange={currentData.handleSortChange}
+          onFiltersChange={currentData.setFilters}
+        />
           
         <SongDetailModal
           song={selectedSong}

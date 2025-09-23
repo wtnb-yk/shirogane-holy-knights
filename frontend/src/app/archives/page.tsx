@@ -22,15 +22,15 @@ export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
-  
-  const videosData = useVideos({ pageSize: 20 });
-  const streamsData = useStreams({ pageSize: 20 });
-  
+
+  const videosData = useVideos({pageSize: 20});
+  const streamsData = useStreams({pageSize: 20});
+
   // 現在選択されているタブのデータを取得
   const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
 
   // アクティブなフィルター数を計算
-  const activeFiltersCount = (currentData.filters.selectedTags?.length || 0) + 
+  const activeFiltersCount = (currentData.filters.selectedTags?.length || 0) +
     (currentData.searchQuery ? 1 : 0);
 
   return (
@@ -38,7 +38,7 @@ export default function ArchivePage() {
       title="ARCHIVE"
       description={
         <p>
-          配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br />
+          配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br/>
           最新の配信はYouTubeチャンネルをご確認ください。
         </p>
       }
@@ -53,8 +53,8 @@ export default function ArchivePage() {
       primaryTabs={
         <SegmentedControl
           tabs={[
-            { value: ContentType.STREAMS, label: '配信' },
-            { value: ContentType.VIDEOS, label: '動画' }
+            {value: ContentType.STREAMS, label: '配信'},
+            {value: ContentType.VIDEOS, label: '動画'}
           ]}
           activeTab={contentType}
           onTabChange={(value) => setContentType(value as ContentType)}
@@ -91,55 +91,55 @@ export default function ArchivePage() {
     >
       <>
         <BreadcrumbSchema items={[
-          { name: 'ホーム', url: 'https://www.noe-room.com/' },
-          { name: 'アーカイブ', url: 'https://www.noe-room.com/archives' }
-        ]} />
+          {name: 'ホーム', url: 'https://www.noe-room.com/'},
+          {name: 'アーカイブ', url: 'https://www.noe-room.com/archives'}
+        ]}/>
 
-          <ArchiveSearchResultsSummary
-            searchQuery={currentData.searchQuery}
-            filters={currentData.filters}
-            totalCount={currentData.totalCount}
-            onClearAllFilters={currentData.clearAllFilters}
+        <ArchiveSearchResultsSummary
+          searchQuery={currentData.searchQuery}
+          filters={currentData.filters}
+          totalCount={currentData.totalCount}
+          onClearAllFilters={currentData.clearAllFilters}
+        />
+
+        {/* タブに応じてGrid表示を切り替え */}
+        {contentType === ContentType.VIDEOS ? (
+          <VideosGrid
+            videos={videosData.videos}
+            loading={videosData.loading}
+            error={videosData.error}
           />
+        ) : (
+          <StreamsGrid
+            streams={streamsData.streams}
+            loading={streamsData.loading}
+            error={streamsData.error}
+            showFeatured={
+              !streamsData.searchQuery &&
+              (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0) &&
+              !streamsData.filters.startDate &&
+              !streamsData.filters.endDate
+            }
+            isFirstPage={streamsData.currentPage === 1}
+          />
+        )}
 
-          {/* タブに応じてGrid表示を切り替え */}
-          {contentType === ContentType.VIDEOS ? (
-            <VideosGrid 
-              videos={videosData.videos} 
-              loading={videosData.loading} 
-              error={videosData.error} 
-            />
-          ) : (
-            <StreamsGrid 
-              streams={streamsData.streams} 
-              loading={streamsData.loading} 
-              error={streamsData.error}
-              showFeatured={
-                !streamsData.searchQuery && 
-                (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0) &&
-                !streamsData.filters.startDate &&
-                !streamsData.filters.endDate
-              }
-              isFirstPage={streamsData.currentPage === 1}
-            />
-          )}
-
-          {currentData.totalCount > 20 && (
-            <Pagination
-              currentPage={currentData.currentPage}
-              totalPages={currentData.totalPages}
-              hasMore={currentData.hasMore}
-              onPageChange={currentData.setCurrentPage}
-              size="sm"
-            />
-          )}
-
-          <ArchiveStatsSummary
+        {currentData.totalCount > 20 && (
+          <Pagination
             currentPage={currentData.currentPage}
-            totalCount={currentData.totalCount}
-            pageSize={20}
-            loading={currentData.loading}
+            totalPages={currentData.totalPages}
+            hasMore={currentData.hasMore}
+            onPageChange={currentData.setCurrentPage}
+            size="sm"
           />
+        )}
+
+        <ArchiveStatsSummary
+          currentPage={currentData.currentPage}
+          totalCount={currentData.totalCount}
+          pageSize={20}
+          loading={currentData.loading}
+        />
 
         {/* Search Modal */}
         <ArchiveSearchOptionsModal
