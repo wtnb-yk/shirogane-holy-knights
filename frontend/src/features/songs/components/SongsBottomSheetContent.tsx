@@ -40,82 +40,77 @@ export const SongsBottomSheetContent = ({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto min-h-0">
-      <div className="p-3">
-        <div className="space-y-6">
+    <>
+      {/* 楽曲検索セクション */}
+      <div>
+        <SearchInput
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+          onSearch={onSearch}
+          onClearSearch={onClearSearch}
+          placeholder="楽曲名・アーティスト名を入力"
+          variant="sidebar"
+          size="sm"
+        />
+      </div>
 
-          {/* 楽曲検索セクション */}
-          <div>
-            <SearchInput
-              searchValue={searchValue}
-              onSearchChange={handleSearchChange}
-              onSearch={onSearch}
-              onClearSearch={onClearSearch}
-              placeholder="楽曲名・アーティスト名を入力"
-              variant="sidebar"
-              size="sm"
+      {/* 並び替えセクション */}
+      <div>
+        <SongSortSection
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortByChange={(sortBy) => onSortChange(sortBy, sortOrder)}
+          onSortOrderChange={(sortOrder) => onSortChange(sortBy, sortOrder)}
+        />
+      </div>
+
+      {/* 歌唱日 */}
+      <div>
+        <h3 className="text-sm font-bold text-text-primary mb-2">
+          歌唱日
+        </h3>
+
+        {/* プリセットボタン */}
+        <div className="mb-4">
+          <div className="[&_h3]:hidden [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-sm [&_li]:space-y-0.5">
+            {songContentType === SongContentType.CONCERT ? (
+              <YearPresetsSection
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                title=""
+              />
+            ) : (
+              <DatePresetsSection
+                filters={filters}
+                onFiltersChange={onFiltersChange}
+                title=""
+              />
+            )}
+          </div>
+        </div>
+
+        {/* 日付入力 */}
+        <div>
+          <div className="[&_h4]:hidden [&_input]:py-2 [&_input]:px-2.5 [&_input]:text-sm">
+            <SongFilterSection
+              filters={filters}
+              onFiltersChange={onFiltersChange}
             />
           </div>
-
-          {/* 並び替えセクション */}
-          <div>
-            <SongSortSection
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onSortByChange={(sortBy) => onSortChange(sortBy, sortOrder)}
-              onSortOrderChange={(sortOrder) => onSortChange(sortBy, sortOrder)}
-            />
-          </div>
-
-          {/* 歌唱日 */}
-          <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">
-              歌唱日
-            </h3>
-            
-            {/* プリセットボタン */}
-            <div className="mb-4">
-              <div className="[&_h3]:hidden [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-sm [&_li]:space-y-0.5">
-                {songContentType === SongContentType.CONCERT ? (
-                  <YearPresetsSection
-                    filters={filters}
-                    onFiltersChange={onFiltersChange}
-                    title=""
-                  />
-                ) : (
-                  <DatePresetsSection
-                    filters={filters}
-                    onFiltersChange={onFiltersChange}
-                    title=""
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* 日付入力 */}
-            <div>
-              <div className="[&_h4]:hidden [&_input]:py-2 [&_input]:px-2.5 [&_input]:text-sm">
-                <SongFilterSection
-                  filters={filters}
-                  onFiltersChange={onFiltersChange}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 歌唱回数フィルター（歌枠のみ） */}
-          {songContentType === SongContentType.STREAM && (
-            <div>
-              <div className="[&_h3]:text-sm [&_h3]:mb-2 [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-sm [&_li]:space-y-0.5">
-                <SongFrequencySection
-                  filters={filters}
-                  onFiltersChange={onFiltersChange}
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+
+      {/* 歌唱回数フィルター（歌枠のみ） */}
+      {songContentType === SongContentType.STREAM && (
+        <div>
+          <div className="[&_h3]:text-sm [&_h3]:mb-2 [&_button]:py-1.5 [&_button]:px-2.5 [&_button]:text-sm [&_li]:space-y-0.5">
+            <SongFrequencySection
+              filters={filters}
+              onFiltersChange={onFiltersChange}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };

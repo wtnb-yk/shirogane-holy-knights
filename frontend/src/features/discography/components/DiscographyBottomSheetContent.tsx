@@ -56,33 +56,29 @@ export const DiscographyBottomSheetContent = ({
     .map(at => getAlbumTypeDisplayName(at.typeName));
 
   return (
-    <div className="flex-1 overflow-y-auto min-h-0">
-      <div className="p-3">
-        <div className="space-y-6">
-          {/* アルバム検索セクション */}
-          <div>
-            <SearchInput
-              searchValue={searchValue}
-              onSearchChange={handleSearchChange}
-              onSearch={onSearch}
-              onClearSearch={onClearSearch}
-              placeholder="アルバム・アーティストを探す"
-              variant="sidebar"
-              size="sm"
-            />
-          </div>
-
-          {/* カテゴリ */}
-          <MultiSelectSection
-            options={tags}
-            value={selectedTags}
-            onChange={handleTagChange}
-            title="カテゴリ"
-            placeholder="カテゴリを選択"
-            loading={loading}
-          />
-        </div>
+    <>
+      {/* アルバム検索セクション */}
+      <div>
+        <SearchInput
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+          onSearch={onSearch}
+          onClearSearch={onClearSearch}
+          placeholder="アルバム・アーティストを探す"
+          variant="sidebar"
+          size="sm"
+        />
       </div>
-    </div>
+
+      {/* カテゴリ */}
+      <MultiSelectSection
+        options={tags}
+        value={selectedTags}
+        onChange={handleTagChange}
+        title="カテゴリ"
+        placeholder="カテゴリを選択"
+        loading={loading}
+      />
+    </>
   );
 };

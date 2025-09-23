@@ -43,46 +43,42 @@ export function CalendarBottomSheetContent({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto min-h-0">
-      <div className="p-3">
-        <div className="space-y-6">
-          {/* タイプセクション */}
-          <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">タイプ</h3>
-            <div className="space-y-2">
-              {/* 全てクリアボタン */}
+    <>
+      {/* タイプセクション */}
+      <div>
+        <h3 className="text-sm font-bold text-text-primary mb-2">タイプ</h3>
+        <div className="space-y-2">
+          {/* 全てクリアボタン */}
+          <button
+            onClick={handleClearAll}
+            className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
+              selectedEventTypes.length === 0
+                ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
+                : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
+            }`}
+          >
+            全て
+          </button>
+
+          {/* イベントタイプボタン */}
+          {eventTypes.map((eventType) => {
+            const isSelected = selectedEventTypes.includes(eventType.id);
+            return (
               <button
-                onClick={handleClearAll}
+                key={eventType.id}
+                onClick={() => handleEventTypeToggle(eventType.id)}
                 className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
-                  selectedEventTypes.length === 0
+                  isSelected
                     ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
                     : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
                 }`}
               >
-                全て
+                {getEventTypeLabel(eventType.type)}
               </button>
-
-              {/* イベントタイプボタン */}
-              {eventTypes.map((eventType) => {
-                const isSelected = selectedEventTypes.includes(eventType.id);
-                return (
-                  <button
-                    key={eventType.id}
-                    onClick={() => handleEventTypeToggle(eventType.id)}
-                    className={`w-full py-2 px-3 rounded-md text-sm transition-all text-left ${
-                      isSelected
-                        ? 'bg-accent-gold-light text-accent-gold-dark font-semibold'
-                        : 'text-text-secondary hover:bg-accent-gold-light hover:pl-4'
-                    }`}
-                  >
-                    {getEventTypeLabel(eventType.type)}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
-    </div>
+    </>
   );
 }
