@@ -101,11 +101,32 @@ export const DatePresetsSection = ({
     });
   };
 
+  // 現在の日付フィルターに対応するプリセットを判定
+  const selectedItems: DatePreset[] = [];
+
+  if (filters?.startDate && filters?.endDate) {
+    const currentFilter = {
+      startDate: filters.startDate,
+      endDate: filters.endDate
+    };
+
+    // 各プリセットの日付範囲と現在のフィルターを比較
+    const matchingPreset = DATE_PRESETS.find(preset => {
+      const presetRange = preset.getRange();
+      return presetRange.startDate === currentFilter.startDate &&
+             presetRange.endDate === currentFilter.endDate;
+    });
+
+    if (matchingPreset) {
+      selectedItems.push(matchingPreset);
+    }
+  }
+
   return (
     <SelectableList<DatePreset>
       title={title}
       items={DATE_PRESETS}
-      selectedItems={[]}
+      selectedItems={selectedItems}
       onItemToggle={handleItemToggle}
       onClearAll={handleClearAll}
       getDisplayName={(preset) => preset.label}
