@@ -3,7 +3,7 @@
 import React from 'react';
 import { EventType } from '../types';
 import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
-import { CalendarTypeSection } from './CalendarSidebar/CalendarTypeSection';
+import { EventTypePresetsSection } from "@/components/common/EventTypePresetsSection";
 
 interface CalendarSidebarConfig {}
 
@@ -25,7 +25,7 @@ export const CalendarSidebar = ({
   const sections: SidebarSectionConfig[] = [
     {
       id: 'calendar-types',
-      component: CalendarTypeSection,
+      component: EventTypePresetsSection,
       props: {
         selectedEventTypes,
         onEventTypeChange,
