@@ -134,7 +134,6 @@ export default function SongsList() {
           searchQuery={currentData.searchQuery}
           totalCount={currentData.totalCount}
           filters={currentData.filters}
-          onClearSearch={currentData.clearSearch}
           onClearAllFilters={currentData.clearAllFilters}
         />
 
