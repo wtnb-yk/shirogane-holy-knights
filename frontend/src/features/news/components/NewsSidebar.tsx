@@ -10,7 +10,6 @@ interface NewsSidebarConfig {
   searchSection?: {
     title?: string;
   };
-  width?: 'sm' | 'md' | 'lg' | string;
 }
 
 interface NewsSidebarProps {
@@ -33,8 +32,7 @@ export const NewsSidebar = ({
   const {
     searchSection = {
       title: 'ニュース検索'
-    },
-    width = 'lg'
+    }
   } = config;
 
   const sections: SidebarSectionConfig[] = [
@@ -61,7 +59,6 @@ export const NewsSidebar = ({
   return (
     <FilterableSidebar
       sections={sections}
-      width={width}
     />
   );
 };

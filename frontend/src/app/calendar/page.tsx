@@ -9,17 +9,16 @@ import { EventDetailModal } from '@/features/calendar/components/EventDetailModa
 import { DayEventsModal } from '@/features/calendar/components/DayEventsModal';
 import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
 import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
+import { CalendarSearchOptionsModal } from '@/features/calendar/components/CalendarSearchOptionsModal';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [isSearchOptionsModalOpen, setIsSearchOptionsModalOpen] = useState(false);
   const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
   const [isDayEventsBottomSheetOpen, setIsDayEventsBottomSheetOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -45,6 +44,12 @@ export default function CalendarPage() {
 
   const activeFiltersCount = selectedEventTypes.length;
   const hasActiveFilters = activeFiltersCount > 0;
+
+  const handleFiltersChange = (filters: { eventTypeIds?: number[] }) => {
+    if (filters.eventTypeIds !== undefined) {
+      setSelectedEventTypes(filters.eventTypeIds);
+    }
+  };
 
   const handleEventClick = (event: any) => {
     setSelectedEvent(event);
@@ -113,19 +118,9 @@ export default function CalendarPage() {
           カテゴリで絞り込んで、見逃したくない情報をチェックしましょう。
         </p>
       }
-      headerActions={
-        <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton
-            onClick={() => setIsBottomSheetOpen(true)}
-            hasActiveFilters={hasActiveFilters}
-            activeFiltersCount={activeFiltersCount}
-            variant="filter"
-          />
-        </div>
-      }
       mobileActions={
-        <MobileSidebarButton
-          onClick={() => setIsBottomSheetOpen(true)}
+        <FilterToggleButton
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={hasActiveFilters}
           activeFiltersCount={activeFiltersCount}
           variant="filter"
@@ -135,6 +130,13 @@ export default function CalendarPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <CalendarBottomSheetContent
+              selectedEventTypes={selectedEventTypes}
+              onEventTypeChange={setSelectedEventTypes}
+              eventTypes={eventTypes}
+            />
+          }
         >
           <CalendarSidebar
             selectedEventTypes={selectedEventTypes}
@@ -184,6 +186,7 @@ export default function CalendarPage() {
         onEventClick={handleEventClickFromDayModal}
       />
 
+      {/*　TODO: 開くように修正する */}
       <DayEventsBottomSheet
         date={selectedDate}
         events={selectedDateEvents}
@@ -200,20 +203,14 @@ export default function CalendarPage() {
         onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
 
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-      >
-        <BottomSheetHeader
-          title="絞り込み"
-          onClose={() => setIsBottomSheetOpen(false)}
-        />
-        <CalendarBottomSheetContent
-          selectedEventTypes={selectedEventTypes}
-          onEventTypeChange={setSelectedEventTypes}
-          eventTypes={eventTypes}
-        />
-      </BottomSheet>
+      {/* Search Modal */}
+      <CalendarSearchOptionsModal
+        isOpen={isSearchOptionsModalOpen}
+        onClose={() => setIsSearchOptionsModalOpen(false)}
+        filters={{ eventTypeIds: selectedEventTypes }}
+        onFiltersChange={handleFiltersChange}
+        eventTypes={eventTypes}
+      />
     </PageLayout>
   );
 }

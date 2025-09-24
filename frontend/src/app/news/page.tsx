@@ -4,20 +4,16 @@ import React, { useState } from 'react';
 import { useNews } from '@/features/news/hooks/useNews';
 import { NewsGrid } from '@/features/news/components/NewsGrid';
 import { Pagination } from '@/components/ui/Pagination';
-import { NewsStatsSummary } from '@/features/news/components/NewsStatsSummary';
 import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
 import { NewsSidebar } from '@/features/news/components/NewsSidebar';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function NewsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   
   const {
     news,
@@ -48,28 +44,27 @@ export default function NewsPage() {
           カテゴリやキーワードで検索して最新情報をチェックできます。
         </p>
       }
-      headerActions={
-        <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton 
-            onClick={() => setIsBottomSheetOpen(true)}
-            hasActiveFilters={activeFiltersCount > 0}
-            activeFiltersCount={activeFiltersCount}
-            variant="search"
-          />
-        </div>
-      }
       mobileActions={
-        <MobileSidebarButton 
-          onClick={() => setIsBottomSheetOpen(true)}
+        <FilterToggleButton
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
         />
       }
       sidebar={
-        <ResponsiveSidebar 
+        <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <NewsBottomSheetContent
+              searchValue={searchQuery}
+              onSearch={handleSearch}
+              onClearSearch={clearSearch}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          }
         >
           <NewsSidebar
             searchValue={searchQuery}
@@ -98,39 +93,15 @@ export default function NewsPage() {
         error={error} 
       />
 
-      {totalCount > 10 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hasMore={hasMore}
-          onPageChange={setCurrentPage}
-          size="sm"
-        />
-      )}
-
-      <NewsStatsSummary
+      <Pagination
         currentPage={currentPage}
+        totalPages={totalPages}
+        hasMore={hasMore}
+        onPageChange={setCurrentPage}
         totalCount={totalCount}
         pageSize={10}
         loading={loading}
       />
-
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-      >
-        <BottomSheetHeader
-          title="検索・絞り込み"
-          onClose={() => setIsBottomSheetOpen(false)}
-        />
-        <NewsBottomSheetContent
-          searchValue={searchQuery}
-          onSearch={handleSearch}
-          onClearSearch={clearSearch}
-          filters={filters}
-          setFilters={setFilters}
-        />
-      </BottomSheet>
     </PageLayout>
   );
 }

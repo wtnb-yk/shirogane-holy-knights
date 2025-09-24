@@ -4,36 +4,32 @@ import React, { useState } from 'react';
 import { useVideos } from '@/features/archives/hooks/useVideos';
 import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ContentType } from '@/features/archives/types/types';
-import { VideosSidebar } from '@/features/archives/components/VideosSidebar';
-import { ArchiveSearchOptionsModal } from '@/features/archives/components/filter/ArchiveSearchOptionsModal';
-import { SearchResultsSummary } from '@/features/archives/components/results/SearchResultsSummary';
-import { StatsSummary } from '@/features/archives/components/results/StatsSummary';
-import { VideosGrid } from '@/features/archives/components/VideosGrid';
-import { StreamsGrid } from '@/features/archives/components/StreamsGrid';
+import { ArchiveSidebar } from '@/features/archives/components/layout/ArchiveSidebar';
+import { ArchiveSearchOptionsModal } from '@/features/archives/components/search/ArchiveSearchOptionsModal';
+import { ArchiveSearchResultsSummary } from '@/features/archives/components/display/results/ArchiveSearchResultsSummary';
+import { VideosGrid } from '@/features/archives/components/display/grids/VideosGrid';
+import { StreamsGrid } from '@/features/archives/components/display/grids/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
-import { VideosBottomSheetContent } from '@/features/archives/components/VideosBottomSheetContent';
+import { ArchiveBottomSheetContent } from '@/features/archives/components/layout/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
+import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
-export default function VideosList() {
+export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
-  
-  const videosData = useVideos({ pageSize: 20 });
-  const streamsData = useStreams({ pageSize: 20 });
-  
+
+  const videosData = useVideos({pageSize: 20});
+  const streamsData = useStreams({pageSize: 20});
+
   // 現在選択されているタブのデータを取得
   const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
 
   // アクティブなフィルター数を計算
-  const activeFiltersCount = (currentData.filters.selectedTags?.length || 0) + 
+  const activeFiltersCount = (currentData.filters.selectedTags?.length || 0) +
     (currentData.searchQuery ? 1 : 0);
 
   return (
@@ -41,46 +37,44 @@ export default function VideosList() {
       title="ARCHIVE"
       description={
         <p>
-          配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br />
+          配信アーカイブの検索、カテゴリーや日付での絞り込みができます。<br/>
           最新の配信はYouTubeチャンネルをご確認ください。
         </p>
       }
-      headerActions={
-        <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton 
-            onClick={() => setIsBottomSheetOpen(true)}
-            hasActiveFilters={activeFiltersCount > 0}
-            activeFiltersCount={activeFiltersCount}
-            variant="search"
-          />
-        </div>
-      }
       mobileActions={
-        <MobileSidebarButton 
-          onClick={() => setIsBottomSheetOpen(true)}
+        <FilterToggleButton
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
         />
       }
       primaryTabs={
-        <ContentTypeTabs
+        <SegmentedControl
           tabs={[
-            { value: ContentType.STREAMS, label: '配信' },
-            { value: ContentType.VIDEOS, label: '動画' }
+            {value: ContentType.STREAMS, label: '配信'},
+            {value: ContentType.VIDEOS, label: '動画'}
           ]}
           activeTab={contentType}
           onTabChange={(value) => setContentType(value as ContentType)}
-          size="md"
-          variant="compact"
         />
       }
       sidebar={
-        <ResponsiveSidebar 
+        <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <ArchiveBottomSheetContent
+              searchValue={currentData.searchQuery}
+              onSearch={currentData.handleSearch}
+              onClearSearch={currentData.clearSearch}
+              filters={currentData.filters}
+              setFilters={currentData.setFilters}
+              availableTags={currentData.availableTags}
+            />
+          }
         >
-          <VideosSidebar
+          <ArchiveSidebar
             contentType={contentType}
             onContentTypeChange={setContentType}
             searchValue={currentData.searchQuery}
@@ -90,62 +84,57 @@ export default function VideosList() {
             hasActiveOptions={currentData.hasActiveFilters}
             filters={currentData.filters}
             setFilters={currentData.setFilters}
+            loading={currentData.loading}
           />
         </ResponsiveSidebar>
       }
     >
       <>
         <BreadcrumbSchema items={[
-          { name: 'ホーム', url: 'https://www.noe-room.com/' },
-          { name: 'アーカイブ', url: 'https://www.noe-room.com/archives' }
-        ]} />
+          {name: 'ホーム', url: 'https://www.noe-room.com/'},
+          {name: 'アーカイブ', url: 'https://www.noe-room.com/archives'}
+        ]}/>
 
-          <SearchResultsSummary
-            searchQuery={currentData.searchQuery}
-            filters={currentData.filters}
-            totalCount={currentData.totalCount}
-            onClearAllFilters={currentData.clearAllFilters}
+        <ArchiveSearchResultsSummary
+          searchQuery={currentData.searchQuery}
+          filters={currentData.filters}
+          totalCount={currentData.totalCount}
+          onClearAllFilters={currentData.clearAllFilters}
+        />
+
+        {/* タブに応じてGrid表示を切り替え */}
+        {contentType === ContentType.VIDEOS ? (
+          <VideosGrid
+            videos={videosData.videos}
+            loading={videosData.loading}
+            error={videosData.error}
           />
-
-          {/* タブに応じてGrid表示を切り替え */}
-          {contentType === ContentType.VIDEOS ? (
-            <VideosGrid 
-              videos={videosData.videos} 
-              loading={videosData.loading} 
-              error={videosData.error} 
-            />
-          ) : (
-            <StreamsGrid 
-              streams={streamsData.streams} 
-              loading={streamsData.loading} 
-              error={streamsData.error}
-              showFeatured={
-                !streamsData.searchQuery && 
-                (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0) &&
-                !streamsData.filters.startDate &&
-                !streamsData.filters.endDate
-              }
-              isFirstPage={streamsData.currentPage === 1}
-            />
-          )}
-
-          {currentData.totalCount > 20 && (
-            <Pagination
-              currentPage={currentData.currentPage}
-              totalPages={currentData.totalPages}
-              hasMore={currentData.hasMore}
-              onPageChange={currentData.setCurrentPage}
-              size="sm"
-            />
-          )}
-
-          <StatsSummary
-            currentPage={currentData.currentPage}
-            totalCount={currentData.totalCount}
-            pageSize={20}
-            loading={currentData.loading}
+        ) : (
+          <StreamsGrid
+            streams={streamsData.streams}
+            loading={streamsData.loading}
+            error={streamsData.error}
+            showFeatured={
+              !streamsData.searchQuery &&
+              (!streamsData.filters.selectedTags || streamsData.filters.selectedTags.length === 0) &&
+              !streamsData.filters.startDate &&
+              !streamsData.filters.endDate
+            }
+            isFirstPage={streamsData.currentPage === 1}
           />
+        )}
 
+        <Pagination
+          currentPage={currentData.currentPage}
+          totalPages={currentData.totalPages}
+          hasMore={currentData.hasMore}
+          onPageChange={currentData.setCurrentPage}
+          totalCount={currentData.totalCount}
+          pageSize={20}
+          loading={currentData.loading}
+        />
+
+        {/* Search Modal */}
         <ArchiveSearchOptionsModal
           isOpen={showFilterModal}
           onClose={() => setShowFilterModal(false)}
@@ -153,25 +142,6 @@ export default function VideosList() {
           onFiltersChange={currentData.setFilters}
           availableTags={currentData.availableTags}
         />
-
-        {/* BottomSheet */}
-        <BottomSheet
-          isOpen={isBottomSheetOpen}
-          onClose={() => setIsBottomSheetOpen(false)}
-        >
-          <BottomSheetHeader
-            title="検索・絞り込み"
-            onClose={() => setIsBottomSheetOpen(false)}
-          />
-          <VideosBottomSheetContent
-            searchValue={currentData.searchQuery}
-            onSearch={currentData.handleSearch}
-            onClearSearch={currentData.clearSearch}
-            filters={currentData.filters}
-            setFilters={currentData.setFilters}
-            availableTags={currentData.availableTags}
-          />
-        </BottomSheet>
       </>
     </PageLayout>
   );

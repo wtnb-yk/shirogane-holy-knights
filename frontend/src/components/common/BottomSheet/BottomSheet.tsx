@@ -1,13 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { BottomSheetHeader } from '@/components';
 
 interface BottomSheetProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   className?: string;
+  title?: ReactNode;
+  showDragHandle?: boolean;
 }
 
 export const BottomSheet = ({
@@ -15,8 +18,10 @@ export const BottomSheet = ({
   onClose,
   children,
   className,
+  title,
+  showDragHandle = false,
 }: BottomSheetProps) => {
-  
+
   // ESCキーでメニューを閉じる
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -70,7 +75,20 @@ export const BottomSheet = ({
         )}
         style={{ pointerEvents: 'auto' }}
       >
-        {children}
+        {title && (
+          <BottomSheetHeader
+            title={title}
+            onClose={onClose}
+            showDragHandle={showDragHandle}
+          />
+        )}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="p-3">
+            <div className="space-y-6">
+              {children}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

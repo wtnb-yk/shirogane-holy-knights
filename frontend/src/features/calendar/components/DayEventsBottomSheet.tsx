@@ -1,10 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Calendar } from 'lucide-react';
 import { Event } from '../types';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { EventListItem } from './EventListItem';
 
 interface DayEventsBottomSheetProps {
@@ -15,7 +13,7 @@ interface DayEventsBottomSheetProps {
   onEventClick: (event: Event) => void;
 }
 
-export function DayEventsBottomSheet({ date, events, isOpen, onClose, onEventClick }: DayEventsBottomSheetProps) {
+export function DayEventsBottomSheet({date, events, isOpen, onClose, onEventClick}: DayEventsBottomSheetProps) {
   if (!date) return null;
 
   const formatDate = (date: Date) => {
@@ -35,17 +33,7 @@ export function DayEventsBottomSheet({ date, events, isOpen, onClose, onEventCli
   });
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose}>
-      <BottomSheetHeader
-        title={
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-text-secondary" />
-            <span>{formatDate(date)}</span>
-          </div>
-        }
-        onClose={onClose}
-      />
-
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={formatDate(date)}>
       <div className="px-4 pb-6">
         {sortedEvents.length === 0 ? (
           <div className="text-center py-8 text-text-secondary">

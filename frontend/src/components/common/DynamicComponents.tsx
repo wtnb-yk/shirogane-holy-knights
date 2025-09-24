@@ -31,7 +31,7 @@ const VideoSkeleton = () => (
 
 // Dynamic imports for heavy components with loading states
 export const DynamicSearchOptionsModal = dynamic(
-  () => import('@/features/archives/components/filter/ArchiveSearchOptionsModal').then(mod => ({ default: mod.ArchiveSearchOptionsModal })),
+  () => import('@/features/archives/components/search/ArchiveSearchOptionsModal').then(mod => ({ default: mod.ArchiveSearchOptionsModal })),
   {
     loading: ModalSkeleton,
     ssr: false,
@@ -47,20 +47,13 @@ export const DynamicBottomSheet = dynamic(
 );
 
 export const DynamicYouTubePlayer = dynamic(
-  () => import('@/features/songs/components/YouTubePlayer').then(mod => ({ default: mod.YouTubePlayer })),
+  () => import('@/features/songs/components/display/player/YouTubePlayer').then(mod => ({ default: mod.YouTubePlayer })),
   {
     loading: VideoSkeleton,
     ssr: false,
   }
 );
 
-export const DynamicPerformanceListModal = dynamic(
-  () => import('@/features/songs/components/PerformanceListModal').then(mod => ({ default: mod.PerformanceListModal })),
-  {
-    loading: ModalSkeleton,
-    ssr: false,
-  }
-);
 
 export const DynamicEventDetailModal = dynamic(
   () => import('@/features/calendar/components/EventDetailModal').then(mod => ({ default: mod.EventDetailModal })),

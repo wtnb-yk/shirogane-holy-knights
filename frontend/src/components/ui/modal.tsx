@@ -1,9 +1,21 @@
 'use client';
 
-import React, { useEffect, useCallback } from 'react';
-import { X } from 'lucide-react';
+import React, { useEffect, useCallback, useState } from 'react';
 
-export const Modal = ({ open, onOpenChange, children }: { open?: boolean; onOpenChange?: (open: boolean) => void; children: React.ReactNode }) => {
+interface ModalProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: React.ReactNode;
+}
+
+export const Modal = ({
+  open,
+  onOpenChange,
+  children
+}: ModalProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+
   const handleClose = useCallback(() => {
     onOpenChange?.(false);
   }, [onOpenChange]);
@@ -16,9 +28,20 @@ export const Modal = ({ open, onOpenChange, children }: { open?: boolean; onOpen
 
   useEffect(() => {
     if (open) {
+      setShouldRender(true);
       document.body.style.overflow = 'hidden';
+      // 次のフレームでアニメーション開始
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
     } else {
+      setIsVisible(false);
       document.body.style.overflow = 'unset';
+      // アニメーション完了後にコンポーネントをアンマウント
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 200);
+      return () => clearTimeout(timer);
     }
 
     return () => {
@@ -42,50 +65,46 @@ export const Modal = ({ open, onOpenChange, children }: { open?: boolean; onOpen
     };
   }, [open, handleClose]);
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className={`absolute inset-0 bg-gray-900/20 ${
+          isVisible ? 'animate-modal-fade-in' : 'animate-modal-fade-out'
+        }`}
         onClick={handleBackdropClick}
       />
-      <div className="relative max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div
+        className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto ${
+          isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
+        }`}
+        style={{
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '16px',
+          boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
+        }}
+      >
         {children}
       </div>
     </div>
   );
 };
 
-export const ModalContent = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => {
+interface ModalContentProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const ModalContent = ({
+  children,
+  className = ''
+}: ModalContentProps) => {
   return (
-    <div className={`bg-white rounded-lg shadow-xl ${className}`}>
+    <div className={`p-4 sm:p-6 ${className}`}>
       {children}
     </div>
   );
 };
-
-export const ModalHeader = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex items-center justify-between p-6 pb-4 border-b border-surface-border">
-    {children}
-  </div>
-);
-
-export const ModalBody = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`p-6 ${className}`}>
-    {children}
-  </div>
-);
-
-export const ModalTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-lg font-semibold">{children}</h2>
-);
-
-export const ModalClose = ({ onClose }: { onClose?: () => void }) => (
-  <button
-    onClick={onClose}
-    className="p-1 hover:bg-gray-100 rounded-full"
-  >
-    <X className="w-5 h-5" />
-  </button>
-);

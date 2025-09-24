@@ -4,7 +4,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from 'lucide-react';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
-import { getAlbumTypeBadgeModalStyle } from '../utils/albumTypeBadgeStyles';
+import { getAlbumTypeBadgeStyle } from '../utils/albumTypeBadgeStyles';
 import { AlbumTypeDto } from '../types/types';
 
 interface AlbumBasicInfoProps {
@@ -23,7 +23,7 @@ export const AlbumBasicInfo = ({
   return (
     <div className="flex-1">
       <div className="mb-3">
-        <Badge variant="outline" className={`text-sm ${getAlbumTypeBadgeModalStyle(albumType.typeName)}`}>
+        <Badge variant="outline" className={`text-sm ${getAlbumTypeBadgeStyle(albumType.typeName, 'modal')}`}>
           {getAlbumTypeDisplayName(albumType.typeName)}
         </Badge>
       </div>

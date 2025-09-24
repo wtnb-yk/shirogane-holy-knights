@@ -7,7 +7,7 @@ import {useVideoFilters} from './useVideoFilters';
 import {useAllStreamTags} from './useAllStreamTags';
 import {useStreamQuery} from './useStreamQuery';
 import {StreamDto} from '../types/types';
-import {FilterOptions} from '../components/filter/ArchiveFilterSection';
+import {FilterOptions} from '../components/search/internals/ArchiveFilterSection';
 
 interface UseStreamsResult {
   streams: StreamDto[];

@@ -6,22 +6,18 @@ import { DiscographyGrid } from '@/features/discography/components/DiscographyGr
 import { Pagination } from '@/components/ui/Pagination';
 import { DiscographySearchResultsSummary } from "@/features/discography/components/DiscographySearchResultsSummary";
 import { DiscographySidebar } from '@/features/discography/components/DiscographySidebar';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
-import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
-import { DiscographyStatsSummary } from '@/features/discography/components/DiscographyStatsSummary';
 import { AlbumDto } from '@/features/discography/types/types';
 
 const PAGE_SIZE = 12;
 
 export default function DiscographyPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState<AlbumDto | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
@@ -64,19 +60,9 @@ export default function DiscographyPage() {
           楽曲名での検索や配信日での並び替え、カテゴリでの絞り込みができます。
         </p>
       }
-      headerActions={
-        <div className="lg:hidden ml-4 relative">
-          <MobileSidebarButton
-            onClick={() => setIsBottomSheetOpen(true)}
-            hasActiveFilters={activeFiltersCount > 0}
-            activeFiltersCount={activeFiltersCount}
-            variant="search"
-          />
-        </div>
-      }
       mobileActions={
-        <MobileSidebarButton
-          onClick={() => setIsBottomSheetOpen(true)}
+        <FilterToggleButton
+          onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
@@ -86,6 +72,15 @@ export default function DiscographyPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          mobileContent={
+            <DiscographyBottomSheetContent
+              searchValue={searchQuery}
+              onSearch={handleSearch}
+              onClearSearch={clearSearch}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          }
         >
           <DiscographySidebar
             searchValue={searchQuery}
@@ -115,39 +110,15 @@ export default function DiscographyPage() {
         onAlbumClick={handleAlbumClick}
       />
 
-      {totalCount > PAGE_SIZE && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          hasMore={hasMore}
-          onPageChange={setCurrentPage}
-          size="sm"
-        />
-      )}
-
-      <DiscographyStatsSummary
+      <Pagination
         currentPage={currentPage}
+        totalPages={totalPages}
+        hasMore={hasMore}
+        onPageChange={setCurrentPage}
         totalCount={totalCount}
         pageSize={PAGE_SIZE}
         loading={loading}
       />
-
-      <BottomSheet
-        isOpen={isBottomSheetOpen}
-        onClose={() => setIsBottomSheetOpen(false)}
-      >
-        <BottomSheetHeader
-          title="検索・絞り込み"
-          onClose={() => setIsBottomSheetOpen(false)}
-        />
-        <DiscographyBottomSheetContent
-          searchValue={searchQuery}
-          onSearch={handleSearch}
-          onClearSearch={clearSearch}
-          filters={filters}
-          setFilters={setFilters}
-        />
-      </BottomSheet>
 
       <DiscographyDetailModal
         album={selectedAlbum}

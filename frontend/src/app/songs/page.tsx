@@ -3,28 +3,27 @@
 import React, { useState } from 'react';
 import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
 import { useConcertSongs } from '@/features/songs/hooks/useConcertSongs';
-import { StreamSongsList } from '@/features/songs/components/StreamSongsList';
-import { SongSearchResultsSummary } from '@/features/songs/components/SongSearchResultsSummary';
-import { SongStatsSummary } from '@/features/songs/components/SongStatsSummary';
-import { SongSearchOptionsModal } from '@/features/songs/components/SongSearchOptionsModal';
-import { PerformanceListModal } from '@/features/songs/components/PerformanceListModal';
-import { SongsSidebar } from '@/features/songs/components/SongsSidebar';
-import { PlayerSection } from '@/features/songs/components/PlayerSection';
+import { StreamSongsList } from '@/features/songs/components/display/lists/StreamSongsList';
+import { SongSearchResultsSummary } from '@/features/songs/components/display/results/SongSearchResultsSummary';
+import { SongSearchOptionsModal } from '@/features/songs/components/search/SongSearchOptionsModal';
+import { SongDetailModal } from '@/features/songs/components/display/modals/SongDetailModal';
+import { SongsSidebar } from '@/features/songs/components/layout/SongsSidebar';
+import { PlayerSection } from '@/features/songs/components/display/player/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong, SongContentType } from '@/features/songs/types/types';
-import { MobileSidebarButton } from '@/components/common/Sidebar/MobileSidebarButton';
+import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
-import { SongsBottomSheetContent } from '@/features/songs/components/SongsBottomSheetContent';
+import { SongsBottomSheetContent } from '@/features/songs/components/layout/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
-import { ContentTypeTabs } from '@/components/common/Sidebar/components/ContentTypeTabs';
+import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState<StreamSong | null>(null);
-  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  const [showSongDetailModal, setShowSongDetailModal] = useState(false);
   const [songContentType, setSongContentType] = useState<SongContentType>(SongContentType.CONCERT);
   
   // 楽曲データの取得
@@ -55,9 +54,9 @@ export default function SongsList() {
   }, [currentData.songs, currentSong, changeCurrentSong, currentData.loading]);
   
   const handleSongDetailsClick = (song: StreamSong) => {
-    // 詳細表示：パフォーマンスモーダルを開く
+    // 詳細表示：楽曲詳細モーダルを開く
     setSelectedSong(song);
-    setShowPerformanceModal(true);
+    setShowSongDetailModal(true);
   };
 
   // アクティブなフィルター数を計算
@@ -74,70 +73,22 @@ export default function SongsList() {
           楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
         </p>
       }
-      headerActions={
-        <>
-          {/* タブレット用メニューボタン（lg未満のみ表示） */}
-          <div className="lg:hidden relative">
-            <MobileSidebarButton 
-              onClick={() => setIsSidebarOpen(true)}
-              hasActiveFilters={activeFiltersCount > 0}
-              activeFiltersCount={activeFiltersCount}
-              variant="search"
-            />
-            
-            {/* レスポンシブサイドバー */}
-            <ResponsiveSidebar 
-              isOpen={isSidebarOpen}
-              onClose={() => setIsSidebarOpen(false)}
-              mobileContent={
-                <SongsBottomSheetContent
-                  searchValue={currentData.searchQuery}
-                  onSearch={currentData.handleSearch}
-                  onClearSearch={currentData.clearSearch}
-                  sortBy={currentData.sortBy}
-                  sortOrder={currentData.sortOrder}
-                  filters={currentData.filters}
-                  onSortChange={currentData.handleSortChange}
-                  onFiltersChange={currentData.setFilters}
-                  songContentType={songContentType}
-                  onSongContentTypeChange={setSongContentType}
-                />
-              }
-            >
-              <SongsSidebar
-                songContentType={songContentType}
-                onSongContentTypeChange={setSongContentType}
-                searchValue={currentData.searchQuery}
-                onSearch={currentData.handleSearch}
-                onClearSearch={currentData.clearSearch}
-                onOptionsClick={() => setShowOptionsModal(true)}
-                hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC')}
-                filters={currentData.filters}
-                onFiltersChange={currentData.setFilters}
-              />
-            </ResponsiveSidebar>
-          </div>
-        </>
-      }
       mobileActions={
-        <MobileSidebarButton 
+        <FilterToggleButton
           onClick={() => setIsSidebarOpen(true)}
           hasActiveFilters={activeFiltersCount > 0}
           activeFiltersCount={activeFiltersCount}
           variant="search"
         />
       }
-      mobileRightActions={null}
       primaryTabs={
-        <ContentTypeTabs
+        <SegmentedControl
           tabs={[
             { value: SongContentType.CONCERT, label: 'ライブ' },
             { value: SongContentType.STREAM, label: '歌枠' }
           ]}
           activeTab={songContentType}
           onTabChange={(value) => setSongContentType(value as SongContentType)}
-          size="md"
-          variant="compact"
         />
       }
       sidebar={
@@ -179,61 +130,54 @@ export default function SongsList() {
           { name: '楽曲', url: 'https://www.noe-room.com/songs' }
         ]} />
 
-          <SongSearchResultsSummary
-            searchQuery={currentData.searchQuery}
-            totalCount={currentData.totalCount}
-            filters={currentData.filters}
-            onClearSearch={currentData.clearSearch}
-            onClearAllFilters={currentData.clearAllFilters}
+        <SongSearchResultsSummary
+          searchQuery={currentData.searchQuery}
+          totalCount={currentData.totalCount}
+          filters={currentData.filters}
+          onClearSearch={currentData.clearSearch}
+          onClearAllFilters={currentData.clearAllFilters}
+        />
+
+        {/* YouTube プレイヤーセクション */}
+        <div className="mb-4 -mx-2 lg:mx-0">
+          <PlayerSection
+            currentSong={currentSong}
+            currentPerformance={currentPerformance}
+            autoplay={autoplay}
           />
+        </div>
 
-          {/* YouTube プレイヤーセクション */}
-          <div className="mb-4 -mx-2 lg:mx-0">
-            <PlayerSection 
-              currentSong={currentSong} 
-              currentPerformance={currentPerformance}
-              autoplay={autoplay}
-            />
-          </div>
+        <StreamSongsList
+          songs={currentData.songs}
+          loading={currentData.loading}
+          error={currentData.error}
+          onSongClick={handleSongDetailsClick}
+        />
 
-          <StreamSongsList 
-            songs={currentData.songs} 
-            loading={currentData.loading} 
-            error={currentData.error}
-            onSongClick={handleSongDetailsClick}
-          />
+        <Pagination
+          currentPage={currentData.currentPage}
+          totalPages={currentData.totalPages}
+          hasMore={currentData.hasMore}
+          onPageChange={currentData.setCurrentPage}
+          totalCount={currentData.totalCount}
+          pageSize={20}
+          loading={currentData.loading}
+        />
 
-          {currentData.totalCount > 20 && (
-            <Pagination
-              currentPage={currentData.currentPage}
-              totalPages={currentData.totalPages}
-              hasMore={currentData.hasMore}
-              onPageChange={currentData.setCurrentPage}
-              size="sm"
-            />
-          )}
-
-          <SongStatsSummary
-            currentPage={currentData.currentPage}
-            totalCount={currentData.totalCount}
-            pageSize={20}
-            loading={currentData.loading}
-          />
-
-          <SongSearchOptionsModal
-            isOpen={showOptionsModal}
-            onClose={() => setShowOptionsModal(false)}
-            sortBy={currentData.sortBy}
-            sortOrder={currentData.sortOrder}
-            filters={currentData.filters}
-            onSortChange={currentData.handleSortChange}
-            onFiltersChange={currentData.setFilters}
-          />
+        <SongSearchOptionsModal
+          isOpen={showOptionsModal}
+          onClose={() => setShowOptionsModal(false)}
+          sortBy={currentData.sortBy}
+          sortOrder={currentData.sortOrder}
+          filters={currentData.filters}
+          onSortChange={currentData.handleSortChange}
+          onFiltersChange={currentData.setFilters}
+        />
           
-        <PerformanceListModal 
+        <SongDetailModal
           song={selectedSong}
-          open={showPerformanceModal}
-          onOpenChange={setShowPerformanceModal}
+          isOpen={showSongDetailModal}
+          onClose={() => setShowSongDetailModal(false)}
           onPerformancePlay={(song, performance) => {
             playSong(song, performance);
           }}

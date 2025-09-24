@@ -1,6 +1,6 @@
 'use client';
 
-import { VideoApi } from '../api/lambdaClient';
+import { VideoApi } from '../api/archiveClient';
 import { useApiQuery } from '@/hooks/useApi';
 
 interface UseAllVideoTagsResult {

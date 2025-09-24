@@ -3,6 +3,8 @@
 import React from 'react';
 import { Clock, ChevronRight } from 'lucide-react';
 import { Event } from '../types';
+import { Badge } from '@/components/ui/badge';
+import { getEventTypeBadgeStyle } from '../utils/eventBadgeStyles';
 
 interface EventListItemProps {
   event: Event;
@@ -15,18 +17,6 @@ export function EventListItem({ event, onClick }: EventListItemProps) {
     return time.slice(0, 5);
   };
 
-  const getEventTypeBadgeStyle = (type: string) => {
-    switch (type) {
-      case 'event':
-        return 'bg-badge-blue/10 text-badge-blue border-badge-blue/20';
-      case 'goods':
-        return 'bg-badge-orange/10 text-badge-orange border-badge-orange/20';
-      case 'campaign':
-        return 'bg-badge-green/10 text-badge-green border-badge-green/20';
-      default:
-        return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20';
-    }
-  };
 
   const getEventTypeLabel = (type: string) => {
     switch (type) {
@@ -43,7 +33,7 @@ export function EventListItem({ event, onClick }: EventListItemProps) {
 
   return (
     <div
-      className="group p-4 bg-bg-primary hover:bg-bg-accent/10 border border-surface-border rounded-lg cursor-pointer transition-all duration-200"
+      className="group p-4 bg-bg-primary hover:bg-bg-hover border border-surface-border rounded-lg cursor-pointer transition-all duration-200"
       onClick={() => onClick(event)}
     >
       <div className="flex items-start justify-between">
@@ -60,12 +50,13 @@ export function EventListItem({ event, onClick }: EventListItemProps) {
             )}
             <div className="flex gap-1">
               {event.eventTypes.map((type) => (
-                <span
+                <Badge
                   key={type.id}
-                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${getEventTypeBadgeStyle(type.type)}`}
+                  variant="outline"
+                  className={`cursor-default text-xs px-2 py-0.5 ${getEventTypeBadgeStyle(type.type, 'light')}`}
                 >
                   {getEventTypeLabel(type.type)}
-                </span>
+                </Badge>
               ))}
             </div>
           </div>

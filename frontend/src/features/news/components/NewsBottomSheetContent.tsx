@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Search, X } from 'lucide-react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
-import { TagBadges } from '@/components/common/Sidebar/components/TagBadges';
+import { MultiSelectSection } from '@/components/common/MultiSelectSection';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 interface NewsBottomSheetContentProps {
   searchValue: string;
@@ -22,44 +22,29 @@ export const NewsBottomSheetContent = ({
   filters,
   setFilters
 }: NewsBottomSheetContentProps) => {
-  const [inputValue, setInputValue] = React.useState(searchValue);
   const { categories, loading } = useNewsCategories();
   const selectedCategoryIds = filters.categoryIds || [];
 
-  React.useEffect(() => {
-    setInputValue(searchValue);
-  }, [searchValue]);
-
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
+  const handleSearchChange = (value: string) => {
     if (!value) {
       onClearSearch();
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(inputValue.trim());
-  };
-
-  const handleClear = () => {
-    setInputValue('');
-    onClearSearch();
-  };
-
-  const handleTagToggle = (tag: string) => {
-    const categoryId = categories.find(c => getCategoryDisplayName(c.name) === tag)?.id;
-    if (!categoryId) return;
-
-    if (selectedCategoryIds.includes(categoryId)) {
+  const handleTagChange = (tags: string[]) => {
+    if (tags.length === 0) {
       setFilters({
         ...filters,
         categoryIds: undefined,
       });
     } else {
+      const categoryIds = tags.map(tag => {
+        return categories.find(c => getCategoryDisplayName(c.name) === tag)?.id;
+      }).filter(Boolean) as number[];
+
       setFilters({
         ...filters,
-        categoryIds: [categoryId],
+        categoryIds,
       });
     }
   };
@@ -70,56 +55,27 @@ export const NewsBottomSheetContent = ({
     .map(c => getCategoryDisplayName(c.name));
 
   return (
-    <div className="flex-1 overflow-y-auto min-h-0">
-      <div className="p-3">
-        <div className="space-y-6">
-          {/* ニュース検索セクション */}
-          <div>
-            <form onSubmit={handleSubmit}>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary w-3.5 h-3.5" />
-                <input
-                  type="text"
-                  placeholder="気になるニュースを探す"
-                  value={inputValue}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  className="w-full pl-8 pr-8 py-2 border border-surface-border rounded-md text-sm focus:outline-none focus:border-accent-gold focus:ring-1 focus:ring-accent-gold transition-all"
-                />
-                {inputValue && (
-                  <button
-                    type="button"
-                    onClick={handleClear}
-                    className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-text-tertiary hover:text-text-secondary transition-colors"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
+    <>
+      {/* ニュース検索セクション */}
+      <SearchInput
+        searchValue={searchValue}
+        onSearchChange={handleSearchChange}
+        onSearch={onSearch}
+        onClearSearch={onClearSearch}
+        placeholder="気になるニュースを探す"
+        variant="sidebar"
+        size="sm"
+      />
 
-          {/* カテゴリ */}
-          <div>
-            <h3 className="text-sm font-bold text-text-primary mb-2">カテゴリ</h3>
-            {loading ? (
-              <div className="flex flex-wrap gap-2">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-6 w-16 bg-bg-tertiary rounded animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : (
-              <TagBadges
-                tags={tags}
-                selectedTags={selectedTags}
-                onTagToggle={handleTagToggle}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+      {/* カテゴリ */}
+      <MultiSelectSection
+        options={tags}
+        value={selectedTags}
+        onChange={handleTagChange}
+        title="カテゴリ"
+        placeholder="カテゴリを選択"
+        loading={loading}
+      />
+    </>
   );
 };

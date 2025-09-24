@@ -3,7 +3,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Event } from '../types';
-import { Modal, ModalContent, ModalHeader, ModalTitle, ModalClose, ModalBody } from '@/components/ui/modal';
+import { Modal, ModalContent } from '@/components/ui/Modal';
 import { EventListItem } from './EventListItem';
 
 interface DayEventsModalProps {
@@ -34,39 +34,38 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
     return 0;
   });
 
-  return (
-    <Modal open={isOpen} onOpenChange={onClose}>
-      <ModalContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <ModalHeader>
-          <ModalTitle>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-text-secondary" />
-              <span>{formatDate(date)}</span>
-            </div>
-          </ModalTitle>
-          <ModalClose onClose={onClose} />
-        </ModalHeader>
-        <ModalBody>
-          {sortedEvents.length === 0 ? (
-            <div className="text-center py-8 text-text-secondary">
-              この日の予定はありません
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="text-sm text-text-secondary mb-3">
-                {sortedEvents.length}件の予定
-              </div>
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+    }
+  };
 
-              {sortedEvents.map((event) => (
-                <EventListItem
-                  key={event.id}
-                  event={event}
-                  onClick={onEventClick}
-                />
-              ))}
+  return (
+    <Modal open={isOpen} onOpenChange={handleOpenChange}>
+      <ModalContent className="space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center gap-2 px-4 py-2">
+          <Calendar className="w-5 h-5 text-gray-300" />
+          <h2 className="text-lg font-semibold text-white">{formatDate(date)}</h2>
+        </div>
+        {sortedEvents.length === 0 ? (
+          <div className="text-center py-8 text-white">
+            この日の予定はありません
+          </div>
+        ) : (
+          <div className="space-y-3 px-4 pt-2 pb-4">
+            <div className="text-sm text-gray-200 mb-3 font-medium">
+              {sortedEvents.length}件の予定
             </div>
-          )}
-        </ModalBody>
+
+            {sortedEvents.map((event) => (
+              <EventListItem
+                key={event.id}
+                event={event}
+                onClick={onEventClick}
+              />
+            ))}
+          </div>
+        )}
       </ModalContent>
     </Modal>
   );

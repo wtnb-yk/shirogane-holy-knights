@@ -10,7 +10,6 @@ interface DiscographySidebarConfig {
   searchSection?: {
     title?: string;
   };
-  width?: 'sm' | 'md' | 'lg' | string;
 }
 
 interface DiscographySidebarProps {
@@ -33,8 +32,7 @@ export const DiscographySidebar = ({
   const {
     searchSection = {
       title: 'アルバム検索'
-    },
-    width = 'lg'
+    }
   } = config;
 
   const sections: SidebarSectionConfig[] = [
@@ -61,7 +59,6 @@ export const DiscographySidebar = ({
   return (
     <FilterableSidebar
       sections={sections}
-      width={width}
     />
   );
 };

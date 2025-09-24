@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
-import { BottomSheetHeader } from '@/components/common/BottomSheet/BottomSheetHeader';
 
 interface ResponsiveSidebarProps {
   isOpen: boolean;
@@ -33,11 +32,8 @@ export const ResponsiveSidebar = ({
         isOpen={isOpen}
         onClose={onClose}
         className={className}
+        title={bottomSheetTitle}
       >
-        <BottomSheetHeader
-          title={bottomSheetTitle}
-          onClose={onClose}
-        />
         {mobileContent || children}
       </BottomSheet>
     </>
