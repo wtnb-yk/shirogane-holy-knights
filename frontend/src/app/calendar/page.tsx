@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
-import { CalendarHeader } from '@/features/calendar/components/CalendarHeader';
-import { CalendarGrid } from '@/features/calendar/components/CalendarGrid';
+import { Calendar } from '@/features/calendar/components/Calendar';
 import { CalendarSidebar } from '@/features/calendar/components/CalendarSidebar';
 import { EventDetailModal } from '@/features/calendar/components/EventDetailModal';
 import { DayEventsModal } from '@/features/calendar/components/DayEventsModal';
@@ -12,13 +11,11 @@ import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
-import { CalendarSearchOptionsModal } from '@/features/calendar/components/CalendarSearchOptionsModal';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSearchOptionsModalOpen, setIsSearchOptionsModalOpen] = useState(false);
   const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
   const [isDayEventsBottomSheetOpen, setIsDayEventsBottomSheetOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -44,12 +41,6 @@ export default function CalendarPage() {
 
   const activeFiltersCount = selectedEventTypes.length;
   const hasActiveFilters = activeFiltersCount > 0;
-
-  const handleFiltersChange = (filters: { eventTypeIds?: number[] }) => {
-    if (filters.eventTypeIds !== undefined) {
-      setSelectedEventTypes(filters.eventTypeIds);
-    }
-  };
 
   const handleEventClick = (event: any) => {
     setSelectedEvent(event);
@@ -151,12 +142,6 @@ export default function CalendarPage() {
         { name: 'カレンダー', url: 'https://www.noe-room.com/calendar' }
       ]} />
 
-      <CalendarHeader
-        currentView={currentView}
-        currentDate={currentDate}
-        onDateChange={setCurrentDate}
-      />
-
       <SearchResultsSummary
         searchQuery=""
         totalCount={filteredEvents.length}
@@ -167,9 +152,10 @@ export default function CalendarPage() {
         }}
       />
 
-      <CalendarGrid
+      <Calendar
         currentView={currentView}
         currentDate={currentDate}
+        onDateChange={setCurrentDate}
         events={filteredEvents}
         loading={loading}
         error={error}
@@ -201,15 +187,6 @@ export default function CalendarPage() {
         onClose={handleCloseModal}
         fromDayModal={fromDayModalOrSheet}
         onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
-      />
-
-      {/* Search Modal */}
-      <CalendarSearchOptionsModal
-        isOpen={isSearchOptionsModalOpen}
-        onClose={() => setIsSearchOptionsModalOpen(false)}
-        filters={{ eventTypeIds: selectedEventTypes }}
-        onFiltersChange={handleFiltersChange}
-        eventTypes={eventTypes}
       />
     </PageLayout>
   );
