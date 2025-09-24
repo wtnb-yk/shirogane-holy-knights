@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { Clock } from 'lucide-react';
-import { StreamSong, StreamSongPerformance } from "@/features/songs/types/types";
+import { Performance, StreamSong } from "@/features/songs/types/types";
 
 interface StreamSongInfoProps {
   song: StreamSong;
-  latestPerformance: StreamSongPerformance | undefined;
+  latestPerformance: Performance | undefined;
 }
 
 export const StreamSongInfo = ({ song, latestPerformance }: StreamSongInfoProps) => {
