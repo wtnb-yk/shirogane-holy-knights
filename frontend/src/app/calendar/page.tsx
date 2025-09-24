@@ -7,7 +7,7 @@ import { CalendarSidebar } from '@/features/calendar/components/CalendarSidebar'
 import { EventDetailModal } from '@/features/calendar/components/EventDetailModal';
 import { DayEventsModal } from '@/features/calendar/components/DayEventsModal';
 import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
-import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
+import { CalendarSearchResultsSummary } from '@/features/calendar/components/display/results/CalendarSearchResultsSummary';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
@@ -142,14 +142,12 @@ export default function CalendarPage() {
         { name: 'カレンダー', url: 'https://www.noe-room.com/calendar' }
       ]} />
 
-      <SearchResultsSummary
+      <CalendarSearchResultsSummary
         searchQuery=""
         totalCount={filteredEvents.length}
         onClearAllFilters={clearFilters}
         hasFilters={hasActiveFilters}
-        filters={{
-          selectedTags: getSelectedEventTypeNames(),
-        }}
+        selectedEventTypeNames={getSelectedEventTypeNames()}
       />
 
       <Calendar

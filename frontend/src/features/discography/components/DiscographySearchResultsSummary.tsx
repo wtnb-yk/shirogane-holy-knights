@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SearchResultsSummary as BaseSearchResultsSummary } from '@/components/common/SearchResultsSummary';
+import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { AlbumFilterOptions } from '../types/types';
 import { useAlbumTypes } from '../hooks/useAlbumTypes';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
@@ -33,7 +33,7 @@ export const DiscographySearchResultsSummary = ({
   const filterSummary = albumTypeNames ? `カテゴリ: ${albumTypeNames}` : undefined;
 
   return (
-    <BaseSearchResultsSummary
+    <SearchResultsSummary
       searchQuery={searchQuery}
       filterSummary={filterSummary}
       totalCount={totalCount}

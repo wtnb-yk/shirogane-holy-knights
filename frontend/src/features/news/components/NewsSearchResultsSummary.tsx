@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SearchResultsSummary as BaseSearchResultsSummary } from '@/components/common/SearchResultsSummary';
+import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { NewsFilterOptions } from '../types/types';
 import { useNewsCategories } from '../hooks/useNewsCategories';
 import {getCategoryDisplayName} from "@/constants/newsCategories";
@@ -33,7 +33,7 @@ export const NewsSearchResultsSummary = ({
   const filterSummary = categoryNames ? `カテゴリ: ${categoryNames}` : undefined;
 
   return (
-    <BaseSearchResultsSummary
+    <SearchResultsSummary
       searchQuery={searchQuery}
       filterSummary={filterSummary}
       totalCount={totalCount}

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SearchResultsSummary as BaseSearchResultsSummary } from '@/components/common/SearchResultsSummary';
+import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
 import { FilterOptions } from '../../search/internals/ArchiveFilterSection';
 
 interface SearchResultsSummaryProps {
@@ -34,7 +34,7 @@ export const ArchiveSearchResultsSummary = ({
   const filterSummary = filterParts.join(' / ');
 
   return (
-    <BaseSearchResultsSummary
+    <SearchResultsSummary
       searchQuery={searchQuery}
       filterSummary={filterSummary}
       totalCount={totalCount}
