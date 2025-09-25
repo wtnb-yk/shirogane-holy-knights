@@ -56,7 +56,7 @@ export const DynamicYouTubePlayer = dynamic(
 
 
 export const DynamicEventDetailModal = dynamic(
-  () => import('@/features/calendar/components/EventDetailModal').then(mod => ({ default: mod.EventDetailModal })),
+  () => import('@/features/calendar/components/modals/EventDetailModal').then(mod => ({ default: mod.EventDetailModal })),
   {
     loading: ModalSkeleton,
     ssr: false,
@@ -64,7 +64,7 @@ export const DynamicEventDetailModal = dynamic(
 );
 
 export const DynamicDayEventsModal = dynamic(
-  () => import('@/features/calendar/components/DayEventsModal').then(mod => ({ default: mod.DayEventsModal })),
+  () => import('@/features/calendar/components/modals/DayEventsModal').then(mod => ({ default: mod.DayEventsModal })),
   {
     loading: ModalSkeleton,
     ssr: false,
