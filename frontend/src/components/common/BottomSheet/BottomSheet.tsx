@@ -56,6 +56,7 @@ export const BottomSheet = ({
   if (!isOpen) return null;
 
   return (
+    // TODO: コンポーネントの責務ではない。外に出す。
     <div className="lg:hidden">
       {/* 背景オーバーレイ */}
       <div
