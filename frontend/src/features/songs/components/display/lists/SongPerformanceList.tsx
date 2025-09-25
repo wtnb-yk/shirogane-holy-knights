@@ -11,13 +11,15 @@ interface SongPerformanceListProps {
   onPerformancePlay?: (song: StreamSong, performance: Performance) => void;
   onClose?: () => void;
   song: StreamSong;
+  variant?: 'default' | 'mobile';
 }
 
 export const SongPerformanceList: React.FC<SongPerformanceListProps> = ({
   performances,
   onPerformancePlay,
   onClose,
-  song
+  song,
+  variant = 'default'
 }) => {
   const handlePerformancePlay = useCallback(
     (song: StreamSong, performance: Performance) => {
@@ -32,11 +34,16 @@ export const SongPerformanceList: React.FC<SongPerformanceListProps> = ({
     return <SongPerformanceListEmpty />;
   }
 
+  const isMobile = variant === 'mobile';
+  const scrollClassName = isMobile
+    ? "space-y-2 max-h-none"
+    : "space-y-4 max-h-96 overflow-y-auto";
+
   return (
     <div>
-      <SongPerformanceListHeader count={performances.length} />
+      <SongPerformanceListHeader count={performances.length} variant={variant} />
 
-      <div className="space-y-4 max-h-96 overflow-y-auto" role="list">
+      <div className={scrollClassName} role="list">
         {performances.map((performance, index) => (
           <SongPerformanceItem
             key={`${performance.videoId}-${index}`}
@@ -44,6 +51,7 @@ export const SongPerformanceList: React.FC<SongPerformanceListProps> = ({
             song={song}
             onPerformancePlay={handlePerformancePlay}
             onClose={onClose}
+            variant={variant}
           />
         ))}
       </div>

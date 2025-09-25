@@ -75,15 +75,13 @@ export const BottomSheet = ({
         )}
         style={{ pointerEvents: 'auto' }}
       >
-        {title && (
-          <BottomSheetHeader
-            title={title}
-            onClose={onClose}
-          />
-        )}
+        <BottomSheetHeader
+          title={title}
+          onClose={onClose}
+        />
         <div className="flex-1 overflow-y-auto min-h-0">
-          <div className="p-3">
-            <div className="space-y-6">
+          <div className="p-2">
+            <div className="space-y-4">
               {children}
             </div>
           </div>

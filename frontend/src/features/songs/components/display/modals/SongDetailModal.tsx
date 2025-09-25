@@ -2,9 +2,11 @@
 
 import React from 'react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
-import { Modal, ModalContent } from '@/components/ui/Modal';
+import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
+import { useViewport } from '@/hooks/useViewport';
 import { SongBasicInfo } from './SongBasicInfo';
 import { SongPerformanceList } from '../lists/SongPerformanceList';
+import { SongDetailBottomSheetLayout } from './SongDetailBottomSheetLayout';
 
 interface SongDetailModalProps {
   song: StreamSong | null;
@@ -19,25 +21,44 @@ export const SongDetailModal = ({
   onClose,
   onPerformancePlay
 }: SongDetailModalProps) => {
+  const { isDesktop, isLoaded } = useViewport();
+
   if (!song) return null;
 
-  return (
-    <Modal open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <ModalContent className="space-y-4 sm:space-y-6">
-        <SongBasicInfo
-          title={song.title}
-          artist={song.artist}
-          singCount={song.singCount}
-          latestSingDate={song.latestSingDate}
-        />
+  // SSRハイドレーション対応：初回レンダリング時はデスクトップ表示
+  const shouldUseDesktopLayout = !isLoaded || isDesktop;
 
-        <SongPerformanceList
-          performances={song.performances}
+  return (
+    <ResponsiveModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={shouldUseDesktopLayout ? song.title : ""}
+      className={shouldUseDesktopLayout ? "space-y-4 sm:space-y-6" : ""}
+    >
+      {shouldUseDesktopLayout ? (
+        // デスクトップレイアウト：従来通り
+        <>
+          <SongBasicInfo
+            title={song.title}
+            artist={song.artist}
+            singCount={song.singCount}
+            latestSingDate={song.latestSingDate}
+          />
+          <SongPerformanceList
+            performances={song.performances}
+            onPerformancePlay={onPerformancePlay}
+            onClose={onClose}
+            song={song}
+          />
+        </>
+      ) : (
+        // モバイルレイアウト：BottomSheet最適化レイアウト
+        <SongDetailBottomSheetLayout
+          song={song}
           onPerformancePlay={onPerformancePlay}
           onClose={onClose}
-          song={song}
         />
-      </ModalContent>
-    </Modal>
+      )}
+    </ResponsiveModal>
   );
 };
