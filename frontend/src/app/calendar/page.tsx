@@ -170,6 +170,14 @@ export default function CalendarPage() {
         onEventClick={handleEventClickFromDayModal}
       />
 
+      <EventDetailModal
+        event={selectedEvent}
+        isOpen={isEventModalOpen}
+        onClose={handleCloseModal}
+        fromDayModal={fromDayModalOrSheet}
+        onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
+      />
+
       {/*　TODO: 開くように修正する */}
       <DayEventsBottomSheet
         date={selectedDate}
@@ -177,14 +185,6 @@ export default function CalendarPage() {
         isOpen={isDayEventsBottomSheetOpen}
         onClose={() => setIsDayEventsBottomSheetOpen(false)}
         onEventClick={handleEventClickFromBottomSheet}
-      />
-
-      <EventDetailModal
-        event={selectedEvent}
-        isOpen={isEventModalOpen}
-        onClose={handleCloseModal}
-        fromDayModal={fromDayModalOrSheet}
-        onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
     </PageLayout>
   );
