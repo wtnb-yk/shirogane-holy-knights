@@ -7,14 +7,13 @@ import { Pagination } from '@/components/ui/Pagination';
 import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
 import { NewsSidebarContent } from '@/features/news/components/NewsSidebarContent';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
-import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function NewsPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+  const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
+
   const {
     news,
     loading,
@@ -32,7 +31,7 @@ export default function NewsPage() {
     clearAllFilters
   } = useNews({ pageSize: 10 });
 
-  const activeFiltersCount = (searchQuery ? 1 : 0) + 
+  const activeFiltersCount = (searchQuery ? 1 : 0) +
     (filters.categoryIds?.length || 0);
 
   return (
@@ -44,38 +43,39 @@ export default function NewsPage() {
           カテゴリやキーワードで検索して最新情報をチェックできます。
         </p>
       }
-      mobileActions={
-        <FilterToggleButton
-          onClick={() => setIsSidebarOpen(true)}
-          hasActiveFilters={activeFiltersCount > 0}
-          activeFiltersCount={activeFiltersCount}
-          variant="search"
-        />
-      }
-      sidebar={
-        <ResponsiveSidebar
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          desktopContent={
-            <NewsSidebarContent
-              searchValue={searchQuery}
-              onSearch={handleSearch}
-              onClearSearch={clearSearch}
-              filters={filters}
-              setFilters={setFilters}
-            />
-          }
-          mobileContent={
-            <NewsBottomSheetContent
-              searchValue={searchQuery}
-              onSearch={handleSearch}
-              onClearSearch={clearSearch}
-              filters={filters}
-              setFilters={setFilters}
-            />
-          }
-        />
-      }
+      desktopSidebar={{
+        content: (
+          <NewsSidebarContent
+            searchValue={searchQuery}
+            onSearch={handleSearch}
+            onClearSearch={clearSearch}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        )
+      }}
+      mobileBottomSheet={{
+        trigger: (
+          <FilterToggleButton
+            onClick={() => setMobileBottomSheetOpen(true)}
+            hasActiveFilters={activeFiltersCount > 0}
+            activeFiltersCount={activeFiltersCount}
+            variant="search"
+          />
+        ),
+        isOpen: mobileBottomSheetOpen,
+        onClose: () => setMobileBottomSheetOpen(false),
+        title: '検索・絞り込み',
+        content: (
+          <NewsBottomSheetContent
+            searchValue={searchQuery}
+            onSearch={handleSearch}
+            onClearSearch={clearSearch}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        )
+      }}
     >
       <BreadcrumbSchema items={[
         { name: 'ホーム', url: 'https://www.noe-room.com/' },
@@ -88,10 +88,10 @@ export default function NewsPage() {
         onClearAllFilters={clearAllFilters}
       />
 
-      <NewsGrid 
-        news={news} 
-        loading={loading} 
-        error={error} 
+      <NewsGrid
+        news={news}
+        loading={loading}
+        error={error}
       />
 
       <Pagination

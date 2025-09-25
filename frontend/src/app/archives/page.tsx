@@ -11,7 +11,6 @@ import { VideosGrid } from '@/features/archives/components/display/grids/VideosG
 import { StreamsGrid } from '@/features/archives/components/display/grids/StreamsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
-import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { ArchiveBottomSheetContent } from '@/features/archives/components/layout/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
@@ -19,7 +18,7 @@ import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
 
   const videosData = useVideos({pageSize: 20});
@@ -41,14 +40,6 @@ export default function ArchivePage() {
           最新の配信はYouTubeチャンネルをご確認ください。
         </p>
       }
-      mobileActions={
-        <FilterToggleButton
-          onClick={() => setIsSidebarOpen(true)}
-          hasActiveFilters={activeFiltersCount > 0}
-          activeFiltersCount={activeFiltersCount}
-          variant="search"
-        />
-      }
       primaryTabs={
         <SegmentedControl
           tabs={[
@@ -59,36 +50,58 @@ export default function ArchivePage() {
           onTabChange={(value) => setContentType(value as ContentType)}
         />
       }
-      sidebar={
-        <ResponsiveSidebar
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          desktopContent={
-            <ArchiveSidebarContent
-              contentType={contentType}
-              onContentTypeChange={setContentType}
-              searchValue={currentData.searchQuery}
-              onSearch={currentData.handleSearch}
-              onClearSearch={currentData.clearSearch}
-              onFilterClick={() => setShowFilterModal(true)}
-              hasActiveOptions={currentData.hasActiveFilters}
+      desktopSidebar={{
+        content: (
+          <ArchiveSidebarContent
+            contentType={contentType}
+            onContentTypeChange={setContentType}
+            searchValue={currentData.searchQuery}
+            onSearch={currentData.handleSearch}
+            onClearSearch={currentData.clearSearch}
+            onFilterClick={() => setShowFilterModal(true)}
+            hasActiveOptions={currentData.hasActiveFilters}
+            filters={currentData.filters}
+            setFilters={currentData.setFilters}
+            loading={currentData.loading}
+          />
+        ),
+        modal: {
+          isOpen: showFilterModal,
+          onClose: () => setShowFilterModal(false),
+          content: (
+            <ArchiveSearchOptionsModal
+              isOpen={showFilterModal}
+              onClose={() => setShowFilterModal(false)}
               filters={currentData.filters}
-              setFilters={currentData.setFilters}
-              loading={currentData.loading}
-            />
-          }
-          mobileContent={
-            <ArchiveBottomSheetContent
-              searchValue={currentData.searchQuery}
-              onSearch={currentData.handleSearch}
-              onClearSearch={currentData.clearSearch}
-              filters={currentData.filters}
-              setFilters={currentData.setFilters}
+              onFiltersChange={currentData.setFilters}
               availableTags={currentData.availableTags}
             />
-          }
-        />
-      }
+          )
+        }
+      }}
+      mobileBottomSheet={{
+        trigger: (
+          <FilterToggleButton
+            onClick={() => setMobileBottomSheetOpen(true)}
+            hasActiveFilters={activeFiltersCount > 0}
+            activeFiltersCount={activeFiltersCount}
+            variant="search"
+          />
+        ),
+        isOpen: mobileBottomSheetOpen,
+        onClose: () => setMobileBottomSheetOpen(false),
+        title: '検索・絞り込み',
+        content: (
+          <ArchiveBottomSheetContent
+            searchValue={currentData.searchQuery}
+            onSearch={currentData.handleSearch}
+            onClearSearch={currentData.clearSearch}
+            filters={currentData.filters}
+            setFilters={currentData.setFilters}
+            availableTags={currentData.availableTags}
+          />
+        )
+      }}
     >
       <>
         <BreadcrumbSchema items={[
@@ -133,15 +146,6 @@ export default function ArchivePage() {
           totalCount={currentData.totalCount}
           pageSize={20}
           loading={currentData.loading}
-        />
-
-        {/* Search Modal */}
-        <ArchiveSearchOptionsModal
-          isOpen={showFilterModal}
-          onClose={() => setShowFilterModal(false)}
-          filters={currentData.filters}
-          onFiltersChange={currentData.setFilters}
-          availableTags={currentData.availableTags}
         />
       </>
     </PageLayout>

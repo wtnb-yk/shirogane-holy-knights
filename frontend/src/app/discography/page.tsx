@@ -7,7 +7,6 @@ import { Pagination } from '@/components/ui/Pagination';
 import { DiscographySearchResultsSummary } from "@/features/discography/components/DiscographySearchResultsSummary";
 import { DiscographySidebarContent } from '@/features/discography/components/DiscographySidebarContent';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
-import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
@@ -17,7 +16,7 @@ import { AlbumDto } from '@/features/discography/types/types';
 const PAGE_SIZE = 12;
 
 export default function DiscographyPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState<AlbumDto | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
@@ -60,38 +59,39 @@ export default function DiscographyPage() {
           楽曲名での検索や配信日での並び替え、カテゴリでの絞り込みができます。
         </p>
       }
-      mobileActions={
-        <FilterToggleButton
-          onClick={() => setIsSidebarOpen(true)}
-          hasActiveFilters={activeFiltersCount > 0}
-          activeFiltersCount={activeFiltersCount}
-          variant="search"
-        />
-      }
-      sidebar={
-        <ResponsiveSidebar
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          desktopContent={
-            <DiscographySidebarContent
-              searchValue={searchQuery}
-              onSearch={handleSearch}
-              onClearSearch={clearSearch}
-              filters={filters}
-              setFilters={setFilters}
-            />
-          }
-          mobileContent={
-            <DiscographyBottomSheetContent
-              searchValue={searchQuery}
-              onSearch={handleSearch}
-              onClearSearch={clearSearch}
-              filters={filters}
-              setFilters={setFilters}
-            />
-          }
-        />
-      }
+      desktopSidebar={{
+        content: (
+          <DiscographySidebarContent
+            searchValue={searchQuery}
+            onSearch={handleSearch}
+            onClearSearch={clearSearch}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        )
+      }}
+      mobileBottomSheet={{
+        trigger: (
+          <FilterToggleButton
+            onClick={() => setMobileBottomSheetOpen(true)}
+            hasActiveFilters={activeFiltersCount > 0}
+            activeFiltersCount={activeFiltersCount}
+            variant="search"
+          />
+        ),
+        isOpen: mobileBottomSheetOpen,
+        onClose: () => setMobileBottomSheetOpen(false),
+        title: '検索・絞り込み',
+        content: (
+          <DiscographyBottomSheetContent
+            searchValue={searchQuery}
+            onSearch={handleSearch}
+            onClearSearch={clearSearch}
+            filters={filters}
+            setFilters={setFilters}
+          />
+        )
+      }}
     >
       <BreadcrumbSchema items={[
         { name: 'ホーム', url: 'https://www.noe-room.com/' },

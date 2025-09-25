@@ -9,13 +9,12 @@ import { DayEventsModal } from '@/features/calendar/components/modals/DayEventsM
 import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
 import { CalendarSearchResultsSummary } from '@/features/calendar/components/display/results/CalendarSearchResultsSummary';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
-import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
   const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
   const [isDayEventsBottomSheetOpen, setIsDayEventsBottomSheetOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -109,34 +108,35 @@ export default function CalendarPage() {
           カテゴリで絞り込んで、見逃したくない情報をチェックしましょう。
         </p>
       }
-      mobileActions={
-        <FilterToggleButton
-          onClick={() => setIsSidebarOpen(true)}
-          hasActiveFilters={hasActiveFilters}
-          activeFiltersCount={activeFiltersCount}
-          variant="filter"
-        />
-      }
-      sidebar={
-        <ResponsiveSidebar
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          desktopContent={
-            <CalendarSidebarContent
-              selectedEventTypes={selectedEventTypes}
-              onEventTypeChange={setSelectedEventTypes}
-              eventTypes={eventTypes}
-            />
-          }
-          mobileContent={
-            <CalendarBottomSheetContent
-              selectedEventTypes={selectedEventTypes}
-              onEventTypeChange={setSelectedEventTypes}
-              eventTypes={eventTypes}
-            />
-          }
-        />
-      }
+      desktopSidebar={{
+        content: (
+          <CalendarSidebarContent
+            selectedEventTypes={selectedEventTypes}
+            onEventTypeChange={setSelectedEventTypes}
+            eventTypes={eventTypes}
+          />
+        )
+      }}
+      mobileBottomSheet={{
+        trigger: (
+          <FilterToggleButton
+            onClick={() => setMobileBottomSheetOpen(true)}
+            hasActiveFilters={hasActiveFilters}
+            activeFiltersCount={activeFiltersCount}
+            variant="filter"
+          />
+        ),
+        isOpen: mobileBottomSheetOpen,
+        onClose: () => setMobileBottomSheetOpen(false),
+        title: '絞り込み',
+        content: (
+          <CalendarBottomSheetContent
+            selectedEventTypes={selectedEventTypes}
+            onEventTypeChange={setSelectedEventTypes}
+            eventTypes={eventTypes}
+          />
+        )
+      }}
     >
       <BreadcrumbSchema items={[
         { name: 'ホーム', url: 'https://www.noe-room.com/' },
@@ -163,7 +163,7 @@ export default function CalendarPage() {
         onMobileDateClick={handleMobileDateClick}
       />
 
-      {/* TODO: モーダルとボトムシートのリファクタ */}
+      {/* 独立したモーダル群 - サイドバーとは関連なし */}
       <DayEventsModal
         date={selectedDate}
         events={selectedDateEvents}
@@ -180,7 +180,6 @@ export default function CalendarPage() {
         onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
 
-      {/*　TODO: 開くように修正する */}
       <DayEventsBottomSheet
         date={selectedDate}
         events={selectedDateEvents}
