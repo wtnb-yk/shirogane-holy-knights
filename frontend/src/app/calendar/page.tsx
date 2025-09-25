@@ -161,8 +161,7 @@ export default function CalendarPage() {
         onMobileDateClick={handleMobileDateClick}
       />
 
-      {/* 独立したモーダル群 - サイドバーとは関連なし */}
-      {/* TODO: リファクタ */}
+      {/* 独立したモーダル群 */}
       <DayEventsModal
         date={selectedDate}
         events={selectedDateEvents}
@@ -189,6 +188,8 @@ export default function CalendarPage() {
           onEventClick={handleEventClickFromBottomSheet}
         />
       </div>
+
+      {/* モバイル専用のEventDetailBottomSheet */}
     </PageLayout>
   );
 }
