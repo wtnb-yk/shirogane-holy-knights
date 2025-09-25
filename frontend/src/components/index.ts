@@ -37,12 +37,12 @@ export { SearchResultsSummary } from './common/SearchResultsSummary';
 
 // ヘッダー・フッターコンポーネント
 export { Header } from './header/Header';
-export { Navigation } from './header/Navigation';
-export { NavigationItem } from './header/NavigationItem';
-export { DesktopNavigation } from './header/DesktopNavigation';
-export { HamburgerButton } from './header/HamburgerButton';
-export { MobileMenu } from './header/MobileMenu';
-export { Overlay } from './header/Overlay';
+export { Navigation } from './header/internals/Navigation';
+export { NavigationItem } from './header/internals/NavigationItem';
+export { DesktopNavigation } from './header/internals/DesktopNavigation';
+export { HamburgerButton } from './header/internals/HamburgerButton';
+export { MobileMenu } from './header/internals/MobileMenu';
+export { Overlay } from './header/internals/Overlay';
 export { Footer } from './footer/Footer';
 
 // SEOコンポーネント
