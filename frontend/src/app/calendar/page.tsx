@@ -162,6 +162,7 @@ export default function CalendarPage() {
         onMobileDateClick={handleMobileDateClick}
       />
 
+      {/* TODO: モーダルとボトムシートのリファクタ */}
       <DayEventsModal
         date={selectedDate}
         events={selectedDateEvents}
