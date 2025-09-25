@@ -3,11 +3,18 @@
 import React from 'react';
 import { GenericSidebar } from './Sidebar/internals/GenericSidebar';
 import { BottomSheet } from '@/components';
+import { BreadcrumbSchema } from '@/components/seo/JsonLd';
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
 
 interface PageLayoutProps {
   title: string;
   description: React.ReactNode;
   children: React.ReactNode;
+  breadcrumbItems: BreadcrumbItem[];
   primaryTabs?: React.ReactNode;
 
   desktopSidebar?: {
@@ -32,6 +39,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   title,
   description,
   children,
+  breadcrumbItems,
   primaryTabs,
   desktopSidebar,
   mobileBottomSheet
@@ -63,6 +71,9 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
               </div>
             </div>
           </div>
+
+          {/* SEO用のパンくずリスト構造化データ */}
+          <BreadcrumbSchema items={breadcrumbItems} />
 
           {/* メインコンテンツ */}
           {children}

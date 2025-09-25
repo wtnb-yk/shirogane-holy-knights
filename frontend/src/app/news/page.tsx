@@ -9,7 +9,6 @@ import { NewsSidebarContent } from '@/features/news/components/NewsSidebarConten
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function NewsPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
@@ -43,6 +42,10 @@ export default function NewsPage() {
           カテゴリやキーワードで検索して最新情報をチェックできます。
         </p>
       }
+      breadcrumbItems={[
+        { name: 'ホーム', url: 'https://www.noe-room.com/' },
+        { name: 'ニュース', url: 'https://www.noe-room.com/news' }
+      ]}
       desktopSidebar={{
         content: (
           <NewsSidebarContent
@@ -77,10 +80,6 @@ export default function NewsPage() {
         )
       }}
     >
-      <BreadcrumbSchema items={[
-        { name: 'ホーム', url: 'https://www.noe-room.com/' },
-        { name: 'ニュース', url: 'https://www.noe-room.com/news' }
-      ]} />
       <NewsSearchResultsSummary
         searchQuery={searchQuery}
         filters={filters}

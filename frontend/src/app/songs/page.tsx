@@ -16,7 +16,6 @@ import { SongsBottomSheetContent } from '@/features/songs/components/layout/Song
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/common/PageLayout';
 import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -72,6 +71,10 @@ export default function SongsList() {
           楽曲名・アーティスト名での検索、歌唱回数や最新歌唱日での並び替えが可能です。
         </p>
       }
+      breadcrumbItems={[
+        { name: 'ホーム', url: 'https://www.noe-room.com/' },
+        { name: '楽曲', url: 'https://www.noe-room.com/songs' }
+      ]}
       primaryTabs={
         <SegmentedControl
           tabs={[
@@ -141,11 +144,6 @@ export default function SongsList() {
       }}
     >
       <>
-        <BreadcrumbSchema items={[
-          { name: 'ホーム', url: 'https://www.noe-room.com/' },
-          { name: '楽曲', url: 'https://www.noe-room.com/songs' }
-        ]} />
-
         <SongSearchResultsSummary
           searchQuery={currentData.searchQuery}
           totalCount={currentData.totalCount}

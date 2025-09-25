@@ -11,7 +11,6 @@ import { CalendarSearchResultsSummary } from '@/features/calendar/components/dis
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function CalendarPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
@@ -108,6 +107,10 @@ export default function CalendarPage() {
           カテゴリで絞り込んで、見逃したくない情報をチェックしましょう。
         </p>
       }
+      breadcrumbItems={[
+        { name: 'ホーム', url: 'https://www.noe-room.com/' },
+        { name: 'カレンダー', url: 'https://www.noe-room.com/calendar' }
+      ]}
       desktopSidebar={{
         content: (
           <CalendarSidebarContent
@@ -138,11 +141,6 @@ export default function CalendarPage() {
         )
       }}
     >
-      <BreadcrumbSchema items={[
-        { name: 'ホーム', url: 'https://www.noe-room.com/' },
-        { name: 'カレンダー', url: 'https://www.noe-room.com/calendar' }
-      ]} />
-
       <CalendarSearchResultsSummary
         searchQuery=""
         totalCount={filteredEvents.length}

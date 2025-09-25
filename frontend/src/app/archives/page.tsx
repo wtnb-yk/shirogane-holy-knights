@@ -14,7 +14,6 @@ import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButt
 import { ArchiveBottomSheetContent } from '@/features/archives/components/layout/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -40,6 +39,10 @@ export default function ArchivePage() {
           最新の配信はYouTubeチャンネルをご確認ください。
         </p>
       }
+      breadcrumbItems={[
+        { name: 'ホーム', url: 'https://www.noe-room.com/' },
+        { name: 'アーカイブ', url: 'https://www.noe-room.com/archives' }
+      ]}
       primaryTabs={
         <SegmentedControl
           tabs={[
@@ -104,11 +107,6 @@ export default function ArchivePage() {
       }}
     >
       <>
-        <BreadcrumbSchema items={[
-          {name: 'ホーム', url: 'https://www.noe-room.com/'},
-          {name: 'アーカイブ', url: 'https://www.noe-room.com/archives'}
-        ]}/>
-
         <ArchiveSearchResultsSummary
           searchQuery={currentData.searchQuery}
           filters={currentData.filters}

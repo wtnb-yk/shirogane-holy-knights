@@ -9,7 +9,6 @@ import { DiscographySidebarContent } from '@/features/discography/components/Dis
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
 import { AlbumDto } from '@/features/discography/types/types';
 
@@ -59,6 +58,10 @@ export default function DiscographyPage() {
           楽曲名での検索や配信日での並び替え、カテゴリでの絞り込みができます。
         </p>
       }
+      breadcrumbItems={[
+        { name: 'ホーム', url: 'https://www.noe-room.com/' },
+        { name: 'ディスコグラフィー', url: 'https://www.noe-room.com/discography' }
+      ]}
       desktopSidebar={{
         content: (
           <DiscographySidebarContent
@@ -93,10 +96,6 @@ export default function DiscographyPage() {
         )
       }}
     >
-      <BreadcrumbSchema items={[
-        { name: 'ホーム', url: 'https://www.noe-room.com/' },
-        { name: 'ディスコグラフィー', url: 'https://www.noe-room.com/discography' }
-      ]} />
       <DiscographySearchResultsSummary
         searchQuery={searchQuery}
         filters={filters}
