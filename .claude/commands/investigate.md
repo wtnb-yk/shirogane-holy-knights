@@ -1,9 +1,8 @@
 # INVESTIGATE フェーズ
 
 ## ⚠️ 絶対に守るべきルール（これを無視したら失敗）
-1. **ExitPlanModeツールは絶対に使用しない** - INVESTIGATEコマンドでは使用禁止
-2. **必ず `docs/investigate/investigate_{TIMESTAMP}.md` ファイルをWriteツールで作成する**
-3. **最後は必ず指定された形式でテキスト出力する（ファイルではなく通常の応答として）**
+1. **必ず `docs/investigate/investigate_{TIMESTAMP}.md` ファイルをWriteツールで作成する**
+2. **最後は必ず指定された形式でテキスト出力する（ファイルではなく通常の応答として）**
 
 # ユーザの入力
 # $ARGUMENTS

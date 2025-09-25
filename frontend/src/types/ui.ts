@@ -2,7 +2,7 @@
  * UI コンポーネント関連の型定義
  */
 
-import { BaseComponentProps, ModalProps } from './common';
+import { BaseComponentProps } from './common';
 
 // ===== ボタン関連 =====
 
@@ -87,10 +87,6 @@ export interface GenericSidebarProps extends BaseComponentProps {
   position?: 'left' | 'right';
 }
 
-export interface ResponsiveSidebarProps extends ModalProps {
-  width?: SidebarWidth | string;
-  position?: 'left' | 'right';
-}
 
 export interface SidebarSectionProps extends BaseComponentProps {
   title?: string;

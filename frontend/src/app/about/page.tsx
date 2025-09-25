@@ -1,7 +1,6 @@
 'use client';
 
 import { PageLayout } from '@/components/common/PageLayout';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 export default function AboutPage() {
   return (
@@ -10,11 +9,11 @@ export default function AboutPage() {
       description={
         <p></p>
       }
-    >
-      <BreadcrumbSchema items={[
+      breadcrumbItems={[
         { name: 'ホーム', url: 'https://www.noe-room.com/' },
         { name: 'アバウト', url: 'https://www.noe-room.com/about' }
-      ]} />
+      ]}
+    >
       <div className="max-w-4xl mx-auto space-y-10">
         {/* サイト概要 */}
         <section>

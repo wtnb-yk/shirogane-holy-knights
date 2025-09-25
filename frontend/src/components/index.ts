@@ -22,7 +22,6 @@ export { BaseGrid } from './common/BaseGrid';
 export { BaseSkeleton } from './common/BaseSkeleton';
 
 // サイドバーコンポーネント
-export { ResponsiveSidebar } from './common/Sidebar/ResponsiveSidebar';
 export { FilterToggleButton } from './common/Sidebar/FilterToggleButton';
 
 // ボトムシートコンポーネント
