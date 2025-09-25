@@ -134,7 +134,7 @@ export default function CalendarPage() {
             onEventTypeChange={setSelectedEventTypes}
             eventTypes={eventTypes}
           />
-        </ResponsiveSidebar>
+      </ResponsiveSidebar>
       }
     >
       <BreadcrumbSchema items={[

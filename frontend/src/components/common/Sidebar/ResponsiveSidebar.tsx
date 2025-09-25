@@ -7,7 +7,7 @@ interface ResponsiveSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  mobileContent?: React.ReactNode;
+  mobileContent: React.ReactNode;
   bottomSheetTitle?: string;
   className?: string;
 }
@@ -34,7 +34,7 @@ export const ResponsiveSidebar = ({
         className={className}
         title={bottomSheetTitle}
       >
-        {mobileContent || children}
+        {mobileContent}
       </BottomSheet>
     </>
   );
