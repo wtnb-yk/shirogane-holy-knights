@@ -10,7 +10,6 @@ interface BottomSheetProps {
   children: React.ReactNode;
   className?: string;
   title?: ReactNode;
-  showDragHandle?: boolean;
 }
 
 export const BottomSheet = ({
@@ -19,7 +18,6 @@ export const BottomSheet = ({
   children,
   className,
   title,
-  showDragHandle = false,
 }: BottomSheetProps) => {
 
   // ESCキーでメニューを閉じる
@@ -67,10 +65,12 @@ export const BottomSheet = ({
       {/* BottomSheetメニュー */}
       <div
         className={cn(
-          'fixed bottom-0 left-0 right-0 w-full bg-white shadow-2xl border-t border-surface-border rounded-t-xl z-[51]',
+          'fixed bottom-0 left-0 right-0 w-full bg-white shadow-2xl z-[51]',
+          'rounded-t-3xl',
           'animate-in slide-in-from-bottom-2 duration-300',
           'flex flex-col',
           'max-h-[calc(100vh-64px)]',
+          'overflow-hidden',
           className
         )}
         style={{ pointerEvents: 'auto' }}
@@ -79,7 +79,6 @@ export const BottomSheet = ({
           <BottomSheetHeader
             title={title}
             onClose={onClose}
-            showDragHandle={showDragHandle}
           />
         )}
         <div className="flex-1 overflow-y-auto min-h-0">
