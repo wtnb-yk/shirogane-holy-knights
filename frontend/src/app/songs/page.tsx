@@ -7,7 +7,7 @@ import { StreamSongsList } from '@/features/songs/components/display/lists/Strea
 import { SongSearchResultsSummary } from '@/features/songs/components/display/results/SongSearchResultsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/search/SongSearchOptionsModal';
 import { SongDetailModal } from '@/features/songs/components/display/modals/SongDetailModal';
-import { SongsSidebar } from '@/features/songs/components/layout/SongsSidebar';
+import { SongsSidebarContent } from '@/features/songs/components/layout/SongsSidebarContent';
 import { PlayerSection } from '@/features/songs/components/display/player/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong, SongContentType } from '@/features/songs/types/types';
@@ -92,9 +92,22 @@ export default function SongsList() {
         />
       }
       sidebar={
-        <ResponsiveSidebar 
+        <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          desktopContent={
+            <SongsSidebarContent
+              songContentType={songContentType}
+              onSongContentTypeChange={setSongContentType}
+              searchValue={currentData.searchQuery}
+              onSearch={currentData.handleSearch}
+              onClearSearch={currentData.clearSearch}
+              onOptionsClick={() => setShowOptionsModal(true)}
+              hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC')}
+              filters={currentData.filters}
+              onFiltersChange={currentData.setFilters}
+            />
+          }
           mobileContent={
             <SongsBottomSheetContent
               searchValue={currentData.searchQuery}
@@ -109,19 +122,7 @@ export default function SongsList() {
               onSongContentTypeChange={setSongContentType}
             />
           }
-        >
-          <SongsSidebar
-            songContentType={songContentType}
-            onSongContentTypeChange={setSongContentType}
-            searchValue={currentData.searchQuery}
-            onSearch={currentData.handleSearch}
-            onClearSearch={currentData.clearSearch}
-            onOptionsClick={() => setShowOptionsModal(true)}
-            hasActiveOptions={!!(currentData.filters.startDate || currentData.filters.endDate || currentData.sortBy !== 'latestSingDate' || currentData.sortOrder !== 'DESC')}
-            filters={currentData.filters}
-            onFiltersChange={currentData.setFilters}
-          />
-        </ResponsiveSidebar>
+        />
       }
     >
       <>

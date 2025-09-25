@@ -5,7 +5,7 @@ import { useNews } from '@/features/news/hooks/useNews';
 import { NewsGrid } from '@/features/news/components/NewsGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
-import { NewsSidebar } from '@/features/news/components/NewsSidebar';
+import { NewsSidebarContent } from '@/features/news/components/NewsSidebarContent';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
@@ -56,6 +56,15 @@ export default function NewsPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          desktopContent={
+            <NewsSidebarContent
+              searchValue={searchQuery}
+              onSearch={handleSearch}
+              onClearSearch={clearSearch}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          }
           mobileContent={
             <NewsBottomSheetContent
               searchValue={searchQuery}
@@ -65,15 +74,7 @@ export default function NewsPage() {
               setFilters={setFilters}
             />
           }
-        >
-          <NewsSidebar
-            searchValue={searchQuery}
-            onSearch={handleSearch}
-            onClearSearch={clearSearch}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        </ResponsiveSidebar>
+        />
       }
     >
       <BreadcrumbSchema items={[

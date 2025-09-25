@@ -2,33 +2,34 @@
 
 import React from 'react';
 import { NewsFilterOptions } from '../types/types';
-import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
+import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
+import { SidebarSectionConfig } from '@/types';
 import { NewsSearchSection } from './NewsSidebar/NewsSearchSection';
 import { NewsCategorySection } from './NewsSidebar/NewsCategorySection';
 
-interface NewsSidebarConfig {
+interface NewsSidebarContentConfig {
   searchSection?: {
     title?: string;
   };
 }
 
-interface NewsSidebarProps {
+interface NewsSidebarContentProps {
   searchValue: string;
   onSearch: (query: string) => void;
   onClearSearch: () => void;
   filters: NewsFilterOptions;
   setFilters: (filters: NewsFilterOptions) => void;
-  config?: NewsSidebarConfig;
+  config?: NewsSidebarContentConfig;
 }
 
-export const NewsSidebar = ({
+export const NewsSidebarContent = ({
   searchValue,
   onSearch,
   onClearSearch,
   filters,
   setFilters,
   config = {}
-}: NewsSidebarProps) => {
+}: NewsSidebarContentProps) => {
   const {
     searchSection = {
       title: 'ニュース検索'
@@ -57,8 +58,20 @@ export const NewsSidebar = ({
   ];
 
   return (
-    <FilterableSidebar
-      sections={sections}
-    />
+    <>
+      {sections.map((section: any, index: number) => {
+        const Component = section.component;
+        const isLast = index === sections.length - 1;
+
+        return (
+          <SidebarSection
+            key={section.id}
+            noBorder={section.noBorder !== undefined ? section.noBorder : isLast}
+          >
+            <Component {...section.props} />
+          </SidebarSection>
+        );
+      })}
+    </>
   );
 };

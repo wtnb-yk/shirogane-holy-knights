@@ -275,3 +275,15 @@ export interface BreadcrumbProps extends BaseComponentProps {
     url: string;
   }>;
 }
+
+// ===== サイドバー系コンポーネント =====
+
+/**
+ * サイドバーセクション設定
+ */
+export interface SidebarSectionConfig<T = any> {
+  id: string;
+  component: React.ComponentType<T>;
+  props: T;
+  noBorder?: boolean;
+}
