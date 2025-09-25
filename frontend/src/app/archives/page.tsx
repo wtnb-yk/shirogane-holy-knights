@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useVideos } from '@/features/archives/hooks/useVideos';
 import { useStreams } from '@/features/archives/hooks/useStreams';
 import { ContentType } from '@/features/archives/types/types';
-import { ArchiveSidebar } from '@/features/archives/components/layout/ArchiveSidebar';
+import { ArchiveSidebarContent } from '@/features/archives/components/layout/ArchiveSidebarContent';
 import { ArchiveSearchOptionsModal } from '@/features/archives/components/search/ArchiveSearchOptionsModal';
 import { ArchiveSearchResultsSummary } from '@/features/archives/components/display/results/ArchiveSearchResultsSummary';
 import { VideosGrid } from '@/features/archives/components/display/grids/VideosGrid';
@@ -63,6 +63,20 @@ export default function ArchivePage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          desktopContent={
+            <ArchiveSidebarContent
+              contentType={contentType}
+              onContentTypeChange={setContentType}
+              searchValue={currentData.searchQuery}
+              onSearch={currentData.handleSearch}
+              onClearSearch={currentData.clearSearch}
+              onFilterClick={() => setShowFilterModal(true)}
+              hasActiveOptions={currentData.hasActiveFilters}
+              filters={currentData.filters}
+              setFilters={currentData.setFilters}
+              loading={currentData.loading}
+            />
+          }
           mobileContent={
             <ArchiveBottomSheetContent
               searchValue={currentData.searchQuery}
@@ -73,20 +87,7 @@ export default function ArchivePage() {
               availableTags={currentData.availableTags}
             />
           }
-        >
-          <ArchiveSidebar
-            contentType={contentType}
-            onContentTypeChange={setContentType}
-            searchValue={currentData.searchQuery}
-            onSearch={currentData.handleSearch}
-            onClearSearch={currentData.clearSearch}
-            onFilterClick={() => setShowFilterModal(true)}
-            hasActiveOptions={currentData.hasActiveFilters}
-            filters={currentData.filters}
-            setFilters={currentData.setFilters}
-            loading={currentData.loading}
-          />
-        </ResponsiveSidebar>
+        />
       }
     >
       <>

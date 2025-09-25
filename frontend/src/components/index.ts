@@ -23,7 +23,6 @@ export { BaseSkeleton } from './common/BaseSkeleton';
 
 // サイドバーコンポーネント
 export { ResponsiveSidebar } from './common/Sidebar/ResponsiveSidebar';
-export { FilterableSidebar } from './common/Sidebar/FilterableSidebar';
 export { FilterToggleButton } from './common/Sidebar/FilterToggleButton';
 
 // ボトムシートコンポーネント

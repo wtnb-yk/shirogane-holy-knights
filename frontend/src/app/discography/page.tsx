@@ -5,7 +5,7 @@ import { useDiscography } from '@/features/discography/hooks/useDiscography';
 import { DiscographyGrid } from '@/features/discography/components/DiscographyGrid';
 import { Pagination } from '@/components/ui/Pagination';
 import { DiscographySearchResultsSummary } from "@/features/discography/components/DiscographySearchResultsSummary";
-import { DiscographySidebar } from '@/features/discography/components/DiscographySidebar';
+import { DiscographySidebarContent } from '@/features/discography/components/DiscographySidebarContent';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { ResponsiveSidebar } from '@/components/common/Sidebar/ResponsiveSidebar';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
@@ -72,6 +72,15 @@ export default function DiscographyPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          desktopContent={
+            <DiscographySidebarContent
+              searchValue={searchQuery}
+              onSearch={handleSearch}
+              onClearSearch={clearSearch}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          }
           mobileContent={
             <DiscographyBottomSheetContent
               searchValue={searchQuery}
@@ -81,15 +90,7 @@ export default function DiscographyPage() {
               setFilters={setFilters}
             />
           }
-        >
-          <DiscographySidebar
-            searchValue={searchQuery}
-            onSearch={handleSearch}
-            onClearSearch={clearSearch}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        </ResponsiveSidebar>
+        />
       }
     >
       <BreadcrumbSchema items={[

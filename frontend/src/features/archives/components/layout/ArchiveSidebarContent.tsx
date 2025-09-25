@@ -2,14 +2,15 @@
 
 import React from 'react';
 import { ContentType } from '../../types/types';
-import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
+import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
+import { SidebarSectionConfig } from '@/types';
 import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
 import { ArchiveSearchSection } from '../search/internals/ArchiveSearchSection';
 import { SelectableList } from '@/components/common/SelectableList';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { FilterOptions } from '../search/internals/ArchiveFilterSection';
 
-interface ArchiveSidebarConfig {
+interface ArchiveSidebarContentConfig {
   displayCategories?: string[];
   searchSection?: {
     title?: string;
@@ -17,7 +18,7 @@ interface ArchiveSidebarConfig {
   };
 }
 
-interface ArchiveSidebarProps {
+interface ArchiveSidebarContentProps {
   contentType: ContentType;
   onContentTypeChange: (type: ContentType) => void;
   searchValue: string;
@@ -27,11 +28,11 @@ interface ArchiveSidebarProps {
   hasActiveOptions: boolean;
   filters: FilterOptions;
   setFilters: (filters: FilterOptions) => void;
-  config?: ArchiveSidebarConfig;
+  config?: ArchiveSidebarContentConfig;
   loading?: boolean;
 }
 
-export const ArchiveSidebar = ({
+export const ArchiveSidebarContent = ({
   contentType,
   onContentTypeChange,
   searchValue,
@@ -43,7 +44,7 @@ export const ArchiveSidebar = ({
   setFilters,
   config = {},
   loading = false
-}: ArchiveSidebarProps) => {
+}: ArchiveSidebarContentProps) => {
   const {
     displayCategories = ['雑談', 'ゲーム','ASMR', '歌枠', 'コラボ'],
     searchSection = {}
@@ -126,8 +127,20 @@ export const ArchiveSidebar = ({
   ];
 
   return (
-    <FilterableSidebar
-       sections={sections}
-    />
+    <>
+      {sections.map((section: any, index: number) => {
+        const Component = section.component;
+        const isLast = index === sections.length - 1;
+
+        return (
+          <SidebarSection
+            key={section.id}
+            noBorder={section.noBorder !== undefined ? section.noBorder : isLast}
+          >
+            <Component {...section.props} />
+          </SidebarSection>
+        );
+      })}
+    </>
   );
 };

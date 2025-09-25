@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
 import { Calendar } from '@/features/calendar/components/Calendar';
-import { CalendarSidebar } from '@/features/calendar/components/CalendarSidebar';
+import { CalendarSidebarContent } from '@/features/calendar/components/CalendarSidebarContent';
 import { EventDetailModal } from '@/features/calendar/components/modals/EventDetailModal';
 import { DayEventsModal } from '@/features/calendar/components/modals/DayEventsModal';
 import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
@@ -121,6 +121,13 @@ export default function CalendarPage() {
         <ResponsiveSidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          desktopContent={
+            <CalendarSidebarContent
+              selectedEventTypes={selectedEventTypes}
+              onEventTypeChange={setSelectedEventTypes}
+              eventTypes={eventTypes}
+            />
+          }
           mobileContent={
             <CalendarBottomSheetContent
               selectedEventTypes={selectedEventTypes}
@@ -128,13 +135,7 @@ export default function CalendarPage() {
               eventTypes={eventTypes}
             />
           }
-        >
-          <CalendarSidebar
-            selectedEventTypes={selectedEventTypes}
-            onEventTypeChange={setSelectedEventTypes}
-            eventTypes={eventTypes}
-          />
-        </ResponsiveSidebar>
+        />
       }
     >
       <BreadcrumbSchema items={[

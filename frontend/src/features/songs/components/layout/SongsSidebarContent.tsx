@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { FilterableSidebar, SidebarSectionConfig } from '@/components/common/Sidebar/FilterableSidebar';
+import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
+import { SidebarSectionConfig } from '@/types';
 import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
 import { SongSearchSection } from '../search/internals/SongSearchSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
@@ -9,13 +10,13 @@ import { YearPresetsSection } from '@/components/common/YearPresetsSection';
 import { SongFrequencySection } from '../search/internals/SongFrequencySection';
 import { SongFilterOptions, SongContentType } from '@/features/songs/types/types';
 
-interface SongsSidebarConfig {
+interface SongsSidebarContentConfig {
   searchSection?: {
     title?: string;
   };
 }
 
-interface SongsSidebarProps {
+interface SongsSidebarContentProps {
   songContentType: SongContentType;
   onSongContentTypeChange: (type: SongContentType) => void;
   searchValue: string;
@@ -25,10 +26,10 @@ interface SongsSidebarProps {
   hasActiveOptions: boolean;
   filters: SongFilterOptions;
   onFiltersChange: (filters: SongFilterOptions) => void;
-  config?: SongsSidebarConfig;
+  config?: SongsSidebarContentConfig;
 }
 
-export const SongsSidebar = ({
+export const SongsSidebarContent = ({
   songContentType,
   onSongContentTypeChange,
   searchValue,
@@ -39,7 +40,7 @@ export const SongsSidebar = ({
   filters,
   onFiltersChange,
   config = {}
-}: SongsSidebarProps) => {
+}: SongsSidebarContentProps) => {
   const {
     searchSection = {
       title: '楽曲検索'
@@ -111,8 +112,20 @@ export const SongsSidebar = ({
   }
 
   return (
-    <FilterableSidebar
-      sections={sections}
-    />
+    <>
+      {sections.map((section: any, index: number) => {
+        const Component = section.component;
+        const isLast = index === sections.length - 1;
+
+        return (
+          <SidebarSection
+            key={section.id}
+            noBorder={section.noBorder !== undefined ? section.noBorder : isLast}
+          >
+            <Component {...section.props} />
+          </SidebarSection>
+        );
+      })}
+    </>
   );
 };
