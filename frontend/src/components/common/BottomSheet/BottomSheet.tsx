@@ -56,8 +56,7 @@ export const BottomSheet = ({
   if (!isOpen) return null;
 
   return (
-    // TODO: コンポーネントの責務ではない。外に出す。
-    <div className="lg:hidden">
+    <>
       {/* 背景オーバーレイ */}
       <div
         className="fixed inset-0 z-50 bg-black/20"
@@ -91,6 +90,6 @@ export const BottomSheet = ({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

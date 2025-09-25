@@ -179,13 +179,16 @@ export default function CalendarPage() {
         onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
 
-      <DayEventsBottomSheet
-        date={selectedDate}
-        events={selectedDateEvents}
-        isOpen={isDayEventsBottomSheetOpen}
-        onClose={() => setIsDayEventsBottomSheetOpen(false)}
-        onEventClick={handleEventClickFromBottomSheet}
-      />
+      {/* モバイル専用のDayEventsBottomSheet */}
+      <div className="lg:hidden">
+        <DayEventsBottomSheet
+          date={selectedDate}
+          events={selectedDateEvents}
+          isOpen={isDayEventsBottomSheetOpen}
+          onClose={() => setIsDayEventsBottomSheetOpen(false)}
+          onEventClick={handleEventClickFromBottomSheet}
+        />
+      </div>
     </PageLayout>
   );
 }
