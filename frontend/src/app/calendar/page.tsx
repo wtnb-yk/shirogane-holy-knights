@@ -162,6 +162,7 @@ export default function CalendarPage() {
       />
 
       {/* 独立したモーダル群 - サイドバーとは関連なし */}
+      {/* TODO: リファクタ */}
       <DayEventsModal
         date={selectedDate}
         events={selectedDateEvents}
