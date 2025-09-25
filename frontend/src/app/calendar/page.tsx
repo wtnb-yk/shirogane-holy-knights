@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
 import { Calendar } from '@/features/calendar/components/Calendar';
 import { CalendarSidebar } from '@/features/calendar/components/CalendarSidebar';
-import { EventDetailModal } from '@/features/calendar/components/EventDetailModal';
-import { DayEventsModal } from '@/features/calendar/components/DayEventsModal';
+import { EventDetailModal } from '@/features/calendar/components/modals/EventDetailModal';
+import { DayEventsModal } from '@/features/calendar/components/modals/DayEventsModal';
 import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
 import { CalendarSearchResultsSummary } from '@/features/calendar/components/display/results/CalendarSearchResultsSummary';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
@@ -162,12 +162,21 @@ export default function CalendarPage() {
         onMobileDateClick={handleMobileDateClick}
       />
 
+      {/* TODO: モーダルとボトムシートのリファクタ */}
       <DayEventsModal
         date={selectedDate}
         events={selectedDateEvents}
         isOpen={isDayEventsModalOpen}
         onClose={() => setIsDayEventsModalOpen(false)}
         onEventClick={handleEventClickFromDayModal}
+      />
+
+      <EventDetailModal
+        event={selectedEvent}
+        isOpen={isEventModalOpen}
+        onClose={handleCloseModal}
+        fromDayModal={fromDayModalOrSheet}
+        onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
 
       {/*　TODO: 開くように修正する */}
@@ -177,14 +186,6 @@ export default function CalendarPage() {
         isOpen={isDayEventsBottomSheetOpen}
         onClose={() => setIsDayEventsBottomSheetOpen(false)}
         onEventClick={handleEventClickFromBottomSheet}
-      />
-
-      <EventDetailModal
-        event={selectedEvent}
-        isOpen={isEventModalOpen}
-        onClose={handleCloseModal}
-        fromDayModal={fromDayModalOrSheet}
-        onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
     </PageLayout>
   );

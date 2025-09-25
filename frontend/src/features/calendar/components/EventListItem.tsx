@@ -5,6 +5,8 @@ import { Clock, ChevronRight } from 'lucide-react';
 import { Event } from '../types';
 import { Badge } from '@/components/ui/badge';
 import { getEventTypeBadgeStyle } from '../utils/eventBadgeStyles';
+import { formatTime } from '../utils/formatters';
+import { getEventTypeLabel } from '../utils/eventTypeUtils';
 
 interface EventListItemProps {
   event: Event;
@@ -12,24 +14,6 @@ interface EventListItemProps {
 }
 
 export function EventListItem({ event, onClick }: EventListItemProps) {
-  const formatTime = (time?: string) => {
-    if (!time) return '';
-    return time.slice(0, 5);
-  };
-
-
-  const getEventTypeLabel = (type: string) => {
-    switch (type) {
-      case 'event':
-        return 'イベント';
-      case 'goods':
-        return 'グッズ';
-      case 'campaign':
-        return 'キャンペーン';
-      default:
-        return type;
-    }
-  };
 
   return (
     <div

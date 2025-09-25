@@ -4,6 +4,8 @@ import React from 'react';
 import { Event } from '../types';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 import { EventListItem } from './EventListItem';
+import { formatDateShort } from '../utils/formatters';
+import { sortEventsByTime } from '../utils/eventSortUtils';
 
 interface DayEventsBottomSheetProps {
   date: Date | null;
@@ -16,24 +18,14 @@ interface DayEventsBottomSheetProps {
 export function DayEventsBottomSheet({date, events, isOpen, onClose, onEventClick}: DayEventsBottomSheetProps) {
   if (!date) return null;
 
-  const formatDate = (date: Date) => {
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const weekDay = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
-    return `${month}月${day}日（${weekDay}）の予定`;
+  const formatDateWithTitle = (date: Date) => {
+    return `${formatDateShort(date)}の予定`;
   };
 
-  const sortedEvents = [...events].sort((a, b) => {
-    if (a.eventTime && b.eventTime) {
-      return a.eventTime.localeCompare(b.eventTime);
-    }
-    if (a.eventTime) return -1;
-    if (b.eventTime) return 1;
-    return 0;
-  });
+  const sortedEvents = sortEventsByTime(events);
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title={formatDate(date)}>
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={formatDateWithTitle(date)}>
       <div className="px-4 pb-6">
         {sortedEvents.length === 0 ? (
           <div className="text-center py-8 text-text-secondary">
