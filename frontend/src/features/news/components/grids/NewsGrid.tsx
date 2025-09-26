@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { NewsListGrid } from './NewsListGrid';
-import { NewsDto } from '../types/types';
-import { NewsCard } from './NewsCard';
-import { SkeletonNewsCard } from './SkeletonNewsCard';
+import { NewsListGrid } from './internals/NewsListGrid';
+import { NewsDto } from '../../types/types';
+import { NewsCard } from '../cards/NewsCard';
+import { SkeletonNewsCard } from '../cards/SkeletonNewsCard';
 
 interface NewsGridProps {
   news: NewsDto[];

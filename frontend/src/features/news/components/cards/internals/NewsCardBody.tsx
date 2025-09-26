@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { NewsDto } from '../../types/types';
+import { NewsDto } from '../../../types/types';
 
 interface NewsCardBodyProps {
   news: NewsDto;

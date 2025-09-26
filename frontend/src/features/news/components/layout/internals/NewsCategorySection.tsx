@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { NewsFilterOptions } from '../../types/types';
-import { useNewsCategories } from '../../hooks/useNewsCategories';
+import { NewsFilterOptions } from '../../../types/types';
+import { useNewsCategories } from '../../../hooks/useNewsCategories';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { SelectableList } from '@/components/common/SelectableList';
-import { NewsCategoryDto } from '../../types/types';
+import { NewsCategoryDto } from '../../../types/types';
 
 interface NewsCategorySectionProps {
   filters: NewsFilterOptions;
