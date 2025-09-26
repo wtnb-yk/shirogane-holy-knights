@@ -28,6 +28,7 @@ export const Modal = ({
       requestAnimationFrame(() => {
         setIsVisible(true);
       });
+      return;
     } else {
       setIsVisible(false);
       // アニメーション完了後にコンポーネントをアンマウント
