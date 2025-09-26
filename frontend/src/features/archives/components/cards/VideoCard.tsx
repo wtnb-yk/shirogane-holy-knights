@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { VideoDto } from '../../../types/types';
+import { VideoDto } from '../../types/types';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { ArchiveCardImage } from './internals/ArchiveCardImage';
 import { ArchiveCardOverlay } from './internals/ArchiveCardOverlay';
-import { formatDate } from '../../../utils/dateFormat';
+import { formatDate } from '../../utils/dateFormat';
 
 interface VideoCardProps {
   video: VideoDto;

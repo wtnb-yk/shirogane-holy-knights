@@ -3,6 +3,7 @@
 import React, { useEffect, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { BottomSheetHeader } from '@/components';
+import { BottomSheetOverlay } from '@/components/ui/Overlay';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -20,33 +21,18 @@ export const BottomSheet = ({
   title,
 }: BottomSheetProps) => {
 
-  // ESCキーでメニューを閉じる
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
+  // ESCキーハンドリングは共通Overlayで処理
 
-    document.addEventListener('keydown', handleEscKey);
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
-  }, [isOpen, onClose]);
-
-  // ボディのスクロールとクリックイベントを制御
+  // クリックイベントを制御（スクロール制御は共通Overlayで処理）
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
       // すべてのクリックイベントを一時的に無効化（BottomSheet以外）
       document.body.style.pointerEvents = 'none';
     } else {
-      document.body.style.overflow = 'unset';
       document.body.style.pointerEvents = 'auto';
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
       document.body.style.pointerEvents = 'auto';
     };
   }, [isOpen]);
@@ -56,10 +42,9 @@ export const BottomSheet = ({
   return (
     <>
       {/* 背景オーバーレイ */}
-      <div
-        className="fixed inset-0 z-50 bg-black/20"
-        onClick={onClose}
-        style={{ pointerEvents: 'auto' }}
+      <BottomSheetOverlay
+        isOpen={isOpen}
+        onClose={onClose}
       />
 
       {/* BottomSheetメニュー */}
@@ -75,15 +60,13 @@ export const BottomSheet = ({
         )}
         style={{ pointerEvents: 'auto' }}
       >
-        {title && (
-          <BottomSheetHeader
-            title={title}
-            onClose={onClose}
-          />
-        )}
+        <BottomSheetHeader
+          title={title}
+          onClose={onClose}
+        />
         <div className="flex-1 overflow-y-auto min-h-0">
-          <div className="p-3">
-            <div className="space-y-6">
+          <div className="p-2">
+            <div className="space-y-4">
               {children}
             </div>
           </div>

@@ -28,7 +28,7 @@
 5. ファイル変更計画を作成（新規作成・修正・削除）
 6. テスト戦略を策定（単体・統合・E2E）
 7. リスク分析と対策を検討
-8. 実装計画を文書化し、`docs/plan/plan_{TIMESTAMP}.md`に保存（Writeツール使用）
+8. 実装計画を文書化し、ExitPlanModeを使用して`docs/plan/plan_{TIMESTAMP}.md`に保存（Writeツール使用）
 
 ## 出力ファイル
 - `docs/plan/plan_{TIMESTAMP}.md`

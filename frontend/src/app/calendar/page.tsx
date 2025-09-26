@@ -6,7 +6,6 @@ import { Calendar } from '@/features/calendar/components/Calendar';
 import { CalendarSidebarContent } from '@/features/calendar/components/CalendarSidebarContent';
 import { EventDetailModal } from '@/features/calendar/components/modals/EventDetailModal';
 import { DayEventsModal } from '@/features/calendar/components/modals/DayEventsModal';
-import { DayEventsBottomSheet } from '@/features/calendar/components/DayEventsBottomSheet';
 import { CalendarSearchResultsSummary } from '@/features/calendar/components/display/results/CalendarSearchResultsSummary';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { CalendarBottomSheetContent } from '@/features/calendar/components/CalendarBottomSheetContent';
@@ -60,13 +59,6 @@ export default function CalendarPage() {
 
   const handleEventClickFromDayModal = (event: any) => {
     setIsDayEventsModalOpen(false);
-    setSelectedEvent(event);
-    setIsEventModalOpen(true);
-    setFromDayModalOrSheet(true);
-  };
-
-  const handleEventClickFromBottomSheet = (event: any) => {
-    setIsDayEventsBottomSheetOpen(false);
     setSelectedEvent(event);
     setIsEventModalOpen(true);
     setFromDayModalOrSheet(true);
@@ -161,8 +153,7 @@ export default function CalendarPage() {
         onMobileDateClick={handleMobileDateClick}
       />
 
-      {/* 独立したモーダル群 - サイドバーとは関連なし */}
-      {/* TODO: リファクタ */}
+      {/* 独立したモーダル群 */}
       <DayEventsModal
         date={selectedDate}
         events={selectedDateEvents}
@@ -178,17 +169,6 @@ export default function CalendarPage() {
         fromDayModal={fromDayModalOrSheet}
         onBackToDayModal={isDayEventsBottomSheetOpen ? handleBackToBottomSheet : handleBackToDayModal}
       />
-
-      {/* モバイル専用のDayEventsBottomSheet */}
-      <div className="lg:hidden">
-        <DayEventsBottomSheet
-          date={selectedDate}
-          events={selectedDateEvents}
-          isOpen={isDayEventsBottomSheetOpen}
-          onClose={() => setIsDayEventsBottomSheetOpen(false)}
-          onEventClick={handleEventClickFromBottomSheet}
-        />
-      </div>
     </PageLayout>
   );
 }

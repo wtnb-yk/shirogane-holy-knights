@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
-import { FilterOptions } from '../../search/internals/ArchiveFilterSection';
+import { FilterOptions } from '../search/internals/ArchiveFilterSection';
 
 interface SearchResultsSummaryProps {
   searchQuery: string;

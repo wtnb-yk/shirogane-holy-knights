@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
 import { useConcertSongs } from '@/features/songs/hooks/useConcertSongs';
-import { StreamSongsList } from '@/features/songs/components/display/lists/StreamSongsList';
-import { SongSearchResultsSummary } from '@/features/songs/components/display/results/SongSearchResultsSummary';
+import { StreamSongsList } from '@/features/songs/components/lists/StreamSongsList';
+import { SongSearchResultsSummary } from '@/features/songs/components/results/SongSearchResultsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/search/SongSearchOptionsModal';
-import { SongDetailModal } from '@/features/songs/components/display/modals/SongDetailModal';
+import { SongDetailModal } from '@/features/songs/components/modals/SongDetailModal';
 import { SongsSidebarContent } from '@/features/songs/components/layout/SongsSidebarContent';
-import { PlayerSection } from '@/features/songs/components/display/player/PlayerSection';
+import { PlayerSection } from '@/features/songs/components/player/PlayerSection';
 import { Pagination } from '@/components/ui/Pagination';
 import { StreamSong, SongContentType } from '@/features/songs/types/types';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';

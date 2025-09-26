@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { createPortal } from 'react-dom';
 import { DesktopNavigation } from '@/components';
 import { HamburgerButton } from '@/components';
 import { MobileMenu } from './MobileMenu';
-import { Overlay } from './Overlay';
+import { NavigationOverlay } from '@/components/ui/Overlay';
 
 interface NavigationMenuItems {
   href: string;
@@ -25,19 +24,12 @@ const navigationItems: NavigationMenuItems[] = [
 export function Navigation() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Handle keyboard navigation
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape' && isMenuOpen) {
-      setIsMenuOpen(false);
-    }
+  // Handle keyboard navigation (ESC key handling is now in NavigationOverlay)
+  const handleKeyDown = () => {
+    // Other keyboard handling if needed
   };
 
   // Close menu when route changes
@@ -59,14 +51,11 @@ export function Navigation() {
       />
 
       {/* オーバーレイ */}
-      {mounted && createPortal(
-        <Overlay
-          isVisible={isMenuOpen}
-          onClick={() => setIsMenuOpen(false)}
-          onKeyDown={handleKeyDown}
-        />,
-        document.body
-      )}
+      <NavigationOverlay
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        portal={true}
+      />
 
       <MobileMenu
         isOpen={isMenuOpen}

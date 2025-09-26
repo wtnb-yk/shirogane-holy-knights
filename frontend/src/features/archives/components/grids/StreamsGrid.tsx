@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { StreamDto } from '../../../types/types';
-import { SpecialItemType } from '../../../types/specialGridTypes';
+import { StreamDto } from '../../types/types';
+import { SpecialItemType } from '../../types/specialGridTypes';
 import { StreamCard } from '../cards/StreamCard';
 import { SkeletonCard } from '../cards/SkeletonCard';
 import { SpecialGrid } from './internals/SpecialGrid';
@@ -10,7 +10,7 @@ import {
   getStreamSpecialLayout, 
   getStreamGridColumns, 
   DEFAULT_EMPTY_MESSAGE 
-} from '../../../config/specialGridConfig';
+} from '../../config/specialGridConfig';
 
 interface StreamsGridProps {
   streams: StreamDto[];

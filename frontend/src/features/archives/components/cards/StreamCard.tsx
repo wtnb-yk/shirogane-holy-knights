@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { StreamDto } from '../../../types/types';
+import { StreamDto } from '../../types/types';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { ArchiveCardImage } from './internals/ArchiveCardImage';
 import { ArchiveCardBadge } from './internals/ArchiveCardBadge';
 import { ArchiveCardOverlay } from './internals/ArchiveCardOverlay';
-import { formatDate } from '../../../utils/dateFormat';
+import { formatDate } from '../../utils/dateFormat';
 
 interface StreamCardProps {
   stream: StreamDto;

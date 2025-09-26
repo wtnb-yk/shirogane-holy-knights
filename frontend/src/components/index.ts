@@ -42,7 +42,6 @@ export { NavigationItem } from './header/internals/NavigationItem';
 export { DesktopNavigation } from './header/internals/DesktopNavigation';
 export { HamburgerButton } from './header/internals/HamburgerButton';
 export { MobileMenu } from './header/internals/MobileMenu';
-export { Overlay } from './header/internals/Overlay';
 export { Footer } from './footer/Footer';
 
 // SEOコンポーネント
