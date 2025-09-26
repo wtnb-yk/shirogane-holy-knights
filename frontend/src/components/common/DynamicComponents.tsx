@@ -47,7 +47,7 @@ export const DynamicBottomSheet = dynamic(
 );
 
 export const DynamicYouTubePlayer = dynamic(
-  () => import('@/features/songs/components/player/YouTubePlayer').then(mod => ({ default: mod.YouTubePlayer })),
+  () => import('@/features/songs/components/player/internals/YouTubePlayer').then(mod => ({ default: mod.YouTubePlayer })),
   {
     loading: VideoSkeleton,
     ssr: false,

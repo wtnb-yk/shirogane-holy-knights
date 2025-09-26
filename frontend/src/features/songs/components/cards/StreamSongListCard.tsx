@@ -3,7 +3,7 @@
 import React from 'react';
 import { CardContent } from '@/components/ui/card';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
-import { SongCardThumbnail } from './SongCardThumbnail';
+import { SongCardThumbnail } from './internals/SongCardThumbnail';
 import { StreamSong } from "@/features/songs/types/types";
 import { StreamSongInfo } from './internals/StreamSongInfo';
 import { StreamSongStats } from './internals/StreamSongStats';

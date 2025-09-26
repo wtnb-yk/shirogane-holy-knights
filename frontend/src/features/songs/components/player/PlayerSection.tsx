@@ -3,7 +3,7 @@
 import React from 'react';
 import { Music, Clock } from 'lucide-react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
-import { YouTubePlayer } from './YouTubePlayer';
+import { YouTubePlayer } from './internals/YouTubePlayer';
 import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
 
 interface PlayerSectionProps {

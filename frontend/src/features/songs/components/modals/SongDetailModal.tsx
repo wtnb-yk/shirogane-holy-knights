@@ -4,9 +4,9 @@ import React from 'react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
-import { SongBasicInfo } from './SongBasicInfo';
+import { SongBasicInfo } from './internals/SongBasicInfo';
 import { SongPerformanceList } from '../lists/SongPerformanceList';
-import { SongDetailBottomSheetLayout } from './SongDetailBottomSheetLayout';
+import { SongDetailBottomSheetLayout } from '../layout/internals/SongDetailBottomSheetLayout';
 
 interface SongDetailModalProps {
   song: StreamSong | null;

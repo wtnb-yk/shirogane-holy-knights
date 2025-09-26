@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
-import { SongPerformanceList } from '../lists/SongPerformanceList';
+import { SongPerformanceList } from '../../lists/SongPerformanceList';
 import { Music, Calendar } from 'lucide-react';
 
 interface SongDetailBottomSheetLayoutProps {
