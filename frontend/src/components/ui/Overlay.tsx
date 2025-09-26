@@ -1,0 +1,151 @@
+'use client';
+
+import { useEffect, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { cn } from '@/lib/utils';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
+
+interface OverlayProps {
+  isOpen: boolean;
+  onClose: () => void;
+  zIndex?: 'navigation' | 'modal' | 'bottomSheet';
+  variant?: 'default' | 'dark' | 'light';
+  animate?: boolean;
+  disableScroll?: boolean;
+  closeOnEsc?: boolean;
+  closeOnClick?: boolean;
+  portal?: boolean;
+  className?: string;
+}
+
+const VARIANT_STYLES = {
+  default: 'bg-black/20',
+  dark: 'bg-gray-900/20',
+  light: 'bg-white/60',
+} as const;
+
+const Z_INDEX_STYLES = {
+  navigation: TAILWIND_Z_INDEX.OVERLAY.NAVIGATION,
+  modal: TAILWIND_Z_INDEX.OVERLAY.MODAL,
+  bottomSheet: TAILWIND_Z_INDEX.OVERLAY.BOTTOM_SHEET,
+} as const;
+
+export function Overlay({
+  isOpen,
+  onClose,
+  zIndex = 'modal',
+  variant = 'default',
+  animate = false,
+  disableScroll = true,
+  closeOnEsc = true,
+  closeOnClick = true,
+  portal = false,
+  className,
+}: OverlayProps) {
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  // ESCキーでクローズ
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (closeOnEsc && event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+    }
+  }, [closeOnEsc, onClose]);
+
+  // クリックでクローズ
+  const handleClick = useCallback((event: React.MouseEvent) => {
+    if (closeOnClick && event.target === event.currentTarget) {
+      onClose();
+    }
+  }, [closeOnClick, onClose]);
+
+  // スクロール制御
+  useEffect(() => {
+    if (!disableScroll || !isOpen) return;
+
+    const originalStyle = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [disableScroll, isOpen]);
+
+  // ESCキーイベントリスナー
+  useEffect(() => {
+    if (!isOpen) return;
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleKeyDown]);
+
+  // アニメーション状態管理
+  const getAnimationClass = () => {
+    if (!animate) return '';
+    return isOpen ? 'animate-modal-fade-in' : 'animate-modal-fade-out';
+  };
+
+  if (!isOpen) return null;
+
+  const overlayElement = (
+    <div
+      ref={overlayRef}
+      className={cn(
+        'fixed inset-0',
+        Z_INDEX_STYLES[zIndex],
+        VARIANT_STYLES[variant],
+        getAnimationClass(),
+        className
+      )}
+      onClick={handleClick}
+      aria-hidden="true"
+      style={{ pointerEvents: 'auto' }}
+    />
+  );
+
+  if (portal && typeof document !== 'undefined') {
+    return createPortal(overlayElement, document.body);
+  }
+
+  return overlayElement;
+}
+
+// レガシー互換性のためのエイリアス（段階的移行用）
+export { Overlay as CommonOverlay };
+
+// 特定用途向けのプリセット
+export function NavigationOverlay(props: Omit<OverlayProps, 'zIndex' | 'variant'>) {
+  return (
+    <Overlay
+      {...props}
+      zIndex="navigation"
+      variant="default"
+      animate={false}
+      disableScroll={false}
+    />
+  );
+}
+
+export function ModalOverlay(props: Omit<OverlayProps, 'zIndex' | 'variant'>) {
+  return (
+    <Overlay
+      {...props}
+      zIndex="modal"
+      variant="dark"
+      animate={true}
+      disableScroll={true}
+    />
+  );
+}
+
+export function BottomSheetOverlay(props: Omit<OverlayProps, 'zIndex' | 'variant'>) {
+  return (
+    <Overlay
+      {...props}
+      zIndex="bottomSheet"
+      variant="default"
+      animate={false}
+      disableScroll={true}
+    />
+  );
+}
