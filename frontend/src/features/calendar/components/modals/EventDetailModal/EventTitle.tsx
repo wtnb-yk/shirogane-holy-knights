@@ -11,7 +11,7 @@ interface EventTitleProps {
 export function EventTitle({ event }: EventTitleProps) {
   return (
     <div>
-      <h3 className="text-2xl font-bold text-white mb-3 leading-tight">
+      <h3 className="text-2xl font-bold text-primary mb-3 leading-tight">
         {event.title}
       </h3>
 

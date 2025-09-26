@@ -13,7 +13,7 @@ export const BottomSheetHeader = ({
   onClose,
 }: BottomSheetHeaderProps) => {
   return (
-    <div className="flex items-center justify-between px-4 py-2 border-b border-surface-border">
+    <div className="flex items-center justify-between px-4 py-2">
       <h2 className="text-lg font-bold text-text-primary">
         {title}
       </h2>

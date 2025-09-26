@@ -14,7 +14,7 @@ export function EventDescription({ event }: EventDescriptionProps) {
   return (
     <div>
       {event.description ? (
-        <p className="text-gray-200 whitespace-pre-line leading-relaxed">
+        <p className="text-secondary whitespace-pre-line leading-relaxed">
           {event.description}
           {event.url && (
             <>

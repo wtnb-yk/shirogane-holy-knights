@@ -14,8 +14,8 @@ export function EventTimeInfo({ event }: EventTimeInfoProps) {
 
   return (
     <div>
-      <div className="flex items-center gap-3 text-white">
-        <Clock className="w-5 h-5 text-gray-300" />
+      <div className="flex items-center gap-3 text-primary">
+        <Clock className="w-5 h-5 text-secondary" />
         <span className="text-lg font-semibold">
           {formatTime(event.eventTime)}
           {event.endTime && ` - ${formatTime(event.endTime)}`}
