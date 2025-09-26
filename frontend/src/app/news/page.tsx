@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { useNews } from '@/features/news/hooks/useNews';
-import { NewsGrid } from '@/features/news/components/NewsGrid';
+import { NewsGrid } from '@/features/news/components/grids/NewsGrid';
 import { Pagination } from '@/components/ui/Pagination';
-import { NewsSearchResultsSummary } from "@/features/news/components/NewsSearchResultsSummary";
-import { NewsSidebarContent } from '@/features/news/components/NewsSidebarContent';
+import { NewsSearchResultsSummary } from "@/features/news/components/results/NewsSearchResultsSummary";
+import { NewsSidebarContent } from '@/features/news/components/layout/NewsSidebarContent';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
-import { NewsBottomSheetContent } from '@/features/news/components/NewsBottomSheetContent';
+import { NewsBottomSheetContent } from '@/features/news/components/layout/NewsBottomSheetContent';
 import { PageLayout } from '@/components/common/PageLayout';
 
 export default function NewsPage() {

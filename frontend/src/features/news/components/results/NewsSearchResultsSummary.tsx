@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
-import { NewsFilterOptions } from '../types/types';
-import { useNewsCategories } from '../hooks/useNewsCategories';
+import { NewsFilterOptions } from '../../types/types';
+import { useNewsCategories } from '../../hooks/useNewsCategories';
 import {getCategoryDisplayName} from "@/constants/newsCategories";
 
 interface NewsSearchResultsSummaryProps {
@@ -32,6 +32,7 @@ export const NewsSearchResultsSummary = ({
   const categoryNames = filters.categoryIds?.map(getCategoryName).filter(Boolean).join(', ');
   const filterSummary = categoryNames ? `カテゴリ: ${categoryNames}` : undefined;
 
+  // TODO: 選択したカテゴリが表示されない
   return (
     <SearchResultsSummary
       searchQuery={searchQuery}

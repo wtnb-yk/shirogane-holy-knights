@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { NewsFilterOptions } from '../types/types';
+import { NewsFilterOptions } from '../../types/types';
 import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
 import { SidebarSectionConfig } from '@/types';
-import { NewsSearchSection } from './NewsSidebar/NewsSearchSection';
-import { NewsCategorySection } from './NewsSidebar/NewsCategorySection';
+import { NewsSearchSection } from './internals/NewsSearchSection';
+import { NewsCategorySection } from './internals/NewsCategorySection';
 
 interface NewsSidebarContentConfig {
   searchSection?: {

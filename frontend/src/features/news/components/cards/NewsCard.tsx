@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { NewsDto } from '../types/types';
+import { NewsDto } from '../../types/types';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
-import { NewsCardImage } from './NewsCard/NewsCardImage';
-import { NewsCardMeta } from './NewsCard/NewsCardMeta';
-import { NewsCardBody } from './NewsCard/NewsCardBody';
+import { NewsCardImage } from './internals/NewsCardImage';
+import { NewsCardMeta } from './internals/NewsCardMeta';
+import { NewsCardBody } from './internals/NewsCardBody';
 
 interface NewsCardProps {
   news: NewsDto;
