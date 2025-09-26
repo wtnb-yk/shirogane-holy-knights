@@ -9,7 +9,7 @@
 export const Z_INDEX = {
   // 基本レイヤー (0-9)
   BASE: 0,
-  CONTENT: 10,
+  BASE_CONTENT: 10,
 
   // オーバーレイレイヤー (40-49)
   OVERLAY: {
@@ -37,7 +37,7 @@ export const Z_INDEX = {
  */
 export const TAILWIND_Z_INDEX = {
   BASE: 'z-0',
-  CONTENT: 'z-10',
+  BASE_CONTENT: 'z-10',
 
   OVERLAY: {
     NAVIGATION: 'z-40',

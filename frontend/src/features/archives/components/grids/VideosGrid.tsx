@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useMemo, useCallback } from 'react';
-import { VideoDto } from '../../../types/types';
+import { VideoDto } from '../../types/types';
 import { VideoCard } from '../cards/VideoCard';
 import { SkeletonCard } from '../cards/SkeletonCard';
 import { BaseGrid } from '@/components/common/BaseGrid';
 import { 
   getVideoGridColumns, 
   DEFAULT_EMPTY_MESSAGE 
-} from '../../../config/specialGridConfig';
-import { generateGridClassName } from '../../../utils/gridLayoutCalculator';
+} from '../../config/specialGridConfig';
+import { generateGridClassName } from '../../utils/gridLayoutCalculator';
 
 interface VideosGridProps {
   videos: VideoDto[];
