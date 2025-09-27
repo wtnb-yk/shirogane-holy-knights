@@ -12,7 +12,7 @@ interface EventTitleProps {
 export function EventTitle({ event }: EventTitleProps) {
   return (
     <div>
-      <div className="flex items-start justify-between gap-2 mb-3">
+      <div className="flex items-start justify-between mb-3">
         <h3 className="text-2xl font-bold text-primary leading-tight flex-1">
           {event.title}
         </h3>
