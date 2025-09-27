@@ -55,13 +55,25 @@ export function Overlay({
 
     const originalOverflow = document.body.style.overflow;
     const originalPointerEvents = document.body.style.pointerEvents;
+    const originalTouchAction = document.body.style.touchAction;
 
     document.body.style.overflow = 'hidden';
     document.body.style.pointerEvents = 'none';
+    document.body.style.touchAction = 'none';
+
+    // タッチイベントの無効化
+    const preventTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+    };
+
+    // パッシブではないリスナーとして登録
+    document.addEventListener('touchmove', preventTouchMove, { passive: false });
 
     return () => {
       document.body.style.overflow = originalOverflow;
       document.body.style.pointerEvents = originalPointerEvents;
+      document.body.style.touchAction = originalTouchAction;
+      document.removeEventListener('touchmove', preventTouchMove);
     };
   }, [isOpen]);
 
