@@ -72,7 +72,7 @@ export function MobileDateSection({
           {remainingCount > 0 && (
             <button
               onClick={() => onShowMoreEvents?.(date, events)}
-              className="w-full text-text-secondary hover:text-text-primary hover:bg-bg-accent/10 text-xs py-1 px-2 bg-bg-accent/5 hover:bg-bg-accent/15 rounded text-center transition-all duration-200 cursor-pointer"
+              className="w-full text-text-secondary hover:text-text-primary text-xs py-1 px-2 bg-bg-accent/5 rounded text-center transition-all duration-200 cursor-pointer"
             >
               +{remainingCount}件
             </button>
