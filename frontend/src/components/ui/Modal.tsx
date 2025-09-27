@@ -59,7 +59,7 @@ export const Modal = ({
             isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
           }`}
           style={{
-            background: '#FFFFFF',
+            background: 'bg-bg-primary',
             borderRadius: '16px',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
           }}
