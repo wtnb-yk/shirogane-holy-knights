@@ -63,7 +63,7 @@ export function CalendarDateCell({
           isSunday
             ? 'text-red-500' :
           isSaturday
-            ? 'text-accent-blue'
+            ? 'text-blue-500'
             : 'text-text-primary'
         }`}>
           {date.getDate()}

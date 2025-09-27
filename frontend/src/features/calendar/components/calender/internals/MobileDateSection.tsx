@@ -29,9 +29,8 @@ export function MobileDateSection({
 
   const getDateTextColor = () => {
     if (!isCurrentMonth) return 'text-text-muted';
-    if (isToday) return 'text-text-inverse';
     if (dayIndex === 0) return 'text-red-500';
-    if (dayIndex === 6) return 'text-accent-blue';
+    if (dayIndex === 6) return 'text-blue-500';
     return 'text-text-primary';
   };
 
@@ -51,7 +50,6 @@ export function MobileDateSection({
         <div className={`
           flex items-center justify-center w-6 h-6 rounded-full font-bold text-sm
           ${isToday ? 'bg-accent-gold text-text-inverse' : 'bg-transparent'}
-          ${getDateTextColor()}
         `}>
           {date.getDate()}
         </div>
