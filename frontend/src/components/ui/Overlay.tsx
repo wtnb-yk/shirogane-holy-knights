@@ -49,15 +49,19 @@ export function Overlay({
     }
   }, [closeOnClick, onClose]);
 
-  // スクロール制御
+  // スクロール制御とpointerEvents制御
   useEffect(() => {
     if (!isOpen) return;
 
-    const originalStyle = document.body.style.overflow;
+    const originalOverflow = document.body.style.overflow;
+    const originalPointerEvents = document.body.style.pointerEvents;
+
     document.body.style.overflow = 'hidden';
+    document.body.style.pointerEvents = 'none';
 
     return () => {
-      document.body.style.overflow = originalStyle;
+      document.body.style.overflow = originalOverflow;
+      document.body.style.pointerEvents = originalPointerEvents;
     };
   }, [isOpen]);
 
