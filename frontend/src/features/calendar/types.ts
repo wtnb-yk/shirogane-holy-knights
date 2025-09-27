@@ -17,10 +17,7 @@ export interface Event {
   createdAt: string
 }
 
-export type CalendarView = 'month' | 'week' | 'day'
-
 export interface CalendarState {
-  currentView: CalendarView
   currentDate: Date
   selectedEventTypes: number[]
   searchQuery: string

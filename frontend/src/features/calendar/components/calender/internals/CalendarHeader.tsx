@@ -2,36 +2,28 @@
 
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { CalendarView } from '../../../types';
 import { Button } from '@/components/ui/Button';
 
 interface CalendarHeaderProps {
-  currentView: CalendarView;
   currentDate: Date;
   onDateChange: (date: Date) => void;
 }
 
 export function CalendarHeader({
-  currentView,
   currentDate,
   onDateChange
 }: CalendarHeaderProps) {
   const formatDisplayDate = (date: Date) => {
-    if (currentView === 'month') {
-      return `${date.getFullYear()}年${date.getMonth() + 1}月`;
-    }
-    return date.toLocaleDateString('ja-JP');
+    return `${date.getFullYear()}年${date.getMonth() + 1}月`;
   };
 
   const navigateDate = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate);
 
-    if (currentView === 'month') {
-      if (direction === 'prev') {
-        newDate.setMonth(newDate.getMonth() - 1);
-      } else {
-        newDate.setMonth(newDate.getMonth() + 1);
-      }
+    if (direction === 'prev') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
     }
 
     onDateChange(newDate);

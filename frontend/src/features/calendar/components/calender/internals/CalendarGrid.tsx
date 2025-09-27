@@ -1,29 +1,25 @@
 'use client';
 
 import React from 'react';
-import { CalendarView, Event } from '../../../types';
+import { Event } from '../../../types';
 import { MonthView } from './MonthView';
 
 interface CalendarGridProps {
-  currentView: CalendarView;
   currentDate: Date;
   events: Event[];
   loading?: boolean;
   error?: string | null;
   onEventClick: (event: Event) => void;
   onDateClick: (date: Date, events: Event[]) => void;
-  onMobileDateClick?: (date: Date, events: Event[]) => void;
 }
 
 export function CalendarGrid({
-  currentView,
   currentDate,
   events,
   loading,
   error,
   onEventClick,
   onDateClick,
-  onMobileDateClick
 }: CalendarGridProps) {
   if (loading) {
     return (
@@ -41,22 +37,12 @@ export function CalendarGrid({
     );
   }
 
-  if (currentView === 'month') {
-    return (
-      <MonthView
-        currentDate={currentDate}
-        events={events}
-        onEventClick={onEventClick}
-        onDateClick={onDateClick}
-        onMobileDateClick={onMobileDateClick}
-      />
-    );
-  }
-
-  // 週表示・日表示は今回は実装しない
   return (
-    <div className="flex items-center justify-center h-96 text-gray-500">
-      {currentView === 'week' ? '週表示' : '日表示'}は開発予定です
-    </div>
+    <MonthView
+      currentDate={currentDate}
+      events={events}
+      onEventClick={onEventClick}
+      onDateClick={onDateClick}
+    />
   );
 }

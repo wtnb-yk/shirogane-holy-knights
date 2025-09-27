@@ -13,10 +13,9 @@ interface MonthViewProps {
   events: Event[];
   onEventClick: (event: Event) => void;
   onDateClick: (date: Date, events: Event[]) => void;
-  onMobileDateClick?: (date: Date, events: Event[]) => void;
 }
 
-export function MonthView({ currentDate, events, onEventClick, onDateClick, onMobileDateClick }: MonthViewProps) {
+export function MonthView({ currentDate, events, onEventClick, onDateClick }: MonthViewProps) {
   const currentMonth = currentDate.getMonth();
   const weeks = getCalendarWeeks(currentDate);
 
@@ -58,7 +57,7 @@ export function MonthView({ currentDate, events, onEventClick, onDateClick, onMo
           currentDate={currentDate}
           events={events}
           onEventClick={onEventClick}
-          onDateClick={onMobileDateClick}
+          onDateClick={onDateClick}
         />
       </div>
     </StaggeredItem>

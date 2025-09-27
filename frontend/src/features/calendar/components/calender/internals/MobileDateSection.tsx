@@ -40,10 +40,14 @@ export function MobileDateSection({
       border-b border-surface-border/20 py-2 px-3
       ${!isCurrentMonth ? 'opacity-50' : ''}
     `}>
-      <div className={`
-        flex items-center gap-2 mb-2
-        ${isToday ? 'bg-accent-gold-light -mx-1 px-1 py-1 rounded' : ''}
-      `}>
+      <div
+        className={`
+          flex items-center gap-2 mb-2
+          ${isToday ? 'bg-accent-gold-light -mx-1 px-1 py-1 rounded' : ''}
+          ${events.length > 0 ? 'cursor-pointer hover:bg-surface-border/10 transition-colors duration-200' : ''}
+        `}
+        onClick={events.length > 0 ? () => onShowMoreEvents?.(date, events) : undefined}
+      >
         <div className={`
           flex items-center justify-center w-6 h-6 rounded-full font-bold text-sm
           ${isToday ? 'bg-accent-gold text-text-inverse' : 'bg-transparent'}
