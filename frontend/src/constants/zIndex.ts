@@ -18,16 +18,16 @@ export const Z_INDEX = {
     BOTTOM_SHEET: 50,   // ボトムシート背景オーバーレイ
   },
 
-  // コンテンツレイヤー (50-59)
+  // コンテンツレイヤー (53-60) - 競合回避のための階層化
   CONTENT: {
-    HEADER: 50,         // ヘッダー
-    MODAL: 50,          // モーダルコンテンツ
-    BOTTOM_SHEET: 51,   // ボトムシートコンテンツ
-    DROPDOWN: 52,       // ドロップダウンメニュー
-    TOAST: 50,          // トースト通知
-    TOOLTIP: 50,        // ツールチップ
-    OFFLINE_INDICATOR: 50, // オフライン表示
-    FLOATING_LINK: 50,  // 浮動リンクボタン
+    FLOATING_LINK: 53,     // 浮動リンクボタン
+    OFFLINE_INDICATOR: 54, // オフライン表示
+    HEADER: 55,            // ヘッダー
+    TOAST: 56,             // トースト通知
+    MODAL: 57,             // モーダルコンテンツ
+    BOTTOM_SHEET: 58,      // ボトムシートコンテンツ
+    DROPDOWN: 59,          // ドロップダウンメニュー
+    TOOLTIP: 60,           // ツールチップ
   }
 } as const;
 
@@ -46,14 +46,14 @@ export const TAILWIND_Z_INDEX = {
   },
 
   CONTENT: {
-    HEADER: 'z-50',
-    MODAL: 'z-50',
-    BOTTOM_SHEET: 'z-[51]',
-    DROPDOWN: 'z-[52]',
-    TOAST: 'z-50',
-    TOOLTIP: 'z-50',
-    OFFLINE_INDICATOR: 'z-50',
-    FLOATING_LINK: 'z-50',
+    FLOATING_LINK: 'z-[53]',
+    OFFLINE_INDICATOR: 'z-[54]',
+    HEADER: 'z-[55]',
+    TOAST: 'z-[56]',
+    MODAL: 'z-[57]',
+    BOTTOM_SHEET: 'z-[58]',
+    DROPDOWN: 'z-[59]',
+    TOOLTIP: 'z-[60]',
   }
 } as const;
 

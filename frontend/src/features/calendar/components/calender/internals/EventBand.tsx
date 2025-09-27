@@ -4,6 +4,7 @@ import React from 'react';
 import { Event } from '../../../types';
 import { EventSegment } from '../../../utils/weekEventLayout';
 import { getEventColor } from '../../../utils/eventUtils';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 interface EventBandProps {
   segment: EventSegment;
@@ -26,7 +27,7 @@ export function EventBand({ segment, bandHeight, onEventClick }: EventBandProps)
       onClick={() => onEventClick(segment.event)}
       className={`
         absolute rounded px-2 py-1 text-xs font-medium border
-        transition-colors duration-200 truncate cursor-pointer z-10
+        transition-colors duration-200 truncate cursor-pointer ${TAILWIND_Z_INDEX.BASE_CONTENT}
         flex items-center
         ${getEventColor(segment.event)}
       `}

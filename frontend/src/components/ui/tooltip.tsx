@@ -4,6 +4,7 @@ import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
+import { TAILWIND_Z_INDEX } from "@/constants/zIndex"
 
 const TooltipProvider = TooltipPrimitive.Provider
 
@@ -19,7 +20,7 @@ const TooltipContent = React.forwardRef<
     ref={ref}
     sideOffset={sideOffset}
     className={cn(
-      "z-50 overflow-hidden rounded-md border border-surface-border bg-bg-primary px-3 py-1.5 text-sm text-text-primary shadow-md",
+      `${TAILWIND_Z_INDEX.CONTENT.TOOLTIP} overflow-hidden rounded-md border border-surface-border bg-bg-primary px-3 py-1.5 text-sm text-text-primary shadow-md`,
       className
     )}
     {...props}

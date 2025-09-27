@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 export const OfflineIndicator: React.FC = () => {
   const { isOnline, isSlowConnection } = useNetworkStatus();
@@ -11,7 +12,7 @@ export const OfflineIndicator: React.FC = () => {
   }
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-50 ${
+    <div className={`fixed top-0 left-0 right-0 ${TAILWIND_Z_INDEX.CONTENT.OFFLINE_INDICATOR} ${
       !isOnline 
         ? 'bg-red-600 text-white' 
         : 'bg-yellow-600 text-white'

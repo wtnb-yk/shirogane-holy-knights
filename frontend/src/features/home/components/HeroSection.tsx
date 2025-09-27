@@ -8,6 +8,7 @@ import hero3 from '@/assets/hero/hero_3.png';
 import hero4 from '@/assets/hero/hero_4.png';
 import hero5 from '@/assets/hero/hero_5.png';
 import hero6 from '@/assets/hero/hero_6.png';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 const heroImages = [hero1, hero2, hero3, hero4, hero5, hero6];
 
@@ -38,7 +39,7 @@ export default function HeroSection() {
   return (
     <section className="relative h-[70vh] flex items-center justify-center">
       {/* 背景画像 */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className={`absolute inset-0 ${TAILWIND_Z_INDEX.BASE} overflow-hidden`}>
         <div 
           className={`flex h-full ${isTransitioning ? 'transition-transform duration-1000 ease-in-out' : ''}`}
           style={{
@@ -71,7 +72,7 @@ export default function HeroSection() {
       </div>
       
       {/* メインコンテンツ */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <div className={`relative ${TAILWIND_Z_INDEX.BASE_CONTENT} text-center px-6 max-w-4xl mx-auto`}>
         <div className="text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
             <span className="inline-block">だんいん</span>

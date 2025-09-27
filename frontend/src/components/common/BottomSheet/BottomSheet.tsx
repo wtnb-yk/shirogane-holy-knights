@@ -4,6 +4,7 @@ import React, { useEffect, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { BottomSheetHeader } from '@/components';
 import { BottomSheetOverlay } from '@/components/ui/Overlay';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -55,7 +56,7 @@ export const BottomSheet = ({
       {/* BottomSheetメニュー */}
       <div
         className={cn(
-          'fixed bottom-0 left-0 right-0 w-full bg-white shadow-2xl z-[51]',
+          `fixed bottom-0 left-0 right-0 w-full bg-white shadow-2xl ${TAILWIND_Z_INDEX.CONTENT.BOTTOM_SHEET}`,
           'rounded-t-3xl',
           'animate-in slide-in-from-bottom-2 duration-300',
           'flex flex-col',
