@@ -36,7 +36,7 @@ export const SongPerformanceItem = memo<SongPerformanceItemProps>(({
   // モバイル版のスタイル
   const containerClassName = isMobile
     ? "block w-full text-left border border-surface-border rounded-lg hover:border-accent-gold/50 hover:shadow-md transition-all duration-200 cursor-pointer group bg-bg-primary hover:bg-bg-secondary p-3"
-    : "block w-full text-left border border-surface-border rounded-xl hover:border-accent-gold/50 hover:shadow-lg transition-all duration-card cursor-pointer group bg-bg-secondary hover:bg-bg-tertiary p-4";
+    : "block w-full text-left border border-surface-border rounded-xl hover:border-accent-gold/50 hover:shadow-lg transition-all duration-card cursor-pointer group bg-bg-primary hover:bg-bg-secondary p-4";
 
   const flexGap = isMobile ? "gap-3" : "gap-4";
   const thumbnailSize = isMobile ? "sm" : "md";
