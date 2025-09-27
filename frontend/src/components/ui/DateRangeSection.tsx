@@ -18,9 +18,9 @@ export const DateRangeSection = ({
   return (
     <div className={cn('w-full', className)}>
       {/* セクションヘッダー */}
-      <div className="mb-4">
+      {title && (
         <BottomSheetSectionHeader title={title} />
-      </div>
+      )}
 
       {/* 日付範囲入力 */}
       <DateRangeInput
