@@ -4,7 +4,6 @@ import React from 'react';
 import { Event } from '../../../types';
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
-import { DayEventsHeader } from './DayEventsHeader';
 import { DayEventsList } from './DayEventsList';
 import { EmptyEventsMessage } from './EmptyEventsMessage';
 
@@ -31,7 +30,6 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
       title={`${date.toLocaleDateString('ja-JP')}のイベント`}
       className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto" : ""}
     >
-      <DayEventsHeader date={date} />
       {events.length === 0 ? (
         <EmptyEventsMessage />
       ) : (
