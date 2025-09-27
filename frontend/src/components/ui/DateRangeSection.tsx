@@ -4,6 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { DateRangeSectionProps } from '@/types/common';
 import { DateRangeInput } from '@/components/common/Sidebar/DateRangeInput';
+import {BottomSheetSectionHeader} from "@/components/common/BottomSheetSectionHeader";
 
 /**
  * セクション付き日付範囲コンポーネント
@@ -11,31 +12,14 @@ import { DateRangeInput } from '@/components/common/Sidebar/DateRangeInput';
  */
 export const DateRangeSection = ({
   title,
-  description,
-  icon,
   className,
   ...dateRangeProps
 }: DateRangeSectionProps) => {
-  // デフォルトアイコン
-  const defaultIcon = (
-    <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-  );
-
-  const iconElement = icon !== undefined ? icon : defaultIcon;
-
   return (
     <div className={cn('w-full', className)}>
       {/* セクションヘッダー */}
       <div className="mb-4">
-        <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2">
-          {iconElement}
-          {title}
-        </h4>
-        {description && (
-          <p className="text-xs text-text-secondary mt-1">
-            {description}
-          </p>
-        )}
+        <BottomSheetSectionHeader title={title} />
       </div>
 
       {/* 日付範囲入力 */}

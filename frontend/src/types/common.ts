@@ -116,8 +116,6 @@ export interface DateRangeInputProps extends DateRangeFilter {
  */
 export interface DateRangeSectionProps extends DateRangeInputProps {
   title: string;
-  description?: string;
-  icon?: React.ReactNode;
 }
 
 /**

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import {BottomSheetSectionHeader} from "@/components/common/BottomSheetSectionHeader";
 
 interface DateRangeSectionProps {
   startDate?: string;
@@ -17,10 +18,7 @@ export const DateRangeSection = ({
 }: DateRangeSectionProps) => {
   return (
     <div>
-      <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-        <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-        {title}
-      </h4>
+      <BottomSheetSectionHeader title={title} />
       <div className="flex gap-4 items-center">
         <div className="flex-1">
           <label className="block text-xs font-medium text-white mb-1">開始日</label>

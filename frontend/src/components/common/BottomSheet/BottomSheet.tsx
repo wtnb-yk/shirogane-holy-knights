@@ -65,7 +65,7 @@ export const BottomSheet = ({
           onClose={onClose}
         />
         <div className="flex-1 overflow-y-auto min-h-0">
-          <div className="p-2">
+          <div className="px-4 pb-4">
             <div className="space-y-4">
               {children}
             </div>
