@@ -1,18 +1,18 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../types';
-import { MobileDateSection } from './MobileDateSection';
-import { getCalendarWeeks } from '../utils/dateUtils';
+import { Event } from '../../types';
+import { MobileDateSection } from './internals/MobileDateSection';
+import { getCalendarWeeks } from '../../utils/dateUtils';
 
-interface MobileMonthViewProps {
+interface MobileMonthCalenderProps {
   currentDate: Date;
   events: Event[];
   onEventClick: (event: Event) => void;
   onDateClick?: (date: Date, events: Event[]) => void;
 }
 
-export function MobileMonthView({ currentDate, events, onEventClick, onDateClick }: MobileMonthViewProps) {
+export function MobileMonthCalender({ currentDate, events, onEventClick, onDateClick }: MobileMonthCalenderProps) {
   const currentMonth = currentDate.getMonth();
   const weeks = getCalendarWeeks(currentDate);
 

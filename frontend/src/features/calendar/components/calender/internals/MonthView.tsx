@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../types';
+import { Event } from '../../../types';
 import { StaggeredItem } from '@/components/ui/StaggeredItem';
 import { CalendarWeekHeader } from './CalendarWeekHeader';
 import { WeekView } from './WeekView';
-import { MobileMonthView } from './MobileMonthView';
-import { getCalendarWeeks } from '../utils/dateUtils';
+import { MobileMonthCalender } from '../MobileMonthCalender';
+import { getCalendarWeeks } from '../../../utils/dateUtils';
 
 interface MonthViewProps {
   currentDate: Date;
@@ -54,7 +54,7 @@ export function MonthView({ currentDate, events, onEventClick, onDateClick, onMo
 
       {/* スマホ表示 */}
       <div className="block md:hidden">
-        <MobileMonthView
+        <MobileMonthCalender
           currentDate={currentDate}
           events={events}
           onEventClick={onEventClick}

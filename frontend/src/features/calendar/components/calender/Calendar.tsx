@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { CalendarHeader } from './CalendarHeader';
-import { CalendarGrid } from './CalendarGrid';
-import { CalendarView, Event } from '../types';
+import { CalendarHeader } from './internals/CalendarHeader';
+import { CalendarGrid } from './internals/CalendarGrid';
+import { CalendarView, Event } from '../../types';
 
 interface CalendarProps {
   // Header関連props

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { EventType } from '../types';
+import { EventType } from '../../types';
 import { EventTypePresetsSection } from '@/components/common/EventTypePresetsSection';
 
 interface CalendarBottomSheetContentProps {

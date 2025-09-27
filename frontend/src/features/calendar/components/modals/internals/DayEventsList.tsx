@@ -1,6 +1,6 @@
 import React from 'react';
 import { Event } from '../../../types';
-import { EventListItem } from '../../EventListItem';
+import { EventListItem } from './EventListItem';
 import { sortEventsByTime } from '../../../utils/eventSortUtils';
 
 interface DayEventsListProps {

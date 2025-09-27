@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CalendarView, Event } from '../types';
+import { CalendarView, Event } from '../../../types';
 import { MonthView } from './MonthView';
 
 interface CalendarGridProps {

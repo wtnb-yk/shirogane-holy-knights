@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../../../types';
+import { Event } from '../../types';
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
-import { DayEventsList } from './DayEventsList';
-import { EmptyEventsMessage } from './EmptyEventsMessage';
+import { DayEventsList } from '@/features/calendar/components/modals/internals/DayEventsList';
+import { EmptyEventsMessage } from '@/features/calendar/components/modals/internals/EmptyEventsMessage';
 
 interface DayEventsModalProps {
   date: Date | null;

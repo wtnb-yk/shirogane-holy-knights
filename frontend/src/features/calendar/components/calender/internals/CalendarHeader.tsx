@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { CalendarView } from '../types';
+import { CalendarView } from '../../../types';
 import { Button } from '@/components/ui/Button';
 
 interface CalendarHeaderProps {

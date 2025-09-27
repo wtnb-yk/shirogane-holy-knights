@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { Clock, ChevronRight } from 'lucide-react';
-import { Event } from '../types';
+import { Event } from '../../../types';
 import { Badge } from '@/components/ui/badge';
-import { getEventTypeBadgeStyle } from '../utils/eventBadgeStyles';
-import { formatTime } from '../utils/formatters';
-import { getEventTypeLabel } from '../utils/eventTypeUtils';
+import { getEventTypeBadgeStyle } from '../../../utils/eventBadgeStyles';
+import { formatTime } from '../../../utils/formatters';
+import { getEventTypeLabel } from '../../../utils/eventTypeUtils';
 
 interface EventListItemProps {
   event: Event;

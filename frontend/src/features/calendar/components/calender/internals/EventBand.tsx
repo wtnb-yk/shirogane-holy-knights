@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../types';
-import { EventSegment } from '../utils/weekEventLayout';
-import { getEventColor } from '../utils/eventUtils';
+import { Event } from '../../../types';
+import { EventSegment } from '../../../utils/weekEventLayout';
+import { getEventColor } from '../../../utils/eventUtils';
 
 interface EventBandProps {
   segment: EventSegment;

@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../../../types';
+import { Event } from '../../types';
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
-import { EventDetailHeader } from './EventDetailHeader';
-import { EventTitle } from './EventTitle';
-import { EventImage } from './EventImage';
-import { EventTimeInfo } from './EventTimeInfo';
-import { EventDescription } from './EventDescription';
+import { EventDetailHeader } from './internals/EventDetailHeader';
+import { EventTitle } from './internals/EventTitle';
+import { EventImage } from './internals/EventImage';
+import { EventTimeInfo } from './internals/EventTimeInfo';
+import { EventDescription } from './internals/EventDescription';
 
 interface EventDetailModalProps {
   event: Event | null;

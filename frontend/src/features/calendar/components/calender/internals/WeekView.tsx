@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../types';
-import { calculateWeekEventLayout } from '../utils/weekEventLayout';
+import { Event } from '../../../types';
+import { calculateWeekEventLayout } from '../../../utils/weekEventLayout';
 import { CalendarDateCell } from './CalendarDateCell';
 import { EventBand } from './EventBand';
-import { isCurrentMonth, isToday } from '../utils/eventUtils';
+import { isCurrentMonth, isToday } from '../../../utils/eventUtils';
 
 interface WeekViewProps {
   weekDates: Date[];

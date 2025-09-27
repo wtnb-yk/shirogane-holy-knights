@@ -1,1 +1,0 @@
-export { DayEventsModal } from './DayEventsModal';

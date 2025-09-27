@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Event } from '../types';
+import { Event } from '../../../types';
 import { MobileEventCard } from './MobileEventCard';
 
 interface MobileDateSectionProps {
