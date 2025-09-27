@@ -34,7 +34,7 @@ export const BottomSheet = ({
   if (!isOpen) return null;
 
   // ヘッダー分（約64px）を差し引いた高さを動的に計算
-  const maxHeight = isLoaded ? getMaxHeight(64) : 'calc(100vh - 64px)';
+  const maxHeight = isLoaded ? getMaxHeight(64) : 'calc(var(--viewport-height) - 64px)';
 
   return (
     <>
