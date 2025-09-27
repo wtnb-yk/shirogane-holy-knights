@@ -60,7 +60,7 @@ export const Modal = ({
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 pointer-events-none">
         <div
-          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto pointer-events-auto bg-bg-primary ${
+          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] flex flex-col overflow-hidden pointer-events-auto bg-bg-primary ${
             isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
           }`}
           style={{
@@ -68,9 +68,13 @@ export const Modal = ({
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
           }}
         >
-          <ModalHeader title={title} onClose={handleClose} backButton={backButton} />
-          <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-            {children}
+          <div className="flex-shrink-0">
+            <ModalHeader title={title} onClose={handleClose} backButton={backButton} />
+          </div>
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+              {children}
+            </div>
           </div>
         </div>
       </div>
