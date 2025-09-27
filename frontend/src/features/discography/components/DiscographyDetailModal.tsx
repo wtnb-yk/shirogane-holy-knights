@@ -25,7 +25,7 @@ export const DiscographyDetailModal = ({
     <Modal
       open={isOpen}
       onOpenChange={(open) => !open && onClose()}
-      title={album.title}
+      title={"アルバム詳細"}
     >
       <div className="space-y-4 sm:space-y-6">
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">

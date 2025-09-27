@@ -28,7 +28,7 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title={shouldUseDesktopLayout ? `${date.toLocaleDateString('ja-JP')}のイベント` : ""}
+      title={`${date.toLocaleDateString('ja-JP')}のイベント`}
       className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto" : ""}
     >
       <DayEventsHeader date={date} />

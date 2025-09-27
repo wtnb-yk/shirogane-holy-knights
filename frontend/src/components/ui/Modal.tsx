@@ -64,7 +64,7 @@ export const Modal = ({
           }}
         >
           <ModalHeader title={title} onClose={handleClose} />
-          <div className="p-4 sm:p-6">
+          <div className="px-4 pb-4 sm:px-6 sm:pb-6">
             {children}
           </div>
         </div>

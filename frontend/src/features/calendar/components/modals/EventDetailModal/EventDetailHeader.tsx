@@ -9,6 +9,7 @@ interface EventDetailHeaderProps {
 export function EventDetailHeader({ fromDayModal = false, onBackToDayModal }: EventDetailHeaderProps) {
   return (
     <div className="flex items-center gap-2 px-4 py-2">
+      {/* TODO: 戻るボタンの実装 */}
       {fromDayModal && onBackToDayModal && (
         <button
           onClick={onBackToDayModal}
@@ -17,9 +18,6 @@ export function EventDetailHeader({ fromDayModal = false, onBackToDayModal }: Ev
           <ChevronLeft className="w-5 h-5" />
         </button>
       )}
-      <h2 className="text-lg font-semibold text-primary">
-        イベント詳細
-      </h2>
     </div>
   );
 }

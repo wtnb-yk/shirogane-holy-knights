@@ -32,7 +32,7 @@ export const SongDetailModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title={song.title}
+      title={"楽曲詳細"}
       className={shouldUseDesktopLayout ? "space-y-4 sm:space-y-6" : ""}
     >
       {shouldUseDesktopLayout ? (

@@ -30,19 +30,17 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title={event.title}
+      title={"イベント詳細"}
       className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3" : ""}
     >
       <EventDetailHeader
         fromDayModal={fromDayModal}
         onBackToDayModal={onBackToDayModal}
       />
-      <div className="space-y-4 px-4 pt-2 pb-4">
-        <EventTitle event={event} />
-        <EventImage event={event} />
-        <EventTimeInfo event={event} />
-        <EventDescription event={event} />
-      </div>
+      <EventTitle event={event} />
+      <EventImage event={event} />
+      <EventTimeInfo event={event} />
+      <EventDescription event={event} />
     </ResponsiveModal>
   );
 }
