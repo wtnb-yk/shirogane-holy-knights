@@ -13,7 +13,7 @@ export const ModalHeader = ({
   onClose,
 }: ModalHeaderProps) => {
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+    <div className="flex items-center justify-between px-4 py-3">
       <h2 className="text-lg font-bold text-text-primary">
         {title}
       </h2>
