@@ -21,7 +21,7 @@ export const DateRangeSection = ({
       <BottomSheetSectionHeader title={title} />
       <div className="flex gap-4 items-center">
         <div className="flex-1">
-          <label className="block text-xs font-medium text-white mb-1">開始日</label>
+          <label className="block text-xs font-medium text-text-secondary mb-1">開始日</label>
           <input
             type="date"
             value={startDate || ''}
@@ -35,7 +35,7 @@ export const DateRangeSection = ({
           <div className="w-3 h-px bg-white"></div>
         </div>
         <div className="flex-1">
-          <label className="block text-xs font-medium text-white mb-1">終了日</label>
+          <label className="block text-xs font-medium text-text-secondary mb-1">終了日</label>
           <input
             type="date"
             value={endDate || ''}

@@ -22,7 +22,7 @@ export const ModalButton = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`px-8 py-2 bg-accent-gold/70 text-white border border-accent-gold rounded-md hover:bg-accent-gold hover:border-accent-gold-hover transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`px-8 py-2 bg-accent-gold text-white border border-accent-gold rounded-md hover:bg-accent-gold-dark hover:border-accent-gold-dark transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
     >
       {children}
     </button>
