@@ -29,7 +29,7 @@ export function MobileMenu({
     <>
       <div
         id="mobile-menu"
-        className={`lg:hidden absolute top-full left-0 right-0 ${TAILWIND_Z_INDEX.CONTENT.HEADER} bg-surface-primary border-t border-surface-border shadow-lg animate-slide-down max-h-[calc(100vh-80px)] overflow-y-auto`}
+        className={`lg:hidden absolute top-full left-0 right-0 ${TAILWIND_Z_INDEX.CONTENT.HEADER} bg-surface-primary border-t border-surface-border shadow-lg animate-slide-down max-h-viewport-offset overflow-y-auto`}
         onKeyDown={onKeyDown}
         style={{ pointerEvents: 'auto' }}
       >

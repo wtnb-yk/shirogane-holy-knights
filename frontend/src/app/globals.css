@@ -9,19 +9,19 @@
   --color-bg-accent: #ACBDC5;
   --color-bg-page: #FCFDFE;
   --color-bg-footer: #FAF8F4;
-  
+
   --color-text-primary: #1F2937;
   --color-text-secondary: #6B7280;
   --color-text-tertiary: #9CA3AF;
   --color-text-inverse: #FFFFFF;
   --color-text-muted: #acabb2;
   --color-text-light: #e5e7eb;
-  
+
   --color-surface-primary: #324353;
   --color-surface-secondary: #8B9DC3;
   --color-surface-border: #D1D5DB;
   --color-surface-hover: #F3F4F6;
-  
+
   --color-accent-gold: #F6C794;
   --color-accent-gold-hover: #F4B87D;
   --color-accent-gold-light: #FEF3E2;
@@ -30,17 +30,20 @@
   --color-accent-beige: #DDB892;
   --color-accent-green: #5BA179;
   --color-accent-youtube: #FF4444;
-  
+
   --color-badge-blue: #4A90E2;
   --color-badge-green: #7ED321;
   --color-badge-orange: #F5A623;
   --color-badge-purple: #9013FE;
   --color-badge-pink: #FF69B4;
   --color-badge-gray: #9B9B9B;
-  
+
   --color-error: #ef4444;
   --color-error-light: #fca5a5;
   --color-error-dark: #dc2626;
+
+  /* ビューポート高さ関連の変数 */
+  --viewport-height: 100vh; /* JavaScriptで動的に更新される */
 }
 
 @layer base {
@@ -160,6 +163,25 @@
     transition-duration: 200ms;
     background-color: #FFFFFF;
     border-color: #E5E7EB;
+  }
+
+  /* 動的ビューポート高さ対応のユーティリティクラス */
+  .h-viewport {
+    height: 100vh; /* フォールバック */
+    height: 100dvh; /* 新しいブラウザ対応 */
+    height: var(--viewport-height); /* JavaScript計算値 */
+  }
+
+  .max-h-viewport-offset {
+    max-height: calc(100vh - 64px); /* フォールバック */
+    max-height: calc(100dvh - 64px); /* 新しいブラウザ対応 */
+    max-height: calc(var(--viewport-height) - 64px); /* JavaScript計算値 */
+  }
+
+  .max-h-viewport-offset-lg {
+    max-height: calc(100vh - 5rem); /* フォールバック */
+    max-height: calc(100dvh - 5rem); /* 新しいブラウザ対応 */
+    max-height: calc(var(--viewport-height) - 5rem); /* JavaScript計算値 */
   }
 
   /* スタガードアニメーション遅延 */

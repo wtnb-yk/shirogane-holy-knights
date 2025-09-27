@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { BottomSheetHeader } from '@/components';
 import { BottomSheetOverlay } from '@/components/ui/Overlay';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
+import { useViewportHeight } from '@/hooks/useViewportHeight';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -26,10 +27,14 @@ export const BottomSheet = ({
   title,
   backButton,
 }: BottomSheetProps) => {
+  const { getMaxHeight, isLoaded } = useViewportHeight();
 
   // ESCキーハンドリングとpointerEvents制御は共通Overlayで処理
 
   if (!isOpen) return null;
+
+  // ヘッダー分（約64px）を差し引いた高さを動的に計算
+  const maxHeight = isLoaded ? getMaxHeight(64) : 'calc(100vh - 64px)';
 
   return (
     <>
@@ -46,11 +51,13 @@ export const BottomSheet = ({
           'rounded-t-3xl',
           'animate-in slide-in-from-bottom-2 duration-300',
           'flex flex-col',
-          'max-h-[calc(100vh-64px)]',
           'overflow-hidden',
           className
         )}
-        style={{ pointerEvents: 'auto' }}
+        style={{
+          pointerEvents: 'auto',
+          maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight
+        }}
       >
         <BottomSheetHeader
           title={title}
