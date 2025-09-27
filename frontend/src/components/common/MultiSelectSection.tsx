@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { MultiSelect } from '@/components/ui/MultiSelect';
+import {BottomSheetSectionHeader} from "@/components/common/BottomSheetSectionHeader";
 
 interface MultiSelectSectionProps {
   value: string[];
@@ -24,10 +25,7 @@ export const MultiSelectSection = ({
 
   return (
     <div>
-      <h4 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
-        <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-        {title}
-      </h4>
+      <BottomSheetSectionHeader title={title} />
       {loading ? (
         <div className="flex flex-wrap gap-2">
           {Array.from({ length: 4 }).map((_, index) => (

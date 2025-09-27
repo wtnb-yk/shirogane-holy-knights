@@ -35,8 +35,7 @@ export type {
 export type { 
   Event, 
   EventType, 
-  CalendarView, 
-  CalendarState, 
+  CalendarState,
   EventDto, 
   EventTypeDto, 
   CalendarSearchParamsDto, 

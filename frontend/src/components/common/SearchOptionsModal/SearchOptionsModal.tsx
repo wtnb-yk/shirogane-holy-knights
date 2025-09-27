@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Modal, ModalContent } from '@/components/ui/Modal';
+import { Modal } from '@/components/ui/Modal';
 import { ModalButton } from '@/components/ui/ModalButton';
 
 interface SearchOptionsModalProps {
@@ -26,10 +26,8 @@ export const SearchOptionsModal = ({
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent className="space-y-4 sm:space-y-6">
-        <h2 className="text-lg font-semibold text-white">{title}</h2>
-
+    <Modal open={isOpen} onOpenChange={handleOpenChange} title={title}>
+      <div className="space-y-4 sm:space-y-6">
         {children}
 
         <div className="flex justify-center">
@@ -37,7 +35,7 @@ export const SearchOptionsModal = ({
             適用
           </ModalButton>
         </div>
-      </ModalContent>
+      </div>
     </Modal>
   );
 };

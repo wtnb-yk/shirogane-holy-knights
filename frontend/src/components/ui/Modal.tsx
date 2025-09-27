@@ -1,18 +1,26 @@
 'use client';
 
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, ReactNode } from 'react';
 import { ModalOverlay } from './Overlay';
+import { ModalHeader } from './ModalHeader';
 
 interface ModalProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
+  title: ReactNode;
+  backButton?: {
+    show: boolean;
+    onClick: () => void;
+  };
 }
 
 export const Modal = ({
   open,
   onOpenChange,
-  children
+  children,
+  title,
+  backButton
 }: ModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -52,36 +60,25 @@ export const Modal = ({
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 pointer-events-none">
         <div
-          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto pointer-events-auto ${
+          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] flex flex-col overflow-hidden pointer-events-auto bg-bg-primary ${
             isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
           }`}
           style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '16px',
-            boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
           }}
         >
-          {children}
+          <div className="flex-shrink-0">
+            <ModalHeader title={title} onClose={handleClose} backButton={backButton} />
+          </div>
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+              {children}
+            </div>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-interface ModalContentProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const ModalContent = ({
-  children,
-  className = ''
-}: ModalContentProps) => {
-  return (
-    <div className={`p-4 sm:p-6 ${className}`}>
-      {children}
-    </div>
-  );
-};

@@ -26,15 +26,15 @@ export const SongBasicInfo = ({
 
   return (
     <div className="flex-1">
-      <h2 className="text-xl sm:text-2xl font-bold text-text-inverse mb-2">
+      <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-2">
         {title}
       </h2>
 
-      <p className="text-base sm:text-lg text-text-inverse mb-3 sm:mb-4">
+      <p className="text-base sm:text-lg text-text-secondary mb-2">
         {artist}
       </p>
 
-      <div className="flex items-center gap-4 text-text-inverse text-sm">
+      <div className="flex items-center gap-4 text-text-secondary text-sm">
         <span>歌唱回数: <strong>{singCount}回</strong></span>
         {latestSingDate && (
           <span>最新: <strong>{formatLatestDate(latestSingDate)}</strong></span>

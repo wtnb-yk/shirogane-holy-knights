@@ -3,6 +3,7 @@
 import React from 'react';
 import { Select } from '@/components/ui/Select';
 import { SortBy, SortOrder } from '@/features/songs/types/types';
+import { BottomSheetSectionHeader } from '@/components/common/BottomSheetSectionHeader';
 
 interface SongSortSectionProps {
   sortBy: SortBy;
@@ -46,10 +47,7 @@ export const SongSortSection = ({
 
   return (
     <div>
-      <h4 className="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
-        <div className="w-1 h-4 bg-accent-gold rounded-full"></div>
-        並び替え
-      </h4>
+      <BottomSheetSectionHeader title="並び替え" />
       <div className="space-y-2">
         <Select
           value={sortBy}

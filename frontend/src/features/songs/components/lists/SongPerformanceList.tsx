@@ -41,7 +41,7 @@ export const SongPerformanceList: React.FC<SongPerformanceListProps> = ({
 
   return (
     <div>
-      <SongPerformanceListHeader count={performances.length} variant={variant} />
+      <SongPerformanceListHeader count={performances.length} />
 
       <div className={scrollClassName} role="list">
         {performances.map((performance, index) => (

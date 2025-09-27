@@ -11,6 +11,10 @@ interface BottomSheetProps {
   children: React.ReactNode;
   className?: string;
   title?: ReactNode;
+  backButton?: {
+    show: boolean;
+    onClick: () => void;
+  };
 }
 
 export const BottomSheet = ({
@@ -19,6 +23,7 @@ export const BottomSheet = ({
   children,
   className,
   title,
+  backButton,
 }: BottomSheetProps) => {
 
   // ESCキーハンドリングは共通Overlayで処理
@@ -63,9 +68,10 @@ export const BottomSheet = ({
         <BottomSheetHeader
           title={title}
           onClose={onClose}
+          backButton={backButton}
         />
         <div className="flex-1 overflow-y-auto min-h-0">
-          <div className="p-2">
+          <div className="px-4 pb-4">
             <div className="space-y-4">
               {children}
             </div>

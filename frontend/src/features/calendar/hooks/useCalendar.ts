@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Event, CalendarView } from '../types';
+import { Event } from '../types';
 import { useCalendarQuery } from './useCalendarQuery';
 import { useCalendarEventTypes } from './useCalendarEventTypes';
 
 export function useCalendar() {
-  const [currentView, setCurrentView] = useState<CalendarView>('month');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEventTypes, setSelectedEventTypes] = useState<number[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -51,8 +50,6 @@ export function useCalendar() {
   };
 
   return {
-    currentView,
-    setCurrentView,
     currentDate,
     setCurrentDate,
     selectedEventTypes,

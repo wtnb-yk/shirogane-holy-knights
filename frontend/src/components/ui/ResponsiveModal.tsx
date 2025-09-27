@@ -2,15 +2,19 @@
 
 import React, { ReactNode } from 'react';
 import { useViewport } from '@/hooks/useViewport';
-import { Modal, ModalContent } from '@/components/ui/Modal';
+import { Modal } from '@/components/ui/Modal';
 import { BottomSheet } from '@/components/common/BottomSheet/BottomSheet';
 
 interface ResponsiveModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title?: ReactNode;
+  title: ReactNode;
   className?: string;
+  backButton?: {
+    show: boolean;
+    onClick: () => void;
+  };
 }
 
 export const ResponsiveModal = ({
@@ -18,7 +22,8 @@ export const ResponsiveModal = ({
   onClose,
   children,
   title,
-  className = ''
+  className = '',
+  backButton
 }: ResponsiveModalProps) => {
   const { isDesktop, isLoaded } = useViewport();
 
@@ -29,10 +34,15 @@ export const ResponsiveModal = ({
   if (shouldUseModal) {
     // デスクトップ表示：Modalコンポーネント使用
     return (
-      <Modal open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <ModalContent className={className}>
+      <Modal
+        open={isOpen}
+        onOpenChange={(open) => !open && onClose()}
+        title={title}
+        backButton={backButton}
+      >
+        <div className={className}>
           {children}
-        </ModalContent>
+        </div>
       </Modal>
     );
   }
@@ -44,6 +54,7 @@ export const ResponsiveModal = ({
       onClose={onClose}
       title={title}
       className={className}
+      backButton={backButton}
     >
       {children}
     </BottomSheet>

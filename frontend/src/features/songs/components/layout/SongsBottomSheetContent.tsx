@@ -8,6 +8,7 @@ import { YearPresetsSection } from '@/components/common/YearPresetsSection';
 import { DatePresetsSection } from '@/components/common/DatePresetsSection';
 import { SongFrequencySection } from '@/features/songs/components/search/internals/SongFrequencySection';
 import { SearchInput } from '@/components/ui/SearchInput';
+import {BottomSheetSectionHeader} from "@/components/common/BottomSheetSectionHeader";
 
 interface SongsBottomSheetContentProps {
   songContentType: SongContentType;
@@ -62,9 +63,7 @@ export const SongsBottomSheetContent = ({
 
       {/* 歌唱日 */}
       <div>
-        <h3 className="text-sm font-bold text-text-primary mb-2">
-          歌唱日
-        </h3>
+        <BottomSheetSectionHeader title={"歌唱日"}/>
 
         {/* プリセットボタン */}
         <div className="mb-4">
@@ -86,13 +85,11 @@ export const SongsBottomSheetContent = ({
         </div>
 
         {/* 日付入力 */}
-        <div>
-          <div className="[&_h4]:hidden [&_input]:py-2 [&_input]:px-2.5 [&_input]:text-sm">
-            <SongFilterSection
-              filters={filters}
-              onFiltersChange={onFiltersChange}
-            />
-          </div>
+        <div className="[&_h4]:hidden [&_input]:py-2 [&_input]:px-2.5 [&_input]:text-sm">
+          <SongFilterSection
+            filters={filters}
+            onFiltersChange={onFiltersChange}
+          />
         </div>
       </div>
 
