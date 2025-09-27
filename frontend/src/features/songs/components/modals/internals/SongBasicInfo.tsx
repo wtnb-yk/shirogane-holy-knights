@@ -30,7 +30,7 @@ export const SongBasicInfo = ({
         {title}
       </h2>
 
-      <p className="text-base sm:text-lg text-text-secondary mb-3 sm:mb-4">
+      <p className="text-base sm:text-lg text-text-secondary mb-2">
         {artist}
       </p>
 
