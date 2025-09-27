@@ -7,7 +7,7 @@ import { DateRangeSection } from '@/components/ui/DateRangeSection';
 interface SongFilterSectionProps {
   filters: SongFilterOptions;
   onFiltersChange: (filters: SongFilterOptions) => void;
-  title: string;
+  title?: string;
 }
 
 export const SongFilterSection = ({
