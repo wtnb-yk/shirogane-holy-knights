@@ -68,8 +68,8 @@ function createStreamSpecialItems(): SpecialItemConfig[] {
  */
 const VIDEO_GRID_COLUMNS: GridColumnConfig = {
   sm: 2,    // モバイル: 2列
-  md: 2,    // タブレット: 2列  
-  lg: 3,    // デスクトップ小: 3列
+  md: 4,    // タブレット: 2列
+  lg: 4,    // デスクトップ小: 3列
   xl: 4     // デスクトップ大: 4列
 };
 
@@ -78,7 +78,7 @@ const VIDEO_GRID_COLUMNS: GridColumnConfig = {
  */
 const STREAM_GRID_COLUMNS: GridColumnConfig = {
   sm: 2,    // モバイル: 2列
-  md: 3,    // タブレット: 3列
+  md: 4,    // タブレット: 3列
   lg: 4,    // デスクトップ: 4列
   xl: 4     // デスクトップ大: 4列
 };
