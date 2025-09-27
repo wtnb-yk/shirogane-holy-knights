@@ -1,18 +1,21 @@
 'use client';
 
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, ReactNode } from 'react';
 import { ModalOverlay } from './Overlay';
+import { ModalHeader } from './ModalHeader';
 
 interface ModalProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
+  title: ReactNode;
 }
 
 export const Modal = ({
   open,
   onOpenChange,
-  children
+  children,
+  title
 }: ModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -63,25 +66,13 @@ export const Modal = ({
             boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)'
           }}
         >
-          {children}
+          <ModalHeader title={title} onClose={handleClose} />
+          <div className="p-4 sm:p-6">
+            {children}
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-interface ModalContentProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const ModalContent = ({
-  children,
-  className = ''
-}: ModalContentProps) => {
-  return (
-    <div className={`p-4 sm:p-6 ${className}`}>
-      {children}
-    </div>
-  );
-};
