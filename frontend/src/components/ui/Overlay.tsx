@@ -49,56 +49,32 @@ export function Overlay({
     }
   }, [closeOnClick, onClose]);
 
-  // スクロール制御とpointerEvents制御
+  // 背景スクロール制御
   useEffect(() => {
     if (!isOpen) return;
 
-    const originalOverflow = document.body.style.overflow;
+    // 現在のスクロール位置を保存
+    const scrollY = window.scrollY;
+    const originalPosition = document.body.style.position;
+    const originalTop = document.body.style.top;
+    const originalWidth = document.body.style.width;
     const originalPointerEvents = document.body.style.pointerEvents;
-    const originalTouchAction = document.body.style.touchAction;
 
-    // window.scrollメソッドの一時的な無効化
-    const originalScrollTo = window.scrollTo;
-    const originalScroll = window.scroll;
-    const originalScrollBy = window.scrollBy;
-
-    document.body.style.overflow = 'hidden';
+    // bodyを固定してスクロールを防ぐ
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
     document.body.style.pointerEvents = 'none';
-    document.body.style.touchAction = 'none';
-
-    // スクロールメソッドを無効化
-    window.scrollTo = () => {};
-    window.scroll = () => {};
-    window.scrollBy = () => {};
-
-    // タッチイベントの無効化
-    const preventTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-    };
-
-    // スクロールイベントの無効化
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-    };
-
-    // パッシブではないリスナーとして登録
-    document.addEventListener('touchmove', preventTouchMove, { passive: false });
-    document.addEventListener('scroll', preventScroll, { passive: false });
-    window.addEventListener('scroll', preventScroll, { passive: false });
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      // 元の状態に復元
+      document.body.style.position = originalPosition;
+      document.body.style.top = originalTop;
+      document.body.style.width = originalWidth;
       document.body.style.pointerEvents = originalPointerEvents;
-      document.body.style.touchAction = originalTouchAction;
 
-      // スクロールメソッドを復元
-      window.scrollTo = originalScrollTo;
-      window.scroll = originalScroll;
-      window.scrollBy = originalScrollBy;
-
-      document.removeEventListener('touchmove', preventTouchMove);
-      document.removeEventListener('scroll', preventScroll);
-      window.removeEventListener('scroll', preventScroll);
+      // スクロール位置を復元
+      window.scrollTo(0, scrollY);
     };
   }, [isOpen]);
 
