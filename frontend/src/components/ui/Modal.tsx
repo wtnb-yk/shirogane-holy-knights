@@ -55,11 +55,10 @@ export const Modal = ({
       />
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 pointer-events-none">
         <div
-          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto pointer-events-auto ${
+          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] overflow-y-auto pointer-events-auto bg-bg-primary ${
             isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
           }`}
           style={{
-            background: 'bg-bg-primary',
             borderRadius: '16px',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
           }}
