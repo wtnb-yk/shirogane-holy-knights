@@ -3,6 +3,7 @@ import { Event } from '../../../types';
 import { Badge } from '@/components/ui/badge';
 import { getEventTypeBadgeStyle } from '../../../utils/eventBadgeStyles';
 import { getEventTypeLabel } from '../../../utils/eventTypeUtils';
+import { EventExternalLinkButton } from './EventExternalLinkButton';
 
 interface EventTitleProps {
   event: Event;
@@ -11,9 +12,12 @@ interface EventTitleProps {
 export function EventTitle({ event }: EventTitleProps) {
   return (
     <div>
-      <h3 className="text-2xl font-bold text-primary mb-3 leading-tight">
-        {event.title}
-      </h3>
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <h3 className="text-2xl font-bold text-primary leading-tight flex-1">
+          {event.title}
+        </h3>
+        {event.url && <EventExternalLinkButton url={event.url} />}
+      </div>
 
       <div className="flex flex-wrap gap-2">
         {event.eventTypes.map((type) => (
