@@ -11,6 +11,10 @@ interface ResponsiveModalProps {
   children: React.ReactNode;
   title: ReactNode;
   className?: string;
+  backButton?: {
+    show: boolean;
+    onClick: () => void;
+  };
 }
 
 export const ResponsiveModal = ({
@@ -18,7 +22,8 @@ export const ResponsiveModal = ({
   onClose,
   children,
   title,
-  className = ''
+  className = '',
+  backButton
 }: ResponsiveModalProps) => {
   const { isDesktop, isLoaded } = useViewport();
 
@@ -33,6 +38,7 @@ export const ResponsiveModal = ({
         open={isOpen}
         onOpenChange={(open) => !open && onClose()}
         title={title}
+        backButton={backButton}
       >
         <div className={className}>
           {children}
@@ -48,6 +54,7 @@ export const ResponsiveModal = ({
       onClose={onClose}
       title={title}
       className={className}
+      backButton={backButton}
     >
       {children}
     </BottomSheet>

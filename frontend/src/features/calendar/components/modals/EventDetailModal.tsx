@@ -4,7 +4,6 @@ import React from 'react';
 import { Event } from '../../types';
 import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
-import { EventDetailHeader } from './internals/EventDetailHeader';
 import { EventTitle } from './internals/EventTitle';
 import { EventImage } from './internals/EventImage';
 import { EventTimeInfo } from './internals/EventTimeInfo';
@@ -32,11 +31,11 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
       onClose={onClose}
       title={"イベント詳細"}
       className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3" : ""}
+      backButton={fromDayModal && onBackToDayModal ? {
+        show: true,
+        onClick: onBackToDayModal
+      } : undefined}
     >
-      <EventDetailHeader
-        fromDayModal={fromDayModal}
-        onBackToDayModal={onBackToDayModal}
-      />
       <EventTitle event={event} />
       <EventImage event={event} />
       <EventTimeInfo event={event} />

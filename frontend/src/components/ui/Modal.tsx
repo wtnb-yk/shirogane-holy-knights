@@ -9,13 +9,18 @@ interface ModalProps {
   onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
   title: ReactNode;
+  backButton?: {
+    show: boolean;
+    onClick: () => void;
+  };
 }
 
 export const Modal = ({
   open,
   onOpenChange,
   children,
-  title
+  title,
+  backButton
 }: ModalProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
@@ -63,7 +68,7 @@ export const Modal = ({
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
           }}
         >
-          <ModalHeader title={title} onClose={handleClose} />
+          <ModalHeader title={title} onClose={handleClose} backButton={backButton} />
           <div className="px-4 pb-4 sm:px-6 sm:pb-6">
             {children}
           </div>

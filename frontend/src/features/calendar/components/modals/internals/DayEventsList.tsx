@@ -12,8 +12,8 @@ export function DayEventsList({ events, onEventClick }: DayEventsListProps) {
   const sortedEvents = sortEventsByTime(events);
 
   return (
-    <div className="space-y-3 px-4 pt-2 pb-4">
-      <div className="text-sm text-gray-200 mb-3 font-medium">
+    <div className="space-y-3">
+      <div className="text-sm text-text-primary mb-3 font-medium">
         {sortedEvents.length}件の予定
       </div>
 
