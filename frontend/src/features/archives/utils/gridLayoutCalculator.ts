@@ -54,12 +54,13 @@ export function generateGridClassName(columns: {
   xl?: number;
 }): string {
   const classNames: string[] = ['grid'];
-  
+
+  // smは最小幅から適用するのでプレフィックスなし
   if (columns.sm) classNames.push(`grid-cols-${columns.sm}`);
   if (columns.md) classNames.push(`md:grid-cols-${columns.md}`);
   if (columns.lg) classNames.push(`lg:grid-cols-${columns.lg}`);
   if (columns.xl) classNames.push(`xl:grid-cols-${columns.xl}`);
-  
+
   return classNames.join(' ');
 }
 

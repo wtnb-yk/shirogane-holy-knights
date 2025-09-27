@@ -10,7 +10,7 @@ import {
   getStreamSpecialLayout, 
   getStreamGridColumns, 
   DEFAULT_EMPTY_MESSAGE 
-} from '../../config/specialGridConfig';
+} from '../../config/gridConfig';
 
 interface StreamsGridProps {
   streams: StreamDto[];

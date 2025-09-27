@@ -8,7 +8,7 @@ import { BaseGrid } from '@/components/common/BaseGrid';
 import { 
   getVideoGridColumns, 
   DEFAULT_EMPTY_MESSAGE 
-} from '../../config/specialGridConfig';
+} from '../../config/gridConfig';
 import { generateGridClassName } from '../../utils/gridLayoutCalculator';
 
 interface VideosGridProps {
