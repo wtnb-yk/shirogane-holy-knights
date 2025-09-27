@@ -1,10 +1,11 @@
-
+import React from 'react';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 export const FloatingYouTubeLink: React.FC = () => {
   const channelUrl = "https://www.youtube.com/@shiroganenoel";
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className={`fixed bottom-6 right-6 ${TAILWIND_Z_INDEX.CONTENT.FLOATING_LINK}`}>
       <a
         href={channelUrl}
         target="_blank"

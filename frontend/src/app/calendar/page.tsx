@@ -3,13 +3,13 @@
 import React, { useState } from 'react';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
 import { EventDetailModal } from '@/features/calendar/components/modals/EventDetailModal';
-import { DayEventsModal } from '@/features/calendar/components/modals/DayEventsModal';
 import { CalendarSearchResultsSummary } from '@/features/calendar/components/results/CalendarSearchResultsSummary';
 import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
 import { PageLayout } from '@/components/common/PageLayout';
-import {CalendarSidebarContent} from "@/features/calendar/components/layout/CalendarSidebarContent";
-import {CalendarBottomSheetContent} from "@/features/calendar/components/layout/CalendarBottomSheetContent";
-import {Calendar} from "@/features/calendar/components/calender/Calendar";
+import { CalendarSidebarContent } from "@/features/calendar/components/layout/CalendarSidebarContent";
+import { CalendarBottomSheetContent } from "@/features/calendar/components/layout/CalendarBottomSheetContent";
+import { Calendar } from "@/features/calendar/components/calender/Calendar";
+import { DayEventsModal } from "@/features/calendar/components/modals/DayEventsModal";
 
 export default function CalendarPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);

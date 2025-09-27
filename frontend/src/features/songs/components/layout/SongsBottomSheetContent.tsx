@@ -89,6 +89,7 @@ export const SongsBottomSheetContent = ({
           <SongFilterSection
             filters={filters}
             onFiltersChange={onFiltersChange}
+            title=""
           />
         </div>
       </div>

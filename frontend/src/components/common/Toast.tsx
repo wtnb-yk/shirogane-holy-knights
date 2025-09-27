@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 export interface Toast {
   id: string;
@@ -81,7 +82,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => 
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+    <div className={`fixed top-4 right-4 ${TAILWIND_Z_INDEX.CONTENT.TOAST} space-y-2 max-w-sm`}>
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
       ))}

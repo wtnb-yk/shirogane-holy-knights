@@ -154,9 +154,9 @@
     transition-duration: 300ms;
   }
 
-  /* ツールチップ */
+  /* ツールチップ - zIndex.tsの値と統合 */
   .tooltip-base {
-    @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 border rounded-md shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 max-w-xs;
+    @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 border rounded-md shadow-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-[60] max-w-xs;
     transition-duration: 200ms;
     background-color: #FFFFFF;
     border-color: #E5E7EB;

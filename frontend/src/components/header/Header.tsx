@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { Navigation } from '@/components';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 export function Header() {
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 bg-surface-primary shadow-sm animate-fade-in"
+      className={`fixed top-0 left-0 right-0 ${TAILWIND_Z_INDEX.CONTENT.HEADER} bg-surface-primary shadow-sm animate-fade-in`}
       role="banner"
     >
       <div className="w-full py-3 px-10 sm:py-4">

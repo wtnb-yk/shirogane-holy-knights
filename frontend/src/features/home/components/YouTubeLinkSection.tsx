@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import lyricalImage from '@/assets/lyrical.png';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 export default function YouTubeLinkSection() {
   const channelInfo = {
@@ -29,7 +30,7 @@ export default function YouTubeLinkSection() {
         </div>
 
         {/* 中央のテキストコンテンツ */}
-        <div className="relative z-10 text-center">
+        <div className={`relative ${TAILWIND_Z_INDEX.BASE_CONTENT} text-center`}>
           {/* タイトル・説明 */}
           <div className="mb-12 animate-stagger-fade" style={{"--animation-delay": "200ms"} as any}>
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">

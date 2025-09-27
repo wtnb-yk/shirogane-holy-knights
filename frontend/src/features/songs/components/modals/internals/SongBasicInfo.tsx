@@ -26,9 +26,9 @@ export const SongBasicInfo = ({
 
   return (
     <div className="flex-1">
-      <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-2">
+      <div className="text-xl sm:text-2xl font-bold text-text-primary mb-2">
         {title}
-      </h2>
+      </div>
 
       <p className="text-base sm:text-lg text-text-secondary mb-2">
         {artist}

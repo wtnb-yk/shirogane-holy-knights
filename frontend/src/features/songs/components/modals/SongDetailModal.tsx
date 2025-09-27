@@ -6,7 +6,6 @@ import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
 import { SongBasicInfo } from './internals/SongBasicInfo';
 import { SongPerformanceList } from '../lists/SongPerformanceList';
-import { SongDetailBottomSheetLayout } from '../layout/internals/SongDetailBottomSheetLayout';
 
 interface SongDetailModalProps {
   song: StreamSong | null;
@@ -35,30 +34,18 @@ export const SongDetailModal = ({
       title={"楽曲詳細"}
       className={shouldUseDesktopLayout ? "space-y-4 sm:space-y-6" : ""}
     >
-      {shouldUseDesktopLayout ? (
-        // デスクトップレイアウト：従来通り
-        <>
-          <SongBasicInfo
-            title={song.title}
-            artist={song.artist}
-            singCount={song.singCount}
-            latestSingDate={song.latestSingDate}
-          />
-          <SongPerformanceList
-            performances={song.performances}
-            onPerformancePlay={onPerformancePlay}
-            onClose={onClose}
-            song={song}
-          />
-        </>
-      ) : (
-        // モバイルレイアウト：BottomSheet最適化レイアウト
-        <SongDetailBottomSheetLayout
-          song={song}
-          onPerformancePlay={onPerformancePlay}
-          onClose={onClose}
-        />
-      )}
+      <SongBasicInfo
+        title={song.title}
+        artist={song.artist}
+        singCount={song.singCount}
+        latestSingDate={song.latestSingDate}
+      />
+      <SongPerformanceList
+        performances={song.performances}
+        onPerformancePlay={onPerformancePlay}
+        onClose={onClose}
+        song={song}
+      />
     </ResponsiveModal>
   );
 };

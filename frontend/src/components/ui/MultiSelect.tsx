@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, ChevronDown, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 interface MultiSelectProps {
   options: string[];
@@ -145,7 +146,7 @@ export const MultiSelect = ({
       {isOpen && typeof window !== 'undefined' && createPortal(
         <div
           ref={dropdownRef}
-          className="fixed z-52 max-h-80 overflow-auto rounded-md border border-surface-border bg-white shadow-lg"
+          className={`fixed ${TAILWIND_Z_INDEX.CONTENT.DROPDOWN} max-h-80 overflow-auto rounded-md border border-surface-border bg-white shadow-lg`}
           style={{
             [dropdownPosition.showAbove ? 'bottom' : 'top']: dropdownPosition.showAbove
               ? window.innerHeight - dropdownPosition.top
