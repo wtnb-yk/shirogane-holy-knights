@@ -30,7 +30,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title={shouldUseDesktopLayout ? event.title : ""}
+      title={event.title}
       className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3" : ""}
     >
       <EventDetailHeader

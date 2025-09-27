@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { Event } from '../../../types';
-import { Modal, ModalContent } from '@/components/ui/Modal';
+import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
+import { useViewport } from '@/hooks/useViewport';
 import { DayEventsHeader } from './DayEventsHeader';
 import { DayEventsList } from './DayEventsList';
 import { EmptyEventsMessage } from './EmptyEventsMessage';
@@ -16,24 +17,26 @@ interface DayEventsModalProps {
 }
 
 export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: DayEventsModalProps) {
+  const { isDesktop, isLoaded } = useViewport();
+
   if (!date) return null;
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      onClose();
-    }
-  };
+  // SSRハイドレーション対応：初回レンダリング時はデスクトップ表示
+  const shouldUseDesktopLayout = !isLoaded || isDesktop;
 
   return (
-    <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent className="space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
-        <DayEventsHeader date={date} />
-        {events.length === 0 ? (
-          <EmptyEventsMessage />
-        ) : (
-          <DayEventsList events={events} onEventClick={onEventClick} />
-        )}
-      </ModalContent>
-    </Modal>
+    <ResponsiveModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={shouldUseDesktopLayout ? `${date.toLocaleDateString('ja-JP')}のイベント` : ""}
+      className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto" : ""}
+    >
+      <DayEventsHeader date={date} />
+      {events.length === 0 ? (
+        <EmptyEventsMessage />
+      ) : (
+        <DayEventsList events={events} onEventClick={onEventClick} />
+      )}
+    </ResponsiveModal>
   );
 }
