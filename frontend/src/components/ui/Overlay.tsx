@@ -143,6 +143,7 @@ export function BottomSheetOverlay(props: Omit<OverlayProps, 'zIndex' | 'variant
       {...props}
       zIndex="bottomSheet"
       animate={false}
+      className="animate-bottom-sheet-overlay-in"
     />
   );
 }
