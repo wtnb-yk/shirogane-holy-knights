@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Event } from '../../types';
-import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
+import { ResponsiveModal } from '@/components/Modal/ResponsiveModal';
 import { EventTitle } from './internals/EventTitle';
 import { EventImage } from './internals/EventImage';
 import { EventTimeInfo } from './internals/EventTimeInfo';

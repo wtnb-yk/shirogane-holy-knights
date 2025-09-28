@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { ContentType } from '../../types/types';
-import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
+import { SidebarSection } from '@/components/Sidebar/internals/SidebarSection';
 import { SidebarSectionConfig } from '@/types';
-import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
+import { SegmentedControl, Tab } from '@/components/Input/SegmentedControl';
 import { ArchiveSearchSection } from '../search/internals/ArchiveSearchSection';
-import { SelectableList } from '@/components/common/SelectableList';
-import { DatePresetsSection } from '@/components/common/DatePresetsSection';
+import { SelectableList } from '@/components/List/SelectableList';
+import { DatePresetsSection } from '@/components/Section/DatePresetsSection';
 import { FilterOptions } from '../search/internals/ArchiveFilterSection';
 
 interface ArchiveSidebarContentConfig {

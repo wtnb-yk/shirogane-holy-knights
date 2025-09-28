@@ -1,6 +1,6 @@
 import React from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/Loading/skeleton';
+import { Card, CardContent } from '@/components/Card/card';
 
 export function SkeletonSongCard() {
   return (

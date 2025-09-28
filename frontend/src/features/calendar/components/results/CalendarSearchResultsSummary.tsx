@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
+import { SearchResultsSummary } from '@/components/Stats/SearchResultsSummary';
 
 interface CalendarSearchResultsSummaryProps {
   searchQuery: string;

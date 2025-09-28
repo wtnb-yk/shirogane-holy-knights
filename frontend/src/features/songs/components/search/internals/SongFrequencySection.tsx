@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SelectableList } from '@/components/common/SelectableList';
+import { SelectableList } from '@/components/List/SelectableList';
 import { SingFrequencyCategory, SongFilterOptions } from "@/features/songs/types/types";
 
 interface FrequencyItem {

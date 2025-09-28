@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { NewsDto } from '../../types/types';
-import { InteractiveCard } from '@/components/ui/InteractiveCard';
-import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { InteractiveCard } from '@/components/Card/InteractiveCard';
+import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
 import { NewsCardImage } from './internals/NewsCardImage';
 import { NewsCardMeta } from './internals/NewsCardMeta';

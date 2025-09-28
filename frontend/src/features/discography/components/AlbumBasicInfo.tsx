@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Badge/badge';
 import { Calendar } from 'lucide-react';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 import { getAlbumTypeBadgeStyle } from '../utils/albumTypeBadgeStyles';

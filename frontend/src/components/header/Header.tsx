@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Navigation } from '@/components';
+import { Navigation } from './internals/Navigation';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 export function Header() {

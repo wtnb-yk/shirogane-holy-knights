@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { useDiscography } from '@/features/discography/hooks/useDiscography';
 import { DiscographyGrid } from '@/features/discography/components/DiscographyGrid';
-import { Pagination } from '@/components/ui/Pagination';
+import { Pagination } from '@/components/Navigation/Pagination';
 import { DiscographySearchResultsSummary } from "@/features/discography/components/DiscographySearchResultsSummary";
 import { DiscographySidebarContent } from '@/features/discography/components/DiscographySidebarContent';
-import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
+import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { DiscographyBottomSheetContent } from '@/features/discography/components/DiscographyBottomSheetContent';
-import { PageLayout } from '@/components/common/PageLayout';
+import { PageLayout } from '@/components/Layout/PageLayout';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
 import { AlbumDto } from '@/features/discography/types/types';
 

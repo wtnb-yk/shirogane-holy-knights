@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { PlayCircle, Star } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Badge/badge';
 
 interface ArchiveCardBadgeProps {
   variant?: 'default' | 'featured' | 'pickup';

@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { DesktopNavigation } from '@/components';
-import { HamburgerButton } from '@/components';
+import { DesktopNavigation } from './DesktopNavigation';
+import { HamburgerButton } from './HamburgerButton';
 import { MobileMenu } from './MobileMenu';
-import { NavigationOverlay } from '@/components/ui/Overlay';
+import { NavigationOverlay } from '@/components/Overlay/Overlay';
 
 interface NavigationMenuItems {
   href: string;

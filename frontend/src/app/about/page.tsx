@@ -1,6 +1,6 @@
 'use client';
 
-import { PageLayout } from '@/components/common/PageLayout';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 export default function AboutPage() {
   return (

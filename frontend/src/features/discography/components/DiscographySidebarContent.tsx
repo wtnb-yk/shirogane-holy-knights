@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlbumFilterOptions } from '../types/types';
-import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
+import { SidebarSection } from '@/components/Sidebar/internals/SidebarSection';
 import { SidebarSectionConfig } from '@/types';
 import { DiscographySearchSection } from './DiscographySidebar/DiscographySearchSection';
 import { DiscographyFilterSection } from './DiscographySidebar/DiscographyFilterSection';

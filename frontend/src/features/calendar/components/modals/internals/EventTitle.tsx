@@ -1,6 +1,6 @@
 import React from 'react';
 import { Event } from '../../../types';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Badge/badge';
 import { getEventTypeBadgeStyle } from '../../../utils/eventBadgeStyles';
 import { getEventTypeLabel } from '../../../utils/eventTypeUtils';
 import { EventExternalLinkButton } from './EventExternalLinkButton';

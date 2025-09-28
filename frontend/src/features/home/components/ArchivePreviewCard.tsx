@@ -4,10 +4,10 @@ import React from 'react';
 import Image from 'next/image';
 import { Calendar } from 'lucide-react';
 import { StreamDto } from '@/features/archives/types/types';
-import { Badge } from '@/components/ui/badge';
-import { InteractiveCard } from '@/components/ui/InteractiveCard';
-import { StaggeredItem } from '@/components/ui/StaggeredItem';
-import { OverlayIcon } from '@/components/ui/OverlayIcon';
+import { Badge } from '@/components/Badge/badge';
+import { InteractiveCard } from '@/components/Card/InteractiveCard';
+import { StaggeredItem } from '@/components/Card/StaggeredItem';
+import { OverlayIcon } from '@/components/Overlay/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
 import { IMAGE_STYLES } from '@/constants/styles';
 

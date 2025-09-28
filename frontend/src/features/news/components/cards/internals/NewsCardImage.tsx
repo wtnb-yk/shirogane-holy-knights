@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { OverlayIcon } from '@/components/ui/OverlayIcon';
+import { OverlayIcon } from '@/components/Overlay/OverlayIcon';
 import { IMAGE_STYLES } from '@/constants/styles';
 
 interface NewsCardImageProps {

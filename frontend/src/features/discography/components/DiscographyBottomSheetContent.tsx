@@ -3,9 +3,9 @@
 import React from 'react';
 import { AlbumFilterOptions } from '@/features/discography/types/types';
 import { useAlbumTypes } from '@/features/discography/hooks/useAlbumTypes';
-import { MultiSelectSection } from '@/components/common/MultiSelectSection';
+import { MultiSelectSection } from '@/components/Select/MultiSelectSection';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
-import { SearchInput } from '@/components/ui/SearchInput';
+import { SearchInput } from '@/components/Input/SearchInput';
 
 interface DiscographyBottomSheetContentProps {
   searchValue: string;

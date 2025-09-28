@@ -1,6 +1,6 @@
 'use client';
 
-import { NavigationItem } from '@/components';
+import { NavigationItem } from './NavigationItem';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 interface NavigationMenuItems {

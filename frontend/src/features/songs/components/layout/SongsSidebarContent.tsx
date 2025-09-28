@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { SidebarSection } from '@/components/common/Sidebar/internals/SidebarSection';
+import { SidebarSection } from '@/components/Sidebar/internals/SidebarSection';
 import { SidebarSectionConfig } from '@/types';
-import { SegmentedControl, Tab } from '@/components/common/Sidebar/SegmentedControl';
+import { SegmentedControl, Tab } from '@/components/Input/SegmentedControl';
 import { SongSearchSection } from '../search/internals/SongSearchSection';
-import { DatePresetsSection } from '@/components/common/DatePresetsSection';
-import { YearPresetsSection } from '@/components/common/YearPresetsSection';
+import { DatePresetsSection } from '@/components/Section/DatePresetsSection';
+import { YearPresetsSection } from '@/components/Section/YearPresetsSection';
 import { SongFrequencySection } from '../search/internals/SongFrequencySection';
 import { SongFilterOptions, SongContentType } from '@/features/songs/types/types';
 

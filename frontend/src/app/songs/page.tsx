@@ -9,13 +9,13 @@ import { SongSearchOptionsModal } from '@/features/songs/components/search/SongS
 import { SongDetailModal } from '@/features/songs/components/modals/SongDetailModal';
 import { SongsSidebarContent } from '@/features/songs/components/layout/SongsSidebarContent';
 import { PlayerSection } from '@/features/songs/components/player/PlayerSection';
-import { Pagination } from '@/components/ui/Pagination';
+import { Pagination } from '@/components/Navigation/Pagination';
 import { StreamSong, SongContentType } from '@/features/songs/types/types';
-import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
+import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { SongsBottomSheetContent } from '@/features/songs/components/layout/SongsBottomSheetContent';
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
-import { PageLayout } from '@/components/common/PageLayout';
-import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
+import { PageLayout } from '@/components/Layout/PageLayout';
+import { SegmentedControl } from '@/components/Input/SegmentedControl';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);

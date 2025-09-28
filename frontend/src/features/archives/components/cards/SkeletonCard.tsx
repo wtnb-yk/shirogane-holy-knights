@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { Skeleton } from '@/components/Loading/skeleton';
+import { StaggeredItem } from '@/components/Card/StaggeredItem';
 
 interface SkeletonCardProps {
   index: number;

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BaseGrid } from '@/components/common/BaseGrid';
+import { BaseGrid } from '@/components/Layout/BaseGrid';
 import { SpecialGridProps } from '../../../types/specialGridTypes';
 import {
   generateGridClassName,

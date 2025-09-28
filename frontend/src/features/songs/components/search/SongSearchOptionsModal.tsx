@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { SearchOptionsModal } from '@/components/common/SearchOptionsModal/SearchOptionsModal';
+import { SearchOptionsModal } from '@/components/Modal/SearchOptionsModal';
 import { SortBy, SortOrder, SongFilterOptions } from '@/features/songs/types/types';
 import { SongSortSection } from './internals/SongSortSection';
 import { SongFilterSection } from './internals/SongFilterSection';

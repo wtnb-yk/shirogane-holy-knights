@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
-import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
+import { ResponsiveModal } from '@/components/Modal/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
 import { SongBasicInfo } from './internals/SongBasicInfo';
 import { SongPerformanceList } from '../lists/SongPerformanceList';

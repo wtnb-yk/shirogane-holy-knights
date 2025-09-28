@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { CardContent } from '@/components/ui/card';
-import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { CardContent } from '@/components/Card/card';
+import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { SongCardThumbnail } from './internals/SongCardThumbnail';
 import { StreamSong } from "@/features/songs/types/types";
 import { StreamSongInfo } from './internals/StreamSongInfo';

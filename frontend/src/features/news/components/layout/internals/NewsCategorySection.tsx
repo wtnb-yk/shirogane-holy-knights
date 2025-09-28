@@ -4,7 +4,7 @@ import React from 'react';
 import { NewsFilterOptions } from '../../../types/types';
 import { useNewsCategories } from '../../../hooks/useNewsCategories';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
-import { SelectableList } from '@/components/common/SelectableList';
+import { SelectableList } from '@/components/List/SelectableList';
 import { NewsCategoryDto } from '../../../types/types';
 
 interface NewsCategorySectionProps {

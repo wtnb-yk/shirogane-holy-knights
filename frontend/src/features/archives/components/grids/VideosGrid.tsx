@@ -4,7 +4,7 @@ import React, { useMemo, useCallback } from 'react';
 import { VideoDto } from '../../types/types';
 import { VideoCard } from '../cards/VideoCard';
 import { SkeletonCard } from '../cards/SkeletonCard';
-import { BaseGrid } from '@/components/common/BaseGrid';
+import { BaseGrid } from '@/components/Layout/BaseGrid';
 import { 
   getVideoGridColumns, 
   DEFAULT_EMPTY_MESSAGE 

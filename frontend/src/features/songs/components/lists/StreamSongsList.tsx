@@ -1,7 +1,7 @@
 import { StreamSong } from '@/features/songs/types/types';
 import { StreamSongListCard } from '../cards/StreamSongListCard';
 import { SkeletonSongCard } from '../cards/SkeletonSongCard';
-import { BaseGrid } from '@/components/common/BaseGrid';
+import { BaseGrid } from '@/components/Layout/BaseGrid';
 
 interface StreamSongsListProps {
   songs: StreamSong[];

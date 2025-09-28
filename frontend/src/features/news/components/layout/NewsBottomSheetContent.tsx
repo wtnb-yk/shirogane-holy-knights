@@ -3,9 +3,9 @@
 import React from 'react';
 import { NewsFilterOptions } from '@/features/news/types/types';
 import { useNewsCategories } from '@/features/news/hooks/useNewsCategories';
-import { MultiSelectSection } from '@/components/common/MultiSelectSection';
+import { MultiSelectSection } from '@/components/Select/MultiSelectSection';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
-import { SearchInput } from '@/components/ui/SearchInput';
+import { SearchInput } from '@/components/Input/SearchInput';
 
 interface NewsBottomSheetContentProps {
   searchValue: string;

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Clock, ChevronRight } from 'lucide-react';
 import { Event } from '../../../types';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Badge/badge';
 import { getEventTypeBadgeStyle } from '../../../utils/eventBadgeStyles';
 import { formatTime } from '../../../utils/formatters';
 import { getEventTypeLabel } from '../../../utils/eventTypeUtils';

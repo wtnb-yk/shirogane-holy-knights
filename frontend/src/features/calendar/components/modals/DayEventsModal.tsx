@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Event } from '../../types';
-import { ResponsiveModal } from '@/components/ui/ResponsiveModal';
+import { ResponsiveModal } from '@/components/Modal/ResponsiveModal';
 import { useViewport } from '@/hooks/useViewport';
 import { DayEventsList } from '@/features/calendar/components/modals/internals/DayEventsList';
 import { EmptyEventsMessage } from '@/features/calendar/components/modals/internals/EmptyEventsMessage';

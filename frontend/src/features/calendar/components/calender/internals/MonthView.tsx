@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Event } from '../../../types';
-import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { CalendarWeekHeader } from './CalendarWeekHeader';
 import { WeekView } from './WeekView';
 import { MobileMonthCalender } from '../MobileMonthCalender';

@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Select } from '@/components/ui/Select';
+import { Select } from '@/components/Select/Select';
 import { SortBy, SortOrder } from '@/features/songs/types/types';
-import { BottomSheetSectionHeader } from '@/components/common/BottomSheetSectionHeader';
+import { BottomSheetSectionHeader } from '@/components/Section/BottomSheetSectionHeader';
 
 interface SongSortSectionProps {
   sortBy: SortBy;
