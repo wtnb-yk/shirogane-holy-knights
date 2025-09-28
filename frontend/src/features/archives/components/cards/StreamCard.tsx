@@ -38,7 +38,6 @@ const StreamCardComponent = ({ stream, index, variant = 'default' }: StreamCardP
             loading={variant === 'featured' ? 'eager' : 'lazy'}
             priority={variant === 'featured'}
             sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"}
-            showPlaceholder={!stream.thumbnailUrl}
           />
 
           <ArchiveCardBadge variant={variant} />

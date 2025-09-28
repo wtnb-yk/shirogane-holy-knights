@@ -10,7 +10,6 @@ interface ArchiveCardImageProps {
   loading?: 'lazy' | 'eager';
   priority?: boolean;
   sizes: string;
-  showPlaceholder?: boolean;
 }
 
 export const ArchiveCardImage = ({
@@ -19,7 +18,6 @@ export const ArchiveCardImage = ({
   loading = 'lazy',
   priority = false,
   sizes,
-  showPlaceholder = false
 }: ArchiveCardImageProps) => {
   if (thumbnailUrl) {
     return (
@@ -35,16 +33,6 @@ export const ArchiveCardImage = ({
           placeholder="blur"
           blurDataURL={IMAGE_STYLES.placeholder}
         />
-      </div>
-    );
-  }
-
-  if (showPlaceholder) {
-    return (
-      <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-purple-500 via-blue-500 to-teal-400 flex items-center justify-center">
-        <div className="text-white text-sm font-medium text-center px-4">
-          サムネイル画像
-        </div>
       </div>
     );
   }
