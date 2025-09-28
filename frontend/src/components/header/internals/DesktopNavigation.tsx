@@ -1,6 +1,6 @@
 'use client';
 
-import { NavigationItem } from '@/components';
+import { NavigationItem } from './NavigationItem';
 
 interface NavigationMenuItems {
   href: string;

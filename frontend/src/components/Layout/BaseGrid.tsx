@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactNode, useMemo } from 'react';
-import { ErrorDisplay } from '@/components';
+import { ErrorDisplay } from '@/components/Error';
 
 interface BaseGridProps<T> {
   items: T[];

@@ -3,7 +3,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { StatsSummary } from '@/components';
+import { StatsSummary } from '@/components/Stats';
 import { useViewport } from '@/hooks/useViewport';
 
 interface PaginationProps {

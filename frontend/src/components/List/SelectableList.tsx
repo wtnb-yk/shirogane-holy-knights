@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useCallback } from 'react';
-import { SelectableListHeader } from '@/components';
-import { SelectableListItem } from '@/components';
+import { SelectableListHeader } from './SelectableListHeader';
+import { SelectableListItem } from './SelectableListItem';
 
 interface SelectableListProps<T = string> {
   title?: string;

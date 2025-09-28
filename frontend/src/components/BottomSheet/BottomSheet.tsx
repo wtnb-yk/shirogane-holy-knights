@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { BottomSheetHeader } from '@/components';
+import { BottomSheetHeader } from './BottomSheetHeader';
 import { BottomSheetOverlay } from '@/components/Overlay/Overlay';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 import { useViewportHeight } from '@/hooks/useViewportHeight';

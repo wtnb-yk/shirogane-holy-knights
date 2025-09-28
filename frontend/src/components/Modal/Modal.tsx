@@ -2,7 +2,7 @@
 
 import React, { useEffect, useCallback, useState, ReactNode } from 'react';
 import { ModalOverlay } from '@/components/Overlay/Overlay';
-import { ModalHeader } from '@/components';
+import { ModalHeader } from './ModalHeader';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
 interface ModalProps {

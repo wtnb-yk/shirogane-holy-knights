@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { GenericSidebar } from '@/components/Sidebar/internals/GenericSidebar';
-import { BottomSheet } from '@/components';
+import { BottomSheet } from '@/components/BottomSheet/BottomSheet';
 import { BreadcrumbSchema } from '@/components/seo/JsonLd';
 
 interface BreadcrumbItem {
