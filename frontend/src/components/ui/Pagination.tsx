@@ -111,7 +111,7 @@ export const Pagination = ({
     <>
       <div
         className={cn(
-          "flex items-center justify-center gap-2 mt-8 opacity-0 animate-slide-up",
+          "flex items-center justify-center gap-2 mb-4 opacity-0 animate-slide-up",
           className
         )}
         style={animationDelay ? { animationDelay } : undefined}

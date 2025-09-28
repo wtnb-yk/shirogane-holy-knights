@@ -26,7 +26,7 @@ export const StatsSummary = ({
 
   return (
     <div
-      className={`text-center mt-8 opacity-0 animate-slide-up ${className}`}
+      className={`text-center opacity-0 animate-slide-up ${className}`}
       style={{ animationDelay }}
     >
       <p className="text-sm text-text-secondary">
