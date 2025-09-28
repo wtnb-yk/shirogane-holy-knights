@@ -33,7 +33,7 @@ export const DynamicModal = dynamic(
 );
 
 export const DynamicResponsiveModal = dynamic(
-  () => import('@/components/Modal/ResponsiveModal').then(mod => ({ default: mod.ResponsiveModal })),
+  () => import('@/components/Modal/Modal').then(mod => ({ default: mod.Modal })),
   {
     loading: ModalSkeleton,
     ssr: false,
