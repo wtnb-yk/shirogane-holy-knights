@@ -1,2 +1,7 @@
-export { DynamicSearchOptionsModal, DynamicBottomSheet, DynamicYouTubePlayer } from './DynamicComponents';
+export {
+  DynamicModal,
+  DynamicResponsiveModal,
+  DynamicSearchOptionsModal,
+  DynamicYouTubePlayer
+} from './DynamicComponents';
 export { FloatingYouTubeLink } from './FloatingYouTubeLink';

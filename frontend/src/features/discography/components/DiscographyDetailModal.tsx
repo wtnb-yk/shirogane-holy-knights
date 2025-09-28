@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlbumDto } from '../types/types';
-import { Modal } from '@/components/Modal/Modal';
+import { DynamicModal } from '@/components/Misc';
 import { AlbumCoverImage } from './AlbumCoverImage';
 import { AlbumBasicInfo } from './AlbumBasicInfo';
 import { AlbumTrackList } from './AlbumTrackList';
@@ -22,7 +22,7 @@ export const DiscographyDetailModal = ({
   if (!album) return null;
 
   return (
-    <Modal
+    <DynamicModal
       open={isOpen}
       onOpenChange={(open) => !open && onClose()}
       title={"アルバム詳細"}
@@ -48,6 +48,6 @@ export const DiscographyDetailModal = ({
 
         <AlbumPlatformLinks albumReleases={album.albumReleases || []} />
       </div>
-    </Modal>
+    </DynamicModal>
   );
 };

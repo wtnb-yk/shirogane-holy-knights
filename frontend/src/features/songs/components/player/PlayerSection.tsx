@@ -3,7 +3,7 @@
 import React from 'react';
 import { Music, Clock } from 'lucide-react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
-import { YouTubePlayer } from './internals/YouTubePlayer';
+import { DynamicYouTubePlayer } from '@/components/Misc';
 import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
 
 interface PlayerSectionProps {
@@ -30,7 +30,7 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
       {currentSong && (
         <div className="flex flex-col lg:flex-row gap-2 lg:gap-6 p-2 lg:p-6">
           <div className="w-full lg:w-3/4 rounded-lg lg:rounded-xl overflow-hidden shadow-md">
-            <YouTubePlayer
+            <DynamicYouTubePlayer
               song={currentSong}
               performance={currentPerformance}
               autoplay={autoplay}

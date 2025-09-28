@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { SearchOptionsModal } from '@/components/Modal/SearchOptionsModal';
+import { DynamicSearchOptionsModal } from '@/components/Misc';
 import { SortBy, SortOrder, SongFilterOptions } from '@/features/songs/types/types';
 import { SongSortSection } from './internals/SongSortSection';
 import { SongFilterSection } from './internals/SongFilterSection';
@@ -61,7 +61,7 @@ export const SongSearchOptionsModal = ({
 
 
   return (
-    <SearchOptionsModal
+    <DynamicSearchOptionsModal
       isOpen={isOpen}
       onClose={handleClose}
       onApply={handleApply}
@@ -77,6 +77,6 @@ export const SongSearchOptionsModal = ({
         filters={tempFilters}
         onFiltersChange={setTempFilters}
       />
-    </SearchOptionsModal>
+    </DynamicSearchOptionsModal>
   );
 };

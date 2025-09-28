@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { SearchOptionsModal } from '@/components/Modal/SearchOptionsModal';
+import { DynamicSearchOptionsModal } from '@/components/Misc';
 import { ArchiveFilterSection, FilterOptions } from './internals/ArchiveFilterSection';
 
 interface ArchiveSearchOptionsModalProps {
@@ -41,7 +41,7 @@ export const ArchiveSearchOptionsModal = ({
 
 
   return (
-    <SearchOptionsModal
+    <DynamicSearchOptionsModal
       isOpen={isOpen}
       onClose={handleClose}
       onApply={handleApply}
@@ -51,6 +51,6 @@ export const ArchiveSearchOptionsModal = ({
         onFiltersChange={setTempFilters}
         availableTags={availableTags}
       />
-    </SearchOptionsModal>
+    </DynamicSearchOptionsModal>
   );
 };
