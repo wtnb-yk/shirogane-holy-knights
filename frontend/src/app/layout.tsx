@@ -65,7 +65,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" dir="ltr">
-      <body className={`min-h-screen flex flex-col ${mplusRounded.variable} ${notoSansJP.variable}`}>
+      <body className={`min-h-screen min-h-[100dvh] flex flex-col ${mplusRounded.variable} ${notoSansJP.variable}`}>
         <PerformanceOptimizations />
         <GoogleAnalyticsWrapper />
         <WebSiteSchema />

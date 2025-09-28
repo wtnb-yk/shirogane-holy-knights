@@ -5,7 +5,7 @@ import Link from 'next/link';
 export function Footer() {
   return (
     <footer className="bg-bg-secondary border-t border-surface-border mt-auto">
-      <div className="w-full pt-4 pb-4 px-4 sm:px-6 lg:pt-8 lg:pb-5 lg:px-10">
+      <div className="w-full pt-4 pb-4 pb-safe px-4 sm:px-6 lg:pt-8 lg:pb-5 lg:px-10">
         <div className="max-w-full mx-auto">
           {/* サイト情報（デスクトップのみ） */}
           <div className="hidden lg:block mb-6">
