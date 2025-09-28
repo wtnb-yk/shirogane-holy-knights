@@ -16,7 +16,7 @@ interface NewsListGridProps<T> {
   skeletonCount?: number;
 }
 
-export function NewsListGrid<T>({
+function NewsListGridComponent<T>({
   items,
   loading,
   error,
@@ -73,3 +73,6 @@ export function NewsListGrid<T>({
     </div>
   );
 }
+
+// Export memoized version
+export const NewsListGrid = React.memo(NewsListGridComponent) as <T>(props: NewsListGridProps<T>) => ReactElement;
