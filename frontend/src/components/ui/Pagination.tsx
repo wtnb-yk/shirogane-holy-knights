@@ -4,6 +4,7 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { StatsSummary } from '@/components';
+import { useViewport } from '@/hooks/useViewport';
 
 interface PaginationProps {
   currentPage: number;
@@ -19,9 +20,9 @@ interface PaginationProps {
 
 // スタイル定数
 const STYLES = {
-  base: "text-sm font-medium rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed",
-  page: "px-4 py-2 min-w-[36px] h-[36px] flex items-center justify-center",
-  navigation: "px-3 py-2 flex items-center gap-1",
+  base: "text-xs sm:text-sm font-medium rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed",
+  page: "px-2.5 sm:px-4 py-1.5 sm:py-2 min-w-[32px] sm:min-w-[36px] h-[32px] sm:h-[36px] flex items-center justify-center",
+  navigation: "px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1",
   default: "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700 hover:scale-110 hover:-translate-y-0.5",
   active: "bg-amber-200 text-amber-900 border-amber-200 font-bold",
   disabled: "disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-200"
@@ -65,14 +66,14 @@ const NavigationButton = ({ direction, disabled, loading, onPageChange }: Naviga
       className={cn(STYLES.base, STYLES.navigation, STYLES.default, STYLES.disabled)}
     >
       {isPrev && <ChevronLeft className="w-4 h-4" />}
-      {isPrev ? '前' : '次'}
       {!isPrev && <ChevronRight className="w-4 h-4" />}
     </button>
   );
 };
 
 // ページ範囲計算のヘルパー関数
-const getVisiblePages = (currentPage: number, totalPages: number, delta = 2): number[] => {
+const getVisiblePages = (currentPage: number, totalPages: number, isMobile = false): number[] => {
+  const delta = isMobile ? 1 : 2; // モバイルは前後1ページ、PCは前後2ページ
   const start = Math.max(1, currentPage - delta);
   const end = Math.min(totalPages, currentPage + delta);
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
@@ -89,6 +90,7 @@ export const Pagination = ({
   totalCount,
   pageSize
 }: PaginationProps) => {
+  const { isMobile } = useViewport();
   // ページ数が1以下の場合は統計のみ表示
   if (totalPages <= 1) {
     return totalCount && pageSize ? (
@@ -101,7 +103,7 @@ export const Pagination = ({
     ) : null;
   }
 
-  const visiblePages = getVisiblePages(currentPage, totalPages);
+  const visiblePages = getVisiblePages(currentPage, totalPages, isMobile);
   const showFirstPage = visiblePages[0]! > 1;
   const showLastPage = visiblePages[visiblePages.length - 1]! < totalPages;
   const showFirstEllipsis = visiblePages[0]! > 2;
@@ -111,7 +113,7 @@ export const Pagination = ({
     <>
       <div
         className={cn(
-          "flex items-center justify-center gap-2 mb-4 opacity-0 animate-slide-up",
+          "flex items-center justify-center gap-1 sm:gap-2 mb-4 opacity-0 animate-slide-up",
           className
         )}
         style={animationDelay ? { animationDelay } : undefined}
@@ -123,7 +125,7 @@ export const Pagination = ({
           onPageChange={() => onPageChange(currentPage - 1)}
         />
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1">
           {showFirstPage && (
             <>
               <PaginationButton
