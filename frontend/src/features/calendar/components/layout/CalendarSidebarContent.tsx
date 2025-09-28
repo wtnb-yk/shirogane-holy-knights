@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { EventType } from '../../types';
-import { EventTypePresetsSection } from "@/components/common/EventTypePresetsSection";
+import { EventTypePresetsSection } from "@/components/Section/EventTypePresetsSection";
 
 interface CalendarSidebarContentConfig {}
 

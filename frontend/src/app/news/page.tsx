@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { useNews } from '@/features/news/hooks/useNews';
 import { NewsGrid } from '@/features/news/components/grids/NewsGrid';
-import { Pagination } from '@/components/ui/Pagination';
+import { Pagination } from '@/components/Navigation/Pagination';
 import { NewsSearchResultsSummary } from "@/features/news/components/results/NewsSearchResultsSummary";
 import { NewsSidebarContent } from '@/features/news/components/layout/NewsSidebarContent';
-import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
+import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { NewsBottomSheetContent } from '@/features/news/components/layout/NewsBottomSheetContent';
-import { PageLayout } from '@/components/common/PageLayout';
+import { PageLayout } from '@/components/Layout/PageLayout';
 
 export default function NewsPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);

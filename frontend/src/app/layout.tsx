@@ -3,12 +3,12 @@ import { M_PLUS_Rounded_1c, Noto_Sans_JP } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/header/Header';
 import { Footer } from '@/components/footer/Footer';
-import { FloatingYouTubeLink } from '@/components/common/FloatingYouTubeLink';
+import { FloatingYouTubeLink } from '@/components/Misc/FloatingYouTubeLink';
 import { WebSiteSchema, OrganizationSchema } from '@/components/seo/JsonLd';
 import { GoogleAnalyticsWrapper } from '@/components/analytics/GoogleAnalytics';
-import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { OfflineIndicator } from '@/components/common/OfflineIndicator';
-import { ToastProvider } from '@/components/common/Toast';
+import { ErrorBoundary } from '@/components/Error/ErrorBoundary';
+import { OfflineIndicator } from '@/components/Feedback/OfflineIndicator';
+import { ToastProvider } from '@/components/Feedback/Toast';
 import { PerformanceOptimizations } from '@/components/seo/PerformanceOptimizations';
 
 const mplusRounded = M_PLUS_Rounded_1c({

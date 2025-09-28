@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Tag } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Badge/badge';
 
 interface ArchiveCardTagsProps {
   tags?: string[];

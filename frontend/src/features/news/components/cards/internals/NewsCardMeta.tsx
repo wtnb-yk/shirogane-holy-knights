@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Calendar } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/Badge/badge';
 import { NewsDto } from '../../../types/types';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { getCategoryBadgeStyle } from '../../../utils/categoryStyles';

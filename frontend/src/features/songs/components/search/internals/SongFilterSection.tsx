@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SongFilterOptions } from '@/features/songs/types/types';
-import { DateRangeSection } from '@/components/ui/DateRangeSection';
+import { DateRangeSection } from '@/components/Input/DateRangeSection';
 
 interface SongFilterSectionProps {
   filters: SongFilterOptions;

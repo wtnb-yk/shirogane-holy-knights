@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlbumDto } from '../types/types';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@/components/Modal/Modal';
 import { AlbumCoverImage } from './AlbumCoverImage';
 import { AlbumBasicInfo } from './AlbumBasicInfo';
 import { AlbumTrackList } from './AlbumTrackList';

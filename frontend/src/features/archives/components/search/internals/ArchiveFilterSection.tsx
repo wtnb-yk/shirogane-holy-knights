@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { MultiSelectSection } from '@/components/common/MultiSelectSection';
-import { DateRangeSection } from '@/components/common/DateRangeSection';
+import { MultiSelectSection } from '@/components/Select/MultiSelectSection';
+import { DateRangeSection } from '@/components/Input/DateRangeSection';
 export interface FilterOptions {
   selectedTags: string[];
   startDate?: string;
@@ -45,6 +45,7 @@ export function ArchiveFilterSection({
           startDate={filters.startDate}
           endDate={filters.endDate}
           onDateChange={handleDateChange}
+          title="配信日"
         />
       </div>
     </div>

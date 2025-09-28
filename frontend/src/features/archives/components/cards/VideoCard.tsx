@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { VideoDto } from '../../types/types';
-import { InteractiveCard } from '@/components/ui/InteractiveCard';
-import { StaggeredItem } from '@/components/ui/StaggeredItem';
+import { InteractiveCard } from '@/components/Card/InteractiveCard';
+import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { ArchiveCardImage } from './internals/ArchiveCardImage';
 import { ArchiveCardOverlay } from './internals/ArchiveCardOverlay';
 import { formatDate } from '../../utils/dateFormat';

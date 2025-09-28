@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SearchResultsSummary } from '@/components/common/SearchResultsSummary';
+import { SearchResultsSummary } from '@/components/Stats/SearchResultsSummary';
 import { NewsFilterOptions } from '../../types/types';
 import { useNewsCategories } from '../../hooks/useNewsCategories';
 import {getCategoryDisplayName} from "@/constants/newsCategories";

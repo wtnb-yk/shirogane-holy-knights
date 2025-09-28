@@ -1,7 +1,7 @@
 'use client';
 
 import React, { ReactElement } from 'react';
-import { ErrorDisplay } from '@/components/common/ErrorDisplay';
+import { ErrorDisplay } from '@/components/Error/ErrorDisplay';
 
 interface NewsListGridProps<T> {
   items: T[];

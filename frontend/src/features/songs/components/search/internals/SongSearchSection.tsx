@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Settings } from 'lucide-react';
-import { SearchInput } from '@/components/ui/SearchInput';
+import { SearchInput } from '@/components/Input/SearchInput';
 
 interface SongSearchSectionProps {
   searchValue: string;

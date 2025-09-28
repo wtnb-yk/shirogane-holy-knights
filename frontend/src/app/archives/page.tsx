@@ -9,11 +9,11 @@ import { ArchiveSearchOptionsModal } from '@/features/archives/components/search
 import { ArchiveSearchResultsSummary } from '@/features/archives/components/results/ArchiveSearchResultsSummary';
 import { VideosGrid } from '@/features/archives/components/grids/VideosGrid';
 import { StreamsGrid } from '@/features/archives/components/grids/StreamsGrid';
-import { Pagination } from '@/components/ui/Pagination';
-import { FilterToggleButton } from '@/components/common/Sidebar/FilterToggleButton';
+import { Pagination } from '@/components/Navigation/Pagination';
+import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { ArchiveBottomSheetContent } from '@/features/archives/components/layout/ArchiveBottomSheetContent';
-import { PageLayout } from '@/components/common/PageLayout';
-import { SegmentedControl } from '@/components/common/Sidebar/SegmentedControl';
+import { PageLayout } from '@/components/Layout/PageLayout';
+import { SegmentedControl } from '@/components/Input/SegmentedControl';
 
 export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);

@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { FilterOptions } from '../search/internals/ArchiveFilterSection';
-import { MultiSelectSection } from '@/components/common/MultiSelectSection';
-import { DateRangeSection } from '@/components/ui/DateRangeSection';
-import { SearchInput } from '@/components/ui/SearchInput';
+import { MultiSelectSection } from '@/components/Select/MultiSelectSection';
+import { DateRangeSection } from '@/components/Input/DateRangeSection';
+import { SearchInput } from '@/components/Input/SearchInput';
 
 interface ArchiveBottomSheetContentProps {
   searchValue: string;
