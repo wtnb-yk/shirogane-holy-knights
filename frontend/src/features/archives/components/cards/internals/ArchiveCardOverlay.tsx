@@ -20,7 +20,7 @@ export const ArchiveCardOverlay = ({
   return (
     <>
       {/* 基本オーバーレイ */}
-      <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+      <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/50 to-transparent">
         <ArchiveCardTags
           tags={tags}
           maxVisible={1}
