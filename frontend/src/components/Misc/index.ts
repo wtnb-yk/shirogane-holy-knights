@@ -1,6 +1,6 @@
 export {
   DynamicModal,
-  DynamicResponsiveModal,
+  ResponsiveModal,
   DynamicSearchOptionsModal,
   DynamicYouTubePlayer
 } from './DynamicComponents';

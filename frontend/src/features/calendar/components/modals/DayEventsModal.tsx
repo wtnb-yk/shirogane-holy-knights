@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Event } from '../../types';
-import { DynamicResponsiveModal } from '@/components/Misc';
 import { useViewport } from '@/hooks/useViewport';
 import { DayEventsList } from '@/features/calendar/components/modals/internals/DayEventsList';
 import { EmptyEventsMessage } from '@/features/calendar/components/modals/internals/EmptyEventsMessage';
+import { ResponsiveModal } from "@/components/Modal";
 
 interface DayEventsModalProps {
   date: Date | null;
@@ -24,7 +24,7 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
   const shouldUseDesktopLayout = !isLoaded || isDesktop;
 
   return (
-    <DynamicResponsiveModal
+    <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
       title={`${date.toLocaleDateString('ja-JP')}のイベント`}
@@ -35,6 +35,6 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
       ) : (
         <DayEventsList events={events} onEventClick={onEventClick} />
       )}
-    </DynamicResponsiveModal>
+    </ResponsiveModal>
   );
 }

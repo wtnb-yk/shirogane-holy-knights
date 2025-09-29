@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import commonImage from '@/assets/common.png';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
@@ -40,12 +40,13 @@ export default function ProfileSection() {
             {/* 左側 - 画像表示エリア（キャッチフレーズと自己紹介をオーバーレイ） */}
             <div className="relative h-[70vh] lg:h-[85vh] flex items-end">
               {/* 画像を左半分に配置 */}
-              <Image
+              <OptimizedImage
                 src={commonImage}
                 alt="白銀ノエル プロフィール背景"
                 fill
                 className="object-cover object-left-top"
-                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority={true}
               />
               {/* 下半分にテキストオーバーレイ */}
               <div className={`absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8 bg-gradient-to-t from-black/30 via-black/20 to-transparent ${TAILWIND_Z_INDEX.BASE_CONTENT}`}>

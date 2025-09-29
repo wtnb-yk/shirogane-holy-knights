@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import { Calendar, Music, ExternalLink } from 'lucide-react';
 import { AlbumDto } from '../types/types';
 import { Badge } from '@/components/Badge/badge';
@@ -26,12 +26,13 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
       <div className="aspect-square relative mb-3 group">
         {/* カバー画像 */}
         {imageUrl ? (
-          <Image
+          <OptimizedImage
             src={imageUrl}
             alt={album.title}
             fill
             className="object-cover rounded-lg"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            priority={false}
           />
         ) : (
           <div className="w-full h-full bg-bg-secondary flex items-center justify-center rounded-lg">

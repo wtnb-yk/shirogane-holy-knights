@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import lyricalImage from '@/assets/lyrical.png';
 import { TAILWIND_Z_INDEX } from '@/constants/zIndex';
 
@@ -17,13 +17,14 @@ export default function YouTubeLinkSection() {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/20 to-accent-beige/20 rounded-full blur-3xl scale-110 animate-pulse"></div>
             <div className="relative hover:scale-105 transition-transform duration-500 ease-out">
-              <Image
+              <OptimizedImage
                 src={lyricalImage}
                 alt="白銀ノエル"
                 width={380}
                 height={570}
                 className="drop-shadow-2xl"
-                priority
+                sizes="380px"
+                priority={false}
               />
             </div>
           </div>

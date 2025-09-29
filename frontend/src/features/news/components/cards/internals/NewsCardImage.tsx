@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import { OverlayIcon } from '@/components/Overlay/OverlayIcon';
-import { IMAGE_STYLES } from '@/constants/styles';
 
 interface NewsCardImageProps {
   imageUrl: string;
@@ -13,15 +12,13 @@ interface NewsCardImageProps {
 export const NewsCardImage = ({ imageUrl, alt }: NewsCardImageProps) => {
   return (
     <div className="relative w-full md:w-80 h-48 md:h-[200px] flex-shrink-0 overflow-hidden bg-bg-accent">
-      <Image
+      <OptimizedImage
         src={imageUrl}
         alt={alt}
         fill
         className="object-cover transition-transform duration-300 group-hover:scale-105"
-        loading="lazy"
         sizes="(max-width: 767px) 100vw, 320px"
-        placeholder="blur"
-        blurDataURL={IMAGE_STYLES.placeholder}
+        priority={false}
       />
       <OverlayIcon
         type="external-link"

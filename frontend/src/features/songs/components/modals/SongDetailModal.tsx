@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
-import { DynamicResponsiveModal } from '@/components/Misc';
 import { useViewport } from '@/hooks/useViewport';
 import { SongBasicInfo } from './internals/SongBasicInfo';
 import { SongPerformanceList } from '../lists/SongPerformanceList';
+import { ResponsiveModal } from "@/components/Modal";
 
 interface SongDetailModalProps {
   song: StreamSong | null;
@@ -28,7 +28,7 @@ export const SongDetailModal = ({
   const shouldUseDesktopLayout = !isLoaded || isDesktop;
 
   return (
-    <DynamicResponsiveModal
+    <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
       title={"楽曲詳細"}
@@ -46,6 +46,6 @@ export const SongDetailModal = ({
         onClose={onClose}
         song={song}
       />
-    </DynamicResponsiveModal>
+    </ResponsiveModal>
   );
 };

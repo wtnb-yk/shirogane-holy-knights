@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import { Calendar } from 'lucide-react';
 import { StreamDto } from '@/features/archives/types/types';
 import { Badge } from '@/components/Badge/badge';
@@ -9,7 +9,6 @@ import { InteractiveCard } from '@/components/Card/InteractiveCard';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { OverlayIcon } from '@/components/Overlay/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
-import { IMAGE_STYLES } from '@/constants/styles';
 
 interface ArchivePreviewCardProps {
   stream: StreamDto;
@@ -34,15 +33,13 @@ const ArchivePreviewCardComponent = ({ stream, index }: ArchivePreviewCardProps)
       <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-accent-gold/10 to-accent-beige/10 rounded-t-lg">
         {imageUrl ? (
           <>
-            <Image 
-              src={imageUrl} 
-              alt={stream.title} 
+            <OptimizedImage
+              src={imageUrl}
+              alt={stream.title}
               fill
               className="object-cover image-hover"
-              loading="lazy"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              placeholder="blur"
-              blurDataURL={IMAGE_STYLES.placeholder}
+              priority={false}
             />
             <div className="image-overlay" />
             <OverlayIcon

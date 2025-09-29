@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import hero1 from '@/assets/hero/hero_1.png';
 import hero2 from '@/assets/hero/hero_2.png';
 import hero3 from '@/assets/hero/hero_3.png';
@@ -49,22 +49,25 @@ export default function HeroSection() {
         >
           {heroImages.map((image, index) => (
             <div key={index} className="relative w-screen h-full flex-shrink-0">
-              <Image
+              <OptimizedImage
                 src={image}
                 alt={`ヒーロー背景 ${index + 1}`}
                 fill
                 className="object-cover"
+                sizes="100vw"
                 priority={index === 0}
               />
             </div>
           ))}
           {/* 無限ループ用の最初の画像の複製 */}
           <div className="relative w-screen h-full flex-shrink-0">
-            <Image
+            <OptimizedImage
               src={heroImages[0]!}
               alt="ヒーロー背景 1（ループ用）"
               fill
               className="object-cover"
+              sizes="100vw"
+              priority={false}
             />
           </div>
         </div>

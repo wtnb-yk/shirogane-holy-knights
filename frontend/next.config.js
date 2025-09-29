@@ -66,6 +66,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'via.placeholder.com',
       },
       // CloudFront CDN domain for news images

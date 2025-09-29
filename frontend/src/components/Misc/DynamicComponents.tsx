@@ -32,14 +32,6 @@ export const DynamicModal = dynamic(
   }
 );
 
-export const DynamicResponsiveModal = dynamic(
-  () => import('@/components/Modal/Modal').then(mod => ({ default: mod.Modal })),
-  {
-    loading: ModalSkeleton,
-    ssr: false,
-  }
-);
-
 export const DynamicSearchOptionsModal = dynamic(
   () => import('@/components/Modal/SearchOptionsModal').then(mod => ({ default: mod.SearchOptionsModal })),
   {
