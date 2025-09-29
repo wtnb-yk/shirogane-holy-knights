@@ -49,8 +49,8 @@ dependencies {
     // Spring Cloud Function - AWS Lambda統合
     implementation("org.springframework.cloud:spring-cloud-function-context")
     implementation("org.springframework.cloud:spring-cloud-function-adapter-aws")
-    implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
-    implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
+    implementation("com.amazonaws:aws-lambda-java-core:1.4.0")
+    implementation("com.amazonaws:aws-lambda-java-events:3.16.1")
     
     // Database
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
