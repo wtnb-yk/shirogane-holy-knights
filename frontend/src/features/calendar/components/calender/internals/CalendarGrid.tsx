@@ -24,7 +24,7 @@ export function CalendarGrid({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-gray-500">読み込み中...</div>
+        <div className="text-text-secondary">読み込み中...</div>
       </div>
     );
   }
@@ -32,7 +32,7 @@ export function CalendarGrid({
   if (error) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-red-500">{error}</div>
+        <div className="text-text-danger">{error}</div>
       </div>
     );
   }

@@ -42,6 +42,23 @@
   --color-error-light: #fca5a5;
   --color-error-dark: #dc2626;
 
+  /* 機能的な色 */
+  --color-text-danger: #DC2626;
+  --color-text-danger-dark: #991B1B;
+  --color-text-success: #059669;
+  --color-text-success-dark: #065F46;
+  --color-text-warning: #D97706;
+  --color-text-warning-dark: #92400E;
+  --color-text-info: #2563EB;
+  --color-text-info-dark: #1E40AF;
+  --color-text-timeout: #EA580C;
+
+  /* 特定用途色 */
+  --color-text-pagination-hover: #B45309;
+  --color-text-pagination-active: #78350F;
+  --color-text-sunday: #EF4444;
+  --color-text-saturday: #3B82F6;
+
   /* ビューポート高さ関連の変数 */
   --viewport-height: 100vh; /* JavaScriptで動的に更新される */
 }

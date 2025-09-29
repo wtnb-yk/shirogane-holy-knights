@@ -61,9 +61,9 @@ export function CalendarDateCell({
           isToday
             ? 'text-text-inverse font-bold bg-accent-gold w-8 h-8 rounded-full flex items-center justify-center' :
           isSunday
-            ? 'text-red-500' :
+            ? 'text-text-sunday' :
           isSaturday
-            ? 'text-blue-500'
+            ? 'text-text-saturday'
             : 'text-text-primary'
         }`}>
           {date.getDate()}

@@ -19,7 +19,7 @@ export const ArchiveCardTags = ({ tags, maxVisible, variant }: ArchiveCardTagsPr
     // StreamCardの基本タグ表示（最初のタグのみ、オーバーレイ外）
     return (
       <div className="flex items-center gap-1">
-        <span className="bg-white/90 text-gray-900 px-2 py-1 rounded text-xs font-bold">
+        <span className="bg-white/90 text-text-primary px-2 py-1 rounded text-xs font-bold">
           {tags[0]}
         </span>
       </div>

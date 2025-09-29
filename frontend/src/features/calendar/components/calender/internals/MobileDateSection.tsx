@@ -29,8 +29,8 @@ export function MobileDateSection({
 
   const getDateTextColor = () => {
     if (!isCurrentMonth) return 'text-text-muted';
-    if (dayIndex === 0) return 'text-red-500';
-    if (dayIndex === 6) return 'text-blue-500';
+    if (dayIndex === 0) return 'text-text-sunday';
+    if (dayIndex === 6) return 'text-text-saturday';
     return 'text-text-primary';
   };
 

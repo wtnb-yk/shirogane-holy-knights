@@ -78,14 +78,14 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   const getIconColor = () => {
     switch (errorInfo.type) {
       case 'offline':
-        return 'text-orange-600';
+        return 'text-text-timeout';
       case 'network':
       case 'timeout':
-        return 'text-yellow-600';
+        return 'text-text-warning';
       case 'server':
-        return 'text-red-600';
+        return 'text-text-danger';
       default:
-        return 'text-red-600';
+        return 'text-text-danger';
     }
   };
 

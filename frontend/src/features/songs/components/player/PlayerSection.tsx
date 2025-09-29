@@ -20,9 +20,9 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
       {!currentSong && (
         <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center border border-gray-200">
           <div className="text-center">
-            <Music className="w-16 h-16 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-700 font-medium text-lg mb-1">楽曲を選択してください</p>
-            <p className="text-gray-500 text-sm">楽曲カードの「再生」をクリック</p>
+            <Music className="w-16 h-16 text-text-tertiary mx-auto mb-3" />
+            <p className="text-text-primary font-medium text-lg mb-1">楽曲を選択してください</p>
+            <p className="text-text-secondary text-sm">楽曲カードの「再生」をクリック</p>
           </div>
         </div>
       )}
@@ -40,10 +40,10 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
           
           <div className="w-full lg:w-1/4 flex flex-col justify-center space-y-2 lg:space-y-4 px-2 lg:pl-4">
             <div>
-              <h2 className="text-lg lg:text-xl font-bold text-gray-900 line-clamp-1 lg:line-clamp-2 leading-tight">
+              <h2 className="text-lg lg:text-xl font-bold text-text-primary line-clamp-1 lg:line-clamp-2 leading-tight">
                 {currentSong.title}
               </h2>
-              <p className="text-gray-600 text-sm lg:text-base mt-1">
+              <p className="text-text-secondary text-sm lg:text-base mt-1">
                 {currentSong.artist}
               </p>
             </div>
@@ -53,7 +53,7 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
                 <div className="p-1.5 bg-accent-blue/10 rounded-md">
                   <Clock className="w-4 h-4 text-accent-blue" />
                 </div>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-text-secondary">
                   {currentPerformance ? '歌唱日' : '最新'}: {formatDateOnly(currentPerformance?.performedAt || currentSong.latestSingDate)}
                 </span>
               </div>
@@ -61,11 +61,11 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
 
             {currentPerformance && (
               <div className="pt-2 lg:pt-3 border-t border-gray-200">
-                <p className="text-gray-700 text-sm font-semibold mb-2 flex items-center gap-1.5">
+                <p className="text-text-primary text-sm font-semibold mb-2 flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-accent-gold" />
                   選択中の配信
                 </p>
-                <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+                <p className="text-text-secondary text-sm line-clamp-3 leading-relaxed">
                   {currentPerformance.videoTitle}
                 </p>
               </div>

@@ -12,9 +12,9 @@ export function CalendarWeekHeader() {
           key={day}
           className={`p-3 text-center text-sm font-semibold ${
             index === 0
-              ? 'text-red-500'
+              ? 'text-text-sunday'
               : index === 6
-                ? 'text-accent-blue'
+                ? 'text-text-saturday'
                 : 'text-text-primary'
           }`}
         >
