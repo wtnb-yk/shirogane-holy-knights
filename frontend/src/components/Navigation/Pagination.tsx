@@ -23,9 +23,9 @@ const STYLES = {
   base: "text-xs sm:text-sm font-medium rounded-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed",
   page: "px-2.5 sm:px-4 py-1.5 sm:py-2 min-w-[32px] sm:min-w-[36px] h-[32px] sm:h-[36px] flex items-center justify-center",
   navigation: "px-2 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1",
-  default: "text-gray-600 bg-white border border-gray-300 hover:border-amber-200 hover:text-amber-700 hover:scale-110 hover:-translate-y-0.5",
-  active: "bg-amber-200 text-amber-900 border-amber-200 font-bold",
-  disabled: "disabled:hover:bg-white disabled:hover:text-gray-400 disabled:hover:border-gray-200"
+  default: "text-text-secondary bg-white border border-gray-300 hover:border-amber-200 hover:text-text-pagination-hover hover:scale-110 hover:-translate-y-0.5",
+  active: "bg-amber-200 text-text-pagination-active border-amber-200 font-bold",
+  disabled: "disabled:hover:bg-white disabled:hover:text-text-tertiary disabled:hover:border-gray-200"
 } as const;
 
 // 子コンポーネント
@@ -134,7 +134,7 @@ export const Pagination = ({
                 loading={loading}
                 onPageChange={onPageChange}
               />
-              {showFirstEllipsis && <span className="px-2 text-gray-400">...</span>}
+              {showFirstEllipsis && <span className="px-2 text-text-tertiary">...</span>}
             </>
           )}
 
@@ -150,7 +150,7 @@ export const Pagination = ({
 
           {showLastPage && (
             <>
-              {showLastEllipsis && <span className="px-2 text-gray-400">...</span>}
+              {showLastEllipsis && <span className="px-2 text-text-tertiary">...</span>}
               <PaginationButton
                 page={totalPages}
                 currentPage={currentPage}

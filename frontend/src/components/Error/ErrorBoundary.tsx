@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="mb-6">
               <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
                 <svg 
-                  className="w-8 h-8 text-red-600" 
+                  className="w-8 h-8 text-text-danger" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"

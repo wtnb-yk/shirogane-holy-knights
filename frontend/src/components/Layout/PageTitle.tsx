@@ -22,7 +22,7 @@ export const PageTitle: React.FC<PageTitleProps> = ({
       {description && (
         <div className="hidden sm:flex items-start justify-between gap-4 mb-4">
           {typeof description === 'string' ? (
-            <p className="text-base text-gray-600 leading-relaxed flex-1">
+            <p className="text-base text-text-secondary leading-relaxed flex-1">
               {description}
             </p>
           ) : (

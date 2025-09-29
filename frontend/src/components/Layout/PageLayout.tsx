@@ -66,7 +66,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
             {/* デスクトップ以上では説明文とボタンを横並び */}
             <div className="hidden lg:flex items-start justify-between gap-4 mb-3">
-              <div className="text-base text-gray-600 leading-relaxed flex-1">
+              <div className="text-base text-text-secondary leading-relaxed flex-1">
                 {description}
               </div>
             </div>

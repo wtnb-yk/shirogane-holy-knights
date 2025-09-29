@@ -66,7 +66,7 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
         className={`bg-gray-200 flex items-center justify-center ${className}`}
         style={fill ? undefined : { width, height }}
       >
-        <span className="text-gray-400 text-sm">画像を読み込めませんでした</span>
+        <span className="text-text-tertiary text-sm">画像を読み込めませんでした</span>
       </div>
     );
   }
