@@ -31,7 +31,6 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
             <ArchiveCardImage
               thumbnailUrl={video.thumbnailUrl}
               title={video.title}
-              loading="lazy"
               sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             />
 
