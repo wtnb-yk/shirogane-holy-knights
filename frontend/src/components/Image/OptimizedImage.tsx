@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { useInView } from 'react-intersection-observer';
 import { IMAGE_STYLES } from '@/constants/styles';
 
 interface OptimizedImageProps {
-  src: string;
+  src: string | StaticImageData;
   alt: string;
   width?: number;
   height?: number;
@@ -19,6 +19,11 @@ interface OptimizedImageProps {
   blurDataURL?: string;
   onLoad?: () => void;
   onError?: () => void;
+}
+
+// StaticImageDataかどうかを判定するヘルパー関数
+function isStaticImageData(src: string | StaticImageData): src is StaticImageData {
+  return typeof src === 'object' && src !== null && 'src' in src;
 }
 
 export const OptimizedImage = React.memo<OptimizedImageProps>(({
@@ -36,6 +41,13 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
   onLoad,
   onError,
 }) => {
+  // StaticImageDataの場合は、Next.jsの最適化情報を使用
+  const imageData = isStaticImageData(src) ? src : null;
+  const imageSrc = imageData ? imageData.src : src as string;
+  const imageWidth = imageData?.width || width;
+  const imageHeight = imageData?.height || height;
+  const imageBlurDataURL = imageData?.blurDataURL || blurDataURL;
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   
@@ -64,7 +76,7 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
       <div 
         ref={ref}
         className={`bg-gray-200 flex items-center justify-center ${className}`}
-        style={fill ? undefined : { width, height }}
+        style={fill ? undefined : { width: imageWidth, height: imageHeight }}
       >
         <span className="text-text-tertiary text-sm">画像を読み込めませんでした</span>
       </div>
@@ -75,10 +87,10 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
     return (
       <Image
         ref={ref}
-        src={src}
+        src={imageSrc}
         alt={alt}
-        width={fill ? undefined : width}
-        height={fill ? undefined : height}
+        width={fill ? undefined : imageWidth}
+        height={fill ? undefined : imageHeight}
         fill={fill}
         className={`transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
@@ -87,7 +99,7 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
         priority={priority}
         quality={quality}
         placeholder={placeholder}
-        blurDataURL={blurDataURL}
+        blurDataURL={imageBlurDataURL}
         onLoad={handleLoad}
         onError={handleError}
         loading={priority ? 'eager' : 'lazy'}
@@ -100,7 +112,7 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
     <div
       ref={ref}
       className={`bg-gray-200 animate-pulse ${className}`}
-      style={fill ? undefined : { width, height }}
+      style={fill ? undefined : { width: imageWidth, height: imageHeight }}
     />
   );
 });
