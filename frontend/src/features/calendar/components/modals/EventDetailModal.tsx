@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { Event } from '../../types';
-import { DynamicResponsiveModal } from '@/components/Misc';
 import { EventTitle } from './internals/EventTitle';
 import { EventImage } from './internals/EventImage';
 import { EventTimeInfo } from './internals/EventTimeInfo';
 import { EventDescription } from './internals/EventDescription';
+import { ResponsiveModal } from "@/components/Modal";
 
 interface EventDetailModalProps {
   event: Event | null;
@@ -20,7 +20,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
   if (!event) return null;
 
   return (
-    <DynamicResponsiveModal
+    <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
       title={"イベント詳細"}
@@ -35,6 +35,6 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
         <EventTimeInfo event={event} />
         <EventDescription event={event} />
       </div>
-    </DynamicResponsiveModal>
+    </ResponsiveModal>
   );
 }

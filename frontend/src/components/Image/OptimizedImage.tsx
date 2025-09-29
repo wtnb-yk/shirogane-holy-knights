@@ -71,35 +71,37 @@ export const OptimizedImage = React.memo<OptimizedImageProps>(({
     );
   }
 
+  if (shouldLoad) {
+    return (
+      <Image
+        ref={ref}
+        src={src}
+        alt={alt}
+        width={fill ? undefined : width}
+        height={fill ? undefined : height}
+        fill={fill}
+        className={`transition-opacity duration-300 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        } ${className}`}
+        sizes={sizes}
+        priority={priority}
+        quality={quality}
+        placeholder={placeholder}
+        blurDataURL={blurDataURL}
+        onLoad={handleLoad}
+        onError={handleError}
+        loading={priority ? 'eager' : 'lazy'}
+      />
+    );
+  }
+
+  // Placeholder while not in view
   return (
-    <div ref={ref} className={fill ? 'relative' : undefined}>
-      {shouldLoad ? (
-        <Image
-          src={src}
-          alt={alt}
-          width={fill ? undefined : width}
-          height={fill ? undefined : height}
-          fill={fill}
-          className={`transition-opacity duration-300 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          } ${className}`}
-          sizes={sizes}
-          priority={priority}
-          quality={quality}
-          placeholder={placeholder}
-          blurDataURL={blurDataURL}
-          onLoad={handleLoad}
-          onError={handleError}
-          loading={priority ? 'eager' : 'lazy'}
-        />
-      ) : (
-        // Placeholder while not in view
-        <div 
-          className={`bg-gray-200 animate-pulse ${className}`}
-          style={fill ? undefined : { width, height }}
-        />
-      )}
-    </div>
+    <div
+      ref={ref}
+      className={`bg-gray-200 animate-pulse ${className}`}
+      style={fill ? undefined : { width, height }}
+    />
   );
 });
 

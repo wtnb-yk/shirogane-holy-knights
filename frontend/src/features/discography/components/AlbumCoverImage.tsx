@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import { Music } from 'lucide-react';
 import { getImageUrl } from '@/utils/imageUrl';
 
@@ -21,11 +21,13 @@ export const AlbumCoverImage = ({
   return (
     <div className={`w-40 h-40 sm:w-48 sm:h-48 relative rounded-lg overflow-hidden bg-bg-secondary ${className}`}>
       {imageUrl ? (
-        <Image
+        <OptimizedImage
           src={imageUrl}
           alt={title}
           fill
           className="object-cover"
+          sizes="(max-width: 640px) 160px, 192px"
+          priority={false}
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center">

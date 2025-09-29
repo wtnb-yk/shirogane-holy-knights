@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import { ExternalLink } from 'lucide-react';
 import { getImageUrl } from '@/utils/imageUrl';
 import { AlbumReleaseDto } from '../types/types';
@@ -22,11 +22,13 @@ const PlatformLink = ({ release }: { release: AlbumReleaseDto }) => {
     >
       {iconUrl && (
         <div className="w-6 h-6 sm:w-8 sm:h-8 relative flex-shrink-0">
-          <Image
+          <OptimizedImage
             src={iconUrl}
             alt={release.platformName}
             fill
             className="object-contain"
+            sizes="32px"
+            priority={false}
           />
         </div>
       )}
