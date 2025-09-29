@@ -23,8 +23,16 @@ const nextConfig = {
     ],
   },
   
-  // Bundle optimization
+  // Bundle optimization with CSS processing fix
   webpack: (config, { dev, isServer }) => {
+    // CSS processing optimization for Tailwind CSS v4
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+
     if (!dev && !isServer) {
       // Optimize bundle splitting
       config.optimization.splitChunks = {
