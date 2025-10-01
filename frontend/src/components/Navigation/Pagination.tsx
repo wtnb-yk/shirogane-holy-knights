@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { StatsSummary } from '@/components/Stats';
 import { useViewport } from '@/hooks/useViewport';
+import { NavigationButton } from '@/components/Button';
 
 interface PaginationProps {
   currentPage: number;
@@ -50,26 +50,6 @@ const PaginationButton = ({ page, currentPage, loading, onPageChange }: Paginati
   </button>
 );
 
-interface NavigationButtonProps {
-  direction: 'prev' | 'next';
-  disabled: boolean;
-  loading: boolean;
-  onPageChange: () => void;
-}
-
-const NavigationButton = ({ direction, disabled, loading, onPageChange }: NavigationButtonProps) => {
-  const isPrev = direction === 'prev';
-  return (
-    <button
-      onClick={onPageChange}
-      disabled={disabled || loading}
-      className={cn(STYLES.base, STYLES.navigation, STYLES.default, STYLES.disabled)}
-    >
-      {isPrev && <ChevronLeft className="w-4 h-4" />}
-      {!isPrev && <ChevronRight className="w-4 h-4" />}
-    </button>
-  );
-};
 
 // ページ範囲計算のヘルパー関数
 const getVisiblePages = (currentPage: number, totalPages: number, isMobile = false): number[] => {
@@ -120,9 +100,9 @@ export const Pagination = ({
       >
         <NavigationButton
           direction="prev"
-          disabled={currentPage <= 1}
-          loading={loading}
-          onPageChange={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1 || loading}
+          onClick={() => onPageChange(currentPage - 1)}
+          className={cn(STYLES.base, STYLES.navigation, STYLES.default, STYLES.disabled)}
         />
 
         <div className="flex items-center gap-0.5 sm:gap-1">
@@ -163,9 +143,9 @@ export const Pagination = ({
 
         <NavigationButton
           direction="next"
-          disabled={currentPage >= totalPages || !hasMore}
-          loading={loading}
-          onPageChange={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages || !hasMore || loading}
+          onClick={() => onPageChange(currentPage + 1)}
+          className={cn(STYLES.base, STYLES.navigation, STYLES.default, STYLES.disabled)}
         />
       </div>
 

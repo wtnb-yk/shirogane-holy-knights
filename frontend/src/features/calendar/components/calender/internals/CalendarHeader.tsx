@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/Button/Button';
+import { NavigationButton } from '@/components/Button';
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -41,19 +41,17 @@ export function CalendarHeader({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <NavigationButton
+            direction="prev"
             onClick={() => navigateDate('prev')}
             className="p-2 text-text-secondary hover:text-accent-blue hover:bg-bg-accent rounded-md transition-all duration-200 interactive-hover"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+          />
 
-          <button
+          <NavigationButton
+            direction="next"
             onClick={() => navigateDate('next')}
             className="p-2 text-text-secondary hover:text-accent-blue hover:bg-bg-accent rounded-md transition-all duration-200 interactive-hover"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          />
 
           <Button
             onClick={goToToday}
