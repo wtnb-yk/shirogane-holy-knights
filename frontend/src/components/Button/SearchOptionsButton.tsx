@@ -15,10 +15,10 @@ export const SearchOptionsButton = ({
   hasActiveOptions = false
 }: SearchOptionsButtonProps) => {
   return (
-    <button 
-      className={`py-2.5 px-4 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all border ${
-        hasActiveOptions 
-          ? 'border-text-secondary text-text-secondary bg-text-secondary/10 hover:bg-text-secondary/20' 
+    <button
+      className={`w-full py-2.5 px-4 rounded-md text-sm font-medium flex items-center justify-center gap-2 transition-all border ${
+        hasActiveOptions
+          ? 'border-text-secondary text-text-secondary bg-text-secondary/10 hover:bg-text-secondary/20'
           : 'border-surface-border text-text-secondary bg-white hover:text-text-primary hover:border-text-secondary hover:bg-bg-accent/20'
       }`}
       onClick={onClick}
