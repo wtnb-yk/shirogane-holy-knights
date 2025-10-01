@@ -3,6 +3,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/Button/Button';
+import { IconButton } from '@/components/Button/IconButton';
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -41,25 +42,24 @@ export function CalendarHeader({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <IconButton
+            icon={<ChevronLeft className="w-5 h-5" />}
             onClick={() => navigateDate('prev')}
-            className="p-2 text-text-secondary hover:text-accent-blue hover:bg-bg-accent rounded-md transition-all duration-200 interactive-hover"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+            aria-label="前月"
+            variant="secondary-blue"
+          />
 
-          <button
+          <IconButton
+            icon={<ChevronRight className="w-5 h-5" />}
             onClick={() => navigateDate('next')}
-            className="p-2 text-text-secondary hover:text-accent-blue hover:bg-bg-accent rounded-md transition-all duration-200 interactive-hover"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+            aria-label="次月"
+            variant="secondary-blue"
+          />
 
           <Button
             onClick={goToToday}
             variant="outline"
             size="sm"
-            className="ml-2"
           >
             今日
           </Button>
