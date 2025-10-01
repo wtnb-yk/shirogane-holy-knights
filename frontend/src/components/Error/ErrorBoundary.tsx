@@ -79,18 +79,16 @@ export class ErrorBoundary extends Component<Props, State> {
               </p>
             </div>
             
-            <div className="space-y-3">
-              <Button 
+            <div className="space-y-3 w-full">
+              <Button
                 onClick={this.handleRetry}
-                className="w-full"
               >
                 再試行
               </Button>
-              
-              <Button 
+
+              <Button
                 variant="outline"
                 onClick={() => window.location.reload()}
-                className="w-full"
               >
                 ページを再読み込み
               </Button>
