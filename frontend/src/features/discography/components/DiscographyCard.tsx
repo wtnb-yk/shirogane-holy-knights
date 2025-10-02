@@ -22,20 +22,20 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
   const imageUrl = getImageUrl(album.coverImageUrl);
 
   const cardContent = (
-    <InteractiveCard hoverScale="sm" className="border-0 rounded-lg bg-bg-primary overflow-hidden" onClick={onClick}>
-      <div className="aspect-square relative mb-3 group">
+    <InteractiveCard hoverScale="sm" className="border-0 bg-bg-primary" onClick={onClick}>
+      <div className="aspect-square relative mb-3 overflow-hidden rounded-lg group">
         {/* カバー画像 */}
         {imageUrl ? (
           <OptimizedImage
             src={imageUrl}
             alt={album.title}
             fill
-            className="object-cover rounded-lg"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             priority={false}
           />
         ) : (
-          <div className="w-full h-full bg-bg-secondary flex items-center justify-center rounded-lg">
+          <div className="w-full h-full bg-bg-secondary flex items-center justify-center">
             <Music className="w-12 h-12 text-text-muted" />
           </div>
         )}

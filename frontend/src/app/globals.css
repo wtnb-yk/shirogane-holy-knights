@@ -123,13 +123,13 @@
   }
   
   .card-hover-scale {
-    @apply transition-all hover:shadow-xl hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl;
+    @apply transition-all hover:shadow-xl hover:-translate-y-1 hover:shadow-2xl;
     transition-duration: 300ms;
     box-shadow: 0 25px 50px -12px rgba(107, 114, 128, 0.15);
   }
-  
+
   .card-hover-scale-md {
-    @apply transition-all hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02] hover:shadow-2xl;
+    @apply transition-all hover:shadow-xl hover:-translate-y-1 hover:shadow-2xl;
     transition-duration: 300ms;
     box-shadow: 0 25px 50px -12px rgba(107, 114, 128, 0.15);
   }

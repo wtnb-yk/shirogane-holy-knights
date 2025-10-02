@@ -24,7 +24,7 @@ const VideoCardComponent = ({ video, index }: VideoCardProps) => {
         rel="noopener noreferrer"
         aria-label={`${video.title}をYouTubeで視聴`}
         hoverScale="sm"
-        className="rounded-lg overflow-hidden h-full"
+        className="h-full"
       >
         {video.thumbnailUrl && (
           <div className="relative">

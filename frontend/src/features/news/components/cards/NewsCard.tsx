@@ -60,7 +60,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           target="_blank"
           rel="noopener noreferrer"
           hoverScale="sm"
-          className="border-0 rounded-lg bg-bg-primary overflow-hidden"
+          className="border-0 bg-bg-primary"
         >
           <NewsCardContent
             news={news}
@@ -69,7 +69,7 @@ const NewsCardComponent = ({ news, index }: NewsCardProps) => {
           />
         </InteractiveCard>
       ) : (
-        <InteractiveCard hoverScale="sm" className="border-0 rounded-lg bg-bg-primary overflow-hidden">
+        <InteractiveCard hoverScale="sm" className="border-0 bg-bg-primary">
           <NewsCardContent
             news={news}
             imageUrl={imageUrl}
