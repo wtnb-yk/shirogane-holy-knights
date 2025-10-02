@@ -29,7 +29,7 @@ const StreamCardComponent = ({ stream, index, variant = 'default' }: StreamCardP
         rel="noopener noreferrer"
         aria-label={`${stream.title}をYouTubeで視聴`}
         hoverScale="sm"
-        className="overflow-hidden h-full"
+        className="h-full"
       >
         <div className="relative">
           <ArchiveCardImage
