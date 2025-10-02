@@ -25,7 +25,7 @@ echo "DB_PORT=5432" >> config/.env.prd\n\
 echo "DB_NAME=shirogane" >> config/.env.prd\n\
 echo "DB_USER=${DB_USERNAME}" >> config/.env.prd\n\
 echo "DB_PASSWORD=${DB_PASSWORD}" >> config/.env.prd\n\
-make sync-prd\n\
+just sync-prd\n\
 ' > /app/run-batch.sh && chmod +x /app/run-batch.sh
 
 # デフォルトコマンド
