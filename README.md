@@ -19,6 +19,7 @@
 - Docker Desktop
 - AWS CLI
 - Terraform
+- Just ([インストール方法](https://github.com/casey/just#installation))
 
 ### 1. インフラ構築（初回のみ）
 

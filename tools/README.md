@@ -25,14 +25,26 @@ pip install google-api-python-client pandas psycopg2-binary python-dotenv
 
 ## 主要コマンド
 
+> **Note**: このプロジェクトでは `just` コマンドランナーを使用しています。[インストール方法](https://github.com/casey/just#installation)
+
+### コマンド一覧の確認
+
+```bash
+# プロジェクトルートから全コマンドを確認
+just --list
+
+# または
+just
+```
+
 ### 初回セットアップ
 
 ```bash
 # 開発環境のセットアップ
-make setup-dev
+just setup-dev
 
 # 本番環境のセットアップ
-make setup-prd
+just setup-prd
 ```
 
 ### YouTube データ同期（推奨）
@@ -41,13 +53,13 @@ make setup-prd
 
 ```bash
 # ローカル環境
-make sync-local
+just sync-local
 
 # 開発環境
-make sync-dev
+just sync-dev
 
 # 本番環境
-make sync-prd
+just sync-prd
 ```
 
 ### データ取得のみ
@@ -56,13 +68,13 @@ YouTube Data API からデータを取得してCSVファイルに保存：
 
 ```bash
 # ローカル環境
-make fetch-local
+just fetch-local
 
-# 開発環境  
-make fetch-dev
+# 開発環境
+just fetch-dev
 
 # 本番環境
-make fetch-prd
+just fetch-prd
 ```
 
 ### データベースインポートのみ
@@ -71,26 +83,26 @@ make fetch-prd
 
 ```bash
 # ローカル環境
-make import-local
+just import-local
 
 # 開発環境
-make import-dev
+just import-dev
 
 # 本番環境
-make import-prd
+just import-prd
 ```
 
 ### ニュースデータインポート
 
 ```bash
 # ローカル環境
-make news-import-local
+just news-import-local
 
 # 開発環境
-make news-import-dev
+just news-import-dev
 
 # 本番環境
-make news-import-prd
+just news-import-prd
 ```
 
 ### データベース接続
@@ -99,35 +111,36 @@ make news-import-prd
 
 ```bash
 # 接続開始
-make db-dev
+just db-dev
 
 # 接続状況確認
-make db-dev-status
+just db-dev-status
 
 # 接続終了
-make db-dev-stop
+just db-dev-stop
 ```
 
 #### 本番環境
 
 ```bash
 # 接続開始
-make db-prd
+just db-prd
 
 # 接続状況確認
-make db-prd-status
+just db-prd-status
 
 # 接続終了
-make db-prd-stop
+just db-prd-stop
 ```
 
 ## ファイル構成
 
 ```
 tools/
-├── Makefile              # 各種ショートカットコマンド
-├── README.md            # このファイル
-├── config/              # 環境設定ファイル（.env.*）
+├── justfile              # 各種ショートカットコマンド（Just）
+├── Makefile              # 各種ショートカットコマンド（非推奨・削除予定）
+├── README.md             # このファイル
+├── config/               # 環境設定ファイル（.env.*）
 └── scripts/
     ├── setup-env.sh               # 環境セットアップスクリプト
     ├── youtube_data_pipeline.py   # 統合実行スクリプト（取得→インポート）
@@ -143,9 +156,9 @@ tools/
 
 ### 配信タグ
 
-1. make sync-local 
-2. make stream-tags-extract-local
-3. tools/data/stream_tags.csv を編集 
-4. make stream-tags-import-local
-5. make sync-prd
-6. make stream-tags-import-prd
+1. just sync-local
+2. just stream-tags-extract-local
+3. tools/data/stream_tags.csv を編集
+4. just stream-tags-import-local
+5. just sync-prd
+6. just stream-tags-import-prd

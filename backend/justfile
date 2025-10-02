@@ -1,5 +1,3 @@
-.PHONY: deploy info clean build jar help
-
 # ビルド
 build:
 	./gradlew clean build --exclude-task test
@@ -23,9 +21,8 @@ jar:
 # ヘルプ表示
 help:
 	@echo "Available commands:"
-	@echo "  make build-deploy - Build and deploy in one command"
-	@echo "  make deploy       - Deploy Lambda to LocalStack"
-	@echo "  make info         - Show deployment info"
-	@echo "  make clean        - Clean LocalStack Lambda"
-	@echo "  make build        - Build project (exclude tests)"
-	@echo "  make jar          - Build Lambda JAR only"
+	@echo "  just build        - Build project (exclude tests)"
+	@echo "  just deploy       - Build and deploy Lambda to LocalStack"
+	@echo "  just info         - Show deployment info"
+	@echo "  just clean        - Clean LocalStack Lambda"
+	@echo "  just jar          - Build Lambda JAR only"
