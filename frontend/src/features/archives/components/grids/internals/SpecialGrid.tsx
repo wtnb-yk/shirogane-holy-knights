@@ -32,8 +32,8 @@ export function SpecialGrid<T>({
     
     return (
       <div className="mb-8">
-        <div 
-          className={`${gridClassName} gap-0.5 rounded-lg overflow-hidden opacity-0 animate-slide-up`}
+        <div
+          className={`${gridClassName} gap-0.5 rounded-lg opacity-0 animate-slide-up`}
           style={{ animationDelay: '200ms' }}
         >
           {items.map((item, index) => {

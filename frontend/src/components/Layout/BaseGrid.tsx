@@ -41,8 +41,8 @@ function BaseGridComponent<T>({
   );
 
   // Memoize grid classes
-  const gridClasses = useMemo(() => 
-    `grid ${gridClassName} gap-0.5 mb-8 opacity-0 animate-slide-up rounded-lg overflow-hidden`,
+  const gridClasses = useMemo(() =>
+    `grid ${gridClassName} gap-0.5 mb-8 opacity-0 animate-slide-up rounded-lg`,
     [gridClassName]
   );
 
