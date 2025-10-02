@@ -1,1 +1,0 @@
-export { SpecialsApi } from './specialsClient';

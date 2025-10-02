@@ -27,6 +27,8 @@ export interface SpecialEventSearchParamsDto {
 export interface SpecialEventSearchResultDto {
   items: SpecialEventDto[];
   totalCount: number;
+  page: number;
+  pageSize: number;
 }
 
 /**

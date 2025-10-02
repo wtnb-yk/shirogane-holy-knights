@@ -1,6 +1,5 @@
 import {
   SpecialEventDto,
-  SpecialEventSearchParamsDto,
   SpecialEventSearchResultDto
 } from '../types/types';
 import { apiClient } from '@/utils/apiClient';
@@ -9,19 +8,12 @@ import { apiClient } from '@/utils/apiClient';
  * スペシャルイベントAPI
  * ディスコグラフィー実装パターンに完全準拠
  */
-export const SpecialsApi = {
+export const SpecialApi = {
   /**
    * スペシャルイベント一覧を取得
    */
-  getSpecialEvents: (params: SpecialEventSearchParamsDto = {}): Promise<SpecialEventSearchResultDto> => {
-    const requestParams = {
-      query: params.query,
-      status: params.status,
-      startDate: params.startDate,
-      endDate: params.endDate,
-    };
-
-    return apiClient.post<SpecialEventSearchResultDto>('/specials', requestParams);
+  getSpecialEvents: (): Promise<SpecialEventSearchResultDto> => {
+    return apiClient.get<SpecialEventSearchResultDto>('/specials');
   },
 
   /**

@@ -7,14 +7,6 @@ import {
 import { apiClient } from '@/utils/apiClient';
 
 /**
- * 楽曲API関連のエラー型
- */
-export interface ApiError {
-  error: string;
-  statusCode: number;
-}
-
-/**
  * 楽曲検索クライアント
  * Spring Cloud Functionで実装されたLambda関数を呼び出すためのクライアント
  */
