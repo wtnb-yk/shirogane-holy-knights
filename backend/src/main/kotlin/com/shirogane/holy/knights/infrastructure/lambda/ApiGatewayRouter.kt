@@ -9,6 +9,7 @@ import com.shirogane.holy.knights.adapter.controller.VideoController
 import com.shirogane.holy.knights.adapter.controller.SongController
 import com.shirogane.holy.knights.adapter.controller.CalendarController
 import com.shirogane.holy.knights.adapter.controller.AlbumController
+import com.shirogane.holy.knights.adapter.controller.SpecialsController
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.MiddlewareChain
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.ErrorHandlingMiddleware
 import com.shirogane.holy.knights.infrastructure.lambda.middleware.LoggingMiddleware
@@ -22,6 +23,7 @@ class ApiGatewayRouter(
     private val songController: SongController,
     private val calendarController: CalendarController,
     private val albumController: AlbumController,
+    private val specialsController: SpecialsController,
     private val healthController: HealthController,
     private val responseBuilder: ApiGatewayResponseBuilder,
     private val middlewareChain: MiddlewareChain,
@@ -94,6 +96,9 @@ class ApiGatewayRouter(
         RouteKey("GET", "/albums/types") to { _ ->
             albumController.getAllAlbumTypes()
         },
+        RouteKey("GET", "/specials") to { _ ->
+            specialsController.getSpecialEvents()
+        },
     )
     
     suspend fun route(request: APIGatewayProxyRequestEvent): APIGatewayProxyResponseEvent {
@@ -105,8 +110,8 @@ class ApiGatewayRouter(
             return responseBuilder.badRequest("Invalid request: missing httpMethod or path")
         }
         
-        val routeKey = RouteKey(httpMethod, path)
-        val handler = routes[routeKey]
+        // パスパラメータを含むルートの処理
+        val handler = findHandler(httpMethod, path)
 
         if (handler == null) {
             logger.warn("Unknown path: $httpMethod $path")
@@ -115,6 +120,22 @@ class ApiGatewayRouter(
         
         val middlewares = listOf(loggingMiddleware, errorHandlingMiddleware)
         return middlewareChain.execute(request, middlewares, handler)
+    }
+    
+    private fun findHandler(httpMethod: String, path: String): (suspend (APIGatewayProxyRequestEvent) -> ApiResponse)? {
+        // 静的ルートを最初にチェック
+        val routeKey = RouteKey(httpMethod, path)
+        routes[routeKey]?.let { return it }
+        
+        // パスパラメータを含むルートをチェック
+        if (httpMethod == "GET" && path.startsWith("/specials/") && path != "/specials/") {
+            val eventId = path.removePrefix("/specials/")
+            if (eventId.isNotBlank()) {
+                return { _ -> specialsController.getSpecialEventDetails(eventId) }
+            }
+        }
+        
+        return null
     }
     
 }

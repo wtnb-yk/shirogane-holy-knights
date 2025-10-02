@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from 'next';
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from 'next/font/google';
 import './globals.css';
-import { Header } from '@/components/header/Header';
-import { Footer } from '@/components/footer/Footer';
+import { Header } from '@/components/Header/Header';
+import { Footer } from '@/components/Footer/Footer';
 import { FloatingYouTubeLink } from '@/components/Misc/FloatingYouTubeLink';
-import { WebSiteSchema, OrganizationSchema } from '@/components/seo/JsonLd';
-import { GoogleAnalyticsWrapper } from '@/components/analytics/GoogleAnalytics';
+import { WebSiteSchema, OrganizationSchema } from '@/components/Seo/JsonLd';
+import { GoogleAnalyticsWrapper } from '@/components/Analytics/GoogleAnalytics';
 import { ErrorBoundary } from '@/components/Error/ErrorBoundary';
 import { OfflineIndicator } from '@/components/Feedback/OfflineIndicator';
 import { ToastProvider } from '@/components/Feedback/Toast';
-import { PerformanceOptimizations } from '@/components/seo/PerformanceOptimizations';
+import { PerformanceOptimizations } from '@/components/Seo/PerformanceOptimizations';
 
 const mplusRounded = M_PLUS_Rounded_1c({
   weight: ['400', '700'],
@@ -75,7 +75,7 @@ export default function RootLayout({
           <ErrorBoundary>
             <Header />
             <main
-              className="flex-grow pt-16"
+              className="flex-grow pt-16 bg-bg-page"
               role="main"
             >
               {children}

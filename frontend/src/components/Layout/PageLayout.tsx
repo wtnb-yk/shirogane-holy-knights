@@ -3,7 +3,7 @@
 import React from 'react';
 import { GenericSidebar } from '@/components/Sidebar/internals/GenericSidebar';
 import { BottomSheet } from '@/components/BottomSheet/BottomSheet';
-import { BreadcrumbSchema } from '@/components/seo/JsonLd';
+import { BreadcrumbSchema } from '@/components/Seo/JsonLd';
 
 interface BreadcrumbItem {
   name: string;
@@ -45,7 +45,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   mobileBottomSheet
 }) => {
   return (
-    <div className="bg-bg-page">
+    <>
       {/* メインコンテナ */}
       <div className="flex flex-col md:flex-row max-w-full py-4 sm:py-8 px-4 sm:px-6 gap-2 sm:gap-4">
         {/* メインコンテンツ */}
@@ -102,6 +102,6 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 
       {/* デスクトップサイドバーのモーダル */}
       {desktopSidebar?.modal?.isOpen && desktopSidebar.modal.content}
-    </div>
+    </>
   );
 };
