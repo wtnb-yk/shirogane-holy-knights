@@ -64,3 +64,10 @@ export type {
   ConcertSongSearchResult, 
   ConcertSongStats 
 } from '@/features/songs/types/types';
+
+export type {
+  SpecialEventDto,
+  SpecialEventSearchParamsDto,
+  SpecialEventSearchResultDto,
+  SpecialEventApiError
+} from '@/features/specials/types/types';
