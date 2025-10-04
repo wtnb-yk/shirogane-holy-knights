@@ -46,7 +46,7 @@ export const useConcertSongsQuery = (
   // APIパラメータをメモ化
   const apiParams = useMemo((): ConcertSongSearchParams => ({
     page: currentPage,
-    size: pageSize,
+    pageSize: pageSize,
     query: searchQuery || undefined,
     sortBy,
     sortOrder,
