@@ -173,7 +173,7 @@ export default function SongsList() {
           hasMore={currentData.hasMore}
           onPageChange={currentData.setCurrentPage}
           totalCount={currentData.totalCount}
-          pageSize={20}
+          pageSize={12}
           loading={currentData.loading}
         />
 

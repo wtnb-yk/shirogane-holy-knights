@@ -37,7 +37,7 @@ const SongCardComponent = ({ song, index, onClick }: SongCardProps) => {
         </div>
 
         {/* テキスト情報 */}
-        <div className="p-3 sm:p-4 flex flex-col h-[112px]">
+        <div className="p-3 sm:p-4 flex flex-col h-[100px] md:h-[112px] ">
           {/* 楽曲タイトル - 2行まで */}
           <h3 className="font-bold text-text-primary line-clamp-2 text-sm sm:text-base leading-tight mb-1 flex-shrink-0">
             {song.title}

@@ -4,7 +4,7 @@ import { GridColumnConfig } from '@/features/archives/types/specialGridTypes';
  * 楽曲グリッドの列設定
  */
 const SONG_GRID_COLUMNS: GridColumnConfig = {
-  sm: 1,    // モバイル
+  sm: 2,    // モバイル
   md: 3,    // タブレット
   lg: 3,    // デスクトップ小
   xl: 4     // デスクトップ大
