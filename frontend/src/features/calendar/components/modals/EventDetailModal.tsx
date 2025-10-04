@@ -29,7 +29,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
         onClick: onBackToDayModal
       } : undefined}
     >
-      <div className="space-y-2">
+      <div className="space-y-4">
         <EventTitle event={event} />
         <EventImage event={event} />
         <EventTimeInfo event={event} />

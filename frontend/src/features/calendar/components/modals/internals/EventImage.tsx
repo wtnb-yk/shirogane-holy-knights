@@ -14,8 +14,8 @@ export function EventImage({ event }: EventImageProps) {
   }
 
   return (
-    <div>
-      <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+    <div className="px-2 py-2">
+      <div className="relative w-full max-w-lg mx-auto aspect-video overflow-hidden rounded-lg">
         <Image
           src={getImageUrl(event.imageUrl)!}
           alt={event.title}
