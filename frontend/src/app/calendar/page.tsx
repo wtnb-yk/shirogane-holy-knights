@@ -71,11 +71,7 @@ export default function CalendarPage() {
     setFromDayModalOrSheet(false);
   };
 
-  const getSelectedEventTypeNames = () => {
-    return eventTypes
-      .filter(type => selectedEventTypes.includes(type.id))
-      .map(type => type.type === 'event' ? 'イベント' : 'グッズ');
-  };
+  const selectedEventTypeObjects = eventTypes.filter(type => selectedEventTypes.includes(type.id));
 
   return (
     <PageLayout
@@ -125,7 +121,7 @@ export default function CalendarPage() {
         totalCount={filteredEvents.length}
         onClearAllFilters={clearFilters}
         hasFilters={hasActiveFilters}
-        selectedEventTypeNames={getSelectedEventTypeNames()}
+        selectedEventTypes={selectedEventTypeObjects}
       />
 
       <Calendar

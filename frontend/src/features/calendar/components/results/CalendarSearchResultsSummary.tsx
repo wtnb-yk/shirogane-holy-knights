@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { SearchResultsSummary } from '@/components/Stats/SearchResultsSummary';
+import { getEventTypeLabel } from '@/features/calendar/utils/eventTypeUtils';
+import { EventType } from '@/features/calendar/types';
 
 interface CalendarSearchResultsSummaryProps {
   searchQuery: string;
   totalCount: number;
   onClearAllFilters: () => void;
   hasFilters: boolean;
-  selectedEventTypeNames: string[];
+  selectedEventTypes: EventType[];
 }
 
 export const CalendarSearchResultsSummary = ({
@@ -16,8 +18,10 @@ export const CalendarSearchResultsSummary = ({
   totalCount,
   onClearAllFilters,
   hasFilters,
-  selectedEventTypeNames
+  selectedEventTypes
 }: CalendarSearchResultsSummaryProps) => {
+
+  const selectedEventTypeNames = selectedEventTypes.map(type => getEventTypeLabel(type.type));
 
   const filterSummary = selectedEventTypeNames.length > 0
     ? `カテゴリ: ${selectedEventTypeNames.join(', ')}`

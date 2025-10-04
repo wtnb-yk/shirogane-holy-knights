@@ -5,7 +5,8 @@ type BadgeVariant = 'light' | 'modal' | 'outline';
 const EVENT_TYPE_COLOR_MAP: Record<string, BadgeColor> = {
   event: 'blue',
   goods: 'orange',
-  campaign: 'green'
+  campaign: 'green',
+  others: 'gray'
 };
 
 /**
