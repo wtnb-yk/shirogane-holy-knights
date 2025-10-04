@@ -66,7 +66,6 @@ export default function SpecialsPage() {
               <span className="text-sm text-text-muted">開始まで</span>
               <CountdownTimer
                 targetDate={nextUpcomingEvent.startDate}
-                variant="large"
                 onExpired={handleNextEventExpired}
               />
             </div>
