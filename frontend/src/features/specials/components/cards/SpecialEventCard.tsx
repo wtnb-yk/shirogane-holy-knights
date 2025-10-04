@@ -4,8 +4,8 @@ import React from 'react';
 import { SpecialEventDto } from '../../types/types';
 import { InteractiveCard } from '@/components/Card/InteractiveCard';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
+import { SpecialEventCountdown } from '../SpecialEventCountdown';
 import { SpecialEventCardDescription } from './internals/SpecialEventCardDescription';
-import { SpecialEventStatusBadge } from './internals/SpecialEventStatusBadge';
 
 interface SpecialEventCardProps {
   event: SpecialEventDto;
@@ -14,6 +14,10 @@ interface SpecialEventCardProps {
 }
 
 const SpecialEventCardComponent = ({ event, index, onEventClick }: SpecialEventCardProps) => {
+  const handleTimerExpired = () => {
+    console.log(`Event "${event.title}" has started!`);
+  };
+
   return (
     <StaggeredItem index={index}>
       <InteractiveCard
@@ -21,15 +25,21 @@ const SpecialEventCardComponent = ({ event, index, onEventClick }: SpecialEventC
         hoverScale="sm"
         className="border-0 rounded-lg bg-bg-primary p-6 cursor-pointer"
       >
-        <div>
+        <div className="space-y-4">
           <SpecialEventCardDescription
             title={event.title}
             description={event.description}
           />
 
+          {/* カウントダウンタイマー */}
+          <SpecialEventCountdown
+            event={event}
+            variant="card"
+            onEventStarted={handleTimerExpired}
+          />
+
           <div className="flex justify-between items-center text-sm text-text-tertiary">
             <span>{new Date(event.startDate).toLocaleDateString('ja-JP')}</span>
-            <SpecialEventStatusBadge status={event.status} />
           </div>
         </div>
       </InteractiveCard>
