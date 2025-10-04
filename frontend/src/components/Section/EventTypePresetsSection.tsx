@@ -24,6 +24,8 @@ export const EventTypePresetsSection = ({
         return 'グッズ';
       case 'campaign':
         return 'キャンペーン';
+      case 'others':
+        return 'その他';
       default:
         return type;
     }
