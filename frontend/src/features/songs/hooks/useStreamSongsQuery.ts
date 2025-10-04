@@ -36,7 +36,7 @@ export const useStreamSongsQuery = (
   options: UseStreamSongsQueryOptions,
   state: UseStreamSongsQueryState
 ): UseStreamSongsQueryResult => {
-  const { pageSize = 20 } = options;
+  const { pageSize = 12 } = options;
   const { currentPage, searchQuery, sortBy, sortOrder, filters } = state;
 
   // APIパラメータをメモ化

@@ -37,19 +37,22 @@ const SongCardComponent = ({ song, index, onClick }: SongCardProps) => {
         </div>
 
         {/* テキスト情報 */}
-        <div className="p-4 space-y-2">
-          {/* 楽曲タイトル */}
-          <h3 className="font-bold text-text-primary line-clamp-2 min-h-[2.5rem]">
+        <div className="p-3 sm:p-4 flex flex-col h-[112px]">
+          {/* 楽曲タイトル - 2行まで */}
+          <h3 className="font-bold text-text-primary line-clamp-2 text-sm sm:text-base leading-tight mb-1 flex-shrink-0">
             {song.title}
           </h3>
 
-          {/* アーティスト名 */}
-          <p className="text-sm text-text-secondary">
+          {/* アーティスト名 - 1行のみ */}
+          <p className="text-xs sm:text-sm text-text-secondary line-clamp-1 overflow-hidden truncate flex-shrink-0">
             {song.artist}
           </p>
 
-          {/* 統計情報 */}
-          <div className="flex items-center justify-between pt-2 text-xs text-text-tertiary">
+          {/* フレキシブルスペーサー - 余白を吸収 */}
+          <div className="flex-grow"></div>
+
+          {/* 統計情報 - 常に下部に配置 */}
+          <div className="flex items-center justify-between text-xs text-text-tertiary flex-shrink-0">
             {/* 歌唱回数 */}
             <div className="flex items-center gap-1">
               <Music className="w-3 h-3" />
