@@ -9,6 +9,7 @@ import { NewsSidebarContent } from '@/features/news/components/layout/NewsSideba
 import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { NewsBottomSheetContent } from '@/features/news/components/layout/NewsBottomSheetContent';
 import { PageLayout } from '@/components/Layout/PageLayout';
+import { PAGINATION_CONFIG } from '@/features/news/config/pagination';
 
 export default function NewsPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
@@ -28,7 +29,7 @@ export default function NewsPage() {
     filters,
     setFilters,
     clearAllFilters
-  } = useNews({ pageSize: 10 });
+  } = useNews({ pageSize: PAGINATION_CONFIG.PAGE_SIZE });
 
   const activeFiltersCount = (searchQuery ? 1 : 0) +
     (filters.categoryIds?.length || 0);
@@ -99,7 +100,7 @@ export default function NewsPage() {
         hasMore={hasMore}
         onPageChange={setCurrentPage}
         totalCount={totalCount}
-        pageSize={10}
+        pageSize={PAGINATION_CONFIG.PAGE_SIZE}
         loading={loading}
       />
     </PageLayout>

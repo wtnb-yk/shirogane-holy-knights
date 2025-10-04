@@ -5,6 +5,7 @@ import { usePagination } from '@/features/archives/hooks/usePagination';
 import { useVideoSearch } from '@/features/archives/hooks/useVideoSearch';
 import { useConcertSongsQuery } from './useConcertSongsQuery';
 import { ConcertSong, SortBy, SortOrder, SongFilterOptions } from '../types/types';
+import { PAGINATION_CONFIG } from '../config/pagination';
 
 interface UseConcertSongsResult {
   songs: ConcertSong[];
@@ -37,7 +38,7 @@ interface UseConcertSongsOptions {
  * 検索、ページネーション、並び替え機能を統合
  */
 export const useConcertSongs = (options: UseConcertSongsOptions = {}): UseConcertSongsResult => {
-  const { pageSize = 12, initialPage = 1 } = options;
+  const { pageSize = PAGINATION_CONFIG.PAGE_SIZE, initialPage = PAGINATION_CONFIG.INITIAL_PAGE } = options;
   
   // 検索機能（動画と同じフックを使用）
   const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useVideoSearch();

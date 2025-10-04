@@ -128,7 +128,7 @@ data class AlbumSearchParamsDto(
     val sortBy: String = "releaseDate",
     val sortOrder: String = "DESC",
     val page: Int = 1,
-    val pageSize: Int = 20
+    val pageSize: Int = 12
 ) {
     /**
      * PageRequestインスタンスを生成

@@ -8,6 +8,7 @@ import {useAllVideoTags} from './useAllVideoTags';
 import {useVideoQuery} from './useVideoQuery';
 import {VideoDto} from '../types/types';
 import {FilterOptions} from '../components/search/internals/ArchiveFilterSection';
+import { PAGINATION_CONFIG } from '../config/pagination';
 
 interface UseVideosResult {
   videos: VideoDto[];
@@ -39,7 +40,7 @@ interface UseVideosOptions {
  * 各機能を分離したhooksを組み合わせて使用
  */
 export const useVideos = (options: UseVideosOptions = {}): UseVideosResult => {
-  const {pageSize = 20, initialPage = 1} = options;
+  const {pageSize = PAGINATION_CONFIG.PAGE_SIZE, initialPage = PAGINATION_CONFIG.INITIAL_PAGE} = options;
 
   // 検索機能
   const {searchQuery, setSearchQuery, handleSearch, clearSearch} = useVideoSearch();

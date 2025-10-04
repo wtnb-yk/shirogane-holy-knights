@@ -11,8 +11,7 @@ import { DiscographyBottomSheetContent } from '@/features/discography/components
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { DiscographyDetailModal } from '@/features/discography/components/DiscographyDetailModal';
 import { AlbumDto } from '@/features/discography/types/types';
-
-const PAGE_SIZE = 12;
+import { PAGINATION_CONFIG } from '@/features/discography/config/pagination';
 
 export default function DiscographyPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
@@ -34,7 +33,7 @@ export default function DiscographyPage() {
     filters,
     setFilters,
     clearAllFilters
-  } = useDiscography({ pageSize: PAGE_SIZE });
+  } = useDiscography({ pageSize: PAGINATION_CONFIG.PAGE_SIZE });
 
   const activeFiltersCount = (searchQuery ? 1 : 0) +
     (filters.albumTypes?.length || 0);
@@ -116,7 +115,7 @@ export default function DiscographyPage() {
         hasMore={hasMore}
         onPageChange={setCurrentPage}
         totalCount={totalCount}
-        pageSize={PAGE_SIZE}
+        pageSize={PAGINATION_CONFIG.PAGE_SIZE}
         loading={loading}
       />
 

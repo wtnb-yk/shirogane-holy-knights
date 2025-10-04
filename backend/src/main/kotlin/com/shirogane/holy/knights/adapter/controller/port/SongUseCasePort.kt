@@ -1,7 +1,7 @@
 package com.shirogane.holy.knights.adapter.controller.port
 
 import arrow.core.Either
-import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.SongSearchParamsDto
 import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchResultDto
 import com.shirogane.holy.knights.adapter.controller.dto.StreamSongStatsDto
 import com.shirogane.holy.knights.application.usecase.UseCaseError
@@ -15,7 +15,7 @@ interface SongUseCasePort {
      * @param searchParams 検索条件
      * @return 楽曲検索結果DTO
      */
-    suspend fun searchStreamSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto>
+    suspend fun searchStreamSongs(searchParams: SongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto>
     
     /**
      * 楽曲統計情報取得
@@ -28,7 +28,7 @@ interface SongUseCasePort {
      * @param searchParams 検索条件
      * @return コンサート楽曲検索結果DTO
      */
-    suspend fun searchConcertSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto>
+    suspend fun searchConcertSongs(searchParams: SongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto>
     
     /**
      * コンサート楽曲統計情報取得

@@ -1,7 +1,7 @@
 package com.shirogane.holy.knights.adapter.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.SongSearchParamsDto
 import com.shirogane.holy.knights.adapter.controller.port.SongUseCasePort
 import org.springframework.stereotype.Component
 
@@ -11,7 +11,7 @@ class SongController(
     override val objectMapper: ObjectMapper
 ): Controller {
     suspend fun searchStreamSongs(requestBody: String?) =
-        songUseCase.searchStreamSongs(parseRequestBody(requestBody, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto())
+        songUseCase.searchStreamSongs(parseRequestBody(requestBody, SongSearchParamsDto::class.java) ?: SongSearchParamsDto())
             .fold(
                 { it.toResponse() },
                 { ApiResponse(200, it) }
@@ -25,7 +25,7 @@ class SongController(
             )
 
     suspend fun searchConcertSongs(requestBody: String?) =
-        songUseCase.searchConcertSongs(parseRequestBody(requestBody, StreamSongSearchParamsDto::class.java) ?: StreamSongSearchParamsDto())
+        songUseCase.searchConcertSongs(parseRequestBody(requestBody, SongSearchParamsDto::class.java) ?: SongSearchParamsDto())
             .fold(
                 { it.toResponse() },
                 { ApiResponse(200, it) }
