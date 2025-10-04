@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useStreamSongs } from '@/features/songs/hooks/useStreamSongs';
 import { useConcertSongs } from '@/features/songs/hooks/useConcertSongs';
-import { StreamSongsList } from '@/features/songs/components/lists/StreamSongsList';
+import { SongsGrid } from '@/features/songs/components/grid/SongsGrid';
 import { SongSearchResultsSummary } from '@/features/songs/components/results/SongSearchResultsSummary';
 import { SongSearchOptionsModal } from '@/features/songs/components/search/SongSearchOptionsModal';
 import { SongDetailModal } from '@/features/songs/components/modals/SongDetailModal';
@@ -160,7 +160,7 @@ export default function SongsList() {
           />
         </div>
 
-        <StreamSongsList
+        <SongsGrid
           songs={currentData.songs}
           loading={currentData.loading}
           error={currentData.error}
@@ -173,7 +173,7 @@ export default function SongsList() {
           hasMore={currentData.hasMore}
           onPageChange={currentData.setCurrentPage}
           totalCount={currentData.totalCount}
-          pageSize={20}
+          pageSize={12}
           loading={currentData.loading}
         />
 

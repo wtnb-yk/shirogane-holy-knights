@@ -3,7 +3,7 @@
 import React, { memo, useCallback } from 'react';
 import { Calendar, Play } from 'lucide-react';
 import { Performance, StreamSong } from '@/features/songs/types/types';
-import { SongCardThumbnail } from '../../cards/internals/SongCardThumbnail';
+import { SongCardThumbnail } from '@/features/songs/components/grid/cards/internals/SongCardThumbnail';
 import { formatDate, formatDuration } from "@/features/songs/utils/performanceUtils";
 
 interface SongPerformanceItemProps {

@@ -40,7 +40,7 @@ export const useConcertSongsQuery = (
   options: UseConcertSongsQueryOptions = {},
   params: UseConcertSongsQueryParams
 ): UseConcertSongsQueryResult => {
-  const { pageSize = 20 } = options;
+  const { pageSize = 12 } = options;
   const { currentPage, searchQuery, sortBy, sortOrder, filters } = params;
 
   // APIパラメータをメモ化

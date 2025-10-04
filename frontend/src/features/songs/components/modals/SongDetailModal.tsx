@@ -4,7 +4,7 @@ import React from 'react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
 import { useViewport } from '@/hooks/useViewport';
 import { SongBasicInfo } from './internals/SongBasicInfo';
-import { SongPerformanceList } from '../lists/SongPerformanceList';
+import { SongPerformanceList } from '@/features/songs/components/modals/internals/lists/SongPerformanceList';
 import { ResponsiveModal } from "@/components/Modal";
 
 interface SongDetailModalProps {
