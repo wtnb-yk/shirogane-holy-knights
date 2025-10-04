@@ -47,7 +47,7 @@ export interface StreamSongSearchParams {
   endDate?: string;
   frequencyCategories?: SingFrequencyCategory[];
   page?: number;
-  size?: number;
+  pageSize?: number;
 }
 
 // 楽曲検索結果

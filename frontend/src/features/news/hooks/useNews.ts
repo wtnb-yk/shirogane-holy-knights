@@ -6,6 +6,7 @@ import { useNewsSearch } from './useNewsSearch';
 import { useNewsFilters } from './useNewsFilters';
 import { useNewsQuery } from './useNewsQuery';
 import { NewsDto, NewsFilterOptions } from '../types/types';
+import { PAGINATION_CONFIG } from '../config/pagination';
 
 interface UseNewsResult {
   news: NewsDto[];
@@ -34,7 +35,7 @@ interface UseNewsOptions {
  * ニュース機能の統合hook
  */
 export const useNews = (options: UseNewsOptions = {}): UseNewsResult => {
-  const { pageSize = 20, initialPage = 1 } = options;
+  const { pageSize = PAGINATION_CONFIG.PAGE_SIZE, initialPage = PAGINATION_CONFIG.INITIAL_PAGE } = options;
   
   // 検索機能
   const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useNewsSearch();

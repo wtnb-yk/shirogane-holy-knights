@@ -6,6 +6,7 @@ import { useDiscographySearch } from './useDiscographySearch';
 import { useDiscographyFilters } from './useDiscographyFilters';
 import { useDiscographyQuery } from './useDiscographyQuery';
 import { AlbumDto, AlbumFilterOptions } from '../types/types';
+import { PAGINATION_CONFIG } from '../config/pagination';
 
 interface UseDiscographyResult {
   albums: AlbumDto[];
@@ -35,7 +36,7 @@ interface UseDiscographyOptions {
  * useNewsパターンに完全準拠
  */
 export const useDiscography = (options: UseDiscographyOptions = {}): UseDiscographyResult => {
-  const { pageSize = 20, initialPage = 1 } = options;
+  const { pageSize = PAGINATION_CONFIG.PAGE_SIZE, initialPage = PAGINATION_CONFIG.INITIAL_PAGE } = options;
 
   // 検索機能
   const { searchQuery, setSearchQuery, handleSearch, clearSearch } = useDiscographySearch();

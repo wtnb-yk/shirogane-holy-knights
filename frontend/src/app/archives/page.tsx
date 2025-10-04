@@ -14,14 +14,15 @@ import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { ArchiveBottomSheetContent } from '@/features/archives/components/layout/ArchiveBottomSheetContent';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { SegmentedControl } from '@/components/Input/SegmentedControl';
+import { PAGINATION_CONFIG } from '@/features/archives/config/pagination';
 
 export default function ArchivePage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
   const [contentType, setContentType] = useState<ContentType>(ContentType.STREAMS);
 
-  const videosData = useVideos({pageSize: 20});
-  const streamsData = useStreams({pageSize: 20});
+  const videosData = useVideos({pageSize: PAGINATION_CONFIG.PAGE_SIZE});
+  const streamsData = useStreams({pageSize: PAGINATION_CONFIG.PAGE_SIZE});
 
   // 現在選択されているタブのデータを取得
   const currentData = contentType === ContentType.VIDEOS ? videosData : streamsData;
@@ -142,7 +143,7 @@ export default function ArchivePage() {
           hasMore={currentData.hasMore}
           onPageChange={currentData.setCurrentPage}
           totalCount={currentData.totalCount}
-          pageSize={20}
+          pageSize={PAGINATION_CONFIG.PAGE_SIZE}
           loading={currentData.loading}
         />
       </>

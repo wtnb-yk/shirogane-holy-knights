@@ -48,7 +48,7 @@ export const useStreamSongsQuery = (
     endDate: filters.endDate ? new Date(filters.endDate).toISOString() : undefined,
     frequencyCategories: filters.frequencyCategories,
     page: currentPage,
-    size: pageSize,
+    pageSize: pageSize,
   }), [currentPage, pageSize, searchQuery, sortBy, sortOrder, filters.startDate, filters.endDate, filters.frequencyCategories]);
 
   // useApiQueryを使用

@@ -79,8 +79,8 @@ data class NewsSearchParamsDto(
     val categoryIds: List<Int>? = null, // 複数カテゴリ対応
     val startDate: Instant? = null,
     val endDate: Instant? = null,
-    val page: Int = 1,  
-    val pageSize: Int = 20
+    val page: Int = 1,
+    val pageSize: Int = 10
 ) {
     /**
      * PageRequestインスタンスを生成

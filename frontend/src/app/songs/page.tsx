@@ -16,6 +16,7 @@ import { SongsBottomSheetContent } from '@/features/songs/components/layout/Song
 import { useCurrentSong } from '@/features/songs/hooks/useCurrentSong';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { SegmentedControl } from '@/components/Input/SegmentedControl';
+import { PAGINATION_CONFIG } from '@/features/songs/config/pagination';
 
 export default function SongsList() {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -26,11 +27,11 @@ export default function SongsList() {
 
   // 楽曲データの取得
   const streamSongsData = useStreamSongs({
-    pageSize: 20
+    pageSize: PAGINATION_CONFIG.PAGE_SIZE
   });
 
   const concertSongsData = useConcertSongs({
-    pageSize: 20
+    pageSize: PAGINATION_CONFIG.PAGE_SIZE
   });
 
   // 現在選択されているタブのデータを取得
@@ -173,7 +174,7 @@ export default function SongsList() {
           hasMore={currentData.hasMore}
           onPageChange={currentData.setCurrentPage}
           totalCount={currentData.totalCount}
-          pageSize={12}
+          pageSize={PAGINATION_CONFIG.PAGE_SIZE}
           loading={currentData.loading}
         />
 

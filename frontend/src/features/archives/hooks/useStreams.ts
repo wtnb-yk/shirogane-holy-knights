@@ -8,6 +8,7 @@ import {useAllStreamTags} from './useAllStreamTags';
 import {useStreamQuery} from './useStreamQuery';
 import {StreamDto} from '../types/types';
 import {FilterOptions} from '../components/search/internals/ArchiveFilterSection';
+import { PAGINATION_CONFIG } from '../config/pagination';
 
 interface UseStreamsResult {
   streams: StreamDto[];
@@ -39,7 +40,7 @@ interface UseStreamsOptions {
  * 各機能を分離したhooksを組み合わせて使用
  */
 export const useStreams = (options: UseStreamsOptions = {}): UseStreamsResult => {
-  const {pageSize = 20, initialPage = 1} = options;
+  const {pageSize = PAGINATION_CONFIG.PAGE_SIZE, initialPage = PAGINATION_CONFIG.INITIAL_PAGE} = options;
 
   // 検索機能（動画と同じフックを使用）
   const {searchQuery, setSearchQuery, handleSearch, clearSearch} = useVideoSearch();

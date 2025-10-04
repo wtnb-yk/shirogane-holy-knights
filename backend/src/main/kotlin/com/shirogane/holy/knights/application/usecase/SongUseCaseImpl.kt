@@ -3,7 +3,7 @@ package com.shirogane.holy.knights.application.usecase
 import arrow.core.Either
 import arrow.core.raise.either
 import com.shirogane.holy.knights.adapter.controller.dto.StreamSongDto
-import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchParamsDto
+import com.shirogane.holy.knights.adapter.controller.dto.SongSearchParamsDto
 import com.shirogane.holy.knights.adapter.controller.dto.StreamSongSearchResultDto
 import com.shirogane.holy.knights.adapter.controller.dto.StreamSongStatsDto
 import com.shirogane.holy.knights.adapter.controller.port.SongUseCasePort
@@ -15,7 +15,7 @@ class SongUseCaseImpl(
     private val songRepository: SongRepository
 ) : SongUseCasePort {
 
-    override suspend fun searchStreamSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto> =
+    override suspend fun searchStreamSongs(searchParams: SongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto> =
         either {
             val pageRequest = searchParams.toPageRequest()
             
@@ -47,7 +47,7 @@ class SongUseCaseImpl(
             StreamSongStatsDto.fromDomain(stats)
         }
 
-    override suspend fun searchConcertSongs(searchParams: StreamSongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto> =
+    override suspend fun searchConcertSongs(searchParams: SongSearchParamsDto): Either<UseCaseError, StreamSongSearchResultDto> =
         either {
             val pageRequest = searchParams.toPageRequest()
             
