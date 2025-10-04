@@ -61,7 +61,7 @@ export const Modal = ({
       />
       <div className={`fixed inset-0 ${TAILWIND_Z_INDEX.CONTENT.MODAL} flex items-center justify-center p-4 sm:p-6 lg:p-8 pointer-events-none`}>
         <div
-          className={`relative w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl xl:max-w-5xl mx-auto max-h-[85vh] sm:max-h-[90vh] flex flex-col overflow-hidden pointer-events-auto bg-bg-primary ${
+          className={`relative w-full max-w-3xl mx-auto max-h-[85vh] sm:max-h-[90vh] flex flex-col overflow-hidden pointer-events-auto bg-bg-primary ${
             isVisible ? 'animate-modal-slide-scale' : 'animate-modal-slide-scale-out'
           }`}
           style={{

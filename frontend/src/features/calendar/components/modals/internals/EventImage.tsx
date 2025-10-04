@@ -15,18 +15,16 @@ export function EventImage({ event }: EventImageProps) {
 
   return (
     <div>
-      <div className="flex justify-center">
-        <div className="relative w-full max-w-2xl aspect-video overflow-hidden rounded-lg">
-          <Image
-            src={getImageUrl(event.imageUrl)!}
-            alt={event.title}
-            fill
-            className="object-cover"
-            loading="lazy"
-            placeholder="blur"
-            blurDataURL={IMAGE_STYLES.placeholder}
-          />
-        </div>
+      <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+        <Image
+          src={getImageUrl(event.imageUrl)!}
+          alt={event.title}
+          fill
+          className="object-cover"
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL={IMAGE_STYLES.placeholder}
+        />
       </div>
     </div>
   );
