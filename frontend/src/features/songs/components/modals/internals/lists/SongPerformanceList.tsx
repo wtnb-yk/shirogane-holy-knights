@@ -37,7 +37,7 @@ export const SongPerformanceList: React.FC<SongPerformanceListProps> = ({
   const isMobile = variant === 'mobile';
   const scrollClassName = isMobile
     ? "space-y-2 max-h-none"
-    : "space-y-4 max-h-96 overflow-y-auto";
+    : "space-y-4 max-h-100 overflow-y-auto";
 
   return (
     <div>
