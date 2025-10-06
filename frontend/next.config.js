@@ -24,7 +24,7 @@ const nextConfig = {
   },
   
   // Bundle optimization with CSS processing fix
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config, { isServer }) => {
     // CSS processing optimization for Tailwind CSS v4
     if (!isServer) {
       config.resolve.fallback = {
@@ -33,36 +33,6 @@ const nextConfig = {
       };
     }
 
-    if (!dev && !isServer) {
-      // Optimize bundle splitting
-      config.optimization.splitChunks = {
-        ...config.optimization.splitChunks,
-        cacheGroups: {
-          ...config.optimization.splitChunks.cacheGroups,
-          // Separate vendor chunks for better caching
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: 10,
-            chunks: 'all',
-          },
-          // Separate UI components chunk
-          ui: {
-            test: /[\\/]src[\\/]components[\\/]ui[\\/]/,
-            name: 'ui-components',
-            priority: 20,
-            chunks: 'all',
-          },
-          // Separate feature chunks
-          features: {
-            test: /[\\/]src[\\/]features[\\/]/,
-            name: 'features',
-            priority: 15,
-            chunks: 'all',
-          },
-        },
-      }
-    }
     return config
   },
   
