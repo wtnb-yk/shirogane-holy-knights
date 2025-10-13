@@ -53,7 +53,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-events:3.11.4")
     
     // Database
-    implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
+    implementation("org.postgresql:r2dbc-postgresql:1.1.0.RELEASE")
     implementation("org.postgresql:postgresql:42.7.2")
     
     // Liquibase Migration
