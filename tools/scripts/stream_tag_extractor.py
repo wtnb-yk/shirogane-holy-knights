@@ -185,7 +185,12 @@ def extract_tags_from_multi_features(title: str, description: Optional[str], dur
             keywords = ["お知らせ", "告知", "報告", "重大発表", "announcement"]
             if any(keyword in title for keyword in keywords):
                 matched_tags.append(tag_id)
-                
+
+        elif tag_name == "VRChat":
+            keywords = ["VRChat", "VRC", "vrchat", "バーチャル", "アバター", "ワールド巡り"]
+            if any(keyword in title for keyword in keywords):
+                matched_tags.append(tag_id)
+
         # その他のタグは単純マッチング（ただしライブは除外済み）
         elif tag_name in title:
             matched_tags.append(tag_id)
