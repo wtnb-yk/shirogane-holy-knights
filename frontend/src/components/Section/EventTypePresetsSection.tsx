@@ -24,6 +24,8 @@ export const EventTypePresetsSection = ({
         return 'グッズ';
       case 'campaign':
         return 'キャンペーン';
+      case 'collaboration':
+        return 'コラボ';
       case 'others':
         return 'その他';
       default:
@@ -31,10 +33,32 @@ export const EventTypePresetsSection = ({
     }
   };
 
+  const getEventTypeOrder = (type: string): number => {
+    switch (type) {
+      case 'event':
+        return 1;
+      case 'goods':
+        return 2;
+      case 'campaign':
+        return 3;
+      case 'collaboration':
+        return 4;
+      case 'others':
+        return 5;
+      default:
+        return 99;
+    }
+  };
+
+  const sortedEventTypes = useMemo(() =>
+    [...eventTypes].sort((a, b) => getEventTypeOrder(a.type) - getEventTypeOrder(b.type)),
+    [eventTypes]
+  );
+
   // number[] → EventType[]の変換
   const selectedEventTypeObjects = useMemo(() =>
-    eventTypes.filter(eventType => selectedEventTypes.includes(eventType.id)),
-    [eventTypes, selectedEventTypes]
+    sortedEventTypes.filter(eventType => selectedEventTypes.includes(eventType.id)),
+    [sortedEventTypes, selectedEventTypes]
   );
 
   // 単一選択ロジック（EventType → number[]）
@@ -55,7 +79,7 @@ export const EventTypePresetsSection = ({
   return (
     <SelectableList<EventType>
       title="タイプ"
-      items={eventTypes}
+      items={sortedEventTypes}
       selectedItems={selectedEventTypeObjects}
       onItemToggle={handleEventTypeToggle}
       onClearAll={handleClearAll}

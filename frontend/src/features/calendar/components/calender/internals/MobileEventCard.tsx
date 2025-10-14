@@ -20,6 +20,8 @@ export function MobileEventCard({ event, onClick }: MobileEventCardProps) {
         return 'bg-badge-orange/10 text-badge-orange border-badge-orange/20 hover:bg-badge-orange/20';
       case 'campaign':
         return 'bg-badge-green/10 text-badge-green border-badge-green/20 hover:bg-badge-green/20';
+      case 'collaboration':
+        return 'bg-badge-purple/10 text-badge-purple border-badge-purple/20 hover:bg-badge-purple/20';
       default:
         return 'bg-badge-gray/10 text-badge-gray border-badge-gray/20 hover:bg-badge-gray/20';
     }

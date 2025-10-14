@@ -6,6 +6,8 @@ export const getEventTypeLabel = (type: string): string => {
       return 'グッズ';
     case 'campaign':
       return 'キャンペーン';
+    case 'collaboration':
+      return 'コラボ';
     case 'others':
       return 'その他';
     default:

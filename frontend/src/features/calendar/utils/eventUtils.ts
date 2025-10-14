@@ -11,6 +11,8 @@ export function getEventColor(event: Event): string {
       return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30 hover:bg-badge-orange/30';
     case 'campaign':
       return 'bg-badge-green/20 text-badge-green border-badge-green/30 hover:bg-badge-green/30';
+    case 'collaboration':
+      return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30 hover:bg-badge-purple/30';
     default:
       return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30';
   }

@@ -68,6 +68,7 @@ EVENT_TYPE_MAPPING = {
     'goods': 2,
     'campaign': 3,
     'others': 4,
+    'collaboration': 5,
 }
 
 def get_db_connection():
