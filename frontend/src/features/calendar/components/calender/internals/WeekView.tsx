@@ -6,6 +6,7 @@ import { calculateWeekEventLayout } from '../../../utils/weekEventLayout';
 import { CalendarDateCell } from './CalendarDateCell';
 import { EventBand } from './EventBand';
 import { isCurrentMonth, isToday } from '../../../utils/eventUtils';
+import { EVENT_HEIGHT, EVENT_MARGIN } from '../../../constants';
 
 interface WeekViewProps {
   weekDates: Date[];
@@ -15,19 +16,27 @@ interface WeekViewProps {
   onDateClick: (date: Date, events: Event[]) => void;
 }
 
-const BAND_HEIGHT = 24;
-const BAND_MARGIN = 4;
-
 export function WeekView({ weekDates, events, currentMonth, onEventClick, onDateClick }: WeekViewProps) {
   const weekStartDate = weekDates[0];
   const lastDate = weekDates[6];
   if (!weekStartDate || !lastDate) return null;
-  
+
   const weekEndDate = new Date(lastDate);
   weekEndDate.setHours(23, 59, 59, 999);
 
   const layout = calculateWeekEventLayout(weekStartDate, weekEndDate, events);
-  const totalBandHeight = layout.maxLanes * (BAND_HEIGHT + BAND_MARGIN);
+
+  // 各日付について、その日に存在する複数日イベントの最大レーン数を計算
+  const getBandReservedHeight = (dayIndex: number) => {
+    const segmentsOnThisDay = layout.eventBands.filter(
+      segment => dayIndex >= segment.startDayIndex && dayIndex <= segment.endDayIndex
+    );
+
+    if (segmentsOnThisDay.length === 0) return 0;
+
+    const maxLaneOnThisDay = Math.max(...segmentsOnThisDay.map(s => s.laneIndex)) + 1;
+    return maxLaneOnThisDay * (EVENT_HEIGHT + EVENT_MARGIN);
+  };
 
   const getEventsForDate = (date: Date) => {
     const dayIndex = weekDates.findIndex(d => d.toDateString() === date.toDateString());
@@ -52,7 +61,7 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick, onDate
           date={date}
           events={layout.singleDayEvents[dayIndex] || []}
           hiddenEvents={layout.hiddenEventsByDay[dayIndex] || []}
-          bandReservedHeight={totalBandHeight}
+          bandReservedHeight={getBandReservedHeight(dayIndex)}
           isCurrentMonth={isCurrentMonth(date, currentMonth)}
           isToday={isToday(date)}
           isSunday={dayIndex === 0}
@@ -66,7 +75,7 @@ export function WeekView({ weekDates, events, currentMonth, onEventClick, onDate
         <EventBand
           key={`${segment.event.id}-${index}`}
           segment={segment}
-          bandHeight={BAND_HEIGHT}
+          bandHeight={EVENT_HEIGHT}
           onEventClick={onEventClick}
         />
       ))}
