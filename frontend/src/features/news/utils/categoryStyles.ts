@@ -8,8 +8,6 @@ export const getCategoryBadgeStyle = (categoryName: string, includeHover: boolea
       return `bg-badge-green/20 text-badge-green border-badge-green/30${includeHover ? ' hover:bg-badge-green/30 transition-all duration-ui' : ''}`;
     case NewsCategory.EVENT:
       return `bg-badge-orange/20 text-badge-orange border-badge-orange/30${includeHover ? ' hover:bg-badge-orange/30 transition-all duration-ui' : ''}`;
-    case NewsCategory.MEDIA:
-      return `bg-badge-purple/20 text-badge-purple border-badge-purple/30${includeHover ? ' hover:bg-badge-purple/30 transition-all duration-ui' : ''}`;
     case NewsCategory.CAMPAIGN:
       return `bg-badge-pink/20 text-badge-pink border-badge-pink/30${includeHover ? ' hover:bg-badge-pink/30 transition-all duration-ui' : ''}`;
     case NewsCategory.OTHERS:
@@ -20,7 +18,7 @@ export const getCategoryBadgeStyle = (categoryName: string, includeHover: boolea
 
 export const getCategoryButtonStyle = (categoryName: string, isSelected: boolean) => {
   const baseStyle = 'px-3 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-all duration-200 text-sm md:text-base';
-  
+
   if (isSelected) {
     switch (categoryName.toLowerCase() as NewsCategory) {
       case NewsCategory.GOODS:
@@ -29,8 +27,6 @@ export const getCategoryButtonStyle = (categoryName: string, isSelected: boolean
         return `${baseStyle} bg-badge-green text-white shadow-md ring-2 ring-badge-green/30`;
       case NewsCategory.EVENT:
         return `${baseStyle} bg-badge-orange text-white shadow-md ring-2 ring-badge-orange/30`;
-      case NewsCategory.MEDIA:
-        return `${baseStyle} bg-badge-purple text-white shadow-md ring-2 ring-badge-purple/30`;
       case NewsCategory.CAMPAIGN:
         return `${baseStyle} bg-badge-pink text-white shadow-md ring-2 ring-badge-pink/30`;
       case NewsCategory.OTHERS:

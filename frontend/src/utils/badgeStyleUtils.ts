@@ -1,4 +1,4 @@
-export type BadgeColor = 'blue' | 'green' | 'orange' | 'purple' | 'gray';
+export type BadgeColor = 'blue' | 'green' | 'orange' | 'purple' | 'pink' | 'gray';
 export type BadgeVariant = 'light' | 'modal' | 'outline';
 
 interface BadgePattern {
@@ -27,6 +27,11 @@ const BADGE_PATTERNS: Record<BadgeColor, BadgePattern> = {
     light: 'bg-badge-purple/20 text-badge-purple border-badge-purple/30 hover:bg-badge-purple/30 transition-all duration-ui',
     modal: 'bg-badge-purple/80 text-white border-badge-purple hover:bg-badge-purple transition-all duration-ui',
     outline: 'border-surface-border text-text-secondary hover:border-badge-purple hover:text-badge-purple hover:bg-badge-purple/10 transition-all duration-ui'
+  },
+  pink: {
+    light: 'bg-badge-pink/20 text-badge-pink border-badge-pink/30 hover:bg-badge-pink/30 transition-all duration-ui',
+    modal: 'bg-badge-pink/80 text-white border-badge-pink hover:bg-badge-pink transition-all duration-ui',
+    outline: 'border-surface-border text-text-secondary hover:border-badge-pink hover:text-badge-pink hover:bg-badge-pink/10 transition-all duration-ui'
   },
   gray: {
     light: 'bg-badge-gray/20 text-badge-gray border-badge-gray/30 hover:bg-badge-gray/30 transition-all duration-ui',

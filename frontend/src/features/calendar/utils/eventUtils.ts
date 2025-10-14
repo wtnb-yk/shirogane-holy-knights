@@ -1,21 +1,20 @@
 import { Event } from '../types';
 
+// イベントタイプと色のマッピング（一箇所で管理）
+export const EVENT_TYPE_COLOR_MAP: Record<string, string> = {
+  event: 'orange',
+  goods: 'blue',
+  campaign: 'pink',
+  collaboration: 'green',
+  others: 'gray'
+};
+
+// イベントバー用の色クラスを取得（透明度20%）
 export function getEventColor(event: Event): string {
   const primaryType = event.eventTypes[0];
-  if (!primaryType) return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30';
+  const color = primaryType ? EVENT_TYPE_COLOR_MAP[primaryType.type] || 'gray' : 'gray';
 
-  switch (primaryType.type) {
-    case 'event':
-      return 'bg-badge-blue/20 text-badge-blue border-badge-blue/30 hover:bg-badge-blue/30';
-    case 'goods':
-      return 'bg-badge-orange/20 text-badge-orange border-badge-orange/30 hover:bg-badge-orange/30';
-    case 'campaign':
-      return 'bg-badge-green/20 text-badge-green border-badge-green/30 hover:bg-badge-green/30';
-    case 'collaboration':
-      return 'bg-badge-purple/20 text-badge-purple border-badge-purple/30 hover:bg-badge-purple/30';
-    default:
-      return 'bg-badge-gray/20 text-badge-gray border-badge-gray/30';
-  }
+  return `bg-badge-${color}/20 text-badge-${color} border-badge-${color}/30 hover:bg-badge-${color}/30`;
 }
 
 export function isToday(date: Date): boolean {

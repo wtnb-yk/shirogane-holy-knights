@@ -2,7 +2,6 @@ export enum NewsCategory {
   GOODS = 'goods',
   COLLABORATION = 'collaboration',
   EVENT = 'event',
-  MEDIA = 'media',
   CAMPAIGN = 'campaign',
   OTHERS = 'others'
 }
@@ -11,7 +10,6 @@ export const CATEGORY_DISPLAY_NAMES: Record<NewsCategory, string> = {
   [NewsCategory.GOODS]: 'グッズ',
   [NewsCategory.COLLABORATION]: 'コラボ',
   [NewsCategory.EVENT]: 'イベント',
-  [NewsCategory.MEDIA]: 'メディア',
   [NewsCategory.CAMPAIGN]: 'キャンペーン',
   [NewsCategory.OTHERS]: 'その他'
 };
