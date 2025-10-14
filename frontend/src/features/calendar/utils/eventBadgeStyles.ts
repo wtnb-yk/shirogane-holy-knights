@@ -6,6 +6,7 @@ const EVENT_TYPE_COLOR_MAP: Record<string, BadgeColor> = {
   event: 'blue',
   goods: 'orange',
   campaign: 'green',
+  collaboration: 'purple',
   others: 'gray'
 };
 
