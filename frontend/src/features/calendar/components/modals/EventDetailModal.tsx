@@ -28,6 +28,7 @@ export function EventDetailModal({ event, isOpen, onClose, fromDayModal = false,
         show: true,
         onClick: onBackToDayModal
       } : undefined}
+      mobileVariant="fullScreen"
     >
       <div className="space-y-4">
         <EventTitle event={event} />

@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react';
 import { useViewport } from '@/hooks/useViewport';
 import { Modal } from '@/components/Modal/Modal';
 import { BottomSheet } from '@/components/BottomSheet/BottomSheet';
+import { FullScreenModal } from '@/components/FullScreenModal';
 
 interface ResponsiveModalProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface ResponsiveModalProps {
     show: boolean;
     onClick: () => void;
   };
+  mobileVariant?: 'bottomSheet' | 'fullScreen';
 }
 
 export const ResponsiveModal = ({
@@ -23,7 +25,8 @@ export const ResponsiveModal = ({
   children,
   title,
   className = '',
-  backButton
+  backButton,
+  mobileVariant = 'bottomSheet'
 }: ResponsiveModalProps) => {
   const { isDesktop, isLoaded } = useViewport();
 
@@ -47,7 +50,22 @@ export const ResponsiveModal = ({
     );
   }
 
-  // モバイル表示：BottomSheetコンポーネント使用
+  // モバイル表示：mobileVariantに応じて表示切り替え
+  if (mobileVariant === 'fullScreen') {
+    return (
+      <FullScreenModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={title}
+        className={className}
+        backButton={backButton}
+      >
+        {children}
+      </FullScreenModal>
+    );
+  }
+
+  // デフォルトはBottomSheet
   return (
     <BottomSheet
       isOpen={isOpen}

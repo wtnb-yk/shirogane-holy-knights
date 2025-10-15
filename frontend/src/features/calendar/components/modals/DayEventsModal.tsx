@@ -29,6 +29,7 @@ export function DayEventsModal({ date, events, isOpen, onClose, onEventClick }: 
       onClose={onClose}
       title={`${date.toLocaleDateString('ja-JP')}のイベント`}
       className={shouldUseDesktopLayout ? "space-y-2 sm:space-y-3 max-h-[85vh] sm:max-h-[90vh] overflow-y-auto" : ""}
+      mobileVariant="fullScreen"
     >
       {events.length === 0 ? (
         <EmptyEventsMessage />
