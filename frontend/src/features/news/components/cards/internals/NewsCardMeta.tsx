@@ -6,6 +6,7 @@ import { Badge } from '@/components/Badge/badge';
 import { NewsDto } from '../../../types/types';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { getCategoryBadgeStyle } from '../../../utils/categoryStyles';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface NewsCardMetaProps {
   news: NewsDto;
@@ -47,7 +48,7 @@ export const NewsCardMeta = ({ news, isExternalLink }: NewsCardMetaProps) => {
           isExternalLink ? 'w-3 h-3' : 'w-3.5 h-3.5'
         }`} />
         <span className={isExternalLink ? '' : 'font-medium'}>
-          {new Date(news.publishedAt).toLocaleDateString('ja-JP')}
+          {formatDateSimple(news.publishedAt)}
         </span>
       </div>
     </>

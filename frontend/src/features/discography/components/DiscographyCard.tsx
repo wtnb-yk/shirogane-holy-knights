@@ -10,6 +10,7 @@ import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
 import { getAlbumTypeDisplayName } from '@/utils/albumTypeUtils';
 import { getAlbumTypeBadgeStyle } from '../utils/albumTypeBadgeStyles';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface DiscographyCardProps {
   album: AlbumDto;
@@ -70,7 +71,7 @@ const DiscographyCardComponent = ({ album, index, onClick }: DiscographyCardProp
             <div className="flex items-center">
               <Calendar className="w-3 h-3 mr-1" />
               <time dateTime={album.releaseDate}>
-                {new Date(album.releaseDate).toLocaleDateString('ja-JP')}
+                {formatDateSimple(album.releaseDate)}
               </time>
             </div>
           )}

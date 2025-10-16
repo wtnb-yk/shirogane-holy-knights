@@ -4,7 +4,7 @@ import React from 'react';
 import { Music, Clock } from 'lucide-react';
 import { StreamSong, Performance } from '@/features/songs/types/types';
 import { DynamicYouTubePlayer } from '@/components/Misc';
-import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
+import {formatDateSimple} from "@/utils";
 
 interface PlayerSectionProps {
   currentSong: StreamSong | null;
@@ -54,7 +54,7 @@ export const PlayerSection = ({ currentSong, currentPerformance, autoplay = fals
                   <Clock className="w-4 h-4 text-accent-blue" />
                 </div>
                 <span className="text-sm text-text-secondary">
-                  {currentPerformance ? '歌唱日' : '最新'}: {formatDateOnly(currentPerformance?.performedAt || currentSong.latestSingDate)}
+                  {currentPerformance ? '歌唱日' : '最新'}: {formatDateSimple(currentPerformance?.performedAt || currentSong.latestSingDate)}
                 </span>
               </div>
             )}

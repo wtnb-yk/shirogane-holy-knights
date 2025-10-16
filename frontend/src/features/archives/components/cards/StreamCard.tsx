@@ -7,7 +7,7 @@ import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { ArchiveCardImage } from './internals/ArchiveCardImage';
 import { ArchiveCardBadge } from './internals/ArchiveCardBadge';
 import { ArchiveCardOverlay } from './internals/ArchiveCardOverlay';
-import { formatDate } from '../../utils/dateFormat';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface StreamCardProps {
   stream: StreamDto;
@@ -18,7 +18,7 @@ interface StreamCardProps {
 const StreamCardComponent = ({ stream, index, variant = 'default' }: StreamCardProps) => {
   const isLarge = variant === 'featured' || variant === 'pickup';
   const date = stream.startedAt
-    ? formatDate(stream.startedAt)
+    ? formatDateSimple(stream.startedAt)
     : '配信日未定';
 
   return (

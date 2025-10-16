@@ -3,7 +3,7 @@
 import React from 'react';
 import { Music, Calendar } from 'lucide-react';
 import { StreamSong } from "@/features/songs/types/types";
-import { formatDateOnly } from '@/features/songs/utils/performanceUtils';
+import { formatDateSimple } from "@/utils";
 
 interface StreamSongStatsProps {
   song: StreamSong;
@@ -19,7 +19,7 @@ export const StreamSongStats = ({ song }: StreamSongStatsProps) => {
       {song.latestSingDate && (
         <div className="flex items-center space-x-1 sm:space-x-2 whitespace-nowrap">
           <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-          <span>{formatDateOnly(song.latestSingDate)}</span>
+          <span>{formatDateSimple(song.latestSingDate)}</span>
         </div>
       )}
     </div>

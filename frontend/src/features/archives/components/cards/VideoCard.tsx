@@ -6,7 +6,7 @@ import { InteractiveCard } from '@/components/Card/InteractiveCard';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { ArchiveCardImage } from './internals/ArchiveCardImage';
 import { ArchiveCardOverlay } from './internals/ArchiveCardOverlay';
-import { formatDate } from '../../utils/dateFormat';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface VideoCardProps {
   video: VideoDto;
@@ -14,7 +14,7 @@ interface VideoCardProps {
 }
 
 const VideoCardComponent = ({ video, index }: VideoCardProps) => {
-  const date = formatDate(video.publishedAt);
+  const date = formatDateSimple(video.publishedAt);
 
   return (
     <StaggeredItem index={index} className="group">

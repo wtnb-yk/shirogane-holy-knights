@@ -3,18 +3,15 @@
  */
 
 /**
- * 日付文字列をフォーマットする
+ * 日付文字列またはDateオブジェクトをシンプルな形式でフォーマットする（シンプル形式：2024/10/16）
  */
-export const formatDate = (dateString: string, locale: string = 'ja-JP'): string => {
+export const formatDateSimple = (date: string | Date | null, locale: string = 'ja-JP'): string => {
+  if (!date) return '';
   try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(locale, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString(locale);
   } catch {
-    return dateString;
+    return typeof date === 'string' ? date : '';
   }
 };
 

@@ -10,6 +10,7 @@ import { CalendarBottomSheetContent } from "@/features/calendar/components/layou
 import { Calendar } from "@/features/calendar/components/calender/Calendar";
 import { CalendarModalContentContainer, CalendarModalMode } from "@/features/calendar/components/modals/internals/CalendarModalContentContainer";
 import { ResponsiveModal } from "@/components/Modal";
+import { formatDateSimple } from '@/utils/componentUtils';
 
 export default function CalendarPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
@@ -136,7 +137,7 @@ export default function CalendarPage() {
         isOpen={calendarModalOpen}
         onClose={handleCloseModal}
         title={calendarModalMode === 'dayEvents'
-          ? `${selectedDate?.toLocaleDateString('ja-JP')}のイベント`
+          ? `${selectedDate ? formatDateSimple(selectedDate) : ''}のイベント`
           : 'イベント詳細'
         }
         backButton={calendarModalMode === 'eventDetail' && fromDayModalOrSheet ? {

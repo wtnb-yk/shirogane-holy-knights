@@ -4,8 +4,8 @@ import React from 'react';
 import { StreamSong } from '@/features/songs/types/types';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { SongCardThumbnail } from './internals/SongCardThumbnail';
-import { formatDateOnly } from '../../../utils/performanceUtils';
 import { Music, Calendar } from 'lucide-react';
+import { formatDateSimple } from "@/utils";
 
 interface SongCardProps {
   song: StreamSong;
@@ -63,7 +63,7 @@ const SongCardComponent = ({ song, index, onClick }: SongCardProps) => {
             {song.latestSingDate && (
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                <span>{formatDateOnly(song.latestSingDate)}</span>
+                <span>{formatDateSimple(song.latestSingDate)}</span>
               </div>
             )}
           </div>

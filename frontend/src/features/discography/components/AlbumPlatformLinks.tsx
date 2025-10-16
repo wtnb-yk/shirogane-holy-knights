@@ -5,6 +5,7 @@ import { OptimizedImage } from '@/components/Image/OptimizedImage';
 import { ExternalLink } from 'lucide-react';
 import { getImageUrl } from '@/utils/imageUrl';
 import { AlbumReleaseDto } from '../types/types';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface AlbumPlatformLinksProps {
   albumReleases: AlbumReleaseDto[];
@@ -37,7 +38,7 @@ const PlatformLink = ({ release }: { release: AlbumReleaseDto }) => {
           {release.platformName}
         </div>
         <div className="text-xs sm:text-sm text-text-inverse">
-          {new Date(release.releaseDate).toLocaleDateString('ja-JP')}
+          {formatDateSimple(release.releaseDate)}
         </div>
       </div>
       <ExternalLink className="w-4 h-4 text-text-inverse" />

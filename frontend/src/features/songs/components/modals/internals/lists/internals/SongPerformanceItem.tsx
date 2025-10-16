@@ -4,7 +4,7 @@ import React, { memo, useCallback } from 'react';
 import { Calendar, Play } from 'lucide-react';
 import { Performance, StreamSong } from '@/features/songs/types/types';
 import { SongCardThumbnail } from '@/features/songs/components/grid/cards/internals/SongCardThumbnail';
-import { formatDate, formatDuration } from "@/features/songs/utils/performanceUtils";
+import { formatDateSimple } from "@/utils";
 
 interface SongPerformanceItemProps {
   performance: Performance;
@@ -41,6 +41,12 @@ export const SongPerformanceItem = memo<SongPerformanceItemProps>(({
   const flexGap = isMobile ? "gap-3" : "gap-4";
   const thumbnailSize = isMobile ? "sm" : "md";
 
+  const formatDuration = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <button
       onClick={handleClick}
@@ -72,7 +78,7 @@ export const SongPerformanceItem = memo<SongPerformanceItemProps>(({
             )}
             <div className="flex items-center gap-1.5 text-text-tertiary text-xs">
               <Calendar className="w-3 h-3 text-accent-blue" />
-              <span>{formatDate(performance.performedAt)}</span>
+              <span>{formatDateSimple(performance.performedAt)}</span>
             </div>
           </div>
         </div>

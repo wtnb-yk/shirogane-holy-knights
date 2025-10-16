@@ -9,6 +9,7 @@ import { InteractiveCard } from '@/components/Card/InteractiveCard';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { OverlayIcon } from '@/components/Overlay/OverlayIcon';
 import { getImageUrl } from '@/utils/imageUrl';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface ArchivePreviewCardProps {
   stream: StreamDto;
@@ -78,8 +79,8 @@ const ArchivePreviewCardComponent = ({ stream, index }: ArchivePreviewCardProps)
         <div className="flex items-center gap-1.5 text-xs text-text-secondary mt-auto">
           <Calendar className="w-3.5 h-3.5 text-accent-gold" />
           <span className="font-medium">
-            {stream.startedAt 
-              ? new Date(stream.startedAt).toLocaleDateString('ja-JP')
+            {stream.startedAt
+              ? formatDateSimple(stream.startedAt)
               : '配信日未定'
             }
           </span>

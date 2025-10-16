@@ -10,6 +10,7 @@ import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { getImageUrl } from '@/utils/imageUrl';
 import { getCategoryDisplayName } from '@/constants/newsCategories';
 import { getCategoryBadgeStyle } from '@/features/news/utils/categoryStyles';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface NewsPreviewCardProps {
   news: NewsDto;
@@ -88,7 +89,7 @@ const NewsPreviewCardComponent = ({ news, index }: NewsPreviewCardProps) => {
         <div className="flex items-center gap-1.5 text-xs text-text-secondary mt-auto">
           <Calendar className="w-3.5 h-3.5 text-accent-gold" />
           <span className="font-medium">
-            {new Date(news.publishedAt).toLocaleDateString('ja-JP')}
+            {formatDateSimple(news.publishedAt)}
           </span>
         </div>
       </div>
