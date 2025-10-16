@@ -2,18 +2,19 @@
 
 import React, { useState } from 'react';
 import { useCalendar } from '@/features/calendar/hooks/useCalendar';
-import { EventDetailModal } from '@/features/calendar/components/modals/EventDetailModal';
 import { CalendarSearchResultsSummary } from '@/features/calendar/components/results/CalendarSearchResultsSummary';
 import { FilterToggleButton } from '@/components/Button/FilterToggleButton';
 import { PageLayout } from '@/components/Layout/PageLayout';
 import { CalendarSidebarContent } from "@/features/calendar/components/layout/CalendarSidebarContent";
 import { CalendarBottomSheetContent } from "@/features/calendar/components/layout/CalendarBottomSheetContent";
 import { Calendar } from "@/features/calendar/components/calender/Calendar";
-import { DayEventsModal } from "@/features/calendar/components/modals/DayEventsModal";
+import { CalendarModalContentContainer, CalendarModalMode } from "@/features/calendar/components/modals/internals/CalendarModalContentContainer";
+import { ResponsiveModal } from "@/components/Modal";
 
 export default function CalendarPage() {
   const [mobileBottomSheetOpen, setMobileBottomSheetOpen] = useState(false);
-  const [isDayEventsModalOpen, setIsDayEventsModalOpen] = useState(false);
+  const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+  const [calendarModalMode, setCalendarModalMode] = useState<CalendarModalMode>('dayEvents');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDateEvents, setSelectedDateEvents] = useState<any[]>([]);
   const [fromDayModalOrSheet, setFromDayModalOrSheet] = useState(false);
@@ -26,8 +27,6 @@ export default function CalendarPage() {
     filteredEvents,
     selectedEvent,
     setSelectedEvent,
-    isEventModalOpen,
-    setIsEventModalOpen,
     eventTypes,
     loading,
     error,
@@ -39,33 +38,31 @@ export default function CalendarPage() {
 
   const handleEventClick = (event: any) => {
     setSelectedEvent(event);
-    setIsEventModalOpen(true);
+    setCalendarModalMode('eventDetail');
+    setCalendarModalOpen(true);
     setFromDayModalOrSheet(false);
   };
 
   const handleDateClick = (date: Date, events: any[]) => {
     setSelectedDate(date);
     setSelectedDateEvents(events);
-    setIsDayEventsModalOpen(true);
+    setCalendarModalMode('dayEvents');
+    setCalendarModalOpen(true);
   };
 
   const handleEventClickFromDayModal = (event: any) => {
-    setIsDayEventsModalOpen(false);
     setSelectedEvent(event);
-    setIsEventModalOpen(true);
+    setCalendarModalMode('eventDetail');
     setFromDayModalOrSheet(true);
   };
 
   const handleBackToDayModal = () => {
-    setIsEventModalOpen(false);
-    setIsDayEventsModalOpen(true);
+    setCalendarModalMode('dayEvents');
   };
-
 
   const handleCloseModal = () => {
     setSelectedEvent(null);
-    setIsEventModalOpen(false);
-    setIsDayEventsModalOpen(false);
+    setCalendarModalOpen(false);
     setSelectedDate(null);
     setSelectedDateEvents([]);
     setFromDayModalOrSheet(false);
@@ -134,22 +131,27 @@ export default function CalendarPage() {
         onDateClick={handleDateClick}
       />
 
-      {/* 独立したモーダル群 */}
-      <DayEventsModal
-        date={selectedDate}
-        events={selectedDateEvents}
-        isOpen={isDayEventsModalOpen}
-        onClose={() => setIsDayEventsModalOpen(false)}
-        onEventClick={handleEventClickFromDayModal}
-      />
-
-      <EventDetailModal
-        event={selectedEvent}
-        isOpen={isEventModalOpen}
+      {/* 統合モーダル */}
+      <ResponsiveModal
+        isOpen={calendarModalOpen}
         onClose={handleCloseModal}
-        fromDayModal={fromDayModalOrSheet}
-        onBackToDayModal={handleBackToDayModal}
-      />
+        title={calendarModalMode === 'dayEvents'
+          ? `${selectedDate?.toLocaleDateString('ja-JP')}のイベント`
+          : 'イベント詳細'
+        }
+        backButton={calendarModalMode === 'eventDetail' && fromDayModalOrSheet ? {
+          show: true,
+          onClick: handleBackToDayModal
+        } : undefined}
+        mobileVariant="fullScreen"
+      >
+        <CalendarModalContentContainer
+          mode={calendarModalMode}
+          events={selectedDateEvents}
+          selectedEvent={selectedEvent}
+          onEventClick={handleEventClickFromDayModal}
+        />
+      </ResponsiveModal>
     </PageLayout>
   );
 }
