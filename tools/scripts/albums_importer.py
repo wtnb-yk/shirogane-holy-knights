@@ -152,6 +152,7 @@ def process_albums_csv(conn, csv_file_path):
         cover_image_url = row['cover_image_url'] if pd.notna(row['cover_image_url']) else None
         track_number = int(row['track_number'])
         song_title = row['song_title']
+        track_artist = row['track_artist'] if pd.notna(row['track_artist']) else artist
 
         # アルバムIDを生成（アルバム名＋アーティスト名で一意）
         album_key = f"{album_title}_{artist}"
@@ -169,7 +170,8 @@ def process_albums_csv(conn, csv_file_path):
         # トラック情報を追加
         albums_data[album_key]['tracks'].append({
             'track_number': track_number,
-            'song_title': song_title
+            'song_title': song_title,
+            'artist': track_artist
         })
 
     print(f"処理対象アルバム数: {len(albums_data)}")
@@ -231,12 +233,13 @@ def process_albums_csv(conn, csv_file_path):
                 # アルバムトラック情報をインサート
                 track_id = str(uuid.uuid4())
                 cursor.execute("""
-                    INSERT INTO album_tracks (id, album_id, song_id, track_number)
-                    VALUES (%s, %s, %s, %s)
+                    INSERT INTO album_tracks (id, album_id, song_id, artist, track_number)
+                    VALUES (%s, %s, %s, %s, %s)
                 """, (
                     track_id,
                     album_id,
                     song_id,
+                    track['artist'],
                     track['track_number']
                 ))
 
