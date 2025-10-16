@@ -147,3 +147,13 @@ export function BottomSheetOverlay(props: Omit<OverlayProps, 'zIndex' | 'variant
     />
   );
 }
+
+export function FullScreenModalOverlay(props: Omit<OverlayProps, 'zIndex' | 'variant'>) {
+  return (
+    <Overlay
+      {...props}
+      zIndex="modal"
+      animate={true}
+    />
+  );
+}
