@@ -4,7 +4,7 @@ import React from 'react';
 import { SpecialEventDto } from '../../types/types';
 import { InteractiveCard } from '@/components/Card/InteractiveCard';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
-import { SpecialEventCountdown } from '../SpecialEventCountdown';
+import { SpecialEventCountdown } from './internals/SpecialEventCountdown';
 import { SpecialEventCardDescription } from './internals/SpecialEventCardDescription';
 
 interface SpecialEventCardProps {

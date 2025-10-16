@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { CountdownTimer } from '@/components/Timer';
-import { SpecialEventDto } from '../types';
+import { SpecialEventDto } from '../../../types';
 import { cn } from '@/lib/utils';
 
 export interface SpecialEventCountdownProps {
