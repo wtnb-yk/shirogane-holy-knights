@@ -40,8 +40,8 @@ export default function SpecialsPage() {
       title="SPECIALS"
       description={
         <p>
-          白銀ノエルさんの誕生日や記念日などの特別なイベントやキャンペーンを確認できます。<br />
-          開催中のイベントや今後予定されているスペシャル企画をチェックしましょう。
+          当サイトで実施している企画を紹介しています。<br />
+          企画は周年や生誕祭などの記念日に合わせて随時開催予定です！
         </p>
       }
       breadcrumbItems={[
