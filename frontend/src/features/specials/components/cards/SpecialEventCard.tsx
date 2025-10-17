@@ -6,6 +6,7 @@ import { InteractiveCard } from '@/components/Card/InteractiveCard';
 import { StaggeredItem } from '@/components/Card/StaggeredItem';
 import { SpecialEventCountdown } from './internals/SpecialEventCountdown';
 import { SpecialEventCardDescription } from './internals/SpecialEventCardDescription';
+import { formatDateSimple } from '@/utils/componentUtils';
 
 interface SpecialEventCardProps {
   event: SpecialEventDto;
@@ -39,8 +40,8 @@ const SpecialEventCardComponent = ({ event, index, onEventClick }: SpecialEventC
           />
 
           <div className="flex justify-between items-center text-sm text-text-tertiary">
-            <span>{new Date(event.startDate).toLocaleDateString('ja-JP')}</span>
-          </div>
+            <span>{formatDateSimple(event.startDate)}</span>
+        </div>
         </div>
       </InteractiveCard>
     </StaggeredItem>
