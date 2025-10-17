@@ -10,10 +10,10 @@ interface SpecialEventCardDescriptionProps {
 export const SpecialEventCardDescription = React.memo(({ title, description }: SpecialEventCardDescriptionProps) => {
   return (
     <>
-      <h3 className="text-xl font-bold text-text-primary mb-2">
+      <h3 className="text-2xl font-extrabold text-text-primary mb-2">
         {title}
       </h3>
-      <p className="text-text-secondary mb-4 line-clamp-3">
+      <p className="text-text-secondary mb-4 line-clamp-4">
         {description}
       </p>
     </>
