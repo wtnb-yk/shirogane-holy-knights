@@ -2,55 +2,48 @@ package com.shirogane.holy.knights.adapter.gateway
 
 import com.shirogane.holy.knights.domain.model.SpecialEvent
 import com.shirogane.holy.knights.domain.model.SpecialEventId
-import com.shirogane.holy.knights.domain.model.SpecialEventStatus
 import com.shirogane.holy.knights.domain.model.SpecialEvents
 import com.shirogane.holy.knights.domain.repository.SpecialEventRepository
+import com.shirogane.holy.knights.adapter.gateway.query.R2dbcQueryExecutor
+import com.shirogane.holy.knights.adapter.gateway.query.SpecialEventQueryBuilder
+import com.shirogane.holy.knights.adapter.gateway.mapper.SpecialEventRowMapper
+import com.shirogane.holy.knights.adapter.gateway.model.SpecialEventSearchCriteria
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 
 @Repository
-class SpecialEventRepositoryImpl : SpecialEventRepository {
-
-    // TODO: 実際のデータベース実装に置き換える
-    private val mockEvents = listOf(
-        SpecialEvent(
-            id = SpecialEventId("1"),
-            title = "Birthday Celebration 2024",
-            description = "Special birthday celebration event with exclusive content and activities",
-            startDate = LocalDate.of(2024, 12, 1),
-            endDate = LocalDate.of(2024, 12, 31),
-            status = SpecialEventStatus.UPCOMING
-        ),
-        SpecialEvent(
-            id = SpecialEventId("2"),
-            title = "Anniversary Special",
-            description = "Commemorating important milestones with special performances and content",
-            startDate = LocalDate.of(2024, 11, 15),
-            endDate = LocalDate.of(2024, 11, 30),
-            status = SpecialEventStatus.ACTIVE
-        ),
-        SpecialEvent(
-            id = SpecialEventId("3"),
-            title = "Summer Festival 2024",
-            description = "Summer special event featuring exclusive music and collaborations",
-            startDate = LocalDate.of(2024, 7, 1),
-            endDate = LocalDate.of(2024, 8, 31),
-            status = SpecialEventStatus.ENDED
-        )
-    )
+class SpecialEventRepositoryImpl(
+    private val queryExecutor: R2dbcQueryExecutor,
+    private val specialEventQueryBuilder: SpecialEventQueryBuilder,
+    private val specialEventRowMapper: SpecialEventRowMapper,
+    private val template: R2dbcEntityTemplate
+) : SpecialEventRepository {
 
     override suspend fun findAll(limit: Int, offset: Int): SpecialEvents {
-        val events = mockEvents
-            .drop(offset)
-            .take(limit)
-        return SpecialEvents(events)
+        val criteria = SpecialEventSearchCriteria(
+            limit = limit,
+            offset = offset
+        )
+
+        val querySpec = specialEventQueryBuilder.buildSearchQuery(criteria)
+        val eventsList = queryExecutor.execute(querySpec, specialEventRowMapper)
+
+        return SpecialEvents(eventsList)
     }
 
     override suspend fun count(): Int {
-        return mockEvents.size
+        val criteria = SpecialEventSearchCriteria(
+            limit = 0,
+            offset = 0
+        )
+
+        val querySpec = specialEventQueryBuilder.buildCountQuery(criteria)
+        return queryExecutor.executeCount(querySpec)
     }
 
     override suspend fun findById(eventId: SpecialEventId): SpecialEvent? {
-        return mockEvents.find { it.id == eventId }
+        val querySpec = specialEventQueryBuilder.buildGetByIdQuery(eventId.value)
+        val events = queryExecutor.execute(querySpec, specialEventRowMapper)
+        return events.firstOrNull()
     }
 }

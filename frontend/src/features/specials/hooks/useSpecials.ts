@@ -1,52 +1,41 @@
-import { useState, useEffect } from 'react';
-import { SpecialEventDto } from '../types/types';
+'use client';
+
+import { useMemo } from 'react';
+import { SpecialEventDto, SpecialEventSearchResultDto } from '../types/types';
 import { SpecialApi } from '../api/specialClient';
+import { useApiQuery } from '@/hooks/useApi';
 import { ApiError } from '@/utils/apiClient';
 
-interface UseSpecialsReturn {
+interface UseSpecialsResult {
   events: SpecialEventDto[];
   loading: boolean;
   error: ApiError | null;
-  refetch: () => void;
+  refetch: () => Promise<SpecialEventSearchResultDto | null>;
 }
 
 /**
- * スペシャルイベント管理用カスタムフック
- * 既存のディスコグラフィーフックパターンに従う
+ * スペシャルイベント状態管理用のカスタムフック
+ * ディスコグラフィー機能の既存フックパターンに完全準拠
+ * API呼び出しとデータ取得を処理し、ローディング、エラー、成功状態を管理
  */
-export const useSpecials = (): UseSpecialsReturn => {
-  const [events, setEvents] = useState<SpecialEventDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<ApiError | null>(null);
+export const useSpecials = (): UseSpecialsResult => {
+  // 空のパラメータでAPIクエリを実行（スペシャルイベントは全件取得）
+  const apiParams = useMemo(() => ({}), []);
 
-  const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await SpecialApi.getSpecialEvents();
-      setEvents(response.items);
-    } catch (err) {
-      if (err && typeof err === 'object' && 'message' in err && 'type' in err) {
-        setError(err as ApiError);
-      } else {
-        setError({
-          message: err instanceof Error ? err.message : 'Failed to fetch special events',
-          type: 'client'
-        });
-      }
-    } finally {
-      setLoading(false);
+  // useApiQueryフックを使用してAPI呼び出しとデータ取得を処理
+  const { data, loading, error, execute } = useApiQuery(
+    SpecialApi.getSpecialEvents,
+    apiParams,
+    {
+      retries: 2,
+      retryDelay: 2000
     }
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  );
 
   return {
-    events,
+    events: data?.items || [],
     loading,
     error,
-    refetch: fetchEvents
+    refetch: execute,
   };
 };
