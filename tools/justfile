@@ -165,3 +165,13 @@ albums-import-dev:
 
 albums-import-prd:
 	cd scripts && ENV_FILE=../config/.env.prd python3 albums_importer.py
+
+# スペシャルイベントデータインポート
+special-events-import-local:
+	cd scripts && ENV_FILE=../config/.env.local python3 special_events_importer.py
+
+special-events-import-dev:
+	cd scripts && ENV_FILE=../config/.env.dev python3 special_events_importer.py
+
+special-events-import-prd:
+	cd scripts && ENV_FILE=../config/.env.prd python3 special_events_importer.py

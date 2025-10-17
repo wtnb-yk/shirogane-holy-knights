@@ -105,6 +105,19 @@ just news-import-dev
 just news-import-prd
 ```
 
+### スペシャルイベントデータインポート
+
+```bash
+# ローカル環境
+just special-events-import-local
+
+# 開発環境
+just special-events-import-dev
+
+# 本番環境
+just special-events-import-prd
+```
+
 ### データベース接続
 
 #### 開発環境
