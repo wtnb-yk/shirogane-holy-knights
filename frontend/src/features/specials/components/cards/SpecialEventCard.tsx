@@ -40,7 +40,7 @@ const SpecialEventCardComponent = ({ event, index, onEventClick }: SpecialEventC
           />
 
           <div className="flex justify-between items-center text-sm text-text-tertiary">
-            <span>{formatDateSimple(event.startDate)}</span>
+            <span>{formatDateSimple(event.endDate)}</span>
         </div>
         </div>
       </InteractiveCard>
