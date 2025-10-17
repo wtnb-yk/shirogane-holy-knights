@@ -3,9 +3,15 @@
 import React, { useCallback, useMemo } from 'react';
 import { SpecialEventDto } from '../../types/types';
 import { ApiError } from '@/utils/apiClient';
-import { SpecialsListGrid } from './internals/SpecialsListGrid';
+import { BaseGrid } from '@/components/Layout/BaseGrid';
 import { SpecialEventCard } from '../cards/SpecialEventCard';
 import { SkeletonSpecialEventCard } from '../cards/SkeletonSpecialEventCard';
+import {
+  getSpecialEventGridColumns,
+  DEFAULT_EMPTY_MESSAGE,
+  DEFAULT_SKELETON_COUNT
+} from '../../config/gridConfig';
+import { generateGridClassName } from '@/features/archives/utils/gridLayoutCalculator';
 
 interface SpecialsGridProps {
   events: SpecialEventDto[];
@@ -20,6 +26,17 @@ const SpecialsGridComponent = ({
   error,
   onEventClick
 }: SpecialsGridProps) => {
+  // Memoize grid configuration
+  const gridConfig = useMemo(() => {
+    const gridColumns = getSpecialEventGridColumns();
+    const gridClassName = generateGridClassName(gridColumns);
+    return {
+      columns: gridColumns,
+      className: gridClassName.replace('grid ', '')
+    };
+  }, []);
+
+  // Memoize render functions to prevent unnecessary re-renders
   const renderItem = useCallback(
     (event: SpecialEventDto, index: number) => (
       <SpecialEventCard
@@ -36,23 +53,25 @@ const SpecialsGridComponent = ({
     []
   );
 
-  const emptyMessage = useMemo(
-    () => ({
-      title: '現在開催中のスペシャルイベントはありません。',
-      subtitle: ''
-    }),
-    []
+  // Memoize empty message
+  const emptyMessage = useMemo(() => DEFAULT_EMPTY_MESSAGE, []);
+
+  // BaseGrid は error: string | null を期待するので、ApiError を string に変換
+  const errorMessage = useMemo(
+    () => (error ? error.message : null),
+    [error]
   );
 
   return (
-    <SpecialsListGrid
+    <BaseGrid
       items={events}
       loading={loading}
-      error={error}
+      error={errorMessage}
       renderItem={renderItem}
       renderSkeleton={renderSkeleton}
       emptyMessage={emptyMessage}
-      skeletonCount={6}
+      skeletonCount={DEFAULT_SKELETON_COUNT}
+      gridClassName={gridConfig.className}
     />
   );
 };
