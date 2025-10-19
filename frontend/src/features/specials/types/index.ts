@@ -1,6 +1,6 @@
 export type {
   SpecialEventDto,
-  SpecialEventSearchParamsDto,
-  SpecialEventSearchResultDto,
-  SpecialEventApiError
+  MessageDto,
+  SpecialEventDetailDto,
+  SpecialEventSearchResultDto
 } from './types';
