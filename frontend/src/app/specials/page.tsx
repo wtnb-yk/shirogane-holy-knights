@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { useSpecials } from '@/features/specials/hooks/useSpecials';
 import { SpecialsGrid } from '@/features/specials/components/grids/SpecialsGrid';
 import { PageLayout } from '@/components/Layout/PageLayout';
@@ -10,6 +11,7 @@ import { SpecialEventDto } from '@/features/specials/types/types';
  * スペシャルイベントメインページコンポーネント
  */
 export default function SpecialsPage() {
+  const router = useRouter();
   const {
     events,
     loading,
@@ -17,7 +19,7 @@ export default function SpecialsPage() {
   } = useSpecials();
 
   const handleEventClick = (event: SpecialEventDto) => {
-    console.log('Event clicked:', event);
+    router.push(`/specials/${event.id}`);
   };
 
   return (

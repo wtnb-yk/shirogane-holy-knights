@@ -34,6 +34,29 @@ export const formatDateTime = (dateString: string, locale: string = 'ja-JP'): st
 };
 
 /**
+ * 開始日と終了日を範囲形式でフォーマットする
+ */
+export const formatDateRange = (startDate: string, endDate: string, locale: string = 'ja-JP'): string => {
+  try {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const startStr = start.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+    const endStr = end.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+    return `${startStr} 〜 ${endStr}`;
+  } catch {
+    return `${startDate} 〜 ${endDate}`;
+  }
+};
+
+/**
  * ISO 8601 duration format (PT1H30M45S) を人間が読める形式に変換
  */
 export const formatDuration = (duration?: string): string | null => {

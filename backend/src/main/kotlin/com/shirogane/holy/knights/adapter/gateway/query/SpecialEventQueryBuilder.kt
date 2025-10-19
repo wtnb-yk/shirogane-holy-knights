@@ -4,6 +4,7 @@ import com.shirogane.holy.knights.adapter.gateway.QuerySpec
 import com.shirogane.holy.knights.adapter.gateway.model.SpecialEventSearchCriteria
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.util.UUID
 
 @Component
 class SpecialEventQueryBuilder : QueryBuilder<SpecialEventSearchCriteria> {
@@ -21,10 +22,15 @@ class SpecialEventQueryBuilder : QueryBuilder<SpecialEventSearchCriteria> {
 
         val sql = """
             SELECT
-                id, title, description, start_date, end_date, created_at
-            FROM special_events
+                se.id, se.title, se.description, se.start_date, se.end_date, se.created_at,
+                COALESCE(STRING_AGG(set.id::text, ',' ORDER BY set.id), '') as event_type_ids,
+                COALESCE(STRING_AGG(set.type, ',' ORDER BY set.id), '') as event_types
+            FROM special_events se
+            LEFT JOIN special_event_special_event_types seset ON se.id = seset.special_event_id
+            LEFT JOIN special_event_types set ON seset.special_event_type_id = set.id
             $whereClause
-            ORDER BY start_date DESC, created_at DESC
+            GROUP BY se.id, se.title, se.description, se.start_date, se.end_date, se.created_at
+            ORDER BY se.start_date DESC, se.created_at DESC
             LIMIT :limit OFFSET :offset
         """.trimIndent()
 
@@ -59,12 +65,17 @@ class SpecialEventQueryBuilder : QueryBuilder<SpecialEventSearchCriteria> {
     fun buildGetByIdQuery(eventId: String): QuerySpec {
         val sql = """
             SELECT
-                id, title, description, start_date, end_date, created_at
-            FROM special_events
-            WHERE id = :eventId
+                se.id, se.title, se.description, se.start_date, se.end_date, se.created_at,
+                COALESCE(STRING_AGG(set.id::text, ',' ORDER BY set.id), '') as event_type_ids,
+                COALESCE(STRING_AGG(set.type, ',' ORDER BY set.id), '') as event_types
+            FROM special_events se
+            LEFT JOIN special_event_special_event_types seset ON se.id = seset.special_event_id
+            LEFT JOIN special_event_types set ON seset.special_event_type_id = set.id
+            WHERE se.id = :eventId
+            GROUP BY se.id, se.title, se.description, se.start_date, se.end_date, se.created_at
         """.trimIndent()
 
-        return QuerySpec(sql, mapOf("eventId" to eventId))
+        return QuerySpec(sql, mapOf("eventId" to UUID.fromString(eventId)))
     }
 
     private fun buildSearchConditions(

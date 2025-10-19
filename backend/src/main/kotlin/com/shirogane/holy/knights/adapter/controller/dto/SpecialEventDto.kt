@@ -16,7 +16,8 @@ data class SpecialEventDto(
     val description: String,
     val startDate: String, // YYYY-MM-DD形式
     val endDate: String,   // YYYY-MM-DD形式
-    val status: String     // "upcoming", "active", "ended"
+    val status: String,    // "upcoming", "active", "ended"
+    val eventTypes: List<String> = emptyList()
 ) {
     companion object {
         /**
@@ -29,7 +30,8 @@ data class SpecialEventDto(
                 description = specialEvent.description,
                 startDate = specialEvent.startDate.toString(), // YYYY-MM-DD
                 endDate = specialEvent.endDate.toString(),     // YYYY-MM-DD
-                status = specialEvent.status.name.lowercase()
+                status = specialEvent.status.name.lowercase(),
+                eventTypes = specialEvent.eventTypes.map { it.type }
             )
         }
     }

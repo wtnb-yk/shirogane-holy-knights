@@ -12,7 +12,8 @@ data class SpecialEvent(
     val description: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val status: SpecialEventStatus
+    val status: SpecialEventStatus,
+    val eventTypes: List<SpecialEventType> = emptyList()
 )
 
 /**

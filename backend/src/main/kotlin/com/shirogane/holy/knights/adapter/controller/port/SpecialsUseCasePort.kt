@@ -1,7 +1,7 @@
 package com.shirogane.holy.knights.adapter.controller.port
 
 import arrow.core.Either
-import com.shirogane.holy.knights.adapter.controller.dto.SpecialEventDto
+import com.shirogane.holy.knights.adapter.controller.dto.SpecialEventDetailDto
 import com.shirogane.holy.knights.adapter.controller.dto.SpecialEventSearchResultDto
 import com.shirogane.holy.knights.application.usecase.UseCaseError
 
@@ -18,5 +18,5 @@ interface SpecialsUseCasePort {
     /**
      * スペシャルイベント詳細取得
      */
-    suspend fun getSpecialEventDetails(eventId: String): Either<UseCaseError, SpecialEventDto>
+    suspend fun getSpecialEventDetails(eventId: String): Either<UseCaseError, SpecialEventDetailDto>
 }
