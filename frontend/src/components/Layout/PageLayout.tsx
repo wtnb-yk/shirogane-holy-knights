@@ -52,7 +52,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         <main className="flex-1 min-w-0">
           {/* ページヘッダー */}
           <div className="page-header mb-6">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-surface-primary to-accent-blue bg-clip-text text-transparent mb-4 tracking-wider">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-surface-primary mb-4 tracking-wider">
               {title}
             </h1>
 
