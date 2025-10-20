@@ -64,7 +64,7 @@
 }
 
 @layer base {
-  
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Hiragino Sans", var(--font-noto-sans-jp), Arial, sans-serif;
     font-weight: 400;
@@ -72,7 +72,7 @@
     letter-spacing: 0.025em;
     line-height: 1.6;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -86,7 +86,26 @@
 .duration-fast { transition-duration: 150ms; }
 
 @layer utilities {
-  
+
+  /* 日本語見出しの視覚的バランス調整（英数字と揃える） */
+  .heading-ja {
+    font-size: 2.07rem !important; /* text-4xl (2.25rem) × 0.92 */
+    line-height: 1.25 !important;
+    letter-spacing: 0.025em !important;
+  }
+
+  @media (min-width: 640px) {
+    .heading-ja {
+      font-size: 2.76rem !important; /* text-5xl (3rem) × 0.92 */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .heading-ja {
+      font-size: 3.45rem !important; /* text-6xl (3.75rem) × 0.92 */
+    }
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.4s ease-out forwards;
   }

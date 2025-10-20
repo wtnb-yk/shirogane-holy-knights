@@ -44,6 +44,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
   desktopSidebar,
   mobileBottomSheet
 }) => {
+  // 日本語文字が含まれているかを判定
+  // const hasJapanese = true;
+  const hasJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(title);
+
   return (
     <>
       {/* メインコンテナ */}
@@ -52,7 +56,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
         <main className="flex-1 min-w-0">
           {/* ページヘッダー */}
           <div className="page-header mb-6">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-surface-primary mb-4 tracking-wider">
+            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black text-surface-primary mb-4 tracking-wider ${hasJapanese ? 'heading-ja' : ''}`}>
               {title}
             </h1>
 
