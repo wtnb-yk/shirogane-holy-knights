@@ -18,14 +18,15 @@ data class SpecialEventEntity(
     val description: String?,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val createdAt: Instant
+    val createdAt: Instant,
+    val eventTypes: List<SpecialEventTypeEntity> = emptyList()
 ) {
     /**
      * エンティティからドメインモデルへの変換
      */
     fun toDomain(): SpecialEvent {
         val now = LocalDate.now()
-        
+
         val status = when {
             now < startDate -> SpecialEventStatus.UPCOMING
             now > endDate -> SpecialEventStatus.ENDED
@@ -38,7 +39,8 @@ data class SpecialEventEntity(
             description = description ?: "",
             startDate = startDate,
             endDate = endDate,
-            status = status
+            status = status,
+            eventTypes = eventTypes.map { it.toDomain() }
         )
     }
 }

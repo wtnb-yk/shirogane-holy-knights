@@ -1,5 +1,5 @@
 import {
-  SpecialEventDto,
+  SpecialEventDetailDto,
   SpecialEventSearchResultDto
 } from '../types/types';
 import { apiClient } from '@/utils/apiClient';
@@ -19,7 +19,7 @@ export const SpecialApi = {
   /**
    * 個別スペシャルイベント詳細を取得
    */
-  getSpecialEventDetails: (eventId: string): Promise<SpecialEventDto> => {
-    return apiClient.get<SpecialEventDto>(`/specials/${eventId}`);
+  getSpecialEventDetails: (eventId: string): Promise<SpecialEventDetailDto> => {
+    return apiClient.get<SpecialEventDetailDto>(`/specials/${eventId}`);
   }
 };

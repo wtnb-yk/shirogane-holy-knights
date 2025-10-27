@@ -67,7 +67,7 @@ export type {
 
 export type {
   SpecialEventDto,
-  SpecialEventSearchParamsDto,
-  SpecialEventSearchResultDto,
-  SpecialEventApiError
+  MessageDto,
+  SpecialEventDetailDto,
+  SpecialEventSearchResultDto
 } from '@/features/specials/types/types';

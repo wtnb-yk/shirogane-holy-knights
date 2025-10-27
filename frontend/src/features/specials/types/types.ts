@@ -8,17 +8,25 @@ export interface SpecialEventDto {
   startDate: string;
   endDate: string;
   status: 'upcoming' | 'active' | 'ended';
+  eventTypes: string[];
 }
 
 /**
- * スペシャルイベント検索パラメータの型定義
- * 将来の拡張に備えて定義
+ * メッセージDTOの型定義
  */
-export interface SpecialEventSearchParamsDto {
-  query?: string;
-  status?: ('upcoming' | 'active' | 'ended')[];
-  startDate?: string;
-  endDate?: string;
+export interface MessageDto {
+  id: string;
+  name: string;
+  message: string;
+  createdAt: string;
+}
+
+/**
+ * スペシャルイベント詳細DTOの型定義
+ */
+export interface SpecialEventDetailDto {
+  event: SpecialEventDto;
+  messages: MessageDto[];
 }
 
 /**
@@ -27,14 +35,4 @@ export interface SpecialEventSearchParamsDto {
 export interface SpecialEventSearchResultDto {
   items: SpecialEventDto[];
   totalCount: number;
-  page: number;
-  pageSize: number;
-}
-
-/**
- * Lambda関数レスポンス用のエラー型定義
- */
-export interface SpecialEventApiError {
-  error: string;
-  statusCode?: number;
 }
