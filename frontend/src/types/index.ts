@@ -59,15 +59,8 @@ export type {
   SingFrequencyCategory, 
   SongFilterOptions, 
   SongContentType, 
-  ConcertSong, 
-  ConcertSongSearchParams, 
-  ConcertSongSearchResult, 
-  ConcertSongStats 
+  ConcertSong,
+  ConcertSongSearchParams,
+  ConcertSongSearchResult,
+  ConcertSongStats
 } from '@/features/songs/types/types';
-
-export type {
-  SpecialEventDto,
-  MessageDto,
-  SpecialEventDetailDto,
-  SpecialEventSearchResultDto
-} from '@/features/specials/types/types';
