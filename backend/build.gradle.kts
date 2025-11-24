@@ -31,7 +31,7 @@ val logbackVersion = "1.5.13"
 val kotlinxCoroutinesVersion = "1.9.0"
 val kotlinxSerializationVersion = "1.8.0"
 val kotestVersion = "5.9.1"
-val arrowVersion = "2.0.0"
+val arrowVersion = "2.1.2"
 val nettyVersion = "4.1.124.Final"
 val commonsLang3Version = "3.18.0"
 
