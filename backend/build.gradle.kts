@@ -6,7 +6,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
     kotlin("plugin.spring") version "2.0.21"
     id("org.jetbrains.kotlin.plugin.allopen") version "2.0.21"
-    id("org.springframework.boot") version "3.4.1"
+    id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.4"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
@@ -26,7 +26,7 @@ repositories {
     maven { url = uri("https://jitpack.io") }
 }
 
-val springCloudVersion = "2024.0.0"
+val springCloudVersion = "2025.1.0"
 val logbackVersion = "1.5.13"
 val kotlinxCoroutinesVersion = "1.9.0"
 val kotlinxSerializationVersion = "1.8.0"
