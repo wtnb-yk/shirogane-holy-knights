@@ -37,13 +37,13 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.5.3",
-    "@types/node": "24.3.1",
+    "@next/bundle-analyzer": "^16.0.7",
+    "@types/node": "24.10.1",
     "@types/react": "19.1.12",
     "@types/react-dom": "^19.1.9",
-    "autoprefixer": "10.4.21",
-    "eslint": "9.35.0",
-    "eslint-config-next": "15.5.2",
-    "typescript": "5.9.2"
+    "autoprefixer": "10.4.22",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.0.7",
+    "typescript": "5.9.3"
   }
 }
