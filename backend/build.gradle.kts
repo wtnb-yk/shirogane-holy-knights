@@ -4,7 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.serialization") version "2.0.21"
-    kotlin("plugin.spring") version "2.0.21"
+    kotlin("plugin.spring") version "2.2.21"
     id("org.jetbrains.kotlin.plugin.allopen") version "2.0.21"
     id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.4"
