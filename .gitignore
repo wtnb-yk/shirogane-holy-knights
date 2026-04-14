@@ -1,15 +1,19 @@
 .idea/
-/work/result/
 
 # 環境設定ファイル（秘密情報を含む）
 .env*
-work/config/.env*
 *.local
-.env.local
-.env.dev
-.env.prod
 
-# Lambda deployment packages
-*.zip
-infrastructure/lambda/**/function.zip
-infrastructure/lambda/**/layer.zip
+# OS
+.DS_Store
+
+# Node.js
+node_modules/
+.next/
+out/
+
+# Go
+/backend/tmp/
+
+# Playwright
+.playwright-mcp/
