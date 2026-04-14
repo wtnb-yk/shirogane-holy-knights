@@ -10,7 +10,7 @@ provider "aws" {
   }
 }
 
-# ACM certificate for API Gateway custom domain requires us-east-1
+# ACM certificate for CloudFront requires us-east-1
 provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
@@ -24,130 +24,35 @@ provider "aws" {
   }
 }
 
-# Secrets Manager
-module "secrets" {
-  source = "../../modules/secrets"
-
-  environment  = var.environment
-  project_name = var.project_name
+# Existing Route53 hosted zone for the apex domain
+data "aws_route53_zone" "main" {
+  name = "noe-room.com"
 }
 
-# ネットワーク
-module "network" {
-  source = "../../modules/network"
+# ---------------------------------------------------------------------------
+# Maintenance site (renewal-in-progress landing page)
+# - Replaces the full Amplify/Lambda/RDS stack while the site is being
+#   redesigned. Keep costs near zero until the renewal is ready to ship.
+# ---------------------------------------------------------------------------
+module "maintenance_site" {
+  source = "../../modules/maintenance-site"
 
   environment    = var.environment
   project_name   = var.project_name
-  vpc_cidr       = var.vpc_cidr
-  azs            = var.availability_zones
-  public_subnets = var.public_subnet_cidrs
-  private_subnets = var.private_subnet_cidrs
-  enable_nat_gateway = var.enable_nat_gateway
-  enable_nat_instance = var.enable_nat_instance
-  region = var.aws_region
-  allowed_db_client_cidrs = var.allowed_db_client_cidrs
-}
-
-# データベース
-module "database" {
-  source = "../../modules/database"
-
-  environment            = var.environment
-  project_name           = var.project_name
-  subnet_ids             = module.network.private_subnet_ids
-  vpc_security_group_ids = [module.network.database_security_group_id]
-  
-  db_instance_class    = var.db_instance_class
-  db_name              = var.db_name
-  db_username          = var.db_username
-  db_password          = var.db_password
-  use_secrets_manager  = true
-  db_secret_arn        = module.secrets.secret_arn
-  publicly_accessible  = var.db_publicly_accessible
-  skip_final_snapshot  = false  # 本番環境では最終スナップショットを取得
-}
-
-# Lambda
-module "lambda" {
-  source = "../../modules/lambda"
-
-  environment     = var.environment
-  project_name    = var.project_name
-  subnet_ids      = module.network.private_subnet_ids
-  security_group_ids = [module.network.lambda_security_group_id]
-  
-  lambda_jar_path = var.lambda_jar_path
-  db_host         = replace(module.database.db_endpoint, ":5432", "")
-  db_port         = "5432"
-  db_name         = var.db_name
-  db_username     = var.db_username
-  db_password     = var.db_password
-  
-  # Secrets Manager設定
-  use_secrets_manager       = true
-  db_secret_arn            = module.secrets.secret_arn
-  secrets_access_policy_arn = module.secrets.secrets_access_policy_arn
-  
-  # Lambda performance settings for Spring Boot + R2DBC
-  memory_size = 2048
-  timeout     = 30  # 本番環境では30秒に短縮
-  
-  # CORS設定（本番環境専用Origin設定）
-  cors_allowed_origins = "https://www.noe-room.com"
-  
-  api_gateway_execution_arn = module.api_gateway.api_execution_arn
-}
-
-# API Gateway
-module "api_gateway" {
-  source = "../../modules/api-gateway"
-
-  environment      = var.environment
-  project_name     = var.project_name
-  lambda_function_name = module.lambda.function_name
-  lambda_invoke_arn    = module.lambda.invoke_arn
-  lambda_alias_invoke_arn = module.lambda.alias_invoke_arn
-  
-  # Custom domain settings for production environment
-  custom_domain_name = "api.noe-room.com"
-  hosted_zone_id     = data.aws_route53_zone.main.zone_id
+  domain_name    = "noe-room.com"
+  hosted_zone_id = data.aws_route53_zone.main.zone_id
+  tags           = var.tags
 
   providers = {
+    aws           = aws
     aws.us_east_1 = aws.us_east_1
   }
 }
 
-# SSM Parameter for GitHub token
-data "aws_ssm_parameter" "github_token" {
-  name            = "/shirogane-holy-knights/prd/github-token"
-  with_decryption = true
-}
-
-# Amplify
-module "amplify" {
-  source = "../../modules/amplify"
-
-  environment         = var.environment
-  project_name        = var.project_name
-  github_repository   = var.github_repository
-  github_branch       = var.github_branch
-  github_access_token = data.aws_ssm_parameter.github_token.value
-  
-  
-  environment_variables = {
-    NEXT_PUBLIC_API_URL = coalesce(module.api_gateway.custom_domain_endpoint, module.api_gateway.api_endpoint)
-    NEXT_PUBLIC_CDN_URL = "https://${aws_cloudfront_distribution.images.domain_name}"
-    PORT = "3000"
-    AMPLIFY_MONOREPO_APP_ROOT = "frontend"
-    NEXT_PUBLIC_GA_ID = var.google_analytics_id
-  }
-  
-  custom_domain = "noe-room.com"
-  hosted_zone_id = data.aws_route53_zone.main.zone_id
-}
-
-# Images CDN (shared across environments but managed in prd)
-# S3 Bucket for images (shared across environments)
+# ---------------------------------------------------------------------------
+# Shared images CDN (retained across the renewal so news images can be
+# reused once the new site comes back online).
+# ---------------------------------------------------------------------------
 resource "aws_s3_bucket" "images" {
   bucket = "shirogane-holy-knights-images"
 
@@ -160,7 +65,6 @@ resource "aws_s3_bucket" "images" {
   )
 }
 
-# S3 Bucket Public Access Block
 resource "aws_s3_bucket_public_access_block" "images" {
   bucket = aws_s3_bucket.images.id
 
@@ -170,7 +74,6 @@ resource "aws_s3_bucket_public_access_block" "images" {
   restrict_public_buckets = true
 }
 
-# S3 Bucket CORS Configuration
 resource "aws_s3_bucket_cors_configuration" "images" {
   bucket = aws_s3_bucket.images.id
 
@@ -183,7 +86,6 @@ resource "aws_s3_bucket_cors_configuration" "images" {
   }
 }
 
-# CloudFront Origin Access Control
 resource "aws_cloudfront_origin_access_control" "images" {
   name                              = "shirogane-holy-knights-images-oac"
   description                       = "OAC for shirogane-holy-knights images"
@@ -192,13 +94,12 @@ resource "aws_cloudfront_origin_access_control" "images" {
   signing_protocol                  = "sigv4"
 }
 
-# CloudFront Distribution
 resource "aws_cloudfront_distribution" "images" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "shirogane-holy-knights images CDN (shared)"
   default_root_object = ""
-  price_class         = "PriceClass_200" # US, Canada, Europe, Asia
+  price_class         = "PriceClass_200"
 
   origin {
     domain_name              = aws_s3_bucket.images.bucket_regional_domain_name
@@ -222,12 +123,11 @@ resource "aws_cloudfront_distribution" "images" {
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
-    default_ttl            = 86400  # 24 hours
-    max_ttl                = 31536000 # 1 year
+    default_ttl            = 86400
+    max_ttl                = 31536000
     compress               = true
   }
 
-  # Custom error response for 404s
   custom_error_response {
     error_code         = 404
     response_code      = 404
@@ -253,7 +153,6 @@ resource "aws_cloudfront_distribution" "images" {
   )
 }
 
-# S3 Bucket Policy to allow CloudFront access
 resource "aws_s3_bucket_policy" "images" {
   bucket = aws_s3_bucket.images.id
 
@@ -281,113 +180,3 @@ resource "aws_s3_bucket_policy" "images" {
     aws_s3_bucket_public_access_block.images
   ]
 }
-
-# Bastion Host
-module "bastion" {
-  source = "../../modules/bastion"
-
-  environment  = var.environment
-  project_name = var.project_name
-  aws_region   = var.aws_region
-  vpc_id       = module.network.vpc_id
-  subnet_id    = module.network.private_subnet_ids[0]  # Use first private subnet
-  vpc_endpoint_subnet_ids = module.network.private_subnet_ids
-  db_endpoint  = replace(module.database.db_endpoint, ":5432", "")
-}
-
-# CodePipeline
-module "pipeline" {
-  source = "../../modules/pipeline"
-
-  environment    = var.environment
-  project_name   = var.project_name
-  vpc_id         = module.network.vpc_id
-  private_subnet_ids = module.network.private_subnet_ids
-  private_subnet_arns = [
-    "arn:aws:ec2:${var.aws_region}:${data.aws_caller_identity.current.account_id}:subnet/${module.network.private_subnet_ids[0]}",
-    "arn:aws:ec2:${var.aws_region}:${data.aws_caller_identity.current.account_id}:subnet/${module.network.private_subnet_ids[1]}"
-  ]
-  
-  rds_endpoint          = module.database.db_endpoint
-  rds_secret_arn        = module.secrets.secret_arn
-  db_name               = var.db_name
-  lambda_function_arn   = module.lambda.function_arn
-  lambda_function_name  = module.lambda.function_name
-  github_repository_id  = var.github_repository_id
-}
-
-# Additional security group rule for bastion -> database access
-resource "aws_security_group_rule" "bastion_to_database" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = module.bastion.security_group_id
-  security_group_id        = module.network.database_security_group_id
-  description              = "Database access from bastion host"
-}
-
-# Pipeline migration -> database access
-resource "aws_security_group_rule" "pipeline_to_database" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = module.pipeline.migration_security_group_id
-  security_group_id        = module.network.database_security_group_id
-  description              = "Database access from CodeBuild migration"
-}
-
-# Lambda -> database access
-resource "aws_security_group_rule" "lambda_to_database" {
-  type                     = "ingress"
-  from_port                = 5432
-  to_port                  = 5432
-  protocol                 = "tcp"
-  source_security_group_id = module.network.lambda_security_group_id
-  security_group_id        = module.network.database_security_group_id
-  description              = "Database access from Lambda"
-}
-
-# Note: Batch scheduler uses the same security group as Lambda
-# so batch_to_database rule is not needed (covered by lambda_to_database)
-
-# Current account data
-data "aws_caller_identity" "current" {}
-
-# Existing Route53 hosted zone
-data "aws_route53_zone" "main" {
-  name = "noe-room.com"
-}
-
-# Batch Scheduler
-module "batch_scheduler" {
-  source = "../../modules/batch-scheduler"
-
-  environment    = var.environment
-  project_name   = var.project_name
-  
-  # Resource configuration
-  cpu    = 256    # 0.25 vCPU
-  memory = 512    # 512 MB
-  
-  # Schedule: 4 times daily (00:00, 06:00, 12:00, 18:00 JST)
-  schedule_expressions = [
-    "cron(0 15 * * ? *)",  # 00:00 JST (15:00 UTC)
-    "cron(0 21 * * ? *)",  # 06:00 JST (21:00 UTC) 
-    "cron(0 3 * * ? *)",   # 12:00 JST (03:00 UTC)
-    "cron(0 9 * * ? *)"    # 18:00 JST (09:00 UTC)
-  ]
-  
-  # Network configuration
-  subnet_ids        = module.network.private_subnet_ids
-  security_group_id = module.network.lambda_security_group_id
-  
-  # Secrets
-  youtube_api_secret_arn = module.secrets.youtube_api_secret_arn
-  db_secret_arn         = module.secrets.secret_arn
-  
-  # Database
-  db_host = replace(module.database.db_endpoint, ":5432", "")
-}
-
