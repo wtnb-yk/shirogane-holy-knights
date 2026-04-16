@@ -18,8 +18,12 @@ out/
 # ビルド時生成データ（本番: S3から取得 / ローカル: 手動配置）
 web/data/
 
+# コンテンツマスタデータ（本番: S3 で管理 / ローカル: tools/ が生成）
+tools/data/
+
 # Playwright
 .playwright-mcp/
 
 # 調査・リサーチ用画像
 _research/
+.vercel
