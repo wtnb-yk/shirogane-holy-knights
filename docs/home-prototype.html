@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>だんいんログ — Top Page Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+2:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS (design-concept.html と同一)
+   ============================================================ */
+:root {
+  --cream-50: #FDFCFA; --cream-100: #F9F5F0; --cream-200: #F0EBE3;
+  --cream-300: #E5DFD7; --cream-400: #D5CEC4;
+  --navy-900: #1A2335; --navy-800: #202A44; --navy-700: #2C3A4E;
+  --navy-600: #3E4C5C; --navy-500: #556270; --navy-400: #6B7A8A;
+  --navy-300: #8B95A2; --navy-200: #ABB3BC;
+  --navy-glow: rgba(44,58,78,0.08);
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E; --gold-400: #C8A24C; --gold-300: #D4B56A;
+  --gold-200: #E2CC92; --gold-100: #F2E6C4;
+  --gold-glow: rgba(200,162,76,0.10);
+  --silver-300: #BBB4B8; --silver-200: #D5D0D3; --silver-100: #ECEAEB;
+  --dark-800: #2A2D35; --dark-700: #3A3D45;
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300); --border-hover: var(--cream-400);
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-lg: 1.125rem; --text-xl: 1.5rem; --text-2xl: 2rem; --text-3xl: 2.5rem;
+  --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+  --dur: 0.25s;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--cream-100);
+  color: var(--navy-700);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.7;
+}
+a { color: var(--navy-600); text-decoration: none; }
+a:hover { color: var(--navy-800); }
+
+/* ============================================================
+   PROTOTYPE BANNER
+   ============================================================ */
+.proto-banner {
+  background: var(--gold-glow);
+  border-bottom: 1px solid var(--gold-400);
+  padding: 8px var(--sp-lg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  color: var(--gold-500);
+  text-align: center;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--navy-700);
+  border-bottom: 1px solid var(--gold-400);
+}
+.header-inner {
+  max-width: 1080px; margin: 0 auto; padding: 0 var(--sp-lg);
+  height: 56px; display: flex; align-items: center; gap: var(--sp-xl);
+}
+.header-logo {
+  font-family: var(--font-body); font-size: var(--text-base);
+  font-weight: 700; color: var(--gold-100);
+  letter-spacing: 0.02em;
+  transition: color var(--dur) var(--ease);
+}
+.header-logo:hover { color: #FFFFFF; }
+.header-nav { display: flex; align-items: center; gap: var(--sp-xs); margin-left: auto; }
+.nav-group { position: relative; }
+.nav-group-trigger {
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 12px;
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+  color: var(--gold-100); background: none; border: none;
+  border-radius: var(--r-sm); cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.nav-group-trigger:hover { color: #FFFFFF; background: rgba(255,255,255,0.08); }
+.nav-group-trigger svg { width: 12px; height: 12px; opacity: 0.5; transition: transform var(--dur) var(--ease); }
+.nav-group:hover .nav-group-trigger svg { transform: rotate(180deg); }
+.nav-dropdown {
+  position: absolute; top: calc(100% + 4px); right: 0; min-width: 280px;
+  background: var(--cream-50); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: var(--sp-sm);
+  box-shadow: 0 8px 24px rgba(26,35,53,0.08);
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: all var(--dur) var(--ease);
+}
+.nav-group:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+.nav-dropdown-item {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--r-sm);
+  transition: background var(--dur) var(--ease);
+}
+.nav-dropdown-item:hover { background: var(--cream-200); }
+.nav-dropdown-name {
+  font-size: var(--text-sm); font-weight: 600; color: var(--dark-800);
+}
+.nav-dropdown-desc {
+  font-size: var(--text-xs); color: var(--navy-400);
+}
+
+/* ============================================================
+   PAGE LAYOUT
+   ============================================================ */
+.page { max-width: 1080px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg) var(--sp-2xl); }
+.block { margin-bottom: var(--sp-2xl); }
+.block-label {
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--navy-400); margin-bottom: var(--sp-sm);
+}
+.block-title {
+  font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600;
+  color: var(--dark-800); margin-bottom: var(--sp-lg);
+}
+
+/* ============================================================
+   HERO (検討事項①: 仮で1行コピー版)
+   ============================================================ */
+.hero {
+  padding: var(--sp-xl) 0 var(--sp-lg);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-xl);
+}
+.hero-title {
+  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 700;
+  color: var(--dark-800); margin-bottom: var(--sp-xs); line-height: 1.2;
+}
+.hero-tagline { font-size: var(--text-base); color: var(--navy-500); }
+
+/* ============================================================
+   SECTION DIVIDER
+   ============================================================ */
+.divider {
+  display: flex; align-items: center; gap: var(--sp-md);
+  margin-bottom: var(--sp-md);
+}
+.divider-label {
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--navy-400); white-space: nowrap;
+}
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+
+/* ============================================================
+   UPPER SLOT (公共・時間ベース)
+   ============================================================ */
+.slot-upper {
+  display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-md);
+}
+@media (max-width: 720px) { .slot-upper { grid-template-columns: 1fr; } }
+
+/* --- A-1: 最新配信 --- */
+.card-latest {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+}
+.card-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: var(--sp-md);
+}
+.card-head-title {
+  font-family: var(--font-display); font-size: var(--text-base); font-weight: 600;
+  color: var(--dark-800); display: flex; align-items: center; gap: var(--sp-sm);
+}
+.badge-live {
+  display: inline-block; padding: 2px 8px;
+  background: var(--gold-glow); color: var(--gold-500);
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  border-radius: var(--r-sm); letter-spacing: 0.1em;
+}
+.card-head-link {
+  font-size: var(--text-xs); color: var(--navy-500);
+}
+.latest-list { display: flex; flex-direction: column; gap: var(--sp-md); }
+.latest-item {
+  display: grid; grid-template-columns: 120px 1fr; gap: var(--sp-md);
+  padding-bottom: var(--sp-md); border-bottom: 1px dashed var(--border);
+}
+.latest-item:last-child { padding-bottom: 0; border-bottom: none; }
+.latest-thumb {
+  width: 120px; aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--silver-100), var(--silver-200));
+  border-radius: var(--r-sm); position: relative; overflow: hidden;
+}
+.latest-thumb::after {
+  content: '▶'; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); color: rgba(255,255,255,0.7); font-size: 18px;
+}
+.latest-meta {
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: var(--text-xs); color: var(--navy-400);
+}
+.latest-tag {
+  display: inline-block; padding: 1px 8px;
+  background: var(--navy-glow); color: var(--navy-600);
+  font-family: var(--font-mono); font-size: 11px;
+  border-radius: var(--r-sm); width: fit-content;
+}
+.latest-title {
+  font-size: var(--text-sm); font-weight: 500; color: var(--dark-800);
+  line-height: 1.5;
+}
+.latest-date {
+  font-family: var(--font-mono); color: var(--navy-300);
+}
+.check-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; margin-top: 4px;
+  background: none; border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--navy-600);
+  font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  cursor: pointer; transition: all var(--dur) var(--ease);
+  width: fit-content;
+}
+.check-btn:hover { background: var(--navy-glow); border-color: var(--navy-300); color: var(--dark-800); }
+.check-btn.checked {
+  background: var(--navy-700); color: var(--white); border-color: var(--navy-700);
+}
+
+/* --- A-4: 次のグッズ締切 --- */
+.card-deadline {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-400);
+  border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+  display: flex; flex-direction: column;
+}
+.deadline-countdown {
+  font-family: var(--font-mono); font-size: var(--text-2xl); font-weight: 600;
+  color: var(--dark-800); margin: var(--sp-sm) 0 var(--sp-xs); line-height: 1;
+}
+.deadline-countdown small {
+  font-size: var(--text-sm); font-weight: 400; color: var(--navy-400); margin-left: 6px;
+}
+.deadline-tag {
+  display: inline-block; padding: 1px 8px; margin-bottom: var(--sp-xs);
+  background: var(--navy-glow); color: var(--navy-600);
+  font-family: var(--font-mono); font-size: 11px;
+  border-radius: var(--r-sm); width: fit-content;
+}
+.deadline-name {
+  font-size: var(--text-sm); color: var(--navy-600); margin-bottom: var(--sp-xs);
+  font-weight: 500;
+}
+.deadline-date {
+  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-400);
+  margin-bottom: var(--sp-md);
+}
+.deadline-link {
+  margin-top: auto; font-size: var(--text-xs); color: var(--navy-500);
+}
+
+/* ============================================================
+   LOWER SLOT (個人・記録ベース) — 仮で両状態を並列表示
+   ============================================================ */
+.state-toggle {
+  display: inline-flex; gap: 0; padding: 4px;
+  background: var(--cream-200); border-radius: var(--r-sm);
+  margin-bottom: var(--sp-md);
+}
+.state-toggle button {
+  padding: 4px 12px;
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  background: none; border: none; border-radius: 4px;
+  color: var(--navy-400); cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.state-toggle button.active {
+  background: var(--cream-50); color: var(--dark-800);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.state-note {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--gold-500); margin-bottom: var(--sp-sm);
+  letter-spacing: 0.05em;
+}
+
+.slot-lower {
+  display: grid; grid-template-columns: 1fr 2fr; gap: var(--sp-md);
+}
+@media (max-width: 720px) { .slot-lower { grid-template-columns: 1fr; } }
+
+/* --- B-1: 今週の視聴本数 --- */
+.card-weekly {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.weekly-label {
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  color: var(--navy-400); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: var(--sp-sm);
+}
+.weekly-number {
+  font-family: var(--font-display); font-size: var(--text-3xl); font-weight: 600;
+  color: var(--dark-800); line-height: 1;
+}
+.weekly-number small {
+  font-size: var(--text-base); font-weight: 400; color: var(--navy-400); margin-left: 4px;
+}
+.weekly-delta {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--success); margin-top: var(--sp-xs);
+}
+
+/* --- B-2: あしあとミニ --- */
+.card-footprint {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+}
+.card-head-sub {
+  font-size: var(--text-xs); color: var(--navy-400); margin-top: 2px;
+  line-height: 1.5;
+}
+.footprint-summary {
+  display: flex; gap: var(--sp-xl);
+  margin: var(--sp-md) 0;
+  padding: var(--sp-sm) 0;
+}
+.fp-stat-num {
+  font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600;
+  color: var(--dark-800); line-height: 1;
+}
+.fp-stat-num small {
+  font-size: var(--text-sm); font-weight: 400; color: var(--navy-400); margin-left: 2px;
+}
+.fp-stat-label {
+  font-family: var(--font-mono); font-size: 11px; color: var(--navy-400);
+  margin-top: 4px; letter-spacing: 0.05em;
+}
+.heatmap-wrap {
+  margin-top: var(--sp-md);
+}
+.heatmap-months {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-400);
+  margin-bottom: 4px; padding: 0 2px;
+}
+.heatmap {
+  display: grid; grid-template-columns: repeat(26, 1fr);
+  gap: 3px;
+}
+.heatmap-cell {
+  aspect-ratio: 1 / 1; border-radius: 2px;
+  background: var(--cream-200);
+}
+.heatmap-cell.has-record { background: var(--navy-700); }
+
+/* --- 下段ゼロ時 --- */
+.empty-state {
+  background: var(--cream-50);
+  border: 1px dashed var(--border-hover);
+  border-radius: var(--r-lg);
+  padding: var(--sp-xl) var(--sp-lg);
+  text-align: center;
+}
+.empty-state-text {
+  color: var(--navy-500); font-size: var(--text-sm);
+  margin-bottom: var(--sp-md);
+}
+.empty-state-cta {
+  display: inline-block; padding: 8px 20px;
+  background: var(--navy-700); color: var(--white);
+  font-size: var(--text-sm); font-weight: 500;
+  border-radius: var(--r-sm);
+}
+.empty-state-cta:hover { background: var(--navy-800); color: var(--white); }
+
+/* ============================================================
+   HUB (Bento Grid)
+   ============================================================ */
+.hub-group {
+  margin-bottom: var(--sp-xl);
+}
+.hub-group-title {
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold-500); margin-bottom: var(--sp-md);
+}
+.hub-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-md);
+}
+@media (max-width: 720px) { .hub-grid { grid-template-columns: 1fr; } }
+.hub-card {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+  display: flex; flex-direction: column; gap: var(--sp-sm);
+  transition: all var(--dur) var(--ease);
+  min-height: 140px;
+}
+.hub-card:hover { border-color: var(--navy-300); transform: translateY(-2px); }
+.hub-card-name {
+  font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600;
+  color: var(--dark-800);
+}
+.hub-card-desc {
+  font-size: var(--text-xs); color: var(--navy-500); line-height: 1.6;
+}
+.hub-card-meta {
+  margin-top: auto;
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--navy-400);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: var(--sp-xl) var(--sp-lg);
+  background: var(--cream-50);
+}
+.footer-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: var(--sp-md);
+}
+.footer-meta {
+  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-400);
+}
+.footer-links {
+  display: flex; gap: var(--sp-md);
+  font-size: var(--text-xs);
+}
+.footer-links a { color: var(--navy-500); }
+</style>
+</head>
+<body>
+
+<!-- PROTOTYPE BANNER -->
+<div class="proto-banner">
+  PROTOTYPE — Top Page v0.1 (2026.04.15)
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="header-logo">だんいんログ</a>
+    <nav class="header-nav">
+      <div class="nav-group">
+        <button class="nav-group-trigger">
+          探す
+          <svg viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-dropdown-item">
+            <span class="nav-dropdown-name">団員の視聴ログ</span>
+            <span class="nav-dropdown-desc">1,419件の配信を探索・記録</span>
+          </a>
+          <a href="#" class="nav-dropdown-item">
+            <span class="nav-dropdown-name">楽曲ライブラリ</span>
+            <span class="nav-dropdown-desc">452曲のレパートリー・セトリ検索</span>
+          </a>
+          <a href="#" class="nav-dropdown-item">
+            <span class="nav-dropdown-name">今日のASMR</span>
+            <span class="nav-dropdown-desc">気分に合わせたASMRを今日一本</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button class="nav-group-trigger">
+          作る
+          <svg viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-dropdown-item">
+            <span class="nav-dropdown-name">団員活動報告書</span>
+            <span class="nav-dropdown-desc">推し活データを報告書画像に</span>
+          </a>
+          <a href="#" class="nav-dropdown-item">
+            <span class="nav-dropdown-name">団員のあしあと</span>
+            <span class="nav-dropdown-desc">視聴履歴のヒートマップ</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- HERO (検討事項①: 仮で1行コピー版) -->
+  <section class="hero">
+    <h1 class="hero-title">だんいんログ</h1>
+    <p class="hero-tagline">団員の推し活を、もっと楽しく。</p>
+  </section>
+
+  <!-- ===== 上段: 公共・時間ベース ===== -->
+  <section class="block">
+    <div class="divider">
+      <span class="divider-label">Today</span>
+      <span class="divider-line"></span>
+    </div>
+
+    <div class="slot-upper">
+      <!-- A-1: 最新配信 -->
+      <div class="card-latest">
+        <div class="card-head">
+          <div class="card-head-title">
+            最新配信
+            <span class="badge-live">3 NEW</span>
+          </div>
+          <a href="#" class="card-head-link">すべて見る →</a>
+        </div>
+        <div class="latest-list">
+
+          <div class="latest-item">
+            <div class="latest-thumb"></div>
+            <div class="latest-meta">
+              <span class="latest-tag">ゲーム / ゼルダ</span>
+              <span class="latest-title">【ゼルダの伝説 ティアキン】解放区を開拓するぞ！#85</span>
+              <span class="latest-date">2026.04.14 — 3時間42分</span>
+              <button class="check-btn">＋ 視聴チェック</button>
+            </div>
+          </div>
+
+          <div class="latest-item">
+            <div class="latest-thumb"></div>
+            <div class="latest-meta">
+              <span class="latest-tag">ASMR</span>
+              <span class="latest-title">【ASMR】春の夜の耳かき・添い寝シチュ</span>
+              <span class="latest-date">2026.04.12 — 1時間28分</span>
+              <button class="check-btn checked">✓ 視聴済</button>
+            </div>
+          </div>
+
+          <div class="latest-item">
+            <div class="latest-thumb"></div>
+            <div class="latest-meta">
+              <span class="latest-tag">雑談 / さんでーまっする</span>
+              <span class="latest-title">【さんでーまっする】今週のあれこれ報告会</span>
+              <span class="latest-date">2026.04.13 10:00 — 2時間05分</span>
+              <button class="check-btn">＋ 視聴チェック</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- A-4: 次のスケジュール -->
+      <div class="card-deadline">
+        <div class="card-head">
+          <div class="card-head-title">スケジュール</div>
+        </div>
+        <div class="deadline-countdown">
+          7<small>days</small>
+        </div>
+        <div class="deadline-tag">コラボ</div>
+        <div class="deadline-name">3期生6周年記念グッズ 受注締切</div>
+        <div class="deadline-date">2026.04.22 18:00</div>
+        <a href="#" class="deadline-link">スケジュール一覧へ →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 下段: 個人・記録ベース ===== -->
+  <section class="block">
+    <div class="divider">
+      <span class="divider-label">My Log</span>
+      <span class="divider-line"></span>
+    </div>
+
+    <!-- 仮: 状態切替トグルで両方見せる -->
+    <div class="state-toggle" role="tablist">
+      <button class="active" onclick="document.getElementById('state-filled').style.display='grid';document.getElementById('state-empty').style.display='none';this.classList.add('active');this.nextElementSibling.classList.remove('active');">蓄積あり</button>
+      <button onclick="document.getElementById('state-filled').style.display='none';document.getElementById('state-empty').style.display='block';this.classList.add('active');this.previousElementSibling.classList.remove('active');">記録ゼロ</button>
+    </div>
+
+    <!-- 蓄積あり -->
+    <div id="state-filled" class="slot-lower" style="display:grid;">
+      <!-- B-1: 今週の視聴本数 -->
+      <div class="card-weekly">
+        <div class="weekly-label">This Week</div>
+        <div class="weekly-number">7<small>本視聴</small></div>
+        <div class="weekly-delta">↑ 先週比 +2</div>
+      </div>
+      <!-- B-2: あしあとミニヒートマップ -->
+      <div class="card-footprint">
+        <div class="card-head">
+          <div>
+            <div class="card-head-title">あしあと</div>
+            <div class="card-head-sub">視聴した日に色がつきます</div>
+          </div>
+          <a href="#" class="card-head-link">フル表示 →</a>
+        </div>
+        <div class="footprint-summary">
+          <div class="fp-stat">
+            <div class="fp-stat-num">38<small>日</small></div>
+            <div class="fp-stat-label">記録あり / 過去6ヶ月</div>
+          </div>
+          <div class="fp-stat">
+            <div class="fp-stat-num">12<small>日</small></div>
+            <div class="fp-stat-label">最長連続記録</div>
+          </div>
+        </div>
+        <div class="heatmap-wrap">
+          <div class="heatmap-months">
+            <span>11月</span><span>12月</span><span>1月</span><span>2月</span><span>3月</span><span>4月</span>
+          </div>
+          <div class="heatmap" id="heatmap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 記録ゼロ -->
+    <div id="state-empty" class="empty-state" style="display:none;">
+      <div class="empty-state-text">
+        視聴した配信をチェックすると、今週の本数やあしあとが積み重なっていきます。
+      </div>
+      <a href="#" class="empty-state-cta">団員の視聴ログを開く</a>
+    </div>
+  </section>
+
+  <!-- ===== ハブ (Bento Grid) ===== -->
+  <section class="block">
+    <div class="divider">
+      <span class="divider-label">All Tools</span>
+      <span class="divider-line"></span>
+    </div>
+
+    <!-- 探す -->
+    <div class="hub-group">
+      <div class="hub-group-title">探す</div>
+      <div class="hub-grid">
+        <a href="#" class="hub-card">
+          <div class="hub-card-name">団員の視聴ログ</div>
+          <div class="hub-card-desc">1,419件の配信をタグで絞り込み、視聴チェックで記録する。</div>
+          <div class="hub-card-meta">1,419 streams</div>
+        </a>
+        <a href="#" class="hub-card">
+          <div class="hub-card-name">楽曲ライブラリ</div>
+          <div class="hub-card-desc">レパートリー全曲の検索。曲名から歌った配信を逆引き。</div>
+          <div class="hub-card-meta">452 songs</div>
+        </a>
+        <a href="#" class="hub-card">
+          <div class="hub-card-name">今日のASMR</div>
+          <div class="hub-card-desc">気分を選ぶと、今日のあなたに合うASMRを一本提案する。</div>
+          <div class="hub-card-meta">63 archives</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 作る -->
+    <div class="hub-group">
+      <div class="hub-group-title">作る</div>
+      <div class="hub-grid">
+        <a href="#" class="hub-card">
+          <div class="hub-card-name">団員活動報告書</div>
+          <div class="hub-card-desc">あなたの推し活データから、報告書風の画像を生成。</div>
+          <div class="hub-card-meta">share image</div>
+        </a>
+        <a href="#" class="hub-card">
+          <div class="hub-card-name">団員のあしあと</div>
+          <div class="hub-card-desc">視聴履歴を年間ヒートマップ画像にして残す。</div>
+          <div class="hub-card-meta">share image</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-meta">
+      だんいんログ — 非公式ファンサイト / Unofficial Fan Site
+    </div>
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">GitHub</a>
+      <a href="#">ガイドライン</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ヒートマップのダミーデータ生成（26週 × 7日 = 182マス）
+  const hm = document.getElementById('heatmap');
+  if (hm) {
+    for (let i = 0; i < 182; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'heatmap-cell';
+      if (Math.random() > 0.5) cell.classList.add('has-record');
+      hm.appendChild(cell);
+    }
+  }
+</script>
+
+</body>
+</html>
