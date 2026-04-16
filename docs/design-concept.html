@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>だんいんログ — デザインコンセプト v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — derived from Shirogane Noel's character design
+   ============================================================ */
+:root {
+  /* --- Cream (ドレスの基調色) --- */
+  --cream-50:  #FDFCFA;
+  --cream-100: #F9F5F0;  /* ← page background */
+  --cream-200: #F0EBE3;
+  --cream-300: #E5DFD7;
+  --cream-400: #D5CEC4;
+
+  /* --- Navy (ドレスの紺) --- */
+  --navy-900: #1A2335;
+  --navy-800: #202A44;
+  --navy-700: #2C3A4E;  /* ← body text + primary action (~32%) */
+  --navy-600: #3E4C5C;
+  --navy-500: #556270;
+  --navy-400: #6B7A8A;
+  --navy-300: #8B95A2;
+  --navy-200: #ABB3BC;
+  --navy-100: #CBD0D6;
+  --navy-glow: rgba(44, 58, 78, 0.08);
+
+  /* --- Gold (鎧のトリム — 面積比~4.5%。薄い装飾ラインのみ) --- */
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E;
+  --gold-400: #C8A24C;  /* ← thin accent lines only (~4.5%) */
+  --gold-300: #D4B56A;
+  --gold-200: #E2CC92;
+  --gold-100: #F2E6C4;
+  --gold-glow: rgba(200, 162, 76, 0.10);
+
+  /* --- Silver (銀髪) --- */
+  --silver-400: #9A949A;
+  --silver-300: #BBB4B8; /* ← from hair */
+  --silver-200: #D5D0D3;
+  --silver-100: #ECEAEB;
+
+  /* --- Dark (鎧・ブーツ) --- */
+  --dark-900: #1A1D24;
+  --dark-800: #2A2D35;  /* ← headings */
+  --dark-700: #3A3D45;
+
+  /* --- Functional --- */
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300);
+  --border-hover: var(--cream-400);
+
+  /* --- Typography --- */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+
+  /* --- Spacing --- */
+  --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px;
+
+  /* --- Radius --- */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+
+  /* --- Motion --- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.25s;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: var(--cream-100);
+  color: var(--navy-700);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+::selection { background: var(--navy-glow); color: var(--dark-800); }
+a { color: var(--navy-600); text-decoration: none; }
+a:hover { color: var(--navy-800); }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.page { max-width: 1080px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg); }
+
+.section { margin-bottom: var(--sp-2xl); }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--navy-400);
+  margin-bottom: var(--sp-xs);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--dark-800);
+  margin-bottom: var(--sp-xs);
+  line-height: 1.3;
+}
+
+.section-sub {
+  color: var(--navy-400);
+  font-size: var(--text-sm);
+  margin-bottom: var(--sp-xl);
+  max-width: 560px;
+}
+
+/* ============================================================
+   HEADER NAV
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--silver-200);
+  border-bottom: 1px solid var(--silver-300);
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--sp-lg);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xl);
+}
+
+.header-logo {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--dark-800);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  margin-left: auto;
+}
+
+.nav-group {
+  position: relative;
+}
+
+.nav-group-trigger {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--navy-600);
+  background: none;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.nav-group-trigger:hover {
+  color: var(--dark-800);
+  background: rgba(255,255,255,0.4);
+}
+
+.nav-group-trigger svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  transition: transform var(--dur) var(--ease);
+}
+
+.nav-group:hover .nav-group-trigger svg {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 200px;
+  background: var(--white);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-md);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  padding: var(--sp-xs);
+  z-index: 101;
+}
+
+.nav-group:hover .nav-dropdown {
+  display: block;
+}
+
+.nav-dropdown-item {
+  display: block;
+  padding: 8px 12px;
+  font-size: var(--text-sm);
+  color: var(--navy-600);
+  border-radius: var(--r-sm);
+  transition: all var(--dur) var(--ease);
+  text-decoration: none;
+}
+
+.nav-dropdown-item:hover {
+  background: var(--cream-100);
+  color: var(--dark-800);
+}
+
+.nav-dropdown-desc {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--navy-300);
+  margin-top: 2px;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero { text-align: center; padding: var(--sp-2xl) 0 var(--sp-xl); }
+
+.hero-icon {
+  font-size: 1.6rem;
+  margin-bottom: var(--sp-md);
+  color: var(--silver-300);
+}
+
+.hero-title {
+  font-family: var(--font-body);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--dark-800);
+  letter-spacing: -0.01em;
+}
+
+.hero-tagline {
+  font-size: var(--text-base);
+  color: var(--navy-400);
+  margin-top: var(--sp-sm);
+}
+
+.hero-meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--silver-400);
+  margin-top: var(--sp-lg);
+}
+
+.hero-divider {
+  width: 48px; height: 2px;
+  background: var(--gold-400);
+  margin: var(--sp-xl) auto 0;
+  border-radius: 1px;
+}
+
+/* ============================================================
+   1. VISUAL DIRECTION
+   ============================================================ */
+.direction-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-md);
+}
+
+.dir-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-lg);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.dir-card:hover {
+  border-color: var(--cream-400);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.dir-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--dark-800);
+  margin-bottom: var(--sp-sm);
+}
+
+.dir-card p {
+  font-size: var(--text-sm);
+  color: var(--navy-500);
+  line-height: 1.7;
+}
+
+.dir-kw {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-600);
+  background: var(--navy-glow);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: var(--sp-sm);
+  margin-right: 4px;
+}
+
+.note {
+  margin-top: var(--sp-lg);
+  padding: var(--sp-md) var(--sp-lg);
+  background: var(--white);
+  border-left: 3px solid var(--gold-400);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  font-size: var(--text-sm);
+  color: var(--navy-500);
+}
+.note strong { color: var(--dark-800); }
+
+/* ============================================================
+   2. COLOR PALETTE
+   ============================================================ */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-xl);
+}
+
+.palette-group h3 {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy-300);
+  margin-bottom: var(--sp-md);
+}
+
+.swatch-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  padding: var(--sp-sm) 0;
+}
+
+.swatch-chip {
+  width: 40px; height: 40px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--cream-300);
+  flex-shrink: 0;
+}
+
+.swatch-name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--dark-800);
+}
+
+.swatch-hex {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-300);
+}
+
+.swatch-use {
+  font-size: var(--text-xs);
+  color: var(--navy-400);
+}
+
+/* ============================================================
+   3. TYPOGRAPHY
+   ============================================================ */
+.type-specimens { display: flex; flex-direction: column; gap: var(--sp-lg); }
+
+.type-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-lg);
+}
+
+.type-head {
+  display: flex; align-items: baseline; gap: var(--sp-md);
+  padding-bottom: var(--sp-md); margin-bottom: var(--sp-md);
+  border-bottom: 1px solid var(--cream-200);
+}
+
+.type-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-500);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.type-font {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-300);
+}
+
+.type-use {
+  font-size: var(--text-xs);
+  color: var(--navy-400);
+  margin-left: auto;
+}
+
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-md);
+  margin-bottom: var(--sp-sm);
+}
+
+.type-size {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-200);
+  width: 48px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   4. BENTO GRID
+   ============================================================ */
+.bento-wrap {
+  background: var(--cream-200);
+  border-radius: var(--r-lg);
+  padding: var(--sp-md);
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--sp-md);
+}
+
+.cell {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-lg);
+  transition: all var(--dur) var(--ease);
+  position: relative;
+  cursor: pointer;
+}
+
+.cell:hover {
+  border-color: var(--cream-400);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+}
+
+.cell-hero { grid-column: 1 / 8; grid-row: 1 / 3; min-height: 240px; display: flex; flex-direction: column; justify-content: flex-end; }
+.cell-karute { grid-column: 8 / 13; grid-row: 1 / 2; }
+.cell-stats { grid-column: 8 / 13; grid-row: 2 / 3; }
+.cell-receipt { grid-column: 1 / 5; grid-row: 3 / 5; min-height: 220px; }
+.cell-asmr { grid-column: 5 / 9; grid-row: 3 / 4; }
+.cell-quiz { grid-column: 9 / 13; grid-row: 3 / 4; }
+.cell-music { grid-column: 5 / 13; grid-row: 4 / 5; }
+
+.cell-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy-200);
+  margin-bottom: var(--sp-xs);
+}
+
+.cell-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--dark-800);
+  margin-bottom: var(--sp-sm);
+}
+
+.cell-desc {
+  font-size: var(--text-sm);
+  color: var(--navy-400);
+}
+
+.cell-arrow {
+  position: absolute; bottom: var(--sp-md); right: var(--sp-md);
+  font-family: var(--font-mono); font-size: var(--text-sm); color: var(--navy-200);
+  transition: all var(--dur) var(--ease);
+}
+.cell:hover .cell-arrow { color: var(--navy-600); transform: translateX(3px); }
+
+.stat-row { display: flex; gap: var(--sp-lg); margin-top: var(--sp-md); }
+.stat-val { font-family: var(--font-mono); font-size: var(--text-xl); font-weight: 500; color: var(--dark-800); }
+.stat-lbl { font-size: var(--text-xs); color: var(--navy-300); margin-top: 2px; }
+
+.progress { width: 100%; height: 4px; background: var(--cream-200); border-radius: 2px; margin-top: var(--sp-md); }
+.progress-fill { height: 100%; border-radius: 2px; background: var(--navy-600); }
+.progress-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300); margin-top: var(--sp-xs); }
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500;
+  padding: 3px 10px; border-radius: 4px; letter-spacing: 0.04em;
+  background: var(--gold-glow); color: var(--gold-600);
+}
+
+/* ============================================================
+   5. RECEIPT
+   ============================================================ */
+.receipt-showcase { display: grid; grid-template-columns: 320px 1fr; gap: var(--sp-xl); align-items: start; }
+
+.receipt {
+  width: 320px;
+  background: var(--cream-50);
+  color: var(--dark-800);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-sm);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  overflow: hidden;
+  transform: rotate(-0.8deg);
+  transition: transform 0.4s var(--ease);
+}
+.receipt:hover { transform: rotate(0deg) scale(1.01); }
+
+.receipt-top-edge {
+  height: 8px;
+  background: repeating-linear-gradient(90deg, var(--cream-50) 0px, var(--cream-50) 4px, transparent 4px, transparent 8px);
+  border-bottom: 1px solid var(--cream-300);
+}
+
+.receipt-inner { padding: var(--sp-lg); }
+
+.receipt-header { text-align: center; margin-bottom: var(--sp-md); }
+.receipt-store { font-size: var(--text-base); font-weight: 500; letter-spacing: 0.2em; color: var(--dark-800); }
+.receipt-store-en { font-size: var(--text-xs); color: var(--navy-300); letter-spacing: 0.1em; margin-top: 2px; }
+
+.receipt-sep { border: none; border-top: 1.5px dashed var(--cream-400); margin: var(--sp-md) 0; }
+.receipt-sep-double { border-top-style: double; border-top-width: 3px; }
+
+.receipt-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; font-size: var(--text-sm); }
+.receipt-row-name { color: var(--navy-700); }
+.receipt-row-qty { color: var(--navy-300); font-size: var(--text-xs); margin: 0 var(--sp-sm); }
+.receipt-row-val { font-weight: 500; color: var(--dark-800); min-width: 48px; text-align: right; }
+
+.receipt-total { display: flex; justify-content: space-between; font-size: var(--text-lg); font-weight: 500; color: var(--dark-800); padding: var(--sp-sm) 0; }
+
+.receipt-footer { text-align: center; font-size: var(--text-xs); color: var(--navy-300); line-height: 1.8; margin-top: var(--sp-md); }
+
+.receipt-barcode { display: flex; justify-content: center; gap: 2px; height: 36px; margin: var(--sp-md) 0 var(--sp-sm); }
+.receipt-barcode span { display: block; background: var(--dark-800); height: 100%; }
+.receipt-url { font-size: var(--text-xs); color: var(--navy-200); text-align: center; }
+
+.receipt-notes { display: flex; flex-direction: column; gap: var(--sp-md); }
+.receipt-note-card { padding: var(--sp-md); background: var(--white); border: 1px solid var(--border); border-radius: var(--r-sm); }
+.receipt-note-card h4 { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--sp-sm); }
+.receipt-note-card p { font-size: var(--text-sm); color: var(--navy-500); line-height: 1.7; }
+
+/* ============================================================
+   6. OGP TEMPLATES
+   ============================================================ */
+.ogp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-lg); }
+
+.ogp {
+  aspect-ratio: 1200 / 630;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s var(--ease);
+}
+.ogp:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.08); transform: scale(1.01); }
+
+.ogp-inner { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 20px; }
+
+.ogp-base { background: var(--cream-50); }
+.ogp-base .ogp-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--navy-700); }
+
+.ogp-receipt-v { background: var(--cream-50); }
+.ogp-receipt-v .ogp-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--navy-800), var(--navy-500), var(--navy-800)); }
+
+.ogp-rx { background: linear-gradient(135deg, var(--cream-50) 60%, #EBF0F0 100%); }
+.ogp-rx .ogp-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--navy-500); }
+
+.ogp-quiz-v { background: linear-gradient(135deg, var(--cream-50) 60%, #F0EBE8 100%); }
+.ogp-quiz-v .ogp-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--navy-600); }
+
+.ogp-brand { display: flex; align-items: center; gap: 6px; }
+.ogp-brand-icon { font-size: 0.7rem; color: var(--silver-300); }
+.ogp-brand-name { font-family: var(--font-display); font-size: var(--text-xs); letter-spacing: 0.15em; color: var(--navy-300); text-transform: uppercase; }
+
+.ogp-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 4px; }
+.ogp-title { font-family: var(--font-body); font-size: var(--text-xl); font-weight: 700; color: var(--dark-800); margin-bottom: 6px; }
+.ogp-desc { font-size: var(--text-xs); color: var(--navy-400); }
+
+.ogp-foot { display: flex; justify-content: space-between; align-items: flex-end; }
+.ogp-foot span { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-200); }
+
+.ogp-label {
+  position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300);
+  background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+
+/* ============================================================
+   7. UI COMPONENTS
+   ============================================================ */
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-lg); }
+
+.comp-box {
+  padding: var(--sp-lg);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.comp-box h3 {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--navy-300);
+  margin-bottom: var(--sp-lg);
+}
+
+/* Buttons */
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--sp-sm); margin-bottom: var(--sp-md); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: var(--r-sm);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+  border: none; cursor: pointer; transition: all var(--dur) var(--ease);
+}
+
+.btn-primary { background: var(--navy-700); color: var(--white); }
+.btn-primary:hover { background: var(--navy-800); box-shadow: 0 2px 8px rgba(44,58,78,0.2); }
+
+.btn-outline { background: transparent; color: var(--navy-700); border: 1px solid var(--border); }
+.btn-outline:hover { border-color: var(--navy-200); background: var(--cream-50); }
+
+.btn-ghost { background: transparent; color: var(--navy-400); border: 1px solid transparent; }
+.btn-ghost:hover { color: var(--navy-700); background: var(--cream-100); }
+
+.btn-sm { padding: 6px 12px; font-size: var(--text-xs); }
+
+/* Tags */
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; border-radius: 100px;
+  font-size: var(--text-xs); font-weight: 400;
+  border: 1px solid var(--border); background: var(--white);
+  color: var(--navy-500); cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.tag:hover { border-color: var(--cream-400); background: var(--cream-50); }
+
+.tag-active { border-color: var(--navy-300); background: var(--navy-glow); color: var(--navy-700); }
+.tag-active:hover { background: rgba(44,58,78,0.12); }
+
+.tag-count { font-family: var(--font-mono); font-size: var(--text-xs); opacity: 0.6; }
+
+/* Input */
+.input-wrap { position: relative; margin-bottom: var(--sp-md); }
+
+.input {
+  width: 100%; padding: 9px 14px 9px 34px;
+  background: var(--white);
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  color: var(--navy-700); font-family: var(--font-body); font-size: var(--text-sm);
+  outline: none; transition: all var(--dur) var(--ease);
+}
+.input:focus { border-color: var(--navy-500); box-shadow: 0 0 0 3px var(--navy-glow); }
+.input::placeholder { color: var(--navy-200); }
+
+.input-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--silver-300); pointer-events: none;
+}
+
+/* Stream Card */
+.stream-card {
+  padding: var(--sp-md);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  display: flex; gap: var(--sp-md);
+  transition: all var(--dur) var(--ease);
+  cursor: pointer;
+}
+.stream-card:hover { border-color: var(--cream-400); box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+
+.stream-thumb {
+  width: 112px; height: 63px;
+  background: var(--cream-200); border-radius: 4px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--text-xs); color: var(--navy-200);
+}
+
+.stream-info { flex: 1; min-width: 0; }
+
+.stream-title {
+  font-size: var(--text-sm); font-weight: 500;
+  color: var(--dark-800); margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.stream-meta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300); margin-bottom: 5px; }
+
+.stream-tags { display: flex; gap: 4px; }
+.stream-tag { font-size: var(--text-xs); padding: 2px 8px; border-radius: 100px; background: var(--cream-200); color: var(--navy-500); }
+
+.stream-check {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--cream-400); display: flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0; align-self: center;
+  cursor: pointer; transition: all var(--dur) var(--ease);
+  color: transparent; font-size: var(--text-xs);
+}
+.stream-check:hover { border-color: var(--navy-500); }
+.stream-check.checked { background: var(--navy-700); border-color: var(--navy-700); color: var(--white); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  text-align: center; padding: var(--sp-2xl) 0 var(--sp-xl);
+  border-top: 1px solid var(--cream-300);
+  margin-top: var(--sp-2xl);
+}
+footer p { font-size: var(--text-xs); color: var(--navy-200); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 860px) {
+  .bento { grid-template-columns: repeat(6, 1fr); }
+  .cell-hero { grid-column: 1/7; grid-row: 1/2; min-height: 180px; }
+  .cell-karute { grid-column: 1/4; grid-row: 2/3; }
+  .cell-stats { grid-column: 4/7; grid-row: 2/3; }
+  .cell-receipt { grid-column: 1/4; grid-row: 3/4; min-height: 140px; }
+  .cell-asmr { grid-column: 4/7; grid-row: 3/4; }
+  .cell-quiz { grid-column: 1/4; grid-row: 4/5; }
+  .cell-music { grid-column: 4/7; grid-row: 4/5; }
+  .direction-grid { grid-template-columns: 1fr; }
+  .palette-grid { grid-template-columns: 1fr; }
+  .receipt-showcase { grid-template-columns: 1fr; }
+  .receipt { margin: 0 auto; }
+  .ogp-grid { grid-template-columns: 1fr; }
+  .comp-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER NAV -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="header-logo">だんいんログ</a>
+    <nav class="header-nav">
+      <div class="nav-group">
+        <button class="nav-group-trigger">
+          探す
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="/archive" class="nav-dropdown-item">
+            配信アーカイブ
+            <span class="nav-dropdown-desc">1,419件の配信を探索・記録</span>
+          </a>
+          <a href="/music" class="nav-dropdown-item">
+            楽曲データベース
+            <span class="nav-dropdown-desc">452曲のレパートリー・セトリ検索</span>
+          </a>
+          <a href="/shaka-beach" class="nav-dropdown-item">
+            シャカビーチ
+            <span class="nav-dropdown-desc">全47回の聴取トラッキング</span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button class="nav-group-trigger">
+          作る
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg>
+        </button>
+        <div class="nav-dropdown">
+          <a href="/receipt" class="nav-dropdown-item">
+            レシート生成
+            <span class="nav-dropdown-desc">推し活データをレシート画像に</span>
+          </a>
+          <a href="/calendar" class="nav-dropdown-item">
+            カレンダー画像
+            <span class="nav-dropdown-desc">視聴履歴のヒートマップ</span>
+          </a>
+          <a href="/asmr" class="nav-dropdown-item">
+            ASMR処方箋
+            <span class="nav-dropdown-desc">気分に合わせてASMRを処方</span>
+          </a>
+          <a href="/quiz" class="nav-dropdown-item">
+            脳筋力診断
+            <span class="nav-dropdown-desc">ノエル知識クイズに挑戦</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-icon">&#9876;</div>
+    <h1 class="hero-title">だんいんログ</h1>
+    <p class="hero-tagline">白銀ノエルファンのための推し活記録アプリ</p>
+    <p class="hero-meta">Design Concept v2 &mdash; 2026.04.15</p>
+    <div class="hero-divider"></div>
+  </section>
+
+  <!-- 1. VISUAL DIRECTION -->
+  <section class="section" id="s1">
+    <div class="section-label">01 &mdash; Visual Direction</div>
+    <h2 class="section-title">ビジュアルの方向性</h2>
+    <p class="section-sub">ノエルの衣装カラーをそのままUIに落とし込んだ、モダンで機能的なツール。</p>
+
+    <div class="direction-grid">
+      <div class="dir-card">
+        <h3>衣装そのままの配色</h3>
+        <p>クリームの温かい白、ドレスの紺、鎧のゴールドトリム、銀髪のグレー。ノエルのキャラデザから直接取った5色でUIを構成。</p>
+        <span class="dir-kw">Cream</span><span class="dir-kw">Navy</span><span class="dir-kw">Gold</span>
+      </div>
+      <div class="dir-card">
+        <h3>モダンなツール</h3>
+        <p>Linear / Notion のような機能的で洗練されたWebアプリの佇まい。ファンタジーUIではなく、実用的で日常的に使えるデザイン。</p>
+        <span class="dir-kw">Functional</span><span class="dir-kw">Clean</span>
+      </div>
+      <div class="dir-card">
+        <h3>世界観は最小限</h3>
+        <p>⚔アイコンとコピー（「団員カルテ」等）で騎士団を暗示。中世風の装飾やファンタジーフォントは一切使わない。</p>
+        <span class="dir-kw">Subtle</span><span class="dir-kw">Copy Only</span>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>判断基準:</strong> UIのどの要素も、ノエルを知らない人が見ても「きれいなWebアプリ」と思えること。ファン要素はコンテンツとコピーライティングで表現し、UIデザイン自体はニュートラルに保つ。
+    </div>
+  </section>
+
+  <!-- 2. COLOR PALETTE -->
+  <section class="section" id="s2">
+    <div class="section-label">02 &mdash; Color Palette</div>
+    <h2 class="section-title">配色設計</h2>
+    <p class="section-sub">ライトモード基調。全色ノエルの立ち絵からスポイト採取。</p>
+
+    <div class="palette-grid">
+      <div class="palette-group">
+        <h3>Cream &mdash; ドレスの基調色</h3>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#FDFCFA"></div><div><div class="swatch-name">Cream 50</div><div class="swatch-hex">#FDFCFA</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#F9F5F0"></div><div><div class="swatch-name">Cream 100</div><div class="swatch-hex">#F9F5F0</div><div class="swatch-use">ページ背景</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#F0EBE3"></div><div><div class="swatch-name">Cream 200</div><div class="swatch-hex">#F0EBE3</div><div class="swatch-use">セカンダリ背景</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#E5DFD7"></div><div><div class="swatch-name">Cream 300</div><div class="swatch-hex">#E5DFD7</div><div class="swatch-use">ボーダー</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#D5CEC4"></div><div><div class="swatch-name">Cream 400</div><div class="swatch-hex">#D5CEC4</div><div class="swatch-use">ホバーボーダー</div></div></div>
+
+        <h3 style="margin-top:var(--sp-xl)">Gold &mdash; 鎧のトリム</h3>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#C8A24C"></div><div><div class="swatch-name">Gold 400</div><div class="swatch-hex">#C8A24C</div><div class="swatch-use">バッジ文字色</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#A6852E"></div><div><div class="swatch-name">Gold 500</div><div class="swatch-hex">#A6852E</div><div class="swatch-use">区切り線、ノート左ボーダー</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:rgba(200,162,76,0.10)"></div><div><div class="swatch-name">Gold Glow</div><div class="swatch-hex">rgba(200,162,76,0.10)</div><div class="swatch-use">バッジ背景</div></div></div>
+      </div>
+
+      <div class="palette-group">
+        <h3>Navy &mdash; ドレスの紺</h3>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#1A2335"></div><div><div class="swatch-name">Navy 900</div><div class="swatch-hex">#1A2335</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#2C3A4E"></div><div><div class="swatch-name">Navy 700</div><div class="swatch-hex">#2C3A4E</div><div class="swatch-use">本文テキスト + CTA + チェック</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#556270"></div><div><div class="swatch-name">Navy 500</div><div class="swatch-hex">#556270</div><div class="swatch-use">補助テキスト</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#8B95A2"></div><div><div class="swatch-name">Navy 300</div><div class="swatch-hex">#8B95A2</div><div class="swatch-use">プレースホルダー</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#ABB3BC"></div><div><div class="swatch-name">Navy 200</div><div class="swatch-hex">#ABB3BC</div><div class="swatch-use">最淡テキスト</div></div></div>
+
+        <h3 style="margin-top:var(--sp-xl)">Silver &mdash; 銀髪</h3>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#BBB4B8"></div><div><div class="swatch-name">Silver 300</div><div class="swatch-hex">#BBB4B8</div><div class="swatch-use">アイコン / 装飾</div></div></div>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#ECEAEB"></div><div><div class="swatch-name">Silver 100</div><div class="swatch-hex">#ECEAEB</div><div class="swatch-use">背景のバリエーション</div></div></div>
+
+        <h3 style="margin-top:var(--sp-xl)">Dark &mdash; 鎧・ブーツ</h3>
+        <div class="swatch-row"><div class="swatch-chip" style="background:#2A2D35"></div><div><div class="swatch-name">Dark 800</div><div class="swatch-hex">#2A2D35</div><div class="swatch-use">見出し / 強調テキスト</div></div></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>採取元:</strong> ホロライブ公式サイト掲載の白銀ノエル立ち絵(pr-img_01)からcanvasでピクセルサンプリング。衣装面積比: 紺~32% &gt; 黒~12% &gt; 銀~11% &gt; クリーム~11% &gt; 金~4.5%
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--dark-800);margin:var(--sp-xl) 0 var(--sp-md)">部品別カラーロール定義</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-md)">
+      <div class="dir-card">
+        <h3 style="color:var(--navy-700)">Navy &mdash; プライマリ</h3>
+        <p>ボタン(CTA)、アクティブタグ、チェック済み状態、プログレスバー、フォーカスリング、リンク、本文テキスト</p>
+      </div>
+      <div class="dir-card">
+        <h3 style="color:var(--gold-600)">Gold &mdash; アクセント</h3>
+        <p>バッジ(すべて)、区切り線、ノート左ボーダー、ヒーロー装飾線</p>
+      </div>
+      <div class="dir-card">
+        <h3 style="color:var(--dark-800)">Dark &mdash; 見出し</h3>
+        <p>H1〜H3見出し、カードタイトル、強調テキスト、統計値</p>
+      </div>
+      <div class="dir-card">
+        <h3 style="color:var(--silver-300)">Silver &mdash; サブ構造</h3>
+        <p>アイコン、ボーダー補助、セカンダリプログレスバー、装飾的な背景</p>
+      </div>
+      <div class="dir-card" style="grid-column:1/-1">
+        <h3 style="color:var(--cream-400)">Cream &mdash; 背景</h3>
+        <p>ページ背景、セカンダリ背景、カード背景(white)、非アクティブタグ背景、入力フィールド背景、サムネイルプレースホルダー</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. TYPOGRAPHY -->
+  <section class="section" id="s3">
+    <div class="section-label">03 &mdash; Typography</div>
+    <h2 class="section-title">書体設計</h2>
+    <p class="section-sub">モダンサンセリフ3系統。ツールとしての可読性を最優先。</p>
+
+    <div class="type-specimens">
+      <div class="type-card">
+        <div class="type-head">
+          <span class="type-tag">Display / EN</span>
+          <span class="type-font">Outfit</span>
+          <span class="type-use">英語見出し、ブランド、ラベル</span>
+        </div>
+        <div class="type-row"><span class="type-size">2xl</span><span style="font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;color:var(--dark-800)">Danin Log</span></div>
+        <div class="type-row"><span class="type-size">lg</span><span style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--dark-800)">Stream Archive &mdash; 1,419 entries</span></div>
+        <div class="type-row"><span class="type-size">xs</span><span style="font-family:var(--font-display);font-size:var(--text-xs);letter-spacing:0.12em;color:var(--navy-300)">YOUR STATS &bull; RECEIPT &bull; FILTER</span></div>
+      </div>
+
+      <div class="type-card">
+        <div class="type-head">
+          <span class="type-tag">Body / JP</span>
+          <span class="type-font">M PLUS 2</span>
+          <span class="type-use">日本語テキスト全般</span>
+        </div>
+        <div class="type-row"><span class="type-size">2xl</span><span style="font-family:var(--font-body);font-size:var(--text-2xl);font-weight:700;color:var(--dark-800)">だんいんログ</span></div>
+        <div class="type-row"><span class="type-size">lg</span><span style="font-family:var(--font-body);font-size:var(--text-lg);font-weight:600;color:var(--dark-800)">推し活レシート</span></div>
+        <div class="type-row"><span class="type-size">base</span><span style="font-family:var(--font-body);font-size:var(--text-base);color:var(--navy-700)">白銀ノエルの配信を記録して、自分だけの推し活ログを作ろう。</span></div>
+        <div class="type-row"><span class="type-size">sm</span><span style="font-family:var(--font-body);font-size:var(--text-sm);color:var(--navy-400)">非公式ファンサイトです。白銀ノエルさん及びカバー株式会社とは一切関係ありません。</span></div>
+      </div>
+
+      <div class="type-card">
+        <div class="type-head">
+          <span class="type-tag">Mono / Data</span>
+          <span class="type-font">JetBrains Mono</span>
+          <span class="type-use">統計値、レシート、ラベル、タイムスタンプ</span>
+        </div>
+        <div class="type-row"><span class="type-size">xl</span><span style="font-family:var(--font-mono);font-size:var(--text-xl);font-weight:500;color:var(--dark-800)">1,419</span></div>
+        <div class="type-row"><span class="type-size">sm</span><span style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--navy-700)">2025-08-08 12:00 &mdash; ゲーム / コラボ / 企画</span></div>
+        <div class="type-row"><span class="type-size">xs</span><span style="font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:0.1em;color:var(--navy-500)">MVP &bull; RECEIPT &bull; OGP</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. BENTO GRID -->
+  <section class="section" id="s4">
+    <div class="section-label">04 &mdash; Top Page</div>
+    <h2 class="section-title">Bento Grid トップページ</h2>
+    <p class="section-sub">カード型のモジュラーレイアウト。機能の追加・入替はグリッド変更だけで対応。</p>
+
+    <div class="bento-wrap">
+      <div class="bento">
+        <div class="cell cell-hero">
+          <div class="cell-label">Welcome</div>
+          <div class="cell-title" style="font-size:var(--text-2xl);font-family:var(--font-body)">だんいんログ</div>
+          <div class="cell-desc">白銀ノエルの配信を探索し、推し活を記録し、自分の好きを表現しよう。<br><span style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-200);margin-top:6px;display:inline-block">非公式ファンサイト &mdash; ログイン不要</span></div>
+        </div>
+
+        <div class="cell cell-karute">
+          <div class="cell-title">&#9876; 団員カルテ</div>
+          <div class="cell-desc">1,419件の配信を探索・タグ絞り込み・視聴記録</div>
+          <span class="cell-arrow">&rarr;</span>
+        </div>
+
+        <div class="cell cell-stats">
+          <div class="cell-label">Your Stats</div>
+          <div class="stat-row">
+            <div><div class="stat-val">---</div><div class="stat-lbl">視聴済み</div></div>
+            <div><div class="stat-val">---</div><div class="stat-lbl">視聴時間</div></div>
+            <div><div class="stat-val">---</div><div class="stat-lbl">お気に入り</div></div>
+          </div>
+          <div class="progress"><div class="progress-fill" style="width:0%"></div></div>
+          <div class="progress-meta"><span>探索率</span><span>記録を始めよう</span></div>
+        </div>
+
+        <div class="cell cell-receipt">
+          <div class="cell-title">推し活レシート</div>
+          <div class="cell-desc">記録データからレシート風画像を自動生成。DLしてXでシェア。</div>
+          <span class="badge" style="margin-top:var(--sp-md)">MVP</span>
+          <span class="cell-arrow">&rarr;</span>
+        </div>
+
+        <div class="cell cell-asmr">
+          <div class="cell-title">ASMR処方箋</div>
+          <div class="cell-desc">気分に合わせて処方</div>
+          <span class="badge" style="margin-top:var(--sp-sm)">v1.1</span>
+          <span class="cell-arrow">&rarr;</span>
+        </div>
+
+        <div class="cell cell-quiz">
+          <div class="cell-title">脳筋力診断</div>
+          <div class="cell-desc">ノエル知識クイズ</div>
+          <span class="badge" style="margin-top:var(--sp-sm)">v1.1</span>
+          <span class="cell-arrow">&rarr;</span>
+        </div>
+
+        <div class="cell cell-music">
+          <div class="cell-title">楽曲データベース</div>
+          <div class="cell-desc">452曲のレパートリー &bull; 歌枠セトリ検索 &bull; 歌唱回数</div>
+          <span class="badge" style="margin-top:var(--sp-sm)">v1.1</span>
+          <span class="cell-arrow">&rarr;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. RECEIPT -->
+  <section class="section" id="s5">
+    <div class="section-label">05 &mdash; Receipt Design</div>
+    <h2 class="section-title">推し活レシート</h2>
+    <p class="section-sub">バイラルフック。団員カルテのデータから自動生成 → 画像DL → Xシェア。</p>
+
+    <div class="receipt-showcase">
+      <div>
+        <div class="receipt">
+          <div class="receipt-top-edge"></div>
+          <div class="receipt-inner">
+            <div class="receipt-header">
+              <div class="receipt-store">白 銀 聖 騎 士 団</div>
+              <div class="receipt-store-en">SHIROGANE HOLY KNIGHTS ORDER</div>
+            </div>
+            <hr class="receipt-sep receipt-sep-double">
+            <div class="receipt-row"><span style="font-size:var(--text-xs);color:var(--navy-300)">2026/04/15 23:42</span><span style="font-size:var(--text-xs);color:var(--navy-300)">#DNN-04159</span></div>
+            <div style="text-align:center;font-size:var(--text-xs);color:var(--navy-300);margin:var(--sp-sm) 0">--- 推 し 活 レ シ ー ト ---</div>
+            <hr class="receipt-sep">
+            <div class="receipt-row"><span class="receipt-row-name">ゲーム配信</span><span class="receipt-row-qty">x142</span><span class="receipt-row-val">284h</span></div>
+            <div class="receipt-row"><span class="receipt-row-name">歌枠</span><span class="receipt-row-qty">x58</span><span class="receipt-row-val">87h</span></div>
+            <div class="receipt-row"><span class="receipt-row-name">ASMR</span><span class="receipt-row-qty">x31</span><span class="receipt-row-val">62h</span></div>
+            <div class="receipt-row"><span class="receipt-row-name">雑談</span><span class="receipt-row-qty">x89</span><span class="receipt-row-val">133h</span></div>
+            <div class="receipt-row"><span class="receipt-row-name">コラボ</span><span class="receipt-row-qty">x45</span><span class="receipt-row-val">90h</span></div>
+            <div class="receipt-row"><span class="receipt-row-name">3D / ライブ</span><span class="receipt-row-qty">x12</span><span class="receipt-row-val">18h</span></div>
+            <div class="receipt-row" style="color:var(--navy-300);font-size:var(--text-xs)"><span class="receipt-row-name">その他</span><span class="receipt-row-qty">x23</span><span class="receipt-row-val">34h</span></div>
+            <hr class="receipt-sep receipt-sep-double">
+            <div class="receipt-total"><span>TOTAL</span><span>400配信 / 708h</span></div>
+            <hr class="receipt-sep">
+            <div style="font-size:var(--text-xs);color:var(--navy-400)">
+              <div class="receipt-row"><span>探索率</span><span class="receipt-row-val">28.2%</span></div>
+              <div class="receipt-row"><span>推し歴</span><span class="receipt-row-val">2年3ヶ月</span></div>
+              <div class="receipt-row"><span>最多カテゴリ</span><span class="receipt-row-val">ゲーム配信</span></div>
+              <div class="receipt-row"><span>シャカビーチ率</span><span class="receipt-row-val">32/47</span></div>
+            </div>
+            <hr class="receipt-sep">
+            <div class="receipt-barcode" id="barcode"></div>
+            <div class="receipt-url">danin-log.vercel.app</div>
+            <div class="receipt-footer">この記録はあなただけの騎士団活動報告書です<br>THANK YOU FOR YOUR SERVICE</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-notes">
+        <div class="receipt-note-card">
+          <h4>Design</h4>
+          <p>ノエルのクリーム(#FDFCFA)を紙色に、紺(#2C3A4E)をテキストに使用。ブランドのゴールドは使わず、レシートの「紙に印字」感を優先。アプリ全体のカラーシステムの中に自然に溶け込む。</p>
+        </div>
+        <div class="receipt-note-card">
+          <h4>Data Source</h4>
+          <p>団員カルテ(B2)のLocalStorageデータを自動集計。カテゴリ別視聴数・推定時間、探索率(視聴数/1,419件)、推し歴(最古チェック日からの経過)。データ未登録時は手動入力モードにフォールバック。</p>
+        </div>
+        <div class="receipt-note-card">
+          <h4>Viral Flow</h4>
+          <p>記録がある → レシート即生成 → 「画像をダウンロード」ボタン → PNG保存 → Xに手動投稿（自分の言葉を添えられる）。レシート下部のURLが「やってみて」連鎖の起点。</p>
+        </div>
+        <div class="receipt-note-card">
+          <h4>Implementation</h4>
+          <p>@vercel/og (Satori)でEdge Runtime上にSVG→PNG変換。画面表示用とOGP生成用で同じReactコンポーネントを共用。バーコードはCSS生成。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. OGP -->
+  <section class="section" id="s6">
+    <div class="section-label">06 &mdash; OGP System</div>
+    <h2 class="section-title">OGP画像テンプレート</h2>
+    <p class="section-sub">1200x630。ゴールドのアクセントバー + ブランド + コンテンツ + フッター の4層構造。</p>
+
+    <div class="ogp-grid">
+      <div class="ogp ogp-base">
+        <div class="ogp-accent-bar"></div>
+        <div class="ogp-inner">
+          <div class="ogp-brand"><span class="ogp-brand-icon">&#9876;</span><span class="ogp-brand-name">Danin Log</span></div>
+          <div class="ogp-content"><div class="ogp-title">だんいんログ</div><div class="ogp-desc">白銀ノエルファンのための推し活記録アプリ</div></div>
+          <div class="ogp-foot"><span>danin-log.vercel.app</span><span>非公式ファンサイト</span></div>
+        </div>
+        <span class="ogp-label">Base &mdash; サイト共通</span>
+      </div>
+
+      <div class="ogp ogp-receipt-v">
+        <div class="ogp-accent-bar"></div>
+        <div class="ogp-inner">
+          <div class="ogp-brand"><span class="ogp-brand-icon">&#9876;</span><span class="ogp-brand-name">Danin Log</span></div>
+          <div class="ogp-content">
+            <div class="ogp-title">推し活レシート</div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-400);margin-top:6px">TOTAL 400配信 / 708h<br>探索率 28.2% &bull; 推し歴 2年3ヶ月</div>
+          </div>
+          <div class="ogp-foot"><span style="color:var(--navy-600)">あなたのレシートを作る &rarr;</span><span>danin-log.vercel.app</span></div>
+        </div>
+        <span class="ogp-label">Receipt &mdash; レシートシェア時</span>
+      </div>
+
+      <div class="ogp ogp-rx">
+        <div class="ogp-accent-bar"></div>
+        <div class="ogp-inner">
+          <div class="ogp-brand"><span class="ogp-brand-icon">&#9876;</span><span class="ogp-brand-name">Danin Log</span></div>
+          <div class="ogp-content">
+            <div class="ogp-title">ASMR処方箋</div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-400);margin-top:6px">処方: 安眠耳かき &bull; 囁き<br>効能: ぐっすり安眠</div>
+          </div>
+          <div class="ogp-foot"><span style="color:var(--navy-500)">あなたの処方箋を受け取る &rarr;</span><span>danin-log.vercel.app</span></div>
+        </div>
+        <span class="ogp-label">Prescription &mdash; ASMR処方箋 (v1.1)</span>
+      </div>
+
+      <div class="ogp ogp-quiz-v">
+        <div class="ogp-accent-bar"></div>
+        <div class="ogp-inner">
+          <div class="ogp-brand"><span class="ogp-brand-icon">&#9876;</span><span class="ogp-brand-name">Danin Log</span></div>
+          <div class="ogp-content">
+            <div class="ogp-title">脳筋力診断</div>
+            <div style="font-family:var(--font-mono);font-size:var(--text-xs);color:var(--navy-400);margin-top:6px">あなたの脳筋度: 87%<br>称号: ダンゴムシバッタ王の継承者</div>
+          </div>
+          <div class="ogp-foot"><span style="color:var(--navy-600)">あなたも診断する &rarr;</span><span>danin-log.vercel.app</span></div>
+        </div>
+        <span class="ogp-label">Quiz &mdash; 脳筋力診断 (v1.1)</span>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>共通ルール:</strong> 上部ネイビーバー(3px) + ⚔ブランドストリップ + コンテンツ領域 + フッター(URL+CTA)。クリーム背景で統一し、機能ごとに背景のグラデーション方向を微調整して区別。全テンプレートを@vercel/ogの共通Reactコンポーネントで実装。
+    </div>
+  </section>
+
+  <!-- 7. COMPONENTS -->
+  <section class="section" id="s7">
+    <div class="section-label">07 &mdash; Components</div>
+    <h2 class="section-title">UIコンポーネント</h2>
+    <p class="section-sub">団員カルテを中心に使うコンポーネント。クリーンでフラット、ゴールドのアクセント。</p>
+
+    <div class="comp-grid">
+      <div class="comp-box">
+        <h3>Buttons</h3>
+        <div class="btn-row">
+          <button class="btn btn-primary">画像をダウンロード</button>
+          <button class="btn btn-outline">Xでシェア</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost">キャンセル</button>
+          <button class="btn btn-primary btn-sm">記録する</button>
+          <button class="btn btn-outline btn-sm">もっと見る</button>
+        </div>
+      </div>
+
+      <div class="comp-box">
+        <h3>Tags &amp; Filters</h3>
+        <div class="tag-row" style="margin-bottom:var(--sp-md)">
+          <span class="tag tag-active">すべて <span class="tag-count">1,419</span></span>
+          <span class="tag">ゲーム <span class="tag-count">487</span></span>
+          <span class="tag">歌枠 <span class="tag-count">114</span></span>
+          <span class="tag">ASMR <span class="tag-count">63</span></span>
+          <span class="tag">雑談 <span class="tag-count">298</span></span>
+          <span class="tag">コラボ <span class="tag-count">215</span></span>
+        </div>
+        <div class="tag-row">
+          <span class="tag">企画</span><span class="tag">記念</span><span class="tag">案件</span><span class="tag">3D</span>
+        </div>
+      </div>
+
+      <div class="comp-box">
+        <h3>Search</h3>
+        <div class="input-wrap">
+          <span class="input-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <input type="text" class="input" placeholder="配信タイトル、タグで検索...">
+        </div>
+      </div>
+
+      <div class="comp-box">
+        <h3>Badges &amp; Progress</h3>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--sp-lg)">
+          <span class="badge">MVP</span>
+          <span class="badge">v1.1</span>
+          <span class="badge">視聴済み</span>
+        </div>
+        <div class="progress-meta"><span>ASMR探索率</span><span>49/63</span></div>
+        <div class="progress"><div class="progress-fill" style="width:77.8%"></div></div>
+        <div class="progress-meta" style="margin-top:var(--sp-md)"><span>ゲーム配信</span><span>142/487</span></div>
+        <div class="progress"><div class="progress-fill" style="width:29.2%;background:var(--silver-300)"></div></div>
+      </div>
+
+      <div class="comp-box" style="grid-column:1/-1">
+        <h3>Stream Card &mdash; 団員カルテ配信リスト項目</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--sp-sm)">
+          <div class="stream-card">
+            <div class="stream-thumb">16:9</div>
+            <div class="stream-info">
+              <div class="stream-title">【ASMR】落ち着く声♡ぐっすり安眠耳かき＆マッサージ♡</div>
+              <div class="stream-meta">2025-07-22 &bull; 2h 15m</div>
+              <div class="stream-tags"><span class="stream-tag">ASMR</span></div>
+            </div>
+            <div class="stream-check checked" onclick="this.classList.toggle('checked')">&#10003;</div>
+          </div>
+          <div class="stream-card">
+            <div class="stream-thumb">16:9</div>
+            <div class="stream-info">
+              <div class="stream-title">【朝活雑談】おはまっするさんでーッッ☀ 府内戦紙たのしかった！</div>
+              <div class="stream-meta">2025-08-03 &bull; 1h 42m</div>
+              <div class="stream-tags"><span class="stream-tag">雑談</span></div>
+            </div>
+            <div class="stream-check" onclick="this.classList.toggle('checked')">&#10003;</div>
+          </div>
+          <div class="stream-card">
+            <div class="stream-thumb">16:9</div>
+            <div class="stream-info">
+              <div class="stream-title">【#白銀ノエル6周年】重大告知あり！6年ありがとう✨みんなで切り抜きみよ～～！！</div>
+              <div class="stream-meta">2025-08-08 &bull; 3h 05m</div>
+              <div class="stream-tags"><span class="stream-tag">記念</span><span class="stream-tag">企画</span></div>
+            </div>
+            <div class="stream-check" onclick="this.classList.toggle('checked')">&#10003;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p style="font-family:var(--font-display);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:var(--sp-sm)">Danin Log &mdash; Design Concept v2</p>
+    <p>非公式ファンサイト &mdash; 白銀ノエルさん及びカバー株式会社とは一切関係ありません</p>
+  </footer>
+
+</div>
+
+<script>
+// Barcode
+(function(){
+  const bc = document.getElementById('barcode');
+  if(!bc) return;
+  [2,1,3,1,2,1,1,3,2,1,1,2,3,1,2,1,1,3,1,2,1,3,1,1,2,1,3,2,1,1,2,3,1,2,1,1,3,1,2].forEach(w => {
+    const s = document.createElement('span');
+    s.style.width = w + 'px';
+    bc.appendChild(s);
+  });
+})();
+</script>
+
+</body>
+</html>
