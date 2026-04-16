@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>団員の視聴ログ — だんいんログ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — home-prototype.html と完全同一
+   ============================================================ */
+:root {
+  --cream-50:  #FCFCFD;
+  --cream-100: #F8F8FA;
+  --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6;
+  --cream-400: #D4D4D9;
+
+  --navy-900: #1C2230;
+  --navy-800: #242A3A;
+  --navy-700: #303845;
+  --navy-600: #404A55;
+  --navy-500: #545D68;
+  --navy-400: #6A7380;
+  --navy-300: #888F99;
+  --navy-200: #ACB1B8;
+  --navy-100: #CDD0D4;
+  --navy-glow: rgba(48, 56, 69, 0.08);
+
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E;
+  --gold-400: #C8A24C;
+  --gold-300: #D4B56A;
+  --gold-200: #E2CC92;
+  --gold-100: #F2E6C4;
+  --gold-glow: rgba(200, 162, 76, 0.10);
+
+  --silver-400: #9A949A;
+  --silver-300: #BBB4B8;
+  --silver-200: #D5D0D3;
+  --silver-100: #ECEAEB;
+
+  --dark-900: #1A1D24;
+  --dark-800: #2A2D35;
+  --dark-700: #3A3D45;
+
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300);
+
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.5rem;
+  --text-2xl: 2rem;
+
+  --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px; --sp-3xl: 120px;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.25s;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: var(--cream-100);
+  color: var(--navy-700);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+::selection { background: rgba(44, 58, 78, 0.12); color: var(--dark-800); }
+a { color: var(--navy-600); text-decoration: none; }
+a:hover { color: var(--navy-800); }
+
+/* ============================================================
+   HEADER — home-prototype.html と同一
+   ============================================================ */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--navy-700);
+  border-bottom: 1px solid var(--gold-400);
+}
+
+.header-inner {
+  max-width: 1120px; margin: 0 auto; padding: 0 var(--sp-lg);
+  height: 56px; display: flex; align-items: center; gap: var(--sp-xl);
+}
+
+.header-logo {
+  font-family: var(--font-body); font-size: var(--text-base);
+  font-weight: 700; color: var(--gold-100);
+  letter-spacing: 0.02em;
+  transition: color var(--dur) var(--ease);
+}
+.header-logo:hover { color: #FFFFFF; }
+
+.header-nav { display: flex; align-items: center; gap: var(--sp-xs); margin-left: auto; }
+.nav-group { position: relative; }
+
+.nav-trigger {
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 14px;
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+  color: var(--gold-100); background: none; border: none;
+  border-radius: var(--r-sm); cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.nav-trigger:hover { color: #FFFFFF; background: rgba(255,255,255,0.08); }
+.nav-trigger svg { width: 12px; height: 12px; opacity: 0.5; transition: transform var(--dur) var(--ease); }
+.nav-group:hover .nav-trigger svg { transform: rotate(180deg); }
+
+.nav-dropdown {
+  position: absolute; top: calc(100% + 4px); right: 0; min-width: 280px;
+  background: var(--cream-50); border: 1px solid var(--cream-300);
+  border-radius: var(--r-md); padding: var(--sp-sm);
+  box-shadow: 0 8px 24px rgba(26,35,53,0.08);
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: all 0.2s var(--ease);
+  pointer-events: none;
+}
+.nav-group:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+
+.nav-dd-item {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--r-sm);
+  transition: background var(--dur) var(--ease);
+  text-decoration: none; color: inherit;
+}
+.nav-dd-item:hover { background: var(--cream-200); color: inherit; }
+.nav-dd-item.current { background: var(--navy-glow); }
+.nav-dd-name { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+.nav-dd-desc { font-size: var(--text-xs); color: var(--navy-400); line-height: 1.5; }
+
+/* ============================================================
+   PAGE HEADER — コンパクト版
+   ============================================================ */
+.page-header {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--sp-lg) var(--sp-lg) var(--sp-sm);
+}
+
+.page-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-lg);
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--dark-800);
+  line-height: 1.3;
+}
+
+.page-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  flex-shrink: 0;
+}
+
+.progress-compact {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+}
+
+.progress-num {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--dark-800);
+  line-height: 1;
+}
+
+.progress-slash {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-300);
+}
+
+.progress-bar-mini {
+  width: 80px;
+  height: 3px;
+  background: var(--cream-300);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-mini-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-400), var(--gold-300));
+  border-radius: 2px;
+  transition: width 0.6s var(--ease);
+}
+
+.page-desc {
+  color: var(--navy-400);
+  font-size: var(--text-xs);
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   TOOLBAR — カテゴリタブ + アクションアイコン
+   ============================================================ */
+.toolbar-sentinel { height: 0; }
+
+.toolbar {
+  background: var(--cream-50);
+  border-bottom: 1px solid var(--cream-300);
+  transition: box-shadow 0.3s var(--ease);
+  z-index: 50;
+}
+
+.toolbar.stuck {
+  position: sticky;
+  top: 57px;
+  box-shadow: 0 4px 16px rgba(26,35,53,0.06);
+}
+
+.toolbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--sp-lg);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+/* カテゴリタブ */
+.cat-tabs {
+  display: flex;
+  gap: 0;
+}
+
+.cat-tab {
+  position: relative;
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--navy-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+  white-space: nowrap;
+}
+
+.cat-tab:hover { color: var(--navy-700); }
+
+.cat-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 16px; right: 16px;
+  height: 2px;
+  background: transparent;
+  border-radius: 1px 1px 0 0;
+  transition: all 0.3s var(--ease);
+}
+
+.cat-tab.active {
+  color: var(--dark-800);
+  font-weight: 600;
+}
+
+.cat-tab.active::after {
+  background: var(--gold-400);
+  left: 8px; right: 8px;
+}
+
+/* ツールバー右側アクション */
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.tb-icon-btn {
+  position: relative;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--r-sm);
+  color: var(--navy-400);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.tb-icon-btn:hover { color: var(--navy-700); background: var(--cream-200); }
+.tb-icon-btn svg { width: 16px; height: 16px; }
+
+/* 検索展開 */
+.search-expandable {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-expanded {
+  width: 0;
+  padding: 0;
+  opacity: 0;
+  border: none;
+  background: var(--cream-100);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--dark-800);
+  border-radius: var(--r-sm);
+  outline: none;
+  transition: all 0.3s var(--ease);
+  overflow: hidden;
+}
+
+.search-expandable.open .search-expanded {
+  width: 200px;
+  padding: 6px 10px;
+  opacity: 1;
+  border: 1px solid var(--cream-300);
+  margin-right: 4px;
+}
+
+.search-expanded:focus { border-color: var(--navy-200); background: var(--white); }
+.search-expanded::placeholder { color: var(--navy-300); }
+
+/* フィルタバッジ */
+.filter-badge {
+  position: absolute;
+  top: 2px; right: 2px;
+  min-width: 14px; height: 14px;
+  padding: 0 4px;
+  background: var(--gold-400);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 100px;
+  text-align: center;
+  line-height: 14px;
+  display: none;
+}
+.filter-badge.show { display: block; }
+
+/* ソートアイコン状態 */
+.tb-icon-btn.asc svg { transform: rotate(180deg); }
+.tb-icon-btn svg { transition: transform 0.2s var(--ease); }
+
+/* ツールバーメタ（件数） */
+.toolbar-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--navy-300);
+  white-space: nowrap;
+  padding: 0 4px;
+  align-self: center;
+}
+
+/* ============================================================
+   FILTER PANEL — 絞り込みパネル
+   ============================================================ */
+.filter-panel-anchor { position: relative; }
+
+.filter-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 360px;
+  max-height: 440px;
+  overflow-y: auto;
+  background: var(--cream-50);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-md);
+  padding: 0;
+  box-shadow: 0 12px 32px rgba(26,35,53,0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 0.2s var(--ease);
+  z-index: 60;
+}
+
+.filter-panel.open { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.filter-panel::-webkit-scrollbar { width: 4px; }
+.filter-panel::-webkit-scrollbar-track { background: transparent; }
+.filter-panel::-webkit-scrollbar-thumb { background: var(--cream-400); border-radius: 2px; }
+
+.fp-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-md) var(--sp-md) var(--sp-sm);
+  border-bottom: 1px solid var(--cream-200);
+  position: sticky; top: 0;
+  background: var(--cream-50); z-index: 1;
+}
+
+.fp-header-title { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+
+.fp-clear-btn {
+  font-family: var(--font-body); font-size: var(--text-xs);
+  color: var(--navy-400); background: none; border: none;
+  cursor: pointer; transition: color var(--dur) var(--ease);
+}
+.fp-clear-btn:hover { color: var(--navy-700); }
+
+/* チェック状態セクション */
+.fp-check-row {
+  display: flex; gap: 6px;
+  padding: var(--sp-sm) var(--sp-md) var(--sp-md);
+  border-bottom: 1px solid var(--cream-200);
+}
+
+.fp-check-btn {
+  flex: 1;
+  padding: 8px 0;
+  font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  color: var(--navy-500);
+  background: var(--cream-100);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--dur) var(--ease);
+}
+
+.fp-check-btn:hover { border-color: var(--navy-200); color: var(--navy-700); }
+.fp-check-btn.active { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+
+.fp-section {
+  padding: var(--sp-sm) var(--sp-md) var(--sp-md);
+  border-bottom: 1px solid var(--cream-200);
+}
+.fp-section:last-child { border-bottom: none; }
+
+.fp-section-title {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.1em; color: var(--navy-400);
+  margin-bottom: var(--sp-sm); text-transform: uppercase;
+}
+
+.fp-search {
+  width: 100%; padding: 5px 8px; margin-bottom: var(--sp-sm);
+  background: var(--cream-100); border: 1px solid var(--cream-300);
+  border-radius: var(--r-sm); font-family: var(--font-body);
+  font-size: 11px; color: var(--dark-800); outline: none;
+  transition: border-color var(--dur) var(--ease);
+}
+.fp-search::placeholder { color: var(--navy-300); }
+.fp-search:focus { border-color: var(--navy-200); }
+
+.fp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.fp-tag-hidden { display: none; }
+
+/* パネル内タグピル */
+.tag-pill {
+  padding: 4px 12px;
+  font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  color: var(--navy-600); background: var(--cream-50);
+  border: 1px solid var(--cream-300); border-radius: 100px;
+  cursor: pointer; transition: all var(--dur) var(--ease);
+  user-select: none; white-space: nowrap;
+}
+.tag-pill:hover { border-color: var(--navy-200); background: var(--cream-200); }
+.tag-pill.active { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+
+/* ============================================================
+   ACTIVE CHIPS — 選択中フィルタ表示
+   ============================================================ */
+.active-chips-bar {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--sp-sm) var(--sp-lg) 0;
+  display: none;
+}
+
+.active-chips-bar.show { display: block; }
+
+.active-filter-chips {
+  display: flex; gap: 5px; flex-wrap: wrap; align-items: center;
+}
+
+.active-chips-label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); margin-right: 2px;
+}
+
+.active-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 8px 3px 10px;
+  font-family: var(--font-body); font-size: 10px; font-weight: 500;
+  color: var(--gold-600); background: var(--gold-glow);
+  border: 1px solid var(--gold-200); border-radius: 100px;
+  cursor: pointer; transition: all var(--dur) var(--ease); white-space: nowrap;
+}
+.active-chip:hover { background: var(--gold-100); border-color: var(--gold-400); }
+.active-chip svg { width: 10px; height: 10px; opacity: 0.6; }
+
+/* ============================================================
+   STREAM GRID — カードグリッド
+   ============================================================ */
+.stream-grid-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--sp-md) var(--sp-lg) var(--sp-2xl);
+}
+
+.stream-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-md);
+}
+
+.stream-card {
+  background: var(--cream-50);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  transition: border-color var(--dur) var(--ease), box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+}
+
+.stream-card:hover {
+  border-color: var(--cream-400);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+}
+
+.stream-card.is-checked {
+  border-color: var(--gold-200);
+  background: linear-gradient(180deg, var(--gold-glow) 0%, var(--cream-50) 40%);
+}
+
+/* Thumbnail */
+.stream-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--silver-100), var(--cream-200));
+  overflow: hidden;
+}
+
+.stream-thumb-play {
+  position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.88); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+  opacity: 0;
+}
+.stream-card:hover .stream-thumb-play {
+  opacity: 1;
+  transform: translate(-50%,-50%) scale(1.05);
+}
+.stream-thumb-play svg { width: 12px; height: 12px; color: var(--navy-600); margin-left: 1px; }
+
+.stream-duration {
+  position: absolute;
+  bottom: 6px; right: 6px;
+  padding: 1px 6px;
+  background: rgba(26, 29, 36, 0.78);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  border-radius: 3px;
+}
+
+/* 視聴済チェックマーク（サムネ上） */
+.stream-checked-badge {
+  position: absolute;
+  top: 6px; left: 6px;
+  padding: 2px 7px;
+  background: var(--navy-700);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  border-radius: 3px;
+  display: none;
+}
+
+.stream-card.is-checked .stream-checked-badge { display: block; }
+
+/* Card Body */
+.stream-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.stream-tags {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.stream-tag {
+  display: inline-block;
+  padding: 0px 6px;
+  background: var(--navy-glow);
+  color: var(--navy-600);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+
+.stream-title {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--dark-800);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stream-date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--navy-300);
+}
+
+.stream-bottom {
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+/* Check Button */
+.check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: none;
+  border: 1px solid var(--cream-400);
+  border-radius: var(--r-sm);
+  color: var(--navy-600);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.check-btn:hover:not(.checked) {
+  background: var(--navy-glow);
+  border-color: var(--navy-300);
+  color: var(--dark-800);
+}
+
+.check-btn.checked {
+  background: var(--navy-700);
+  color: var(--white);
+  border-color: var(--navy-700);
+}
+
+.check-btn.checked:hover {
+  background: var(--navy-600);
+}
+
+@keyframes checkPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.check-btn.pop { animation: checkPop 0.3s var(--ease); }
+
+/* ============================================================
+   LOAD MORE
+   ============================================================ */
+.load-more-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-sm);
+  padding: var(--sp-xl) 0 var(--sp-md);
+}
+
+.load-more-btn {
+  padding: 8px 28px;
+  background: none;
+  border: 1px solid var(--navy-200);
+  border-radius: var(--r-sm);
+  color: var(--navy-600);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.load-more-btn:hover {
+  background: var(--navy-700);
+  color: var(--white);
+  border-color: var(--navy-700);
+}
+
+.load-more-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--navy-300);
+}
+
+/* ============================================================
+   NO RESULTS
+   ============================================================ */
+.no-results {
+  text-align: center;
+  padding: var(--sp-3xl) var(--sp-lg);
+  display: none;
+  grid-column: 1 / -1;
+}
+
+.no-results-icon { font-size: 2rem; margin-bottom: var(--sp-md); opacity: 0.4; }
+.no-results-text { font-size: var(--text-sm); color: var(--navy-400); line-height: 1.8; }
+.no-results-text strong { color: var(--dark-800); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.doc-footer {
+  text-align: center;
+  padding: var(--sp-2xl) var(--sp-lg) var(--sp-xl);
+  border-top: 1px solid var(--cream-300);
+  margin: 0 auto;
+  max-width: 1120px;
+}
+.doc-footer p { font-size: var(--text-xs); color: var(--navy-200); line-height: 1.8; }
+
+/* ============================================================
+   REVEAL ANIMATIONS
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 960px) {
+  .stream-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .stream-grid { grid-template-columns: repeat(2, 1fr); }
+  .page-header { padding: var(--sp-md) var(--sp-md) var(--sp-sm); }
+  .page-header-top { flex-direction: column; align-items: flex-start; gap: var(--sp-xs); }
+  .toolbar-inner { padding: 0 var(--sp-md); }
+  .stream-grid-wrap { padding: var(--sp-sm) var(--sp-md) var(--sp-xl); }
+  .search-wrap { flex: 0 0 160px; }
+}
+
+@media (max-width: 480px) {
+  .stream-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-sm); }
+  .toolbar-inner { flex-wrap: wrap; }
+  .search-wrap { flex: 1 1 100%; }
+  .tag-scroll-wrap { flex: 1 1 100%; order: 3; }
+  .toolbar-actions { margin-left: auto; }
+  .stream-body { padding: 8px 10px 10px; }
+  .stream-title { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="home-prototype.html" class="header-logo">だんいんログ</a>
+    <nav class="header-nav">
+      <div class="nav-group">
+        <button class="nav-trigger">探す <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-dd-item current"><span class="nav-dd-name">団員の視聴ログ</span><span class="nav-dd-desc">1,419件の配信を探索・記録</span></a>
+          <a href="#" class="nav-dd-item"><span class="nav-dd-name">楽曲ライブラリ</span><span class="nav-dd-desc">452曲のレパートリー・セトリ検索</span></a>
+          <a href="#" class="nav-dd-item"><span class="nav-dd-name">今日のASMR</span><span class="nav-dd-desc">気分に合わせたASMRを今日一本</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button class="nav-trigger">作る <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-dd-item"><span class="nav-dd-name">団員レポート</span><span class="nav-dd-desc">推し活データをレポート画像に</span></a>
+          <a href="#" class="nav-dd-item"><span class="nav-dd-name">団員のあしあと</span><span class="nav-dd-desc">視聴履歴のヒートマップ</span></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================================
+     PAGE HEADER — コンパクト: タイトル左、進捗右
+     ============================================================ -->
+<div class="page-header reveal">
+  <div class="page-header-top">
+    <h1 class="page-title">団員の視聴ログ</h1>
+    <div class="page-header-right">
+      <div class="progress-compact">
+        <span class="progress-num" id="checkedCount">4</span>
+        <span class="progress-slash">/ 1,419 チェック済</span>
+      </div>
+      <div class="progress-bar-mini">
+        <div class="progress-bar-mini-fill" id="progressFill" style="width: 0.28%"></div>
+      </div>
+    </div>
+  </div>
+  <p class="page-desc">配信をタグで探索し、視聴した配信をチェック。あなたの推し活記録を作ろう。</p>
+</div>
+
+<!-- ============================================================
+     TOOLBAR
+     ============================================================ -->
+<div class="toolbar-sentinel" id="toolbarSentinel"></div>
+<div class="toolbar" id="toolbar">
+  <div class="toolbar-inner">
+    <nav class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" data-cat="">すべて</button>
+      <button class="cat-tab" data-cat="ゲーム">ゲーム</button>
+      <button class="cat-tab" data-cat="ASMR">ASMR</button>
+      <button class="cat-tab" data-cat="歌枠">歌枠</button>
+      <button class="cat-tab" data-cat="雑談">雑談</button>
+      <button class="cat-tab" data-cat="コラボ">コラボ</button>
+      <button class="cat-tab" data-cat="3D">3D</button>
+      <button class="cat-tab" data-cat="記念">記念</button>
+    </nav>
+    <div class="toolbar-actions">
+      <div class="search-expandable" id="searchWrap">
+        <input type="text" class="search-expanded" id="searchInput" placeholder="配信を検索...">
+        <button class="tb-icon-btn" id="searchToggle" title="検索">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+        </button>
+      </div>
+      <div class="filter-panel-anchor" id="filterPanelWrap">
+        <button class="tb-icon-btn" id="filterPanelBtn" title="絞り込み">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+          <span class="filter-badge" id="filterBadge">0</span>
+        </button>
+        <div class="filter-panel" id="filterPanel">
+          <div class="fp-header">
+            <span class="fp-header-title">絞り込み</span>
+            <button class="fp-clear-btn" id="fpClearBtn">すべて解除</button>
+          </div>
+          <div class="fp-check-row">
+            <button class="fp-check-btn" data-check-filter="all">すべて</button>
+            <button class="fp-check-btn active" data-check-filter="unchecked">未チェック</button>
+            <button class="fp-check-btn" data-check-filter="checked">チェック済み</button>
+          </div>
+          <div class="fp-section">
+            <div class="fp-section-title">配信タグ</div>
+            <div class="fp-tags">
+              <button class="tag-pill" data-tag="さんでーまっする">さんでーまっする</button>
+              <button class="tag-pill" data-tag="朝活">朝活</button>
+            </div>
+          </div>
+          <div class="fp-section">
+            <div class="fp-section-title">ゲームタイトル</div>
+            <input type="text" class="fp-search" data-fp-search="game" placeholder="タイトルを検索...">
+            <div class="fp-tags" data-fp-group="game">
+              <button class="tag-pill" data-tag="ゼルダ">ゼルダ</button>
+              <button class="tag-pill" data-tag="ドラクエ">ドラクエ</button>
+              <button class="tag-pill" data-tag="エルデンリング">エルデンリング</button>
+              <button class="tag-pill" data-tag="ダークソウル">ダークソウル</button>
+              <button class="tag-pill" data-tag="マイクラ">マイクラ</button>
+              <button class="tag-pill" data-tag="ポケモン">ポケモン</button>
+              <button class="tag-pill" data-tag="モンハン">モンハン</button>
+              <button class="tag-pill" data-tag="マリオ">マリオ</button>
+              <button class="tag-pill" data-tag="スプラ">スプラ</button>
+              <button class="tag-pill" data-tag="ホグワーツ">ホグワーツ</button>
+              <button class="tag-pill" data-tag="バイオハザード">バイオハザード</button>
+              <button class="tag-pill" data-tag="SEKIRO">SEKIRO</button>
+              <button class="tag-pill" data-tag="Apex">Apex</button>
+              <button class="tag-pill" data-tag="ARK">ARK</button>
+            </div>
+          </div>
+          <div class="fp-section">
+            <div class="fp-section-title">コラボ相手</div>
+            <input type="text" class="fp-search" data-fp-search="collab" placeholder="名前を検索...">
+            <div class="fp-tags" data-fp-group="collab">
+              <button class="tag-pill" data-tag="不知火建設">不知火建設</button>
+              <button class="tag-pill" data-tag="3期生">3期生</button>
+              <button class="tag-pill" data-tag="フレア">フレア</button>
+              <button class="tag-pill" data-tag="マリン">マリン</button>
+              <button class="tag-pill" data-tag="ぺこら">ぺこら</button>
+              <button class="tag-pill" data-tag="スバル">スバル</button>
+              <button class="tag-pill" data-tag="ラミィ">ラミィ</button>
+              <button class="tag-pill" data-tag="ミオ">ミオ</button>
+              <button class="tag-pill" data-tag="ルイ">ルイ</button>
+              <button class="tag-pill" data-tag="ホロライブ全体">ホロライブ全体</button>
+            </div>
+          </div>
+          <div class="fp-section">
+            <div class="fp-section-title">年</div>
+            <div class="fp-tags">
+              <button class="tag-pill" data-tag="2026">2026</button>
+              <button class="tag-pill" data-tag="2025">2025</button>
+              <button class="tag-pill" data-tag="2024">2024</button>
+              <button class="tag-pill" data-tag="2023">2023</button>
+              <button class="tag-pill" data-tag="2022">2022</button>
+              <button class="tag-pill" data-tag="2021">2021</button>
+              <button class="tag-pill" data-tag="2020">2020</button>
+              <button class="tag-pill" data-tag="2019">2019</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="tb-icon-btn" id="sortToggle" title="並び替え">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v8M3 7l3 3 3-3"/></svg>
+      </button>
+      <span class="toolbar-meta" id="toolbarMeta">30件</span>
+    </div>
+  </div>
+</div>
+<!-- 選択中フィルタチップ -->
+<div class="active-chips-bar" id="activeChipsBar">
+  <div class="active-filter-chips" id="activeChips"></div>
+</div>
+
+<!-- ============================================================
+     STREAM GRID
+     ============================================================ -->
+<div class="stream-grid-wrap">
+  <div class="stream-grid reveal" id="streamGrid">
+    <!-- Generated by JS -->
+  </div>
+
+  <div class="no-results" id="noResults">
+    <div class="no-results-icon">&#9876;</div>
+    <p class="no-results-text"><strong>該当する配信が見つかりません</strong><br>検索条件やタグフィルタを変更してみてください</p>
+  </div>
+
+  <div class="load-more-wrap" id="loadMoreWrap">
+    <button class="load-more-btn" id="loadMoreBtn">さらに読み込む</button>
+    <div class="load-more-count" id="loadMoreCount">20 / 30件</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="doc-footer">
+  <p>だんいんログ &mdash; 白銀ノエル非公式ファンサイト</p>
+  <p>白銀ノエルさん及びカバー株式会社とは一切関係ありません</p>
+</footer>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+var STREAMS = [
+  { title: '【ゼルダの伝説 ティアキン】解放区を開拓するぞ！#85', tags: ['ゲーム','ゼルダ'], date: '2026.04.14', duration: '3h42m', checked: false },
+  { title: '【ASMR】春の夜の耳かき・添い寝シチュエーション', tags: ['ASMR'], date: '2026.04.12', duration: '1h28m', checked: true },
+  { title: '【さんでーまっする】今週のあれこれ報告会', tags: ['雑談','さんでーまっする'], date: '2026.04.13', duration: '2h05m', checked: false },
+  { title: '【歌枠】春の歌を歌いまくる！リクエスト受付中♪', tags: ['歌枠'], date: '2026.04.10', duration: '2h12m', checked: false },
+  { title: '【エルデンリング DLC】影の地で迷子になる騎士団長 #3', tags: ['ゲーム','エルデンリング'], date: '2026.04.09', duration: '4h15m', checked: true },
+  { title: '【3期生コラボ】みんなでマリオパーティ！絶対に負けない！', tags: ['コラボ','3期生','ゲーム'], date: '2026.04.08', duration: '2h33m', checked: false },
+  { title: '【ASMR】囁き多めの癒しタッピング・マッサージ', tags: ['ASMR'], date: '2026.04.07', duration: '1h45m', checked: false },
+  { title: '【マイクラ】不知火建設の新拠点を建築するぞ！', tags: ['ゲーム','マイクラ','コラボ','不知火建設'], date: '2026.04.06', duration: '3h20m', checked: false },
+  { title: '【雑談】最近買ったものと近況報告', tags: ['雑談'], date: '2026.04.05', duration: '1h48m', checked: true },
+  { title: '【ドラゴンクエストIII HD-2D】伝説の騎士の冒険 #52', tags: ['ゲーム','ドラクエ'], date: '2026.04.04', duration: '4h02m', checked: false },
+  { title: '【歌枠】昭和歌謡から最新曲まで！脳筋セトリ', tags: ['歌枠'], date: '2026.04.03', duration: '2h30m', checked: false },
+  { title: '【ASMR】耳元で囁きながらの耳かき・綿棒', tags: ['ASMR'], date: '2026.04.01', duration: '1h32m', checked: false },
+  { title: '【さんでーまっする】筋トレ報告と今週の振り返り', tags: ['雑談','さんでーまっする'], date: '2026.03.30', duration: '1h55m', checked: false },
+  { title: '【ダークソウルIII】脳筋ビルドで全ボス撃破チャレンジ #7', tags: ['ゲーム','ダークソウル'], date: '2026.03.29', duration: '5h10m', checked: true },
+  { title: '【3D新衣装お披露目】見て見て！新しい騎士団長の装い', tags: ['3D','記念'], date: '2026.03.28', duration: '1h15m', checked: false },
+  { title: '【コラボ】フレアちゃんと不知火建設定例会議', tags: ['コラボ','不知火建設'], date: '2026.03.27', duration: '2h40m', checked: false },
+  { title: '【ASMR】安眠誘導・シャンプー＆ヘッドマッサージ', tags: ['ASMR'], date: '2026.03.26', duration: '1h50m', checked: false },
+  { title: '【歌枠】シャカビーチ47回目記念！夏曲多め', tags: ['歌枠'], date: '2026.03.25', duration: '2h18m', checked: false },
+  { title: '【ゼルダの伝説 ティアキン】ラスボスに挑む！！ #84', tags: ['ゲーム','ゼルダ'], date: '2026.03.24', duration: '3h55m', checked: false },
+  { title: '【200万人記念】ありがとう200万人！記念枠', tags: ['記念','雑談'], date: '2026.03.23', duration: '2h20m', checked: false },
+  { title: '【ASMR】春の雨音と囁き・耳ふーふー', tags: ['ASMR'], date: '2026.03.22', duration: '1h35m', checked: false },
+  { title: '【さんでーまっする】大分のお取り寄せ開封！', tags: ['雑談','さんでーまっする'], date: '2026.03.21', duration: '2h10m', checked: false },
+  { title: '【マイクラ】ホロ鯖で巨大城建築 ～騎士団本部～', tags: ['ゲーム','マイクラ'], date: '2026.03.20', duration: '3h30m', checked: false },
+  { title: '【エルデンリング DLC】マレニア再戦…今度こそ #2', tags: ['ゲーム','エルデンリング'], date: '2026.03.19', duration: '4h45m', checked: false },
+  { title: '【3Dライブ】白銀聖騎士団 特別演習！', tags: ['3D','歌枠'], date: '2026.03.18', duration: '1h30m', checked: false },
+  { title: '【雑談】牛丼チェーン全店制覇レポート', tags: ['雑談'], date: '2026.03.17', duration: '1h42m', checked: false },
+  { title: '【ASMR】深夜の添い寝・吐息多め', tags: ['ASMR'], date: '2026.03.16', duration: '1h20m', checked: false },
+  { title: '【歌枠】ココロオドル23回目！アニソン祭り', tags: ['歌枠'], date: '2026.03.15', duration: '2h25m', checked: false },
+  { title: '【コラボ】3期生で料理対決！', tags: ['コラボ','3期生'], date: '2026.03.14', duration: '2h50m', checked: false },
+  { title: '【ドラゴンクエストIII HD-2D】ゾーマ討伐編 #51', tags: ['ゲーム','ドラクエ'], date: '2026.03.13', duration: '3h48m', checked: false },
+];
+
+var TOTAL = 1419;
+var PAGE_SIZE = 20;
+var currentPage = 1;
+var activeTags = [];
+var searchQuery = '';
+var sortMode = 'newest';
+var checkFilter = 'all';
+
+function createCardHTML(stream, idx) {
+  var tagHTML = stream.tags.map(function(t) { return '<span class="stream-tag">' + t + '</span>'; }).join('');
+  var checkedClass = stream.checked ? ' checked' : '';
+  var checkedText = stream.checked ? '&#10003; 視聴済' : '&#43; チェック';
+  var cardClass = stream.checked ? ' is-checked' : '';
+
+  return '<div class="stream-card' + cardClass + '" data-idx="' + idx + '">' +
+    '<div class="stream-thumb">' +
+      '<div class="stream-thumb-play"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div>' +
+      '<span class="stream-duration">' + stream.duration + '</span>' +
+      '<span class="stream-checked-badge">&#10003;</span>' +
+    '</div>' +
+    '<div class="stream-body">' +
+      '<div class="stream-tags">' + tagHTML + '</div>' +
+      '<div class="stream-title">' + stream.title + '</div>' +
+      '<div class="stream-date">' + stream.date + '</div>' +
+      '<div class="stream-bottom">' +
+        '<button class="check-btn' + checkedClass + '" data-check="' + idx + '">' + checkedText + '</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function getFiltered() {
+  return STREAMS.map(function(s, i) { return { s: s, i: i }; }).filter(function(item) {
+    // チェック状態フィルタ
+    if (checkFilter === 'checked' && !item.s.checked) return false;
+    if (checkFilter === 'unchecked' && item.s.checked) return false;
+    // カテゴリタブ
+    if (activeCategory && item.s.tags.indexOf(activeCategory) === -1) return false;
+    // 詳細タグフィルタ（パネル内）
+    if (activeTags.length > 0) {
+      if (!activeTags.some(function(t) { return item.s.tags.indexOf(t) !== -1; })) return false;
+    }
+    // テキスト検索
+    if (searchQuery) {
+      var q = searchQuery.toLowerCase();
+      if (item.s.title.toLowerCase().indexOf(q) === -1 && item.s.tags.join(' ').toLowerCase().indexOf(q) === -1) return false;
+    }
+    return true;
+  });
+}
+
+function sortItems(arr) {
+  var out = arr.slice();
+  if (sortMode === 'oldest') out.reverse();
+  return out;
+}
+
+function render() {
+  var grid = document.getElementById('streamGrid');
+  var filtered = sortItems(getFiltered());
+  var showing = filtered.slice(0, currentPage * PAGE_SIZE);
+
+  grid.innerHTML = showing.map(function(item) { return createCardHTML(item.s, item.i); }).join('');
+
+  // load more
+  var wrap = document.getElementById('loadMoreWrap');
+  var countEl = document.getElementById('loadMoreCount');
+  if (showing.length >= filtered.length) { wrap.style.display = 'none'; }
+  else { wrap.style.display = 'flex'; countEl.textContent = showing.length + ' / ' + filtered.length + '件'; }
+
+  // no results
+  document.getElementById('noResults').style.display = filtered.length === 0 ? 'block' : 'none';
+
+  // meta
+  document.getElementById('toolbarMeta').textContent = filtered.length + '件' + (filtered.length < STREAMS.length ? '（絞込中）' : '');
+
+  bindChecks();
+  requestAnimationFrame(function() { grid.classList.add('visible'); });
+}
+
+function updateProgress() {
+  var n = STREAMS.filter(function(s) { return s.checked; }).length;
+  document.getElementById('checkedCount').textContent = n;
+  document.getElementById('progressFill').style.width = Math.max(n / TOTAL * 100, 0.15) + '%';
+}
+
+function bindChecks() {
+  document.querySelectorAll('[data-check]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var idx = parseInt(this.getAttribute('data-check'));
+      STREAMS[idx].checked = !STREAMS[idx].checked;
+      var c = STREAMS[idx].checked;
+      this.classList.toggle('checked', c);
+      this.innerHTML = c ? '&#10003; 視聴済' : '&#43; チェック';
+      var card = this.closest('.stream-card');
+      if (card) card.classList.toggle('is-checked', c);
+      this.classList.remove('pop'); void this.offsetWidth; this.classList.add('pop');
+      updateProgress();
+    });
+  });
+}
+
+// === カテゴリタブ（排他選択） ===
+var activeCategory = '';
+document.querySelectorAll('.cat-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+    this.classList.add('active');
+    activeCategory = this.getAttribute('data-cat');
+    currentPage = 1;
+    render();
+  });
+});
+
+// === パネル内タグピル ===
+document.querySelectorAll('.tag-pill').forEach(function(pill) {
+  pill.addEventListener('click', function() {
+    var tag = this.getAttribute('data-tag');
+    this.classList.toggle('active');
+    document.querySelectorAll('.tag-pill[data-tag="' + tag + '"]').forEach(function(p) {
+      p.classList.toggle('active', pill.classList.contains('active'));
+    });
+    if (this.classList.contains('active')) { if (activeTags.indexOf(tag) === -1) activeTags.push(tag); }
+    else activeTags = activeTags.filter(function(t) { return t !== tag; });
+    currentPage = 1;
+    render();
+    updateFilterUI();
+  });
+});
+
+// === フィルタパネル開閉 ===
+var panelBtn = document.getElementById('filterPanelBtn');
+var panel = document.getElementById('filterPanel');
+panelBtn.addEventListener('click', function(e) { e.stopPropagation(); panel.classList.toggle('open'); });
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('filterPanelWrap').contains(e.target)) panel.classList.remove('open');
+});
+
+// === パネル内セクション検索 ===
+document.querySelectorAll('.fp-search').forEach(function(input) {
+  input.addEventListener('input', function() {
+    var group = this.getAttribute('data-fp-search');
+    var q = this.value.toLowerCase();
+    var container = document.querySelector('.fp-tags[data-fp-group="' + group + '"]');
+    if (!container) return;
+    container.querySelectorAll('.tag-pill').forEach(function(pill) {
+      pill.classList.toggle('fp-tag-hidden', q && pill.getAttribute('data-tag').toLowerCase().indexOf(q) === -1);
+    });
+  });
+});
+
+// === チェック状態フィルタ（パネル内、排他） ===
+document.querySelectorAll('[data-check-filter]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('[data-check-filter]').forEach(function(b) { b.classList.remove('active'); });
+    this.classList.add('active');
+    checkFilter = this.getAttribute('data-check-filter');
+    currentPage = 1;
+    render();
+  });
+});
+
+// === すべて解除 ===
+document.getElementById('fpClearBtn').addEventListener('click', function() {
+  activeTags = [];
+  checkFilter = 'all';
+  document.querySelectorAll('.tag-pill.active').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('[data-check-filter]').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelector('[data-check-filter="all"]').classList.add('active');
+  currentPage = 1;
+  render();
+  updateFilterUI();
+});
+
+// === 検索展開 ===
+var searchWrap = document.getElementById('searchWrap');
+document.getElementById('searchToggle').addEventListener('click', function() {
+  searchWrap.classList.toggle('open');
+  if (searchWrap.classList.contains('open')) document.getElementById('searchInput').focus();
+  else { document.getElementById('searchInput').value = ''; searchQuery = ''; currentPage = 1; render(); }
+});
+
+var searchTimer;
+document.getElementById('searchInput').addEventListener('input', function() {
+  var v = this.value;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function() { searchQuery = v; currentPage = 1; render(); }, 200);
+});
+
+// === ソートトグル ===
+document.getElementById('sortToggle').addEventListener('click', function() {
+  sortMode = sortMode === 'newest' ? 'oldest' : 'newest';
+  this.classList.toggle('asc', sortMode === 'oldest');
+  currentPage = 1;
+  render();
+});
+
+// === UI更新: バッジ + チップ ===
+function updateFilterUI() {
+  var totalFilters = activeTags.length + (checkFilter !== 'all' ? 1 : 0);
+  var badge = document.getElementById('filterBadge');
+  if (totalFilters > 0) { badge.classList.add('show'); badge.textContent = totalFilters; }
+  else { badge.classList.remove('show'); }
+
+  var chipsBar = document.getElementById('activeChipsBar');
+  var chipsEl = document.getElementById('activeChips');
+  var chips = [];
+  if (checkFilter !== 'all') chips.push({ label: checkFilter === 'checked' ? 'チェック済み' : '未チェック', type: 'check' });
+  activeTags.forEach(function(t) { chips.push({ label: t, type: 'tag', tag: t }); });
+  if (chips.length === 0) { chipsBar.classList.remove('show'); return; }
+  chipsBar.classList.add('show');
+  chipsEl.innerHTML = chips.map(function(c) {
+    var attr = c.type === 'check' ? 'data-removecheck' : 'data-removetag="' + c.tag + '"';
+    return '<button class="active-chip" ' + attr + '>' + c.label +
+      ' <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>';
+  }).join('');
+  chipsEl.querySelectorAll('[data-removetag]').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      var tag = this.getAttribute('data-removetag');
+      activeTags = activeTags.filter(function(t) { return t !== tag; });
+      document.querySelectorAll('.tag-pill[data-tag="' + tag + '"]').forEach(function(p) { p.classList.remove('active'); });
+      currentPage = 1; render(); updateFilterUI();
+    });
+  });
+  chipsEl.querySelectorAll('[data-removecheck]').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      checkFilter = 'all';
+      document.querySelectorAll('[data-check-filter]').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('[data-check-filter="all"]').classList.add('active');
+      currentPage = 1; render(); updateFilterUI();
+    });
+  });
+}
+
+// Load more
+document.getElementById('loadMoreBtn').addEventListener('click', function() { currentPage++; render(); });
+
+// Sticky toolbar
+(function() {
+  var sentinel = document.getElementById('toolbarSentinel');
+  var toolbar = document.getElementById('toolbar');
+  new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { toolbar.classList.toggle('stuck', !e.isIntersecting); });
+  }, { threshold: 0, rootMargin: '-57px 0px 0px 0px' }).observe(sentinel);
+})();
+
+// Reveal
+(function() {
+  var targets = document.querySelectorAll('.reveal');
+  new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.05 }).observe(targets[0] || document.body);
+  targets.forEach(function(el) { new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.05 }).observe(el); });
+})();
+
+// Init
+render();
+updateProgress();
+</script>
+
+</body>
+</html>
