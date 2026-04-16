@@ -29,7 +29,7 @@ web/src/
 │   ├── streams/          # B2 団員の視聴ログ
 │   ├── music/            # C3 楽曲ライブラリ
 │   ├── asmr/             # A1 今日のASMR
-│   ├── report/           # B5 団員活動報告書
+│   ├── report/           # B5 団員レポート
 │   ├── footprint/        # B4a 団員のあしあと
 │   └── api/og/           # E5 OGP画像生成
 ├── features/             # 機能単位モジュール（components/, hooks/, lib/）
