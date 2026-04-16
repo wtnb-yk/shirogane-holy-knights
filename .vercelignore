@@ -1,0 +1,9 @@
+# Vercel ビルドに必要なのは web/ のソースのみ
+*
+!web
+!web/**
+
+# web/ 内のビルド不要物（.vercelignore 使用時は .gitignore が無視されるため）
+web/node_modules
+web/.next
+web/data
