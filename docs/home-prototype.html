@@ -13,7 +13,7 @@
    ============================================================ */
 :root {
   --cream-50:  #FDFCFA;
-  --cream-100: #F9F5F0;
+  --cream-100: #FDFBF8;
   --cream-200: #F0EBE3;
   --cream-300: #E5DFD7;
   --cream-400: #D5CEC4;
@@ -147,16 +147,15 @@ a:hover { color: var(--navy-800); }
 @media (max-width: 860px) { .side-nav { display: none; } }
 
 /* ============================================================
-   COVER — design-concept.html と同一
+   COVER — コンパクト版（Todayがビューポート内に見切れる高さ）
    ============================================================ */
 .cover {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--sp-2xl) var(--sp-lg);
+  padding: var(--sp-2xl) var(--sp-lg) var(--sp-xl);
   position: relative;
   background:
     radial-gradient(ellipse 60% 50% at 50% 45%, rgba(200,162,76,0.03) 0%, transparent 100%),
@@ -204,27 +203,7 @@ a:hover { color: var(--navy-800); }
   animation: fade-up 0.4s var(--ease) 1.2s both;
 }
 
-.cover-scroll {
-  position: absolute;
-  bottom: var(--sp-xl);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: var(--navy-200);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  animation: fade-up 0.4s var(--ease) 1.6s both;
-}
-
-.cover-scroll svg {
-  width: 16px;
-  height: 16px;
-  animation: scroll-bounce 2.5s ease-in-out infinite 2.2s;
-}
+/* .cover-scroll 削除済（コンパクトカバーでは不要） */
 
 /* ============================================================
    SECTION LAYOUT — design-concept.html と同一
@@ -233,6 +212,10 @@ a:hover { color: var(--navy-800); }
   padding: var(--sp-3xl) var(--sp-lg);
   max-width: 1120px;
   margin: 0 auto;
+}
+
+.section-first {
+  padding-top: var(--sp-2xl);
 }
 
 .section-num {
@@ -494,8 +477,9 @@ a:hover { color: var(--navy-800); }
 .hm-cell.l2 { background: var(--navy-400); }
 .hm-cell.l3 { background: var(--navy-700); }
 
-.empty-state { background: var(--cream-50); border: 1px dashed var(--cream-400); border-radius: var(--r-lg); padding: var(--sp-xl) var(--sp-lg); text-align: center; }
-.empty-state-text { color: var(--navy-500); font-size: var(--text-sm); margin-bottom: var(--sp-md); line-height: 1.8; }
+.empty-preview .grid-mylog { opacity: 0.45; pointer-events: none; }
+.empty-cta-wrap { text-align: center; margin-top: var(--sp-lg); }
+.empty-cta-text { color: var(--navy-500); font-size: var(--text-sm); margin-bottom: var(--sp-md); line-height: 1.8; }
 .empty-state-cta { display: inline-block; padding: 8px 20px; background: var(--navy-700); color: var(--white); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; border-radius: var(--r-sm); transition: all var(--dur) var(--ease); }
 .empty-state-cta:hover { background: var(--navy-800); color: var(--white); }
 
@@ -593,16 +577,12 @@ a:hover { color: var(--navy-800); }
   <h1 class="cover-title">だんいんログ</h1>
   <p class="cover-tagline">団員の推し活を、もっと楽しく。</p>
   <p class="cover-meta">非公式ファンサイト &mdash; ログイン不要</p>
-  <div class="cover-scroll">
-    <span>SCROLL</span>
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
-  </div>
 </section>
 
 <!-- ============================================================
      01: TODAY
      ============================================================ -->
-<section class="section" id="today">
+<section class="section section-first" id="today">
   <div class="reveal">
     <div class="section-num">01 &mdash; Today</div>
     <h2 class="section-title">最新の配信とスケジュール</h2>
@@ -702,8 +682,32 @@ a:hover { color: var(--navy-800); }
   </div>
 
   <div id="state-empty" class="reveal" style="display:none">
-    <div class="empty-state">
-      <div class="empty-state-text">視聴した配信をチェックすると、<br>今週の本数やあしあとが積み重なっていきます。</div>
+    <div class="empty-preview">
+      <div class="grid-mylog">
+        <div class="card card-weekly">
+          <div class="weekly-label">This Week</div>
+          <div class="weekly-number">0<small>本視聴</small></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">あしあと</div>
+              <div class="card-head-sub">視聴した日に色がつきます</div>
+            </div>
+          </div>
+          <div class="fp-summary">
+            <div><div class="fp-num">0<small>日</small></div><div class="fp-label">記録あり / 過去6ヶ月</div></div>
+            <div><div class="fp-num">0<small>日</small></div><div class="fp-label">最長連続記録</div></div>
+          </div>
+          <div class="heatmap-wrap">
+            <div class="heatmap-months"><span>11月</span><span>12月</span><span>1月</span><span>2月</span><span>3月</span><span>4月</span></div>
+            <div class="heatmap" id="heatmap-empty"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="empty-cta-wrap">
+      <p class="empty-cta-text">視聴した配信をチェックすると、<br>ここにあなたの記録が積み重なっていきます。</p>
       <a href="#" class="empty-state-cta">団員の視聴ログを開く</a>
     </div>
   </div>
@@ -717,7 +721,7 @@ a:hover { color: var(--navy-800); }
 <section class="section" id="tools">
   <div class="reveal">
     <div class="section-num">03 &mdash; All Tools</div>
-    <h2 class="section-title">すべての機能</h2>
+    <h2 class="section-title">機能一覧</h2>
     <p class="section-sub">配信の探索・記録から、推し活データの可視化・シェアまで。</p>
   </div>
 
@@ -827,6 +831,17 @@ document.querySelectorAll('[data-check]').forEach(function(btn) {
       else if (intensity < 0.75) cell.classList.add('l2');
       else cell.classList.add('l3');
     }
+    hm.appendChild(cell);
+  }
+})();
+
+// --- Ghost Heatmap (empty state) ---
+(function() {
+  var hm = document.getElementById('heatmap-empty');
+  if (!hm) return;
+  for (var i = 0; i < 182; i++) {
+    var cell = document.createElement('div');
+    cell.className = 'hm-cell';
     hm.appendChild(cell);
   }
 })();
