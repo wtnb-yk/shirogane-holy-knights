@@ -20,3 +20,6 @@ web/data/
 
 # Playwright
 .playwright-mcp/
+
+# 調査・リサーチ用画像
+_research/
