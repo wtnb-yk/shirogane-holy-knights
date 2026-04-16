@@ -421,53 +421,36 @@ a:hover { color: var(--navy-800); }
   animation: cardEntrance 0.7s var(--ease) 0.5s both;
 }
 
-.dl-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 32px;
-  background: var(--navy-700);
-  color: var(--white);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  border: none;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: all 0.3s var(--ease);
-  letter-spacing: 0.02em;
+/* Buttons — components準拠 */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px;
+  background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em;
 }
-
-.dl-btn:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
-.dl-btn:active { transform: translateY(0); }
-.dl-btn svg { width: 16px; height: 16px; }
-.dl-btn.loading { opacity: 0.7; pointer-events: none; }
+.btn-primary:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary svg { width: 16px; height: 16px; }
+.btn-primary.loading { opacity: 0.7; pointer-events: none; }
 
 .report-btns {
   display: flex;
   gap: var(--sp-sm);
 }
 
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  background: none;
-  color: var(--navy-700);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  border: 1px solid var(--navy-200);
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: all 0.3s var(--ease);
-  letter-spacing: 0.02em;
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px;
+  background: none; color: var(--navy-700);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: 1px solid var(--navy-200); border-radius: var(--r-sm);
+  cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em;
 }
-
-.share-btn:hover { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
-.share-btn:active { transform: translateY(0); }
-.share-btn svg { width: 16px; height: 16px; }
+.btn-secondary:hover { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); transform: translateY(-1px); }
+.btn-secondary:active { transform: translateY(0); }
+.btn-secondary svg { width: 16px; height: 16px; }
 
 /* Theme selector */
 .theme-selector {
@@ -535,18 +518,16 @@ a:hover { color: var(--navy-800); }
   line-height: 1.8;
 }
 
-.empty-cta-btn {
+/* btn-cta — components準拠 */
+.btn-cta {
   display: inline-block;
-  padding: 10px 24px;
-  background: var(--navy-700);
-  color: var(--white);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  border-radius: var(--r-sm);
-  transition: all var(--dur) var(--ease);
+  padding: 12px 32px;
+  background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em;
 }
-.empty-cta-btn:hover { background: var(--navy-800); color: var(--white); }
+.btn-cta:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
 
 /* ============================================================
    FOOTER — 共通
@@ -577,7 +558,7 @@ a:hover { color: var(--navy-800); }
   .report-card-inner { padding: 24px 20px 20px; }
   .rc-featured-num { font-size: 2.4rem; }
   .report-btns { flex-direction: column; width: 100%; }
-  .dl-btn, .share-btn { width: 100%; justify-content: center; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
   .page-header { padding: var(--sp-md) var(--sp-md) var(--sp-sm); }
   .report-stage { padding: var(--sp-lg) var(--sp-md) var(--sp-2xl); }
   .page-header-top { flex-direction: column; align-items: flex-start; gap: var(--sp-sm); }
@@ -682,11 +663,11 @@ a:hover { color: var(--navy-800); }
 
   <div class="report-actions">
     <div class="report-btns">
-      <button class="dl-btn" id="dlBtn">
+      <button class="btn-primary" id="dlBtn">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/></svg>
         画像をダウンロード
       </button>
-      <button class="share-btn" id="shareBtn">
+      <button class="btn-secondary" id="shareBtn">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.6 1h2.4l-5.3 6.1L16 15h-4.9l-3.8-5-4.4 5H.5l5.7-6.5L.2 1h5l3.5 4.6L12.6 1zm-.8 12.6h1.3L4.3 2.3H2.9l8.9 11.3z"/></svg>
         Xでシェア
       </button>
@@ -734,7 +715,7 @@ a:hover { color: var(--navy-800); }
     <p class="empty-cta-text">
       視聴ログで配信をチェックすると、<br>あなただけの報告書が生成されます。
     </p>
-    <a href="log-prototype.html" class="empty-cta-btn">団員の視聴ログを開く</a>
+    <a href="log-prototype.html" class="btn-cta">団員の視聴ログを開く</a>
   </div>
 </div>
 

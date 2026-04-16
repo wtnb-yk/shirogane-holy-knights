@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Components — だんいんログ Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — 全プロトタイプ共通
+   ============================================================ */
+:root {
+  --cream-50:  #FCFCFD;
+  --cream-100: #F8F8FA;
+  --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6;
+  --cream-400: #D4D4D9;
+
+  --navy-900: #1C2230;
+  --navy-800: #242A3A;
+  --navy-700: #303845;
+  --navy-600: #404A55;
+  --navy-500: #545D68;
+  --navy-400: #6A7380;
+  --navy-300: #888F99;
+  --navy-200: #ACB1B8;
+  --navy-100: #CDD0D4;
+  --navy-glow: rgba(48, 56, 69, 0.08);
+
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E;
+  --gold-400: #C8A24C;
+  --gold-300: #D4B56A;
+  --gold-200: #E2CC92;
+  --gold-100: #F2E6C4;
+  --gold-glow: rgba(200, 162, 76, 0.10);
+
+  --silver-400: #9A949A;
+  --silver-300: #BBB4B8;
+  --silver-200: #D5D0D3;
+  --silver-100: #ECEAEB;
+
+  --dark-900: #1A1D24;
+  --dark-800: #2A2D35;
+  --dark-700: #3A3D45;
+
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300);
+
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.5rem;
+  --text-2xl: 2rem;
+
+  --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px; --sp-3xl: 120px;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.25s;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--cream-100);
+  color: var(--navy-700);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   SHOWCASE LAYOUT — サイドバー + メイン
+   ============================================================ */
+.ds-sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: 200px; padding: var(--sp-lg) var(--sp-lg) var(--sp-lg) var(--sp-lg);
+  background: var(--cream-50);
+  border-right: 1px solid var(--cream-300);
+  overflow-y: auto; z-index: 10;
+}
+
+.ds-sidebar-title {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--dark-800);
+  margin-bottom: 4px;
+}
+
+.ds-sidebar-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--navy-300);
+  letter-spacing: 0.06em;
+  margin-bottom: var(--sp-lg);
+}
+
+.ds-nav { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+
+.ds-nav a {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 8px;
+  font-size: var(--text-xs); color: var(--navy-400);
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  transition: all var(--dur) var(--ease);
+}
+.ds-nav a:hover { color: var(--navy-700); background: var(--cream-200); }
+.ds-nav a .ds-nav-num {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--navy-300); width: 20px;
+}
+
+.ds-main {
+  margin-left: 200px;
+  padding: var(--sp-2xl) var(--sp-xl) var(--sp-3xl);
+  max-width: 960px;
+}
+
+/* ============================================================
+   SECTION — 各コンポーネントセクション
+   ============================================================ */
+.ds-section {
+  margin-bottom: var(--sp-3xl);
+}
+
+.ds-section-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--gold-500);
+  margin-bottom: var(--sp-sm);
+}
+
+.ds-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--dark-800);
+  line-height: 1.3;
+  margin-bottom: var(--sp-xs);
+}
+
+.ds-section-desc {
+  color: var(--navy-400);
+  font-size: var(--text-sm);
+  margin-bottom: var(--sp-lg);
+  line-height: 1.8;
+}
+
+/* Demo stage */
+.ds-stage {
+  background: var(--cream-200);
+  border-radius: var(--r-lg);
+  padding: var(--sp-xl);
+  margin-bottom: var(--sp-md);
+}
+
+.ds-stage-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  flex-wrap: wrap;
+}
+
+.ds-stage-row + .ds-stage-row { margin-top: var(--sp-md); }
+
+.ds-stage-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--navy-400);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--sp-sm);
+}
+
+.ds-stage-group { margin-bottom: var(--sp-lg); }
+.ds-stage-group:last-child { margin-bottom: 0; }
+
+/* White sub-stage for components that need cream-50 bg */
+.ds-stage-white {
+  background: var(--cream-50);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-md);
+  padding: var(--sp-lg);
+}
+
+/* ============================================================
+   COMPONENT: Buttons
+   ============================================================ */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px;
+  background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
+.btn-primary:disabled { opacity: 0.4; pointer-events: none; }
+.btn-primary.loading { opacity: 0.7; pointer-events: none; }
+.btn-primary svg { width: 16px; height: 16px; }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px;
+  background: none; color: var(--navy-700);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: 1px solid var(--navy-200); border-radius: var(--r-sm);
+  cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-secondary:hover { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); transform: translateY(-1px); }
+.btn-secondary:disabled { opacity: 0.4; pointer-events: none; }
+.btn-secondary svg { width: 16px; height: 16px; }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  background: none; color: var(--navy-500);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.btn-ghost:hover { color: var(--navy-700); background: var(--cream-200); }
+.btn-ghost:disabled { opacity: 0.4; pointer-events: none; }
+
+.btn-check {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px;
+  background: none; border: 1px solid var(--cream-400);
+  border-radius: var(--r-sm); color: var(--navy-600);
+  font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all 0.3s var(--ease); user-select: none;
+}
+.btn-check:hover:not(.checked) { background: var(--navy-glow); border-color: var(--navy-300); color: var(--dark-800); }
+.btn-check.checked { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+
+.btn-cta {
+  display: inline-block;
+  padding: 12px 32px;
+  background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: none; border-radius: var(--r-sm);
+  cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-cta:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
+
+/* ============================================================
+   COMPONENT: Tag Pills
+   ============================================================ */
+.tag-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  color: var(--navy-600); background: var(--cream-50);
+  border: 1px solid var(--cream-300); border-radius: 100px;
+  cursor: pointer; transition: all var(--dur) var(--ease);
+  user-select: none; white-space: nowrap;
+}
+.tag-pill:hover { border-color: var(--navy-200); background: var(--cream-200); }
+.tag-pill.active { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+.tag-pill.active-gold { background: var(--gold-400); color: var(--white); border-color: var(--gold-400); }
+
+/* Small variant (on cards) */
+.tag-sm {
+  display: inline-block;
+  padding: 0px 6px;
+  background: var(--navy-glow); color: var(--navy-600);
+  font-family: var(--font-mono); font-size: 10px;
+  border-radius: 3px; letter-spacing: 0.02em;
+  width: fit-content;
+}
+
+/* ============================================================
+   COMPONENT: Page Header
+   ============================================================ */
+.page-header {
+  max-width: 100%; padding: var(--sp-lg) 0 var(--sp-sm);
+}
+.page-header-top {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-lg);
+}
+.page-title {
+  font-family: var(--font-display); font-size: var(--text-xl);
+  font-weight: 600; color: var(--dark-800); line-height: 1.3;
+}
+.page-desc {
+  color: var(--navy-400); font-size: var(--text-xs); margin-top: 4px; line-height: 1.6;
+}
+.progress-compact { display: flex; align-items: center; gap: var(--sp-sm); }
+.progress-num {
+  font-family: var(--font-display); font-size: var(--text-lg);
+  font-weight: 600; color: var(--dark-800); line-height: 1;
+}
+.progress-slash { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300); }
+.progress-bar-mini { width: 80px; height: 3px; background: var(--cream-300); border-radius: 2px; overflow: hidden; }
+.progress-bar-mini-fill { height: 100%; background: linear-gradient(90deg, var(--gold-400), var(--gold-300)); border-radius: 2px; transition: width 0.6s var(--ease); }
+
+/* ============================================================
+   COMPONENT: Category Tabs
+   ============================================================ */
+.cat-tabs-bar {
+  display: flex; align-items: stretch; justify-content: space-between;
+  background: var(--cream-50); border-bottom: 1px solid var(--cream-300);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
+.cat-tabs { display: flex; gap: 0; }
+.cat-tab {
+  position: relative; padding: 12px 16px;
+  font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  color: var(--navy-400); background: none; border: none;
+  cursor: pointer; transition: color var(--dur) var(--ease); white-space: nowrap;
+}
+.cat-tab:hover { color: var(--navy-700); }
+.cat-tab::after {
+  content: ''; position: absolute; bottom: 0; left: 16px; right: 16px;
+  height: 2px; background: transparent; border-radius: 1px 1px 0 0;
+  transition: all 0.3s var(--ease);
+}
+.cat-tab.active { color: var(--dark-800); font-weight: 600; }
+.cat-tab.active::after { background: var(--gold-400); left: 8px; right: 8px; }
+
+.toolbar-actions {
+  display: flex; align-items: center; gap: 2px; padding-right: var(--sp-sm);
+}
+.tb-icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; border-radius: var(--r-sm);
+  color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.tb-icon-btn:hover { color: var(--navy-700); background: var(--cream-200); }
+.tb-icon-btn svg { width: 16px; height: 16px; }
+
+/* ============================================================
+   COMPONENT: Stream Card
+   ============================================================ */
+.stream-card {
+  background: var(--cream-50); border: 1px solid var(--border);
+  border-radius: var(--r-md); overflow: hidden;
+  transition: border-color var(--dur) var(--ease), box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+  display: flex; flex-direction: column; width: 240px;
+}
+.stream-card:hover { border-color: var(--cream-400); box-shadow: 0 4px 16px rgba(0,0,0,0.05); transform: translateY(-2px); }
+.stream-card.is-checked { border-color: var(--gold-200); background: linear-gradient(180deg, var(--gold-glow) 0%, var(--cream-50) 40%); }
+
+.stream-thumb {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  background: linear-gradient(135deg, var(--silver-100), var(--cream-200)); overflow: hidden;
+}
+.stream-duration {
+  position: absolute; bottom: 6px; right: 6px;
+  padding: 1px 6px; background: rgba(26, 29, 36, 0.78);
+  color: var(--white); font-family: var(--font-mono); font-size: 10px; border-radius: 3px;
+}
+.stream-checked-badge {
+  position: absolute; top: 6px; left: 6px;
+  padding: 2px 7px; background: var(--navy-700); color: var(--white);
+  font-family: var(--font-mono); font-size: 10px; border-radius: 3px; display: none;
+}
+.stream-card.is-checked .stream-checked-badge { display: block; }
+
+.stream-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.stream-tags { display: flex; gap: 3px; flex-wrap: wrap; }
+.stream-title-text {
+  font-size: var(--text-xs); font-weight: 500; color: var(--dark-800);
+  line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.stream-date { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); }
+.stream-bottom { margin-top: auto; padding-top: 4px; }
+
+/* ============================================================
+   COMPONENT: Hub Card
+   ============================================================ */
+.hub-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-sm);
+  transition: all 0.3s var(--ease); min-height: 140px; width: 240px;
+  text-decoration: none; color: inherit; position: relative;
+}
+.hub-card:hover { border-color: var(--navy-200); box-shadow: 0 6px 24px rgba(26,35,53,0.07); transform: translateY(-3px); color: inherit; }
+.hub-card-name { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--dark-800); }
+.hub-card-desc { font-size: var(--text-xs); color: var(--navy-500); line-height: 1.7; }
+.hub-card-meta { margin-top: auto; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300); }
+.hub-card-arrow { position: absolute; bottom: var(--sp-lg); right: var(--sp-lg); font-family: var(--font-mono); font-size: var(--text-sm); color: var(--navy-200); transition: all 0.3s var(--ease); }
+.hub-card:hover .hub-card-arrow { color: var(--navy-600); transform: translateX(4px); }
+
+/* ============================================================
+   COMPONENT: Empty State
+   ============================================================ */
+.empty-ghost { opacity: 0.25; filter: blur(1px); pointer-events: none; }
+.empty-cta-wrap { text-align: center; margin-top: var(--sp-xl); }
+.empty-cta-text { color: var(--navy-500); font-size: var(--text-sm); margin-bottom: var(--sp-md); line-height: 1.8; }
+
+/* ============================================================
+   COMPONENT: Filter Panel
+   ============================================================ */
+.filter-panel-demo {
+  width: 360px; max-height: 420px; overflow-y: auto;
+  background: var(--cream-50); border: 1px solid var(--cream-300);
+  border-radius: var(--r-md); box-shadow: 0 12px 32px rgba(26,35,53,0.12);
+}
+.filter-panel-demo::-webkit-scrollbar { width: 4px; }
+.filter-panel-demo::-webkit-scrollbar-thumb { background: var(--cream-400); border-radius: 2px; }
+
+.fp-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--sp-md) var(--sp-md) var(--sp-sm);
+  border-bottom: 1px solid var(--cream-200);
+  position: sticky; top: 0; background: var(--cream-50); z-index: 1;
+}
+.fp-header-title { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+.fp-clear-btn {
+  font-family: var(--font-body); font-size: var(--text-xs); color: var(--navy-400);
+  background: none; border: none; cursor: pointer; transition: color var(--dur) var(--ease);
+}
+.fp-clear-btn:hover { color: var(--navy-700); }
+
+.fp-check-row {
+  display: flex; gap: 6px;
+  padding: var(--sp-sm) var(--sp-md) var(--sp-md);
+  border-bottom: 1px solid var(--cream-200);
+}
+.fp-check-btn {
+  flex: 1; padding: 8px 0;
+  font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  color: var(--navy-500); background: var(--cream-100);
+  border: 1px solid var(--cream-300); border-radius: var(--r-sm);
+  cursor: pointer; text-align: center; transition: all var(--dur) var(--ease);
+}
+.fp-check-btn:hover { border-color: var(--navy-200); color: var(--navy-700); }
+.fp-check-btn.active { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+
+.fp-section {
+  padding: var(--sp-sm) var(--sp-md) var(--sp-md);
+  border-bottom: 1px solid var(--cream-200);
+}
+.fp-section:last-child { border-bottom: none; }
+.fp-section-title {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.1em; color: var(--navy-400);
+  margin-bottom: var(--sp-sm); text-transform: uppercase;
+}
+.fp-search {
+  width: 100%; padding: 5px 8px; margin-bottom: var(--sp-sm);
+  background: var(--cream-100); border: 1px solid var(--cream-300);
+  border-radius: var(--r-sm); font-family: var(--font-body); font-size: 11px;
+  color: var(--dark-800); outline: none;
+}
+.fp-search::placeholder { color: var(--navy-300); }
+.fp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* ============================================================
+   COMPONENT: State Toggle
+   ============================================================ */
+.state-toggle {
+  display: inline-flex; gap: 0; padding: 3px;
+  background: var(--cream-200); border-radius: var(--r-sm);
+}
+.state-toggle button {
+  padding: 4px 14px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  background: none; border: none; border-radius: 4px;
+  color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.state-toggle button.active {
+  background: var(--cream-50); color: var(--dark-800);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* ============================================================
+   COMPONENT: Footer
+   ============================================================ */
+.doc-footer-demo {
+  text-align: center; padding: var(--sp-xl) var(--sp-lg);
+  border-top: 1px solid var(--cream-300);
+}
+.doc-footer-demo p { font-size: var(--text-xs); color: var(--navy-200); line-height: 1.8; }
+
+/* ============================================================
+   COMPONENT: Animations
+   ============================================================ */
+.anim-box {
+  width: 120px; height: 80px;
+  background: var(--cream-50); border: 1px solid var(--cream-300);
+  border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-400);
+}
+
+.anim-reveal {
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+.anim-reveal.visible { opacity: 1; transform: translateY(0); }
+
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.anim-card-entrance { animation: cardEntrance 0.7s var(--ease) both; }
+
+.replay-btn {
+  padding: 4px 12px; margin-top: var(--sp-sm);
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--navy-400); background: none;
+  border: 1px solid var(--cream-400); border-radius: var(--r-sm);
+  cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.replay-btn:hover { color: var(--navy-700); border-color: var(--navy-300); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SIDEBAR
+     ============================================================ -->
+<nav class="ds-sidebar">
+  <div class="ds-sidebar-title">だんいんログ</div>
+  <div class="ds-sidebar-sub">DESIGN SYSTEM</div>
+  <ul class="ds-nav">
+    <li><a href="#buttons"><span class="ds-nav-num">01</span> Buttons</a></li>
+    <li><a href="#pills"><span class="ds-nav-num">02</span> Tag Pills</a></li>
+    <li><a href="#page-header"><span class="ds-nav-num">03</span> Page Header</a></li>
+    <li><a href="#cat-tabs"><span class="ds-nav-num">04</span> Category Tabs</a></li>
+    <li><a href="#cards"><span class="ds-nav-num">05</span> Cards</a></li>
+    <li><a href="#empty"><span class="ds-nav-num">06</span> Empty State</a></li>
+    <li><a href="#filter"><span class="ds-nav-num">07</span> Filter Panel</a></li>
+    <li><a href="#toggle"><span class="ds-nav-num">08</span> State Toggle</a></li>
+    <li><a href="#footer"><span class="ds-nav-num">09</span> Footer</a></li>
+    <li><a href="#anim"><span class="ds-nav-num">10</span> Animations</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================================
+     MAIN
+     ============================================================ -->
+<main class="ds-main">
+
+  <!-- 01: BUTTONS -->
+  <section class="ds-section" id="buttons">
+    <div class="ds-section-num">01 &mdash; Buttons</div>
+    <h2 class="ds-section-title">Buttons</h2>
+    <p class="ds-section-desc">全ページで使用するボタンのバリエーション。</p>
+
+    <div class="ds-stage">
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Primary</div>
+        <div class="ds-stage-row">
+          <button class="btn-primary">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/></svg>
+            画像をダウンロード
+          </button>
+          <button class="btn-primary" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Secondary</div>
+        <div class="ds-stage-row">
+          <button class="btn-secondary">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.6 1h2.4l-5.3 6.1L16 15h-4.9l-3.8-5-4.4 5H.5l5.7-6.5L.2 1h5l3.5 4.6L12.6 1zm-.8 12.6h1.3L4.3 2.3H2.9l8.9 11.3z"/></svg>
+            Xでシェア
+          </button>
+          <button class="btn-secondary">さらに読み込む</button>
+          <button class="btn-secondary" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Ghost</div>
+        <div class="ds-stage-row">
+          <button class="btn-ghost">すべて解除</button>
+          <button class="btn-ghost" disabled>Disabled</button>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Check</div>
+        <div class="ds-stage-row">
+          <button class="btn-check" data-check-demo>+ チェック</button>
+          <button class="btn-check checked">&#10003; 視聴済</button>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">CTA (Empty State)</div>
+        <div class="ds-stage-row">
+          <button class="btn-cta">団員の視聴ログを開く</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02: TAG PILLS -->
+  <section class="ds-section" id="pills">
+    <div class="ds-section-num">02 &mdash; Tag Pills</div>
+    <h2 class="ds-section-title">Tag Pills</h2>
+    <p class="ds-section-desc">カテゴリ・タグの選択に使用。フィルタパネル内やカード上で使われる。</p>
+
+    <div class="ds-stage">
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Filter Pills (toggle)</div>
+        <div class="ds-stage-row">
+          <span class="tag-pill">ゲーム</span>
+          <span class="tag-pill active">ASMR</span>
+          <span class="tag-pill">歌枠</span>
+          <span class="tag-pill">雑談</span>
+          <span class="tag-pill active">コラボ</span>
+          <span class="tag-pill">3D</span>
+          <span class="tag-pill">記念</span>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Gold Active (check state)</div>
+        <div class="ds-stage-row">
+          <span class="tag-pill active-gold">未チェック</span>
+          <span class="tag-pill">チェック済み</span>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Small (on cards)</div>
+        <div class="ds-stage-row">
+          <span class="tag-sm">ゲーム</span>
+          <span class="tag-sm">ゼルダ</span>
+          <span class="tag-sm">ASMR</span>
+          <span class="tag-sm">コラボ</span>
+          <span class="tag-sm">3期生</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03: PAGE HEADER -->
+  <section class="ds-section" id="page-header">
+    <div class="ds-section-num">03 &mdash; Page Header</div>
+    <h2 class="ds-section-title">Page Header</h2>
+    <p class="ds-section-desc">各ページ上部のタイトル・説明・オプションの右側コンテンツ。</p>
+
+    <div class="ds-stage">
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">With Progress (log style)</div>
+        <div class="ds-stage-white">
+          <div class="page-header">
+            <div class="page-header-top">
+              <h1 class="page-title">団員の視聴ログ</h1>
+              <div style="display:flex;align-items:center;gap:var(--sp-md);">
+                <div class="progress-compact">
+                  <span class="progress-num">4</span>
+                  <span class="progress-slash">/ 1,419 チェック済</span>
+                </div>
+                <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:0.28%"></div></div>
+              </div>
+            </div>
+            <p class="page-desc">配信をタグで探索し、視聴した配信をチェック。あなたの推し活記録を作ろう。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Simple (report style)</div>
+        <div class="ds-stage-white">
+          <div class="page-header">
+            <div class="page-header-top">
+              <div>
+                <h1 class="page-title">団員レポート</h1>
+                <p class="page-desc">あなたの視聴記録から、レポートを生成します。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04: CATEGORY TABS -->
+  <section class="ds-section" id="cat-tabs">
+    <div class="ds-section-num">04 &mdash; Category Tabs</div>
+    <h2 class="ds-section-title">Category Tabs</h2>
+    <p class="ds-section-desc">カテゴリ切り替え用のアンダーラインタブ。ツールバーとして使用。右端にアクションアイコン。</p>
+
+    <div class="ds-stage">
+      <div class="cat-tabs-bar">
+        <nav class="cat-tabs" id="demoCatTabs">
+          <button class="cat-tab active" data-demo-tab>すべて</button>
+          <button class="cat-tab" data-demo-tab>ゲーム</button>
+          <button class="cat-tab" data-demo-tab>ASMR</button>
+          <button class="cat-tab" data-demo-tab>歌枠</button>
+          <button class="cat-tab" data-demo-tab>雑談</button>
+          <button class="cat-tab" data-demo-tab>コラボ</button>
+          <button class="cat-tab" data-demo-tab>3D</button>
+          <button class="cat-tab" data-demo-tab>記念</button>
+        </nav>
+        <div class="toolbar-actions">
+          <button class="tb-icon-btn" title="検索">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+          </button>
+          <button class="tb-icon-btn" title="絞り込み">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+          </button>
+          <button class="tb-icon-btn" title="並び替え">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v8M3 7l3 3 3-3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05: CARDS -->
+  <section class="ds-section" id="cards">
+    <div class="ds-section-num">05 &mdash; Cards</div>
+    <h2 class="ds-section-title">Cards</h2>
+    <p class="ds-section-desc">コンテンツ表示に使用する各種カード。</p>
+
+    <div class="ds-stage">
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Stream Card</div>
+        <div class="ds-stage-row" style="align-items:flex-start;">
+          <div class="stream-card">
+            <div class="stream-thumb"><span class="stream-duration">3h42m</span></div>
+            <div class="stream-body">
+              <div class="stream-tags"><span class="tag-sm">ゲーム</span><span class="tag-sm">ゼルダ</span></div>
+              <div class="stream-title-text">【ゼルダの伝説 ティアキン】解放区を開拓するぞ！#85</div>
+              <div class="stream-date">2026.04.14</div>
+              <div class="stream-bottom"><button class="btn-check">+ チェック</button></div>
+            </div>
+          </div>
+          <div class="stream-card is-checked">
+            <div class="stream-thumb">
+              <span class="stream-duration">1h28m</span>
+              <span class="stream-checked-badge">&#10003;</span>
+            </div>
+            <div class="stream-body">
+              <div class="stream-tags"><span class="tag-sm">ASMR</span></div>
+              <div class="stream-title-text">【ASMR】春の夜の耳かき・添い寝シチュエーション</div>
+              <div class="stream-date">2026.04.12</div>
+              <div class="stream-bottom"><button class="btn-check checked">&#10003; 視聴済</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Hub Card (Bento Grid)</div>
+        <div class="ds-stage-row" style="align-items:flex-start;">
+          <a href="#" class="hub-card">
+            <div class="hub-card-name">団員の視聴ログ</div>
+            <div class="hub-card-desc">1,419件の配信をタグで絞り込み、視聴チェックで記録する。</div>
+            <div class="hub-card-meta">1,419 streams</div>
+            <span class="hub-card-arrow">&rarr;</span>
+          </a>
+          <a href="#" class="hub-card">
+            <div class="hub-card-name">団員レポート</div>
+            <div class="hub-card-desc">あなたの推し活データから、レポート画像を生成。</div>
+            <div class="hub-card-meta">share image</div>
+            <span class="hub-card-arrow">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06: EMPTY STATE -->
+  <section class="ds-section" id="empty">
+    <div class="ds-section-num">06 &mdash; Empty State</div>
+    <h2 class="ds-section-title">Empty State</h2>
+    <p class="ds-section-desc">データが未蓄積の場合の表示パターン。ゴーストプレビュー + 誘導CTA。</p>
+
+    <div class="ds-stage">
+      <div class="ds-stage-white" style="max-width:400px;margin:0 auto;">
+        <div class="empty-ghost">
+          <div style="height:80px;background:var(--cream-200);border-radius:var(--r-md);margin-bottom:var(--sp-md);"></div>
+          <div style="height:12px;width:60%;background:var(--cream-300);border-radius:2px;margin-bottom:var(--sp-sm);"></div>
+          <div style="height:12px;width:80%;background:var(--cream-300);border-radius:2px;margin-bottom:var(--sp-sm);"></div>
+          <div style="height:12px;width:40%;background:var(--cream-300);border-radius:2px;"></div>
+        </div>
+        <div class="empty-cta-wrap">
+          <p class="empty-cta-text">視聴ログで配信をチェックすると、<br>ここにあなたの記録が表示されます。</p>
+          <button class="btn-cta">団員の視聴ログを開く</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07: FILTER PANEL -->
+  <section class="ds-section" id="filter">
+    <div class="ds-section-num">07 &mdash; Filter Panel</div>
+    <h2 class="ds-section-title">Filter Panel</h2>
+    <p class="ds-section-desc">詳細フィルタ用のドロップダウンパネル。カテゴリ別セクション + セクション内検索。</p>
+
+    <div class="ds-stage">
+      <div class="filter-panel-demo">
+        <div class="fp-header">
+          <span class="fp-header-title">絞り込み</span>
+          <button class="fp-clear-btn">すべて解除</button>
+        </div>
+        <div class="fp-check-row">
+          <button class="fp-check-btn active">すべて</button>
+          <button class="fp-check-btn">未チェック</button>
+          <button class="fp-check-btn">チェック済み</button>
+        </div>
+        <div class="fp-section">
+          <div class="fp-section-title">配信タグ</div>
+          <div class="fp-tags">
+            <span class="tag-pill">さんでーまっする</span>
+            <span class="tag-pill">朝活</span>
+            <span class="tag-pill active">企画</span>
+          </div>
+        </div>
+        <div class="fp-section">
+          <div class="fp-section-title">ゲームタイトル</div>
+          <input type="text" class="fp-search" placeholder="タイトルを検索...">
+          <div class="fp-tags">
+            <span class="tag-pill">ゼルダ</span>
+            <span class="tag-pill active">ドラクエ</span>
+            <span class="tag-pill">エルデンリング</span>
+            <span class="tag-pill">ダークソウル</span>
+            <span class="tag-pill">マイクラ</span>
+          </div>
+        </div>
+        <div class="fp-section">
+          <div class="fp-section-title">コラボ相手</div>
+          <input type="text" class="fp-search" placeholder="名前を検索...">
+          <div class="fp-tags">
+            <span class="tag-pill">不知火建設</span>
+            <span class="tag-pill">3期生</span>
+            <span class="tag-pill">フレア</span>
+            <span class="tag-pill">マリン</span>
+          </div>
+        </div>
+        <div class="fp-section">
+          <div class="fp-section-title">年</div>
+          <div class="fp-tags">
+            <span class="tag-pill active">2026</span>
+            <span class="tag-pill">2025</span>
+            <span class="tag-pill">2024</span>
+            <span class="tag-pill">2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08: STATE TOGGLE -->
+  <section class="ds-section" id="toggle">
+    <div class="ds-section-num">08 &mdash; State Toggle</div>
+    <h2 class="ds-section-title">State Toggle</h2>
+    <p class="ds-section-desc">プロトタイプレビュー用。蓄積あり/記録ゼロの状態切り替え。</p>
+
+    <div class="ds-stage">
+      <div class="state-toggle" id="demoToggle">
+        <button class="active" data-state="filled">蓄積あり</button>
+        <button data-state="empty">記録ゼロ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09: FOOTER -->
+  <section class="ds-section" id="footer">
+    <div class="ds-section-num">09 &mdash; Footer</div>
+    <h2 class="ds-section-title">Footer</h2>
+    <p class="ds-section-desc">全ページ共通のフッター。</p>
+
+    <div class="ds-stage">
+      <div class="doc-footer-demo">
+        <p>だんいんログ &mdash; 白銀ノエル非公式ファンサイト</p>
+        <p>白銀ノエルさん及びカバー株式会社とは一切関係ありません</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10: ANIMATIONS -->
+  <section class="ds-section" id="anim">
+    <div class="ds-section-num">10 &mdash; Animations</div>
+    <h2 class="ds-section-title">Animations</h2>
+    <p class="ds-section-desc">ページ表示時のアニメーションパターン。</p>
+
+    <div class="ds-stage">
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Reveal (scroll trigger)</div>
+        <div class="ds-stage-row">
+          <div class="anim-box anim-reveal" id="animReveal">reveal</div>
+          <button class="replay-btn" data-replay="animReveal">再生</button>
+        </div>
+      </div>
+
+      <div class="ds-stage-group">
+        <div class="ds-stage-label">Card Entrance</div>
+        <div class="ds-stage-row">
+          <div class="anim-box anim-card-entrance" id="animCard">card</div>
+          <button class="replay-btn" data-replay="animCard">再生</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+// Check button toggle demo
+document.querySelectorAll('[data-check-demo]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var c = this.classList.toggle('checked');
+    this.innerHTML = c ? '&#10003; 視聴済' : '+ チェック';
+  });
+});
+
+// Category tab demo
+document.querySelectorAll('[data-demo-tab]').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('[data-demo-tab]').forEach(function(t) { t.classList.remove('active'); });
+    this.classList.add('active');
+  });
+});
+
+// State toggle demo
+(function() {
+  var btns = document.querySelectorAll('#demoToggle button');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+})();
+
+// Animation replay
+document.querySelectorAll('[data-replay]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var id = this.getAttribute('data-replay');
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('visible', 'anim-card-entrance', 'anim-reveal');
+    void el.offsetWidth;
+    if (id === 'animReveal') { el.classList.add('anim-reveal'); requestAnimationFrame(function() { el.classList.add('visible'); }); }
+    if (id === 'animCard') { el.classList.add('anim-card-entrance'); }
+  });
+});
+
+// Trigger initial reveal
+requestAnimationFrame(function() {
+  document.getElementById('animReveal').classList.add('visible');
+});
+</script>
+
+</body>
+</html>

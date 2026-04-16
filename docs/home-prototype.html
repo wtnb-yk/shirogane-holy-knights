@@ -414,21 +414,21 @@ a:hover { color: var(--navy-800); }
 .stream-thumb-play svg { width: 10px; height: 10px; color: var(--navy-600); margin-left: 1px; }
 
 .stream-meta { display: flex; flex-direction: column; gap: 3px; }
-.stream-tag { display: inline-block; padding: 1px 7px; background: var(--navy-glow); color: var(--navy-600); font-family: var(--font-mono); font-size: 11px; border-radius: 3px; width: fit-content; }
+.tag-sm { display: inline-block; padding: 0px 6px; background: var(--navy-glow); color: var(--navy-600); font-family: var(--font-mono); font-size: 10px; border-radius: 3px; letter-spacing: 0.02em; width: fit-content; }
 .stream-title { font-size: var(--text-sm); font-weight: 500; color: var(--dark-800); line-height: 1.5; }
 .stream-date { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300); }
 
-.check-btn {
+.btn-check {
   display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; margin-top: 4px;
+  padding: 3px 10px; margin-top: 4px;
   background: none; border: 1px solid var(--cream-400);
   border-radius: var(--r-sm); color: var(--navy-600);
-  font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  font-family: var(--font-body); font-size: 11px; font-weight: 500;
   cursor: pointer; transition: all 0.3s var(--ease);
   width: fit-content; user-select: none;
 }
-.check-btn:hover:not(.checked) { background: var(--navy-glow); border-color: var(--navy-300); color: var(--dark-800); }
-.check-btn.checked { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+.btn-check:hover:not(.checked) { background: var(--navy-glow); border-color: var(--navy-300); color: var(--dark-800); }
+.btn-check.checked { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
 
 /* Schedule */
 .card-schedule { border-left: 3px solid var(--gold-400); display: flex; flex-direction: column; }
@@ -480,8 +480,8 @@ a:hover { color: var(--navy-800); }
 .empty-preview .grid-mylog { opacity: 0.45; pointer-events: none; }
 .empty-cta-wrap { text-align: center; margin-top: var(--sp-lg); }
 .empty-cta-text { color: var(--navy-500); font-size: var(--text-sm); margin-bottom: var(--sp-md); line-height: 1.8; }
-.empty-state-cta { display: inline-block; padding: 8px 20px; background: var(--navy-700); color: var(--white); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; border-radius: var(--r-sm); transition: all var(--dur) var(--ease); }
-.empty-state-cta:hover { background: var(--navy-800); color: var(--white); }
+.btn-cta { display: inline-block; padding: 12px 32px; background: var(--navy-700); color: var(--white); font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600; border: none; border-radius: var(--r-sm); cursor: pointer; transition: all 0.3s var(--ease); letter-spacing: 0.02em; }
+.btn-cta:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
 
 /* ============================================================
    ALL TOOLS — ハブカード
@@ -599,28 +599,28 @@ a:hover { color: var(--navy-800); }
         <div class="stream-item">
           <div class="stream-thumb"><div class="stream-thumb-play"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div>
           <div class="stream-meta">
-            <span class="stream-tag">ゲーム / ゼルダ</span>
+            <span class="tag-sm">ゲーム / ゼルダ</span>
             <span class="stream-title">【ゼルダの伝説 ティアキン】解放区を開拓するぞ！#85</span>
             <span class="stream-date">2026.04.14 &mdash; 3h42m</span>
-            <button class="check-btn" data-check>&#43; 視聴チェック</button>
+            <button class="btn-check" data-check>&#43; 視聴チェック</button>
           </div>
         </div>
         <div class="stream-item">
           <div class="stream-thumb"><div class="stream-thumb-play"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div>
           <div class="stream-meta">
-            <span class="stream-tag">ASMR</span>
+            <span class="tag-sm">ASMR</span>
             <span class="stream-title">【ASMR】春の夜の耳かき・添い寝シチュ</span>
             <span class="stream-date">2026.04.12 &mdash; 1h28m</span>
-            <button class="check-btn checked" data-check>&#10003; 視聴済</button>
+            <button class="btn-check checked" data-check>&#10003; 視聴済</button>
           </div>
         </div>
         <div class="stream-item">
           <div class="stream-thumb"><div class="stream-thumb-play"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div>
           <div class="stream-meta">
-            <span class="stream-tag">雑談 / さんでーまっする</span>
+            <span class="tag-sm">雑談 / さんでーまっする</span>
             <span class="stream-title">【さんでーまっする】今週のあれこれ報告会</span>
             <span class="stream-date">2026.04.13 10:00 &mdash; 2h05m</span>
-            <button class="check-btn" data-check>&#43; 視聴チェック</button>
+            <button class="btn-check" data-check>&#43; 視聴チェック</button>
           </div>
         </div>
       </div>
@@ -629,7 +629,7 @@ a:hover { color: var(--navy-800); }
     <div class="card card-schedule">
       <div class="card-head"><div class="card-title">スケジュール</div></div>
       <div class="schedule-countdown">7<small>days</small></div>
-      <span class="stream-tag" style="margin-bottom:var(--sp-xs)">コラボ</span>
+      <span class="tag-sm" style="margin-bottom:var(--sp-xs)">コラボ</span>
       <div class="schedule-name">3期生6周年記念グッズ 受注締切</div>
       <div class="schedule-date">2026.04.22 18:00</div>
       <a href="#" class="schedule-link">スケジュール一覧へ &rarr;</a>
@@ -708,7 +708,7 @@ a:hover { color: var(--navy-800); }
     </div>
     <div class="empty-cta-wrap">
       <p class="empty-cta-text">視聴した配信をチェックすると、<br>ここにあなたの記録が積み重なっていきます。</p>
-      <a href="#" class="empty-state-cta">団員の視聴ログを開く</a>
+      <a href="#" class="btn-cta">団員の視聴ログを開く</a>
     </div>
   </div>
 </section>

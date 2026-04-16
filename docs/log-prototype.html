@@ -617,7 +617,7 @@ a:hover { color: var(--navy-800); }
   flex-wrap: wrap;
 }
 
-.stream-tag {
+.tag-sm {
   display: inline-block;
   padding: 0px 6px;
   background: var(--navy-glow);
@@ -626,9 +626,10 @@ a:hover { color: var(--navy-800); }
   font-size: 10px;
   border-radius: 3px;
   letter-spacing: 0.02em;
+  width: fit-content;
 }
 
-.stream-title {
+.stream-title-text {
   font-size: var(--text-xs);
   font-weight: 500;
   color: var(--dark-800);
@@ -650,8 +651,8 @@ a:hover { color: var(--navy-800); }
   padding-top: 4px;
 }
 
-/* Check Button */
-.check-btn {
+/* Check Button — components準拠 */
+.btn-check {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -669,19 +670,19 @@ a:hover { color: var(--navy-800); }
   white-space: nowrap;
 }
 
-.check-btn:hover:not(.checked) {
+.btn-check:hover:not(.checked) {
   background: var(--navy-glow);
   border-color: var(--navy-300);
   color: var(--dark-800);
 }
 
-.check-btn.checked {
+.btn-check.checked {
   background: var(--navy-700);
   color: var(--white);
   border-color: var(--navy-700);
 }
 
-.check-btn.checked:hover {
+.btn-check.checked:hover {
   background: var(--navy-600);
 }
 
@@ -690,7 +691,7 @@ a:hover { color: var(--navy-800); }
   40% { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
-.check-btn.pop { animation: checkPop 0.3s var(--ease); }
+.btn-check.pop { animation: checkPop 0.3s var(--ease); }
 
 /* ============================================================
    LOAD MORE
@@ -703,23 +704,29 @@ a:hover { color: var(--navy-800); }
   padding: var(--sp-xl) 0 var(--sp-md);
 }
 
-.load-more-btn {
-  padding: 8px 28px;
+/* btn-secondary — components準拠 */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
   background: none;
-  border: 1px solid var(--navy-200);
-  border-radius: var(--r-sm);
-  color: var(--navy-600);
+  color: var(--navy-700);
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
+  border: 1px solid var(--navy-200);
+  border-radius: var(--r-sm);
   cursor: pointer;
-  transition: all var(--dur) var(--ease);
+  transition: all 0.3s var(--ease);
+  letter-spacing: 0.02em;
 }
 
-.load-more-btn:hover {
+.btn-secondary:hover {
   background: var(--navy-700);
   color: var(--white);
   border-color: var(--navy-700);
+  transform: translateY(-1px);
 }
 
 .load-more-count {
@@ -960,7 +967,7 @@ a:hover { color: var(--navy-800); }
   </div>
 
   <div class="load-more-wrap" id="loadMoreWrap">
-    <button class="load-more-btn" id="loadMoreBtn">さらに読み込む</button>
+    <button class="btn-secondary" id="loadMoreBtn">さらに読み込む</button>
     <div class="load-more-count" id="loadMoreCount">20 / 30件</div>
   </div>
 </div>
@@ -1019,7 +1026,7 @@ var sortMode = 'newest';
 var checkFilter = 'all';
 
 function createCardHTML(stream, idx) {
-  var tagHTML = stream.tags.map(function(t) { return '<span class="stream-tag">' + t + '</span>'; }).join('');
+  var tagHTML = stream.tags.map(function(t) { return '<span class="tag-sm">' + t + '</span>'; }).join('');
   var checkedClass = stream.checked ? ' checked' : '';
   var checkedText = stream.checked ? '&#10003; 視聴済' : '&#43; チェック';
   var cardClass = stream.checked ? ' is-checked' : '';
@@ -1032,10 +1039,10 @@ function createCardHTML(stream, idx) {
     '</div>' +
     '<div class="stream-body">' +
       '<div class="stream-tags">' + tagHTML + '</div>' +
-      '<div class="stream-title">' + stream.title + '</div>' +
+      '<div class="stream-title-text">' + stream.title + '</div>' +
       '<div class="stream-date">' + stream.date + '</div>' +
       '<div class="stream-bottom">' +
-        '<button class="check-btn' + checkedClass + '" data-check="' + idx + '">' + checkedText + '</button>' +
+        '<button class="btn-check' + checkedClass + '" data-check="' + idx + '">' + checkedText + '</button>' +
       '</div>' +
     '</div>' +
   '</div>';
