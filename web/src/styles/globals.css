@@ -1,26 +1,220 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   DESIGN TOKENS — docs/home-prototype.html 準拠
+
+   構造:
+   1. パレット         生の色値（直接使用は原則禁止）
+   2. セマンティック色   目的別カラートークン（コンポーネントで使う）
+   3. タイポグラフィ    フォントサイズ（プロトタイプ準拠に上書き）
+   4. レイアウト        構造的な定数
+   5. シャドウ          用途別の影
+   6. スペーシング      余白スケール + 用途ガイド
+   7. 角丸             コンポーネント種別ごとの丸み
+   8. モーション        イージング
+   9. グロー           半透明オーバーレイ
+   ============================================================ */
+
+/* ----- 1. パレット -----
+   直接使用は原則禁止。セマンティックトークン経由で参照する。
+   パレット直指定が許されるのは、セマンティックに該当しない
+   1-2箇所限りの装飾的用途のみ（例: カバーアイコンの silver-300）。
+   ------------------------------------------------------------ */
+@theme {
+  --color-cream-50: #FCFCFD;
+  --color-cream-100: #F8F8FA;
+  --color-cream-200: #EDEDF0;
+  --color-cream-300: #E2E2E6;
+  --color-cream-400: #D4D4D9;
+
+  --color-navy-900: #1C2230;
+  --color-navy-800: #242A3A;
+  --color-navy-700: #303845;
+  --color-navy-600: #404A55;
+  --color-navy-500: #545D68;
+  --color-navy-400: #6A7380;
+  --color-navy-300: #888F99;
+  --color-navy-200: #ACB1B8;
+  --color-navy-100: #CDD0D4;
+
+  --color-gold-600: #8B6D1E;
+  --color-gold-500: #A6852E;
+  --color-gold-400: #C8A24C;
+  --color-gold-300: #D4B56A;
+  --color-gold-200: #E2CC92;
+  --color-gold-100: #F2E6C4;
+
+  --color-silver-400: #9A949A;
+  --color-silver-300: #BBB4B8;
+  --color-silver-200: #D5D0D3;
+  --color-silver-100: #ECEAEB;
+
+  --color-dark-900: #1A1D24;
+  --color-dark-800: #2A2D35;
+  --color-dark-700: #3A3D45;
+
+  --color-success: #4A8B6B;
+}
+
+/* ----- 2. セマンティック色 -----
+   コンポーネントではこちらを使う。
+   ------------------------------------------------------------ */
+@theme inline {
+  /* 背景 */
+  --color-page: var(--color-cream-100);
+  --color-surface: var(--color-cream-50);
+  --color-surface-hover: var(--color-cream-200);
+
+  /* テキスト */
+  --color-heading: var(--color-dark-800);
+  --color-foreground: var(--color-navy-700);
+  --color-secondary: var(--color-navy-500);
+  --color-muted: var(--color-navy-400);
+  --color-subtle: var(--color-navy-300);
+  --color-faint: var(--color-navy-200);
+
+  /* ボーダー */
+  --color-border: var(--color-cream-300);
+  --color-border-hover: var(--color-cream-400);
+  --color-border-strong: var(--color-navy-200);
+
+  /* アクセント */
+  --color-accent: var(--color-gold-400);
+  --color-accent-label: var(--color-gold-500);
+
+  /* ヘッダー */
+  --color-header-bg: var(--color-navy-700);
+  --color-header-text: var(--color-gold-100);
+  --color-header-border: var(--color-gold-400);
+
+  /* インタラクション */
+  --color-link-hover: var(--color-navy-600);
+}
+
+/* ----- 3. タイポグラフィ -----
+   プロトタイプの文字サイズに合わせて Tailwind デフォルトを上書き。
+   xs(0.75) / sm(0.875) / base(1) / lg(1.125) は Tailwind 同値なので省略。
+   xl 以上はプロトタイプの方が大きいため上書き。
+   ------------------------------------------------------------ */
+@theme {
+  --text-xl: 1.5rem;   /* Tailwind default: 1.25rem → proto: 1.5rem */
+  --text-2xl: 2rem;    /* Tailwind default: 1.5rem  → proto: 2rem  */
+  --text-3xl: 2.5rem;  /* Tailwind default: 1.875rem→ proto: 2.5rem */
+  --text-4xl: 3.5rem;  /* Tailwind default: 2.25rem → proto: 3.5rem */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: 'Outfit', sans-serif;       /* 見出し・カード名 */
+  --font-body: 'M PLUS 2', sans-serif;        /* 本文・UI・ロゴ */
+  --font-mono: 'JetBrains Mono', monospace;   /* 日付・メタ情報・ラベル */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ----- 4. レイアウト -----
+   アプリ全体で共通の構造的定数。
+   max-w-[--content-max] のように arbitrary value で参照する。
+   ------------------------------------------------------------ */
+:root {
+  --content-max: 1120px;
+  --header-height: 3.5rem;     /* 56px */
+  --dropdown-width: 280px;
+  --hub-card-min-h: 140px;
+}
+
+/* ----- 5. シャドウ -----
+   用途別に shadow-dropdown / shadow-card-hover 等で使用。
+   ------------------------------------------------------------ */
+@theme {
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 6px 24px rgba(26, 35, 53, 0.07);
+  --shadow-dropdown: 0 8px 24px rgba(26, 35, 53, 0.08);
+  --shadow-button-hover: 0 4px 16px rgba(26, 35, 53, 0.15);
+}
+
+/* ----- 6. スペーシング -----
+   プロトタイプ準拠の 7段スケール。Tailwind デフォルト(0-96)と共存。
+   用途ガイド:
+     xs(4)   微小ギャップ（アイコンとテキスト間、セクションタイトル下）
+     sm(8)   小ギャップ（ドロップダウン内 padding、リスト項目間）
+     md(16)  標準ギャップ（カードグリッド gap、カード内セクション間）
+     lg(24)  カード padding、セクション水平 padding
+     xl(40)  セクション内の大きなまとまり間
+     2xl(64) セクション上下 padding、フッター padding
+     3xl(120) ページ主要セクション間
+   ------------------------------------------------------------ */
+@theme inline {
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+  --spacing-2xl: 64px;
+  --spacing-3xl: 120px;
+}
+
+/* ----- 7. 角丸 -----
+   コンポーネント種別ごとの使い分け:
+     sm(6px)  ボタン、ピル、タグ、ドロップダウン内アイテム
+     md(10px) ドロップダウン、パネル、入力欄
+     lg(16px) カード、主要コンテナ
+   ------------------------------------------------------------ */
+@theme inline {
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ----- 8. モーション -----
+   ease-out-expo がアプリ全体の標準イージング。
+   duration は Tailwind デフォルト duration-200/300 をそのまま使う:
+     200ms  ドロップダウン開閉、軽いフィードバック
+     250ms  ボタン・テキスト・ボーダー変化
+     300ms  カード変形・矢印スライド
+   ------------------------------------------------------------ */
+@theme inline {
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ----- 9. グロー -----
+   box-shadow / background で使う半透明色。
+   arbitrary value で参照: bg-[var(--glow-navy)] 等。
+   ------------------------------------------------------------ */
+:root {
+  --glow-navy: rgba(48, 56, 69, 0.08);
+  --glow-gold: rgba(200, 162, 76, 0.10);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+body {
+  background: var(--color-page);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  line-height: 1.7;
+}
+
+::selection {
+  background: rgba(44, 58, 78, 0.12);
+  color: var(--color-heading);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes draw-line {
+  from { width: 0; }
+  to { width: 48px; }
 }
