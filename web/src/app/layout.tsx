@@ -23,9 +23,27 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : 'https://danin-log.vercel.app';
+
 export const metadata: Metadata = {
   title: 'だんいんログ',
   description: '白銀ノエルファン（団員）のための推し活記録アプリ',
+  openGraph: {
+    title: 'だんいんログ',
+    description: '白銀ノエルファン（団員）のための推し活記録アプリ',
+    siteName: 'だんいんログ',
+    images: [{ url: `${siteUrl}/api/og`, width: 1200, height: 630 }],
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'だんいんログ',
+    description: '白銀ノエルファン（団員）のための推し活記録アプリ',
+    images: [`${siteUrl}/api/og`],
+  },
 };
 
 const themeScript = `(function(){var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})()`;

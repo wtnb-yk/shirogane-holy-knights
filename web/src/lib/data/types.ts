@@ -125,6 +125,10 @@ export type StreamTag = {
   name: string;
 };
 
+export type StreamTagWithCount = StreamTag & {
+  count: number;
+};
+
 export type Stream = {
   id: string;
   title: string;

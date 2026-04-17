@@ -1,0 +1,45 @@
+const STORAGE_KEY = 'checked-streams';
+
+const listeners = new Set<() => void>();
+let cache: Set<string> | null = null;
+
+function readSet(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return new Set();
+    return new Set(JSON.parse(raw) as string[]);
+  } catch {
+    return new Set();
+  }
+}
+
+function writeSet(set: Set<string>): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+  cache = set;
+  listeners.forEach((cb) => cb());
+}
+
+export function getCheckedSnapshot(): Set<string> {
+  if (!cache) cache = readSet();
+  return cache;
+}
+
+export function getCheckedServerSnapshot(): Set<string> {
+  return new Set();
+}
+
+export function subscribeChecked(callback: () => void): () => void {
+  listeners.add(callback);
+  return () => listeners.delete(callback);
+}
+
+export function toggleChecked(videoId: string): void {
+  const set = new Set(getCheckedSnapshot());
+  if (set.has(videoId)) {
+    set.delete(videoId);
+  } else {
+    set.add(videoId);
+  }
+  writeSet(set);
+}

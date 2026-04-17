@@ -24,7 +24,7 @@ export function Cover() {
         団員の推し活を、もっと楽しく。
       </p>
       <p
-        className="font-mono text-[10px] md:text-xs text-silver-400 tracking-[0.1em] mt-lg md:mt-xl"
+        className="font-mono text-3xs md:text-xs text-silver-400 tracking-wide mt-lg md:mt-xl"
         style={{ animation: 'fade-up 0.4s var(--ease-out-expo) 1.2s both' }}
       >
         白銀ノエル非公式ファンサイト

@@ -78,6 +78,8 @@
   --color-muted: var(--color-navy-400);
   --color-subtle: var(--color-navy-300);
   --color-faint: var(--color-navy-200);
+  --color-decorative: var(--color-silver-300);
+  --color-decorative-muted: var(--color-silver-400);
 
   /* ボーダー */
   --color-border: var(--color-cream-300);
@@ -94,6 +96,7 @@
   --color-header-border: var(--color-gold-400);
 
   /* インタラクション */
+  --color-interactive: var(--color-navy-600);
   --color-link-hover: var(--color-navy-600);
 }
 
@@ -101,8 +104,11 @@
    プロトタイプの文字サイズに合わせて Tailwind デフォルトを上書き。
    xs(0.75) / sm(0.875) / base(1) / lg(1.125) は Tailwind 同値なので省略。
    xl 以上はプロトタイプの方が大きいため上書き。
+   2xs / 3xs はプロトタイプの 11px / 10px メタ情報用。
    ------------------------------------------------------------ */
 @theme {
+  --text-3xs: 10px;    /* モノタイプメタ情報、バッジ */
+  --text-2xs: 11px;    /* チェックボタン、タグピル、入力欄 */
   --text-xl: 1.5rem;   /* Tailwind default: 1.25rem → proto: 1.5rem */
   --text-2xl: 2rem;    /* Tailwind default: 1.5rem  → proto: 2rem  */
   --text-3xl: 2.5rem;  /* Tailwind default: 1.875rem→ proto: 2.5rem */
@@ -124,6 +130,9 @@
   --header-height: 3.5rem;     /* 56px */
   --dropdown-width: 280px;
   --hub-card-min-h: 140px;
+  --filter-panel-width: 360px;
+  --filter-panel-max-h: 420px;
+  --search-expanded-width: 200px;
 }
 
 /* ----- 5. シャドウ -----
@@ -148,6 +157,7 @@
      3xl(120) ページ主要セクション間
    ------------------------------------------------------------ */
 @theme inline {
+  --spacing-2xs: 3px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -164,12 +174,23 @@
      lg(16px) カード、主要コンテナ
    ------------------------------------------------------------ */
 @theme inline {
+  --radius-xs: 3px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
 }
 
-/* ----- 8. モーション -----
+/* ----- 8. レタースペーシング -----
+   用途ごとのトラッキング値。
+   ------------------------------------------------------------ */
+@theme {
+  --tracking-tight: -0.01em;   /* タイトル */
+  --tracking-normal: 0.02em;   /* ボタン、ロゴ */
+  --tracking-wide: 0.1em;      /* セクションタイトル（UPPERCASE） */
+  --tracking-wider: 0.14em;    /* ラベル（UPPERCASE） */
+}
+
+/* ----- 9. モーション -----
    ease-out-expo がアプリ全体の標準イージング。
    duration は Tailwind デフォルト duration-200/300 をそのまま使う:
      200ms  ドロップダウン開閉、軽いフィードバック
@@ -260,6 +281,7 @@ body {
   --color-header-border: var(--color-gold-500);
 
   /* ----- インタラクション ----- */
+  --color-interactive: var(--color-navy-200);
   --color-link-hover: var(--color-cream-200);
 
   /* ----- シャドウ（暗い背景で視認性を確保） ----- */

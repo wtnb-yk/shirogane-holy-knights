@@ -64,7 +64,7 @@ function HubCard({ name, desc, meta, href }: CardData) {
         {name}
       </div>
       <div className="text-xs text-secondary leading-[1.7]">{desc}</div>
-      <div className="mt-auto pt-xs font-mono text-[10px] md:text-xs text-subtle">
+      <div className="mt-auto pt-xs font-mono text-3xs md:text-xs text-subtle">
         {meta}
       </div>
       <span className="absolute bottom-md md:bottom-lg right-md md:right-lg font-mono text-sm text-faint transition-all duration-300 ease-out-expo group-hover/card:text-link-hover group-hover/card:translate-x-1">
@@ -83,7 +83,7 @@ function CardGroup({
 }) {
   return (
     <div>
-      <div className="font-mono text-[10px] md:text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-sm md:mb-md">
+      <div className="font-mono text-3xs md:text-xs font-medium tracking-wider uppercase text-accent-label mb-sm md:mb-md">
         {label}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-sm md:gap-md">
@@ -100,7 +100,7 @@ export function BentoGrid() {
 
   return (
     <section className="max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-xl md:pt-2xl pb-xl md:pb-3xl">
-      <div className="font-mono text-[10px] md:text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-xs md:mb-sm">
+      <div className="font-mono text-3xs md:text-xs font-medium tracking-wider uppercase text-accent-label mb-xs md:mb-sm">
         03 &mdash; All Tools
       </div>
       <h2 className="font-display text-xl md:text-2xl font-semibold text-heading leading-[1.3] mb-xs">

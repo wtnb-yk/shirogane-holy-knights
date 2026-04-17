@@ -11,6 +11,7 @@ import type {
   Stream,
   Channel,
   StreamTag,
+  StreamTagWithCount,
 } from './types';
 
 let cachedStreams: Stream[] | null = null;
@@ -103,4 +104,25 @@ export function getStreamTags(): StreamTag[] {
   return tags
     .map((t) => ({ id: Number(t.id), name: t.name }))
     .sort((a, b) => a.id - b.id);
+}
+
+/**
+ * 配信タグに紐づく配信件数を付与して返す（件数降順）
+ *
+ * カテゴリタブ等の表示優先度判定に使う。
+ */
+export function getStreamTagsWithCount(): StreamTagWithCount[] {
+  const streams = getStreams();
+  const tags = getStreamTags();
+
+  const countMap = new Map<number, number>();
+  for (const s of streams) {
+    for (const t of s.tags) {
+      countMap.set(t.id, (countMap.get(t.id) ?? 0) + 1);
+    }
+  }
+
+  return tags
+    .map((t) => ({ ...t, count: countMap.get(t.id) ?? 0 }))
+    .sort((a, b) => b.count - a.count);
 }

@@ -12,7 +12,7 @@ export function Header() {
       <div className="mx-auto max-w-[var(--content-max)] px-md md:px-lg h-[var(--header-height)] flex items-center gap-xl">
         <Link
           href="/"
-          className="font-body text-sm md:text-base font-bold text-header-text tracking-[0.02em] hover:text-white transition-colors duration-250 ease-out-expo"
+          className="font-body text-sm md:text-base font-bold text-header-text tracking-normal hover:text-white transition-colors duration-250 ease-out-expo"
         >
           だんいんログ
         </Link>

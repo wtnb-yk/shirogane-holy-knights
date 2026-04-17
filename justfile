@@ -39,13 +39,41 @@ sync-data-local:
 
 # ---------- データ管理（tools/justfile のエイリアス） ----------
 
-# YouTube データ取得
-fetch *args="":
-    cd tools && just fetch {{args}}
+# YouTube データ全件取得
+fetch:
+    cd tools && just fetch
 
-# タグ分類
-tags *args="":
-    cd tools && just tags {{args}}
+# 単一動画取得
+fetch-one video_id:
+    cd tools && just fetch-one {{video_id}}
+
+# チャンネル追加/更新
+channel-add +channel_ids:
+    cd tools && just channel-add {{channel_ids}}
+
+# タグ自動分類
+tags:
+    cd tools && just tags
+
+# タグ精度検証
+tags-verify:
+    cd tools && just tags-verify
+
+# 楽曲抽出（歌枠+ライブ）
+songs:
+    cd tools && just songs
+
+# 楽曲抽出（歌枠のみ）
+songs-stream:
+    cd tools && just songs-stream
+
+# 楽曲抽出（ライブのみ）
+songs-live:
+    cd tools && just songs-live
+
+# アーティスト情報補完
+artists:
+    cd tools && just artists
 
 # ステージング差分確認
 data-diff:
@@ -55,3 +83,7 @@ data-diff:
 data-apply:
     cd tools && just apply
     just sync-data-local
+
+# ステージングクリア
+data-clean:
+    cd tools && just clean
