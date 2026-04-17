@@ -1,0 +1,93 @@
+# だんいんログ — データ管理コマンド
+
+scripts := "scripts"
+
+# ---------- YouTube データ取得 ----------
+
+# 全件取得（白銀ノエルch）
+fetch:
+    cd {{scripts}} && python3 youtube_data_fetcher.py
+
+# 単一動画取得
+fetch-one video_id:
+    cd {{scripts}} && python3 youtube_data_fetcher.py {{video_id}}
+
+# チャンネル追加/更新
+channel-add +channel_ids:
+    cd {{scripts}} && python3 channel_inserter.py {{channel_ids}}
+
+# ---------- タグ分類 ----------
+
+# 新着のみ自動分類 → data-staging/
+tags:
+    cd {{scripts}} && python3 stream_tag_extractor.py
+
+# 全件精度検証（人手タグとの突合レポート）
+tags-verify:
+    cd {{scripts}} && python3 stream_tag_extractor.py --verify
+
+# ---------- 楽曲抽出 ----------
+
+# 歌枠+ライブ両方
+songs:
+    cd {{scripts}} && python3 extract_songs.py
+
+# 歌枠のみ
+songs-stream:
+    cd {{scripts}} && python3 extract_songs.py --type stream
+
+# ライブのみ
+songs-live:
+    cd {{scripts}} && python3 extract_songs.py --type live
+
+# ---------- アーティスト情報 ----------
+
+# Spotify API で TODO 曲のアーティストを補完
+artists:
+    cd {{scripts}} && python3 update_song_artists.py
+
+# ---------- ステージング管理 ----------
+
+# data と data-staging の差分を表示
+diff:
+    #!/usr/bin/env bash
+    if [ ! -d data-staging ] || [ -z "$(ls data-staging/*.csv 2>/dev/null)" ]; then
+        echo "data-staging/ に CSV がありません"
+        exit 0
+    fi
+    for f in data-staging/*.csv; do
+        name=$(basename "$f")
+        if [ -f "data/$name" ]; then
+            d=$(diff <(wc -l < "data/$name") <(wc -l < "$f"))
+            if [ -n "$d" ]; then
+                echo "$name: $(wc -l < "data/$name" | tr -d ' ')行 → $(wc -l < "$f" | tr -d ' ')行"
+            else
+                echo "$name: 変更なし"
+            fi
+        else
+            echo "$name: 新規 ($(wc -l < "$f" | tr -d ' ')行)"
+        fi
+    done
+
+# data-staging/ → data/ に反映
+apply:
+    #!/usr/bin/env bash
+    if [ ! -d data-staging ] || [ -z "$(ls data-staging/*.csv 2>/dev/null)" ]; then
+        echo "data-staging/ に CSV がありません"
+        exit 1
+    fi
+    echo "=== 反映するファイル ==="
+    ls data-staging/*.csv | while read f; do echo "  $(basename "$f")"; done
+    echo ""
+    read -p "data/ に反映しますか？ [y/N] " confirm
+    if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
+        cp data-staging/*.csv data/
+        echo "反映完了"
+    else
+        echo "キャンセル"
+    fi
+
+# data-staging/ をクリア
+clean:
+    rm -f data-staging/*.csv
+    echo "data-staging/ をクリアしました"
