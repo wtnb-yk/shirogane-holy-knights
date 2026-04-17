@@ -1,395 +1,281 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """
-白銀ノエルさんのYouTubeチャンネルから動画情報を取得してCSVに出力するスクリプト
+YouTube Data API から動画データを取得し、既存データとマージして出力する。
 
-出力内容:
-1. channels.csv - チャンネル情報
-2. channel_details.csv - チャンネル詳細情報
-3. videos.csv - 動画基本情報（description, url, thumbnail_url, published_at含む）
-4. stream_details.csv - ライブ配信詳細情報（started_at - 配信のみ）
+既存データ: tools/data/
+出力先:     tools/data-staging/
 
-使用方法:
-1. YouTube Data API v3のAPIキーを取得
-2. 以下のライブラリをインストール
-   pip install google-api-python-client pandas
-3. API_KEYを設定して実行
+出力CSV（07-csv-design.md 準拠）:
+  - channels.csv          id, title, handle, icon_url
+  - videos.csv            id, title, thumbnail_url, duration, channel_id, published_at
+  - video_video_types.csv video_id, video_type_id
+  - stream_details.csv    video_id, started_at
+
+使い方:
+  # 全件取得（白銀ノエルch）
+  YOUTUBE_API_KEY=xxx python3 youtube_data_fetcher.py
+
+  # 単一動画
+  YOUTUBE_API_KEY=xxx python3 youtube_data_fetcher.py <video_id>
 """
 
-import os
-import sys
 import csv
-import time
-import datetime
-import pandas as pd
-import uuid
+import os
+import re
+import sys
+from pathlib import Path
+
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-# APIキーを設定 (実行時に環境変数から取得するか、直接入力)
-API_KEY = os.environ.get('YOUTUBE_API_KEY', '')  # 環境変数がない場合は直接入力: 'YOUR_API_KEY'
+ROOT = Path(__file__).resolve().parent.parent  # tools/
+DATA_DIR = ROOT / 'data'
+STAGING_DIR = ROOT / 'data-staging'
 
-# 白銀ノエルさんのチャンネルID
-CHANNEL_ID = 'UCdyqAaZDKHXg4Ahi7VENThQ'  # @ShiroganeNoel
-CHANNEL_HANDLE = '@ShiroganeNoel'
+NOEL_CHANNEL_ID = 'UCdyqAaZDKHXg4Ahi7VENThQ'
 
-def get_youtube_service():
-    """YouTube Data API サービスを初期化"""
-    return build('youtube', 'v3', developerKey=API_KEY)
+# video_types.csv: 1=stream, 2=video
+VIDEO_TYPE_STREAM = 1
+VIDEO_TYPE_VIDEO = 2
 
-def load_premiere_video_ids():
-    """プレミアム公開動画IDのリストを読み込み"""
-    premiere_ids = set()
-    csv_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'premiere_videos.csv')
-    
-    if os.path.exists(csv_path):
-        try:
-            with open(csv_path, 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    if 'video_id' in row and row['video_id'].strip():
-                        premiere_ids.add(row['video_id'].strip())
-            print(f"プレミアム公開動画 {len(premiere_ids)} 件を読み込みました")
-        except Exception as e:
-            print(f"警告: プレミアム動画CSVファイルの読み込みに失敗しました: {e}")
-    else:
-        print(f"警告: プレミアム動画CSVファイルが見つかりません: {csv_path}")
-    
-    return premiere_ids
 
-def get_channel_info(youtube, channel_id):
-    """チャンネル情報を取得"""
-    print(f"チャンネル {channel_id} の情報を取得中...")
-    
-    channel_response = youtube.channels().list(
-        part='snippet,statistics,brandingSettings',
-        id=channel_id
+# ---------- ユーティリティ ----------
+
+def load_api_key():
+    """YOUTUBE_API_KEY を環境変数 → config/.env.local の順で探す。"""
+    key = os.environ.get('YOUTUBE_API_KEY', '')
+    if key:
+        return key
+
+    env_file = ROOT / 'config' / '.env.local'
+    if env_file.exists():
+        for line in env_file.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            if line.startswith('YOUTUBE_API_KEY=') and not line.startswith('#'):
+                return line.split('=', 1)[1].strip().strip("'\"")
+    return ''
+
+
+def read_csv_keyed(filename, key_field):
+    """tools/data/ の CSV を key_field でインデックスした OrderedDict 風 dict で返す。"""
+    path = DATA_DIR / filename
+    result = {}
+    if path.exists():
+        with open(path, newline='', encoding='utf-8') as f:
+            for row in csv.DictReader(f):
+                result[row[key_field]] = row
+    return result
+
+
+def write_csv(filename, fieldnames, rows):
+    """data-staging/ に CSV を書き出す。"""
+    STAGING_DIR.mkdir(parents=True, exist_ok=True)
+    path = STAGING_DIR / filename
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({k: row.get(k, '') for k in fieldnames})
+    print(f'  {filename}: {len(rows)}件')
+
+
+def load_premiere_ids():
+    """プレミア公開動画 ID を set で返す。"""
+    path = DATA_DIR / 'premiere_videos.csv'
+    ids = set()
+    if path.exists():
+        with open(path, newline='', encoding='utf-8') as f:
+            for row in csv.DictReader(f):
+                vid = row.get('video_id', '').strip()
+                if vid:
+                    ids.add(vid)
+        print(f'プレミア公開動画: {len(ids)}件')
+    return ids
+
+
+def iso_duration_to_hhmmss(d):
+    """ISO 8601 duration (PT1H30M15S) → HH:MM:SS"""
+    h = int(m.group(1)) if (m := re.search(r'(\d+)H', d)) else 0
+    mi = int(m.group(1)) if (m := re.search(r'(\d+)M', d)) else 0
+    s = int(m.group(1)) if (m := re.search(r'(\d+)S', d)) else 0
+    return f'{h:02d}:{mi:02d}:{s:02d}'
+
+
+def merge(existing, new_rows, key_field):
+    """既存データに新データを upsert。既存の並び順を維持し、新規は末尾に追加。"""
+    merged = dict(existing)
+    for row in new_rows:
+        merged[row[key_field]] = row
+    return list(merged.values())
+
+
+# ---------- YouTube API ----------
+
+def fetch_channel_info(youtube, channel_id):
+    """チャンネル情報 → channels.csv 形式の dict"""
+    resp = youtube.channels().list(
+        part='snippet,brandingSettings',
+        id=channel_id,
     ).execute()
-    
-    if not channel_response['items']:
-        print("チャンネル情報が取得できませんでした")
-        return None, None
-        
-    channel = channel_response['items'][0]
-    
-    # チャンネル基本情報
-    channel_info = {
-        'id': channel['id'],
-        'title': channel['snippet']['title']
-    }
-    
-    # ハンドルを取得（複数の方法を試す）
-    handle = None
-    
-    # 方法1: snippet.customUrl から取得
-    if 'customUrl' in channel['snippet']:
-        handle = channel['snippet']['customUrl']
-        if not handle.startswith('@'):
-            handle = '@' + handle
-    
-    # 方法2: brandingSettings.channel.customChannelUrlから取得
-    if not handle and 'brandingSettings' in channel:
-        branding = channel['brandingSettings']
-        if 'channel' in branding and 'customChannelUrl' in branding['channel']:
-            custom_url = branding['channel']['customChannelUrl']
-            # URLから@handleを抽出
-            if 'youtube.com/@' in custom_url:
-                handle = '@' + custom_url.split('youtube.com/@')[1]
-    
-    # 白銀ノエルの場合のフォールバック
-    if not handle and channel['id'] == CHANNEL_ID:
-        handle = CHANNEL_HANDLE
-    
-    # チャンネル詳細情報
-    channel_details = {
-        'channel_id': channel['id'],
+
+    if not resp['items']:
+        print(f'  警告: チャンネル {channel_id} の情報を取得できませんでした')
+        return None
+
+    ch = resp['items'][0]
+    snippet = ch['snippet']
+
+    handle = snippet.get('customUrl', '')
+    if handle and not handle.startswith('@'):
+        handle = '@' + handle
+
+    return {
+        'id': ch['id'],
+        'title': snippet['title'],
         'handle': handle,
-        'description': channel['snippet'].get('description', ''),
-        'icon_url': channel['snippet'].get('thumbnails', {}).get('high', {}).get('url', '')
+        'icon_url': snippet.get('thumbnails', {}).get('high', {}).get('url', ''),
     }
-    
-    print(f"チャンネル情報を取得しました: {channel_info['title']}")
-    return channel_info, channel_details
 
-def get_all_video_ids(youtube, channel_id):
-    """チャンネルのすべての動画IDを取得"""
+
+def fetch_all_video_ids(youtube, channel_id):
+    """チャンネルの全動画 ID をリストで返す。"""
+    resp = youtube.channels().list(part='contentDetails', id=channel_id).execute()
+    if not resp['items']:
+        return []
+
+    playlist_id = resp['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+
     video_ids = []
-    next_page_token = None
-
-    print(f"チャンネル {channel_id} の動画ID一覧を取得中...")
-
+    page_token = None
     while True:
-        # アップロード済み動画プレイリストIDを取得
-        channel_response = youtube.channels().list(
-            part='contentDetails',
-            id=channel_id
+        resp = youtube.playlistItems().list(
+            part='snippet',
+            playlistId=playlist_id,
+            maxResults=50,
+            pageToken=page_token,
         ).execute()
 
-        # チャンネル情報から動画アップロードプレイリストIDを抽出
-        if not channel_response['items']:
-            print("チャンネル情報が取得できませんでした")
-            return video_ids
-
-        uploads_playlist_id = channel_response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
-
-        # プレイリスト内のすべての動画を取得
-        request = youtube.playlistItems().list(
-            part='snippet',
-            playlistId=uploads_playlist_id,
-            maxResults=50,
-            pageToken=next_page_token
-        )
-        
-        response = request.execute()
-        
-        # 動画IDを収集
-        for item in response['items']:
+        for item in resp['items']:
             video_ids.append(item['snippet']['resourceId']['videoId'])
-        
-        # 次のページがあれば続行
-        next_page_token = response.get('nextPageToken')
-        if not next_page_token:
+
+        page_token = resp.get('nextPageToken')
+        if not page_token:
             break
-            
-    print(f"{len(video_ids)} 件の動画IDを取得しました")
+
+    print(f'動画ID: {len(video_ids)}件取得')
     return video_ids
 
-def get_videos_details(youtube, video_ids, channel_id):
-    """動画IDリストから詳細情報を取得"""
+
+def fetch_video_details(youtube, video_ids, channel_id, premiere_ids):
+    """動画詳細を取得 → (videos, video_video_types, stream_details) のリスト。"""
     videos = []
+    vv_types = []
     stream_details = []
-    
-    # プレミアム公開動画IDのリストを読み込み
-    premiere_video_ids = load_premiere_video_ids()
-    
-    # YouTube APIは一度に50件までしか取得できないため、50件ずつ処理
+
     for i in range(0, len(video_ids), 50):
-        batch_ids = video_ids[i:i+50]
-        
-        request = youtube.videos().list(
-            part='snippet,contentDetails,statistics,liveStreamingDetails',
-            id=','.join(batch_ids)
-        )
-        
-        response = request.execute()
-        
-        # 各動画の詳細情報を取得
-        for video in response['items']:
-            video_id = video['id']
-            
-            # プレミアム公開動画の判定を最優先で実行
-            if video_id in premiere_video_ids:
-                # プレミアム公開動画は強制的に動画として分類
-                is_stream = False
-            else:
-                # 動画か配信かを判定
-                is_stream = False
-                if 'liveStreamingDetails' in video:
-                    # liveStreamingDetailsがある場合、基本的に配信として判定
-                    # ただし、プレミア公開は除外済みなので、ここに来るのは実際の配信
-                    is_stream = True
-            
-            # published_atの決定
-            if is_stream:
-                # 配信の場合
-                live_details = video['liveStreamingDetails']
-                # actualStartTimeがあればそれを、なければscheduledStartTimeを使用
-                published_at = live_details.get('actualStartTime', live_details.get('scheduledStartTime', video['snippet']['publishedAt']))
-                video_type = 'stream'
-            else:
-                # 動画の場合（プレミア公開含む）
-                published_at = video['snippet']['publishedAt']
-                video_type = 'video'
-            
-            # チャンネルIDを決定（引数がNoneの場合は動画から取得）
-            actual_channel_id = channel_id if channel_id is not None else video['snippet']['channelId']
-            
-            # 動画基本情報（videosテーブルの全フィールドを含む）
-            video_data = {
-                'id': video_id,
-                'title': video['snippet']['title'],
-                'description': video['snippet']['description'],
-                'url': f"https://www.youtube.com/watch?v={video_id}",
-                'thumbnail_url': video['snippet']['thumbnails'].get('high', {}).get('url', ''),
-                'duration': convert_duration_to_hhmmss(video.get('contentDetails', {}).get('duration', '')),
-                'published_at': video['snippet']['publishedAt'],  # 動画でも配信でもsnippet.publishedAtを使用
+        batch = video_ids[i : i + 50]
+        resp = youtube.videos().list(
+            part='snippet,contentDetails,liveStreamingDetails',
+            id=','.join(batch),
+        ).execute()
+
+        for v in resp['items']:
+            vid = v['id']
+            snippet = v['snippet']
+
+            is_stream = vid not in premiere_ids and 'liveStreamingDetails' in v
+            actual_channel_id = channel_id or snippet['channelId']
+
+            videos.append({
+                'id': vid,
+                'title': snippet['title'],
+                'thumbnail_url': snippet.get('thumbnails', {}).get('high', {}).get('url', ''),
+                'duration': iso_duration_to_hhmmss(
+                    v.get('contentDetails', {}).get('duration', '')
+                ),
                 'channel_id': actual_channel_id,
-                'video_type': video_type
-            }
-            videos.append(video_data)
-            
-            # ライブ配信詳細情報（stream_detailsテーブル用 - 配信のみ）
-            # is_streamがTrueの場合のみ（プレミア公開は除外される）
-            if is_stream and 'liveStreamingDetails' in video:
-                live_details = video['liveStreamingDetails']
-                # actualStartTimeがあればそれを、なければscheduledStartTimeを使用
-                start_time = live_details.get('actualStartTime') or live_details.get('scheduledStartTime')
-                if start_time:
-                    stream_detail = {
-                        'video_id': video_id,
-                        'started_at': start_time
-                    }
-                    stream_details.append(stream_detail)
-            
-            
-    print(f"{len(videos)} 件の動画情報を取得しました")
-    return videos, stream_details
+                'published_at': snippet['publishedAt'],
+            })
 
-def convert_duration_to_hhmmss(duration_str):
-    """ISO 8601 形式の期間を HH:MM:SS 形式に変換"""
-    import re
-    import datetime
-    
-    # PT1H30M15S のような形式から時間、分、秒を抽出
-    hours = re.search(r'(\d+)H', duration_str)
-    minutes = re.search(r'(\d+)M', duration_str)
-    seconds = re.search(r'(\d+)S', duration_str)
-    
-    h = int(hours.group(1)) if hours else 0
-    m = int(minutes.group(1)) if minutes else 0
-    s = int(seconds.group(1)) if seconds else 0
-    
-    # 時:分:秒 の形式で返す
-    return f"{h:02d}:{m:02d}:{s:02d}"
+            vv_types.append({
+                'video_id': vid,
+                'video_type_id': str(VIDEO_TYPE_STREAM if is_stream else VIDEO_TYPE_VIDEO),
+            })
 
-def create_output_directory():
-    """出力ディレクトリを作成"""
-    # メインの出力ディレクトリを作成
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    result_dir = os.path.join(base_dir, "output", "youtube_data")
-    
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
-    
-    # 現在日時とUUIDを使用して固有のディレクトリ名を作成
-    now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    unique_id = str(uuid.uuid4())[:8]
-    output_dir = os.path.join(result_dir, f"{now}_{unique_id}")
-    
-    os.makedirs(output_dir)
-    print(f"出力ディレクトリを作成しました: {output_dir}")
-    
-    return output_dir
+            if is_stream:
+                live = v['liveStreamingDetails']
+                started = live.get('actualStartTime') or live.get('scheduledStartTime')
+                if started:
+                    stream_details.append({
+                        'video_id': vid,
+                        'started_at': started,
+                    })
 
-def save_to_csv(data, output_file, output_dir, chunk_size=500):
-    """データをCSVファイルに保存（大きなファイルは分割）"""
-    df = pd.DataFrame(data)
-    
-    # データが空の場合
-    if len(df) == 0:
-        output_path = os.path.join(output_dir, output_file)
-        df.to_csv(output_path, index=False, encoding='utf-8')
-        print(f"データを {output_path} に保存しました")
-        return [output_path]
-    
-    # データが500行以下の場合は通常の保存
-    if len(df) <= chunk_size:
-        output_path = os.path.join(output_dir, output_file)
-        df.to_csv(output_path, index=False, encoding='utf-8')
-        print(f"データを {output_path} に保存しました")
-        return [output_path]
-    
-    # 500行を超える場合は分割保存
-    output_paths = []
-    file_base, file_ext = os.path.splitext(output_file)
-    
-    for i, start in enumerate(range(0, len(df), chunk_size)):
-        end = min(start + chunk_size, len(df))
-        chunk_df = df.iloc[start:end]
-        
-        # 分割ファイル名を作成（例: videos_001.csv, videos_002.csv）
-        chunk_filename = f"{file_base}_{i+1:03d}{file_ext}"
-        chunk_path = os.path.join(output_dir, chunk_filename)
-        
-        # チャンクを保存
-        chunk_df.to_csv(chunk_path, index=False, encoding='utf-8')
-        print(f"データを {chunk_path} に保存しました（{start+1}〜{end}行目）")
-        output_paths.append(chunk_path)
-    
-    # 分割情報ファイルを作成
-    info_filename = f"{file_base}_info.txt"
-    info_path = os.path.join(output_dir, info_filename)
-    with open(info_path, 'w', encoding='utf-8') as f:
-        f.write(f"ファイル名: {output_file}\n")
-        f.write(f"総行数: {len(df)}\n")
-        f.write(f"分割数: {len(output_paths)}\n")
-        f.write(f"チャンクサイズ: {chunk_size}\n")
-        f.write(f"\n分割ファイル一覧:\n")
-        for path in output_paths:
-            f.write(f"  - {os.path.basename(path)}\n")
-    
-    print(f"分割情報を {info_path} に保存しました")
-    
-    return output_paths
+    print(f'動画詳細: {len(videos)}件取得')
+    return videos, vv_types, stream_details
+
+
+# ---------- メイン ----------
 
 def main():
-    """メイン処理"""
-    if not API_KEY:
-        print("エラー: YouTube API キーが設定されていません")
-        print("環境変数 'YOUTUBE_API_KEY' を設定するか、スクリプト内の API_KEY 変数に直接設定してください")
-        return
+    api_key = load_api_key()
+    if not api_key:
+        print('エラー: YOUTUBE_API_KEY が未設定です')
+        print('環境変数に設定するか config/.env.local に記載してください')
+        sys.exit(1)
 
-    try:
-        # 出力ディレクトリを作成
-        output_dir = create_output_directory()
-        
-        # YouTube Data API サービスを初期化
-        youtube = get_youtube_service()
-        
-        # 動画IDを取得（引数で指定された場合は単一動画、そうでなければ全動画）
-        if len(sys.argv) > 1:
-            # 特定の動画IDが指定された場合
-            specified_video_id = sys.argv[1].strip()
-            print(f"指定された動画ID: {specified_video_id} のみを処理します")
-            video_ids = [specified_video_id]
-            
-            # 動画情報を取得してチャンネルIDを特定
-            videos, stream_details = get_videos_details(youtube, video_ids, None)
-            if videos and len(videos) > 0:
-                actual_channel_id = videos[0]['channel_id']
-                print(f"動画のチャンネルID: {actual_channel_id}")
-                
-                # そのチャンネルの情報を取得
-                channel_info, channel_details = get_channel_info(youtube, actual_channel_id)
-                if not channel_info:
-                    print("チャンネル情報の取得に失敗しました")
-                    return
-            else:
-                print("指定された動画IDが無効です")
-                return
-        else:
-            # 白銀ノエルチャンネル全体を処理
-            channel_info, channel_details = get_channel_info(youtube, CHANNEL_ID)
-            if not channel_info:
-                print("チャンネル情報の取得に失敗しました")
-                return
-            
-            # すべての動画IDを取得
-            video_ids = get_all_video_ids(youtube, CHANNEL_ID)
-            if not video_ids:
-                print("動画IDが取得できませんでした")
-                return
-            
-            # 各動画の詳細情報を取得
-            videos, stream_details = get_videos_details(youtube, video_ids, CHANNEL_ID)
-        
-        # CSVファイルに保存
-        save_to_csv([channel_info], 'channels.csv', output_dir)
-        save_to_csv([channel_details], 'channel_details.csv', output_dir)
-        save_to_csv(videos, 'videos.csv', output_dir)
-        save_to_csv(stream_details, 'stream_details.csv', output_dir)
-        
-        # 出力ディレクトリと結果のサマリを表示
-        print(f"\n=== 処理完了 ===")
-        print(f"出力ディレクトリ: {output_dir}")
-        print(f"取得したチャンネル: {channel_info['title']}")
-        print(f"取得した動画数: {len(videos)} 件")
-        
-    except HttpError as e:
-        print(f"HTTPエラーが発生しました: {e.resp.status} {e.content}")
-    except Exception as e:
-        print(f"エラーが発生しました: {str(e)}")
+    youtube = build('youtube', 'v3', developerKey=api_key)
+    premiere_ids = load_premiere_ids()
 
-if __name__ == "__main__":
+    # 既存データ読み込み
+    existing_channels = read_csv_keyed('channels.csv', 'id')
+    existing_videos = read_csv_keyed('videos.csv', 'id')
+    existing_vv_types = read_csv_keyed('video_video_types.csv', 'video_id')
+    existing_stream_details = read_csv_keyed('stream_details.csv', 'video_id')
+
+    print(f'既存データ: channels={len(existing_channels)}, videos={len(existing_videos)}')
+
+    # YouTube API からデータ取得
+    if len(sys.argv) > 1:
+        video_id = sys.argv[1].strip()
+        print(f'\n単一動画モード: {video_id}')
+        video_ids = [video_id]
+        channel_id = None
+    else:
+        print(f'\n全件モード: {NOEL_CHANNEL_ID}')
+        channel_id = NOEL_CHANNEL_ID
+        video_ids = fetch_all_video_ids(youtube, channel_id)
+        if not video_ids:
+            print('動画IDが取得できませんでした')
+            sys.exit(1)
+
+    new_videos, new_vv_types, new_stream_details = fetch_video_details(
+        youtube, video_ids, channel_id, premiere_ids
+    )
+
+    # チャンネル情報取得（新規動画に含まれるチャンネル）
+    new_channel_ids = {v['channel_id'] for v in new_videos}
+    new_channels = []
+    for cid in new_channel_ids:
+        info = fetch_channel_info(youtube, cid)
+        if info:
+            new_channels.append(info)
+
+    # マージ
+    channels = merge(existing_channels, new_channels, 'id')
+    videos = merge(existing_videos, new_videos, 'id')
+    vv_types = merge(existing_vv_types, new_vv_types, 'video_id')
+    s_details = merge(existing_stream_details, new_stream_details, 'video_id')
+
+    # 書き出し
+    print(f'\n=== data-staging/ に出力 ===')
+    write_csv('channels.csv', ['id', 'title', 'handle', 'icon_url'], channels)
+    write_csv('videos.csv', ['id', 'title', 'thumbnail_url', 'duration', 'channel_id', 'published_at'], videos)
+    write_csv('video_video_types.csv', ['video_id', 'video_type_id'], vv_types)
+    write_csv('stream_details.csv', ['video_id', 'started_at'], s_details)
+
+    print('\n完了')
+
+
+if __name__ == '__main__':
     main()

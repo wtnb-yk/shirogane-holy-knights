@@ -1,260 +1,282 @@
 #!/usr/bin/env python3
-import psycopg2
+"""
+配信タイトルからタグを自動判定し、video_stream_tags.csv を更新する。
+
+既存データ: tools/data/
+出力先:     tools/data-staging/video_stream_tags.csv
+
+キーワードルール: tools/data/tag_keywords.csv（CSV駆動）
+特殊ルール:       コード内（雑談/ゲーム/企画/記念/ライブの5タグ）
+
+モード:
+  通常:   新着（未分類）のみ分類 → staging 出力
+  --verify: 全件再分類 → 人手タグとの精度レポート
+"""
+
+import argparse
 import csv
 import re
-from typing import List, Dict, Tuple, Optional
-from datetime import datetime, time
-import json
+import sys
+from collections import defaultdict
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Set
 
-def connect_db():
-    """ローカルPostgreSQLデータベースに接続"""
-    return psycopg2.connect(
-        host='localhost',
-        port=5432,
-        database='shirogane',
-        user='postgres',
-        password='postgres'
-    )
+ROOT = Path(__file__).resolve().parent.parent  # tools/
+DATA_DIR = ROOT / 'data'
+STAGING_DIR = ROOT / 'data-staging'
 
-def get_stream_tags(conn) -> Dict[int, str]:
-    """stream_tagsテーブルからタグ情報を取得"""
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, name FROM stream_tags")
-    return {tag_id: name for tag_id, name in cursor.fetchall()}
 
-def get_stream_data(conn) -> List[Tuple[str, str, str, Optional[str], Optional[str], Optional[str]]]:
-    """配信データを取得（多次元特徴量を含む）"""
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT v.id, v.title, v.description, v.duration, sd.started_at, v.published_at
-        FROM videos v 
-        JOIN stream_details sd ON v.id = sd.video_id
-        ORDER BY sd.started_at DESC
-    """)
-    return cursor.fetchall()
+# ---------- CSV 読み込み ----------
 
-def extract_time_features(started_at: Optional[str]) -> Dict[str, any]:
-    """時間的特徴量を抽出"""
+def read_csv_list(filename):
+    path = DATA_DIR / filename
+    if not path.exists():
+        return []
+    with open(path, newline='', encoding='utf-8') as f:
+        return list(csv.DictReader(f))
+
+
+def read_csv_keyed(filename, key_field):
+    path = DATA_DIR / filename
+    result = {}
+    if path.exists():
+        with open(path, newline='', encoding='utf-8') as f:
+            for row in csv.DictReader(f):
+                result[row[key_field]] = row
+    return result
+
+
+def write_csv(filename, fieldnames, rows):
+    STAGING_DIR.mkdir(parents=True, exist_ok=True)
+    path = STAGING_DIR / filename
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({k: row.get(k, '') for k in fieldnames})
+    print(f'  {filename}: {len(rows)}件')
+
+
+# ---------- データ読み込み ----------
+
+def load_tag_master() -> Dict[int, str]:
+    """stream_tags.csv → {tag_id: tag_name}"""
+    rows = read_csv_list('stream_tags.csv')
+    return {int(r['id']): r['name'] for r in rows}
+
+
+def load_tag_keywords() -> Dict[int, List[str]]:
+    """tag_keywords.csv → {tag_id: [keyword, ...]}"""
+    rows = read_csv_list('tag_keywords.csv')
+    result = defaultdict(list)
+    for r in rows:
+        result[int(r['tag_id'])].append(r['keyword'])
+    return dict(result)
+
+
+def load_stream_data():
+    """配信データを読み込み → {video_id: {title, duration, started_at}}"""
+    vv_types = read_csv_list('video_video_types.csv')
+    stream_ids = {r['video_id'] for r in vv_types if r['video_type_id'] == '1'}
+
+    videos = read_csv_keyed('videos.csv', 'id')
+    details = read_csv_keyed('stream_details.csv', 'video_id')
+
+    streams = {}
+    for vid in stream_ids:
+        v = videos.get(vid)
+        if not v:
+            continue
+        sd = details.get(vid)
+        streams[vid] = {
+            'title': v['title'],
+            'duration': v.get('duration'),
+            'started_at': sd['started_at'] if sd else None,
+        }
+    return streams
+
+
+def load_existing_tags() -> Dict[str, Set[int]]:
+    """video_stream_tags.csv → {video_id: {tag_id, ...}}"""
+    rows = read_csv_list('video_stream_tags.csv')
+    result = defaultdict(set)
+    for r in rows:
+        result[r['video_id']].add(int(r['tag_id']))
+    return dict(result)
+
+
+# ---------- 分類エンジン ----------
+
+def extract_time_features(started_at: Optional[str]) -> Dict:
     if not started_at:
         return {}
-    
     try:
         dt = datetime.fromisoformat(str(started_at).replace('Z', '+00:00'))
-        return {
-            'hour': dt.hour,
-            'weekday': dt.weekday(),
-            'is_morning': 0 <= dt.hour < 12,
-            'is_late_night': 22 <= dt.hour or dt.hour < 6
-        }
-    except:
+        return {'hour': dt.hour, 'is_morning': 0 <= dt.hour < 12}
+    except Exception:
         return {}
 
-def parse_duration(duration: Optional[str]) -> int:
-    """配信時間（分）を抽出"""
-    if not duration or duration == '00:00:00':
-        return 0
-    
-    try:
-        # HH:MM:SS 形式をパース
-        parts = duration.split(':')
-        if len(parts) == 3:
-            hours, minutes, seconds = map(int, parts)
-            return hours * 60 + minutes + (1 if seconds > 30 else 0)
-        return 0
-    except:
-        return 0
 
-def extract_tags_from_multi_features(title: str, description: Optional[str], duration: Optional[str], 
-                                    started_at: Optional[str], available_tags: Dict[int, str]) -> List[int]:
-    """多次元特徴量からタグを導出"""
-    matched_tags = []
-    
-    # テキスト特徴量の準備
-    title_lower = title.lower()
-    description_lower = (description or '').lower()
-    combined_text = f"{title} {description or ''}".lower()
-    
-    # 時間的特徴量
-    time_features = extract_time_features(started_at)
-    duration_minutes = parse_duration(duration)
-    
-    # 各タグを個別に判定
-    for tag_id, tag_name in available_tags.items():
-        
-        if tag_name == "雑談":
-            keywords = ["雑談", "朝活"]
-            morning_keywords = ["おは", "まっする"]
-            is_morning_stream = time_features.get('is_morning', False) and any(k in title for k in morning_keywords)
-            
-            if any(keyword in title for keyword in keywords) or is_morning_stream:
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "ゲーム":
-            keywords = [
-                # 既存キーワード
-                "ゲーム", "ARK", "荒野", "杯", "労働", "ホラー", "プレイ", "クリア", "挑戦",
-                # 頻出ゲームタイトル
-                "ポケモン", "ポケットモンスター", 
-                "Minecraft", "マイクラ", "マインクラフト",
-                "モンハン", "モンスターハンター", "ワイルズ", "MonHun",
-                "エルデンリング", "ELDEN RING", "ナイトレイン",
-                "R.E.P.O.", "Backrooms", "バックルーム", "Escape the",
-                "RUST", "ラスト", "holoRUST",
-                "HoloCure", "ホロキュア",
-                "パワプロ", "甲子園", "野球", "ミリしら",
-                "FF14", "FINAL FANTASY", "ファイナルファンタジー",
-                "ドンキーコング", "首都高バトル",
-                "TCG Card Shop", "Liar's Bar", "Liar",
-                "空気読み", "心霊物件", "お宝マウンテン",
-                "白猫プロジェクト", "FORK ROAD", "Among", "AmongUs",
-                "ゴブリン", "呪われたデジカメ",
-                "デュエルマスターズ", "デュエマ",
-                "あつまれ どうぶつの森", "どうぶつの森", "あつ森",
-                "ネタバレが激しすぎる", "RPG", "OBT", "ベータ",
-                "麻雀", "格闘倶楽部", "視聴者対局", "対戦", "競技"
-            ]
-            has_game_number = bool(re.search(r'#\d+', title))
-            
-            if any(keyword in title for keyword in keywords) or has_game_number:
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "歌枠":
-            keywords = ["歌枠", "歌ってみた", "singing", "カラオケ", "うたう"]
-            # 「歌」単体は誤検知が多いので除外
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "ASMR":
-            keywords = ["ASMR", "囁き", "癒し", "耳かき", "マッサージ", "安眠", "夢の世界", "お耳", "ぐっすり"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "企画":
-            keywords = ["企画", "イベント", "祭", "大会"]
-            # ハッシュタグがある（ただし番号付きタグは除外）
-            has_special_hashtag = "#" in title and not bool(re.search(r'^#\d+', title))
-            
-            if any(keyword in title for keyword in keywords) or has_special_hashtag:
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "コラボ":
-            keywords = ["コラボ", "やかまし", "オフコラボ", "BIG3", "合同", "共同"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "記念":
-            keywords = ["記念", "周年", "お祝い", "祝", "生誕", "誕生日", "万人", "カウントダウン"]
-            has_milestone = bool(re.search(r'\d+周年|\d+万人|\d+日記念', title))
-            
-            if any(keyword in title for keyword in keywords) or has_milestone:
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "同時視聴":
-            keywords = ["同時視聴", "watchalong", "一緒に見", "ウォッチパーティ"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "参加型":
-            keywords = ["参加型", "視聴者参加", "視聴者対局", "みんなで", "募集"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "ライブ":
-            # 本当の音楽ライブイベントのみ（実際にライブを行う配信）
-            # タイトルに【】内に3D LIVEなどが含まれる場合のみ
-            
-            # 【】内にライブ関連キーワードがあるかチェック
-            bracket_pattern = r'【[^】]*(?:3D\s*LIVE|3D\s*ライブ|3DLIVE)[^】]*】'
-            if re.search(bracket_pattern, title, re.IGNORECASE):
-                # ただし、雑談・お礼・告知系は除外
-                exclude_keywords = ["雑談", "お礼", "スパチャ", "告知", "お知らせ", "朝活"]
-                if not any(keyword in title for keyword in exclude_keywords):
-                    matched_tags.append(tag_id)
-                
-        elif tag_name == "新衣装":
-            keywords = ["新衣装", "お披露目", "新コスチューム", "新outfit"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "料理":
-            keywords = ["料理", "クッキング", "調理", "レシピ", "作ってみた", "食べ"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
-                
-        elif tag_name == "お知らせ":
-            keywords = ["お知らせ", "告知", "報告", "重大発表", "announcement"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
+def classify(title: str, duration: Optional[str], started_at: Optional[str],
+             tag_master: Dict[int, str], tag_keywords: Dict[int, List[str]]) -> Set[int]:
+    """タグ判定。キーワードCSV + 特殊ルール + フォールバックの3段構成。"""
+    matched: Set[int] = set()
 
-        elif tag_name == "VRChat":
-            keywords = ["VRChat", "VRC", "vrchat", "バーチャル", "アバター", "ワールド巡り"]
-            if any(keyword in title for keyword in keywords):
-                matched_tags.append(tag_id)
+    # --- Phase 1: キーワードマッチ（CSV駆動） ---
+    for tag_id, keywords in tag_keywords.items():
+        if any(kw in title for kw in keywords):
+            matched.add(tag_id)
 
-        # その他のタグは単純マッチング（ただしライブは除外済み）
-        elif tag_name in title:
-            matched_tags.append(tag_id)
-    
-    return list(set(matched_tags))  # 重複除去
+    # --- Phase 2: 特殊ルール ---
+    time_feat = extract_time_features(started_at)
+
+    # 雑談(1): 朝(0-12時) × 朝キーワード
+    if 1 not in matched:
+        if time_feat.get('is_morning', False) and 'おは' in title:
+            matched.add(1)
+
+    # ゲーム(2): #数字（エピソード番号）。#数字の直後に非数字文字が続く場合は除外（#3期生 等）
+    if 2 not in matched:
+        if re.search(r'#\d+(?=[\s【\]】]|$)', title):
+            matched.add(2)
+
+    # 記念(8): マイルストーンパターン（ただし耐久/歌枠タイトルは除外）
+    if 8 not in matched:
+        if re.search(r'\d+周年|\d+万人|\d+日記念', title):
+            exclude_kw = ['耐久', '歌枠', 'まで歌']
+            if not any(k in title for k in exclude_kw):
+                matched.add(8)
+
+    # ライブ(14): タイトル全体で 3D LIVE 系 or 生誕LIVE 系（除外条件あり）
+    if 14 not in matched:
+        live_pattern = r'3D\s*LIVE|3D\s*ライブ|3DLIVE|生誕.*LIVE|Birthday.*Live|Anniversary.*LIVE'
+        if re.search(live_pattern, title, re.IGNORECASE):
+            exclude_kw = ['雑談', 'お礼', 'スパチャ', '告知', 'お知らせ', '朝活', '感想会', '振り返り']
+            if not any(k in title for k in exclude_kw):
+                matched.add(14)
+
+    return matched
+
+
+# ---------- 通常モード ----------
+
+def run_normal(tag_master, tag_keywords):
+    """新着のみ分類 → staging 出力。"""
+    streams = load_stream_data()
+    existing = load_existing_tags()
+    print(f'配信: {len(streams)}件, 既存タグ付き: {len(existing)}件')
+
+    new_ids = set(streams.keys()) - set(existing.keys())
+    print(f'新着（未分類）: {len(new_ids)}件')
+
+    # 新着を分類
+    new_rows = []
+    new_report = []
+    for vid in sorted(new_ids):
+        s = streams[vid]
+        tags = classify(s['title'], s['duration'], s['started_at'], tag_master, tag_keywords)
+        for tid in sorted(tags):
+            new_rows.append({'video_id': vid, 'tag_id': str(tid)})
+        tag_names = [tag_master[t] for t in sorted(tags)]
+        new_report.append((vid, s['title'], tag_names))
+
+    # 既存 + 新着をマージ
+    existing_rows = read_csv_list('video_stream_tags.csv')
+    merged = list(existing_rows) + new_rows
+
+    print(f'\n=== data-staging/ に出力 ===')
+    write_csv('video_stream_tags.csv', ['video_id', 'tag_id'], merged)
+
+    if new_report:
+        print(f'\n=== 新着 {len(new_report)}件の自動分類 ===')
+        for vid, title, tags in new_report:
+            tag_str = ', '.join(tags) if tags else '(タグなし)'
+            print(f'  {vid} | {title[:50]} → {tag_str}')
+    else:
+        print('\n新着の未分類配信はありません')
+
+
+# ---------- 検証モード ----------
+
+def run_verify(tag_master, tag_keywords):
+    """全件再分類 → 人手タグとの精度レポート。"""
+    streams = load_stream_data()
+    existing = load_existing_tags()
+
+    # 人手タグ付き配信のみ対象
+    target_ids = set(streams.keys()) & set(existing.keys())
+    print(f'検証対象: {len(target_ids)}件（人手タグ付き配信）\n')
+
+    # タグごとの TP/FP/FN を集計
+    stats = {tid: {'tp': 0, 'fp': 0, 'fn': 0, 'fp_list': [], 'fn_list': []}
+             for tid in tag_master}
+
+    for vid in sorted(target_ids):
+        s = streams[vid]
+        auto_tags = classify(s['title'], s['duration'], s['started_at'], tag_master, tag_keywords)
+        human_tags = existing[vid]
+
+        for tid in tag_master:
+            in_auto = tid in auto_tags
+            in_human = tid in human_tags
+
+            if in_auto and in_human:
+                stats[tid]['tp'] += 1
+            elif in_auto and not in_human:
+                stats[tid]['fp'] += 1
+                stats[tid]['fp_list'].append((vid, s['title']))
+            elif not in_auto and in_human:
+                stats[tid]['fn'] += 1
+                stats[tid]['fn_list'].append((vid, s['title']))
+
+    # レポート出力
+    print('=== 精度レポート ===')
+    print(f'{"タグ":<12} {"precision":>10} {"recall":>10}    TP    FP    FN')
+    print('-' * 70)
+
+    for tid in sorted(tag_master.keys()):
+        name = tag_master[tid]
+        s = stats[tid]
+        tp, fp, fn = s['tp'], s['fp'], s['fn']
+
+        precision = tp / (tp + fp) * 100 if (tp + fp) > 0 else 0
+        recall = tp / (tp + fn) * 100 if (tp + fn) > 0 else 0
+
+        print(f'  {name:<10} {precision:>9.1f}% {recall:>9.1f}%  {tp:>5} {fp:>5} {fn:>5}')
+
+    # 差分詳細
+    for label, key in [('過検知 (FP)', 'fp_list'), ('見逃し (FN)', 'fn_list')]:
+        items = []
+        for tid in sorted(tag_master.keys()):
+            name = tag_master[tid]
+            for vid, title in stats[tid][key]:
+                items.append((name, vid, title))
+
+        if items:
+            print(f'\n=== {label}: {len(items)}件 ===')
+            for name, vid, title in items[:50]:
+                print(f'  [{name}] {vid} | {title[:60]}')
+            if len(items) > 50:
+                print(f'  ... 他 {len(items) - 50}件')
+
+
+# ---------- メイン ----------
 
 def main():
-    """メイン処理"""
-    import os
-    from datetime import datetime
-    
-    conn = connect_db()
-    
-    try:
-        # データ取得
-        stream_tags = get_stream_tags(conn)
-        stream_data = get_stream_data(conn)
-        
-        # CSV出力用データを準備
-        csv_data = []
-        
-        for video_id, title, description, duration, started_at, published_at in stream_data:
-            matched_tag_ids = extract_tags_from_multi_features(title, description, duration, started_at, stream_tags)
-            
-            # タグ名のリストを作成（マッチしない場合は空のリスト）
-            tag_names = [stream_tags[tag_id] for tag_id in matched_tag_ids] if matched_tag_ids else []
-            
-            csv_data.append([
-                video_id,
-                title,
-                str(started_at),  # started_atを追加
-                ' '.join(tag_names) if tag_names else ''  # tag_namesを半角スペース区切り（空の場合は空文字）
-            ])
-        
-        # 出力ディレクトリの設定
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        output_dir = os.path.join(base_dir, 'output', 'stream_tags')
-        
-        # ディレクトリが存在しない場合は作成
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        
-        # 日時付きファイル名の生成
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        output_file = os.path.join(output_dir, f'{timestamp}_stream_tags.csv')
-        
-        # CSV出力
-        with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(['stream_id', 'title', 'started_at', 'stream_tag_names'])
-            writer.writerows(csv_data)
-        
-        # 最新ファイルへのシンボリックリンク作成
-        latest_link = os.path.join(output_dir, 'latest.csv')
-        if os.path.lexists(latest_link):
-            os.remove(latest_link)
-        os.symlink(os.path.basename(output_file), latest_link)
-        
-        print(f"CSV出力完了: {output_file}")
-        print(f"処理件数: {len(csv_data)}件")
-        print(f"最新ファイル: {latest_link}")
-        
-    finally:
-        conn.close()
+    parser = argparse.ArgumentParser(description='配信タグ自動分類')
+    parser.add_argument('--verify', action='store_true', help='全件再分類 → 精度レポート')
+    args = parser.parse_args()
 
-if __name__ == "__main__":
+    tag_master = load_tag_master()
+    tag_keywords = load_tag_keywords()
+    print(f'タグマスタ: {len(tag_master)}種, キーワード: {sum(len(v) for v in tag_keywords.values())}個\n')
+
+    if args.verify:
+        run_verify(tag_master, tag_keywords)
+    else:
+        run_normal(tag_master, tag_keywords)
+
+
+if __name__ == '__main__':
     main()

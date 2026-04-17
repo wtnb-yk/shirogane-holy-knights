@@ -1,47 +1,94 @@
 #!/usr/bin/env python3
+"""
+YouTube コメントから楽曲セットリストを抽出する共通モジュール。
+
+データ取得: tools/data/ の CSV（videos, video_stream_tags, stream_tags）
+出力先:     tools/data-staging/
+"""
+
+import csv
 import os
 import re
-import csv
-import psycopg2
-from googleapiclient.discovery import build
-from typing import List, Dict, Tuple
 import time
+from collections import defaultdict
 from pathlib import Path
+from typing import Dict, List, Tuple
 
-def load_env_file(env_path: str):
-    """環境設定ファイルを読み込む"""
-    if not os.path.exists(env_path):
-        return
-    
-    with open(env_path, 'r') as f:
-        for line in f:
+from googleapiclient.discovery import build
+
+ROOT = Path(__file__).resolve().parent.parent  # tools/
+DATA_DIR = ROOT / 'data'
+STAGING_DIR = ROOT / 'data-staging'
+
+
+# ---------- 環境・API ----------
+
+def load_api_key():
+    key = os.environ.get('YOUTUBE_API_KEY', '')
+    if key:
+        return key
+    env_file = ROOT / 'config' / '.env.local'
+    if env_file.exists():
+        for line in env_file.read_text(encoding='utf-8').splitlines():
             line = line.strip()
-            if line and not line.startswith('#'):
-                if '=' in line:
-                    key, value = line.split('=', 1)
-                    os.environ[key.strip()] = value.strip()
+            if line.startswith('YOUTUBE_API_KEY=') and not line.startswith('#'):
+                return line.split('=', 1)[1].strip().strip("'\"")
+    return ''
+
 
 def get_youtube_service():
-    """YouTube APIサービスを初期化"""
-    config_dir = Path(__file__).parent.parent / 'config'
-    env_file = config_dir / '.env.local'
-    load_env_file(str(env_file))
-    
-    api_key = os.environ.get('YOUTUBE_API_KEY')
+    api_key = load_api_key()
     if not api_key:
-        raise ValueError("YOUTUBE_API_KEYが設定されていません")
+        raise ValueError('YOUTUBE_API_KEY が未設定です')
     return build('youtube', 'v3', developerKey=api_key)
 
+
+# ---------- CSV からの動画リスト取得 ----------
+
+def get_tagged_video_ids(tag_name: str) -> List[Tuple[str, str]]:
+    """tools/data/ から指定タグの配信動画リストを取得。(video_id, title) のリスト。"""
+    # タグマスタ → tag_name → tag_id
+    tag_id = None
+    tags_path = DATA_DIR / 'stream_tags.csv'
+    with open(tags_path, newline='', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            if row['name'] == tag_name:
+                tag_id = row['id']
+                break
+    if tag_id is None:
+        print(f'  警告: タグ「{tag_name}」が stream_tags.csv に見つかりません')
+        return []
+
+    # video_stream_tags → tag_id でフィルタ → video_id の set
+    tagged_ids = set()
+    vst_path = DATA_DIR / 'video_stream_tags.csv'
+    with open(vst_path, newline='', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            if row['tag_id'] == tag_id:
+                tagged_ids.add(row['video_id'])
+
+    # videos → タイトル取得、published_at 降順でソート
+    videos = []
+    vid_path = DATA_DIR / 'videos.csv'
+    with open(vid_path, newline='', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            if row['id'] in tagged_ids:
+                videos.append((row['id'], row['title'], row['published_at']))
+
+    videos.sort(key=lambda x: x[2], reverse=True)
+    return [(vid, title) for vid, title, _ in videos]
+
+
+# ---------- YouTube コメント解析 ----------
+
 def get_video_comments(youtube, video_id: str, max_results: int = 100) -> List[Dict]:
-    """動画のコメントを取得"""
     comments = []
     request = youtube.commentThreads().list(
         part='snippet',
         videoId=video_id,
         maxResults=max_results,
-        order='relevance'
+        order='relevance',
     )
-    
     try:
         response = request.execute()
         for item in response['items']:
@@ -49,171 +96,123 @@ def get_video_comments(youtube, video_id: str, max_results: int = 100) -> List[D
             comments.append({
                 'text': comment['textDisplay'],
                 'author': comment['authorDisplayName'],
-                'likes': comment['likeCount']
+                'likes': comment['likeCount'],
             })
     except Exception as e:
-        print(f"動画 {video_id} のコメント取得エラー: {e}")
-    
+        print(f'  コメント取得エラー ({video_id}): {e}')
     return comments
 
-def parse_timestamp(timestamp_str: str) -> int:
-    """タイムスタンプを秒数に変換"""
-    parts = timestamp_str.strip().split(':')
+
+def parse_timestamp(ts: str) -> int:
+    parts = ts.strip().split(':')
     if len(parts) == 2:
-        minutes, seconds = map(int, parts)
-        return minutes * 60 + seconds
+        m, s = map(int, parts)
+        return m * 60 + s
     elif len(parts) == 3:
-        hours, minutes, seconds = map(int, parts)
-        return hours * 3600 + minutes * 60 + seconds
+        h, m, s = map(int, parts)
+        return h * 3600 + m * 60 + s
     return 0
 
-def extract_songs_from_comment(comment_text: str) -> List[Tuple[str, str, int]]:
-    """コメントからタイムスタンプと曲情報を抽出"""
+
+def extract_songs_from_comment(text: str) -> List[Tuple[str, str, int]]:
+    """コメントからタイムスタンプと曲情報を抽出。(title, artist, seconds) のリスト。"""
+    text = re.sub(r'<[^>]+>', '', text)
+
+    ts_pat = r'(\d{1,2}:\d{2}(?::\d{2})?)'
+    matches = re.findall(
+        f'{ts_pat}\\s*(?:\\d+\\.?)?\\s*(.+?)(?=(?:\\d{{1,2}}:\\d{{2}})|$)',
+        text, re.MULTILINE | re.DOTALL,
+    )
+
     songs = []
-    
-    # HTMLタグを除去
-    comment_text = re.sub(r'<[^>]+>', '', comment_text)
-    
-    # タイムスタンプパターン: 00:00 or 0:00:00 or 00:00:00
-    timestamp_pattern = r'(\d{1,2}:\d{2}(?::\d{2})?)'
-    
-    # 複数行にまたがるセットリストを処理
-    # パターン1: タイムスタンプ + 曲番号 + 曲名
-    pattern1 = re.findall(f'{timestamp_pattern}\\s*(?:\\d+\\.?)?\\s*(.+?)(?=(?:\\d{{1,2}}:\\d{{2}})|$)', comment_text, re.MULTILINE | re.DOTALL)
-    
-    for timestamp_str, song_info in pattern1:
-        song_info = song_info.strip()
+    skip_patterns = [
+        r'^(MC|EN|opening|start|挨拶|お手紙|♫|🎵)',
+        r'(チャンネル登録|カウンター|音量調整)',
+        r'(団長|ドラマ|アレルギー|食べた|語っている|気付く|やりたいこと)',
+        r'^(教師|高校生|結婚できない|占い)',
+        r'「.*」',
+        r'○',
+        r'^\([^)]+\)',
+        r'^(見ていない|に似てる|ですか)',
+        r'の熱帯夜',
+    ]
+
+    for ts_str, song_info in matches:
+        song_info = re.sub(r'\s+', ' ', song_info.strip())
         if not song_info:
             continue
-            
-        # 改行や余分な空白を除去
-        song_info = re.sub(r'\s+', ' ', song_info)
-        
-        # 曲名とアーティストを分離
-        # パターン: "曲名 / アーティスト" または "曲名 - アーティスト"
+
         artist_match = re.match(r'(.+?)\s*[/／\-－]\s*(.+)', song_info)
         if artist_match:
-            song_title = artist_match.group(1).strip()
+            title = artist_match.group(1).strip()
             artist = artist_match.group(2).strip()
         else:
-            song_title = song_info
-            artist = ""
-        
-        # 曲番号の除去
-        song_title = re.sub(r'^\d+\.\s*', '', song_title)
-        song_title = re.sub(r'^0?\d\s*曲目[:：]\s*', '', song_title)
-        
-        # MCや不要な情報をスキップ
-        skip_patterns = [
-            r'^(MC|EN|opening|start|挨拶|お手紙|♫|🎵)',
-            r'(チャンネル登録|カウンター|音量調整)',
-            r'(団長|ドラマ|アレルギー|食べた|語っている|気付く|やりたいこと)',
-            r'^(教師|高校生|結婚できない|占い)',
-            r'「.*」',  # 引用符で囲まれたコメント
-            r'○',      # 記号のみ
-            r'^\([^)]+\)',  # 括弧で囲まれた説明
-            r'^(見ていない|に似てる|ですか)',
-            r'の熱帯夜'
-        ]
-        
-        skip = False
-        for pattern in skip_patterns:
-            if re.search(pattern, song_title, re.IGNORECASE):
-                skip = True
-                break
-        
-        if skip:
+            title = song_info
+            artist = ''
+
+        title = re.sub(r'^\d+\.\s*', '', title)
+        title = re.sub(r'^0?\d\s*曲目[:：]\s*', '', title)
+
+        if any(re.search(p, title, re.IGNORECASE) for p in skip_patterns):
             continue
-        
-        seconds = parse_timestamp(timestamp_str)
-        if song_title and len(song_title) > 2:  # 短すぎるタイトルを除外
-            songs.append((song_title, artist, seconds))
-    
+
+        seconds = parse_timestamp(ts_str)
+        if title and len(title) > 2:
+            songs.append((title, artist, seconds))
+
     return songs
 
-def get_stream_videos_from_db(tag_name: str) -> List[Tuple[str, str]]:
-    """DBから指定されたタグの動画リストを取得"""
-    conn = psycopg2.connect(
-        host="localhost",
-        port=5432,
-        database="shirogane",
-        user="postgres",
-        password="postgres"
-    )
-    
-    cur = conn.cursor()
-    query = """
-        SELECT v.id, v.title
-        FROM videos v
-        INNER JOIN video_video_types vvt ON vvt.video_id = v.id
-        INNER JOIN video_types vt ON vt.id = vvt.video_type_id AND vt.type = 'stream'
-        INNER JOIN video_stream_tags vst ON vst.video_id = v.id
-        INNER JOIN stream_tags st ON st.id = vst.tag_id AND st.name = %s
-        ORDER BY published_at DESC
-    """
-    
-    cur.execute(query, (tag_name,))
-    videos = cur.fetchall()
-    
-    cur.close()
-    conn.close()
-    
-    return videos
 
-def process_videos_and_save_to_csv(youtube, videos: List[Tuple[str, str]], csv_filename: str, tag_name: str):
-    """動画リストを処理してCSVに保存"""
-    with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['video_id', 'video_url_with_timestamp', 'video_title', 'video_url', 'song_title', 'artist', 'start_time', 'start_seconds']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+# ---------- メイン処理 ----------
+
+def process_videos(youtube, videos: List[Tuple[str, str]], output_filename: str, tag_name: str):
+    """動画リストを処理して data-staging/ に CSV 出力。"""
+    STAGING_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = STAGING_DIR / output_filename
+
+    fieldnames = [
+        'video_id', 'video_url_with_timestamp', 'video_title', 'video_url',
+        'song_title', 'artist', 'start_time', 'start_seconds',
+    ]
+
+    with open(output_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        
-        # 各動画のコメントから曲情報を抽出
+
         for i, (video_id, video_title) in enumerate(videos, 1):
-            print(f"\n処理中 ({i}/{len(videos)}): {video_title} ({video_id})")
-            
-            # コメント取得
+            print(f'  ({i}/{len(videos)}) {video_title[:50]} ({video_id})')
+
             comments = get_video_comments(youtube, video_id)
-            print(f"  {len(comments)}件のコメントを取得")
-            
-            # タイムスタンプ付きコメントを探す
+            print(f'    コメント: {len(comments)}件')
+
             best_setlist = []
             best_likes = 0
-            
-            for comment in comments:
-                songs = extract_songs_from_comment(comment['text'])
-                if songs and len(songs) > len(best_setlist):
-                    # より多くの曲を含むセットリストを優先
+            for c in comments:
+                songs = extract_songs_from_comment(c['text'])
+                if songs and (
+                    len(songs) > len(best_setlist)
+                    or (len(songs) == len(best_setlist) and c['likes'] > best_likes)
+                ):
                     best_setlist = songs
-                    best_likes = comment['likes']
-                elif songs and len(songs) == len(best_setlist) and comment['likes'] > best_likes:
-                    # 同じ曲数ならいいね数が多い方を優先
-                    best_setlist = songs
-                    best_likes = comment['likes']
-            
+                    best_likes = c['likes']
+
             if best_setlist:
-                print(f"  {len(best_setlist)}曲を抽出（いいね数: {best_likes}）")
-                
-                # CSVに書き込み
-                for song_title, artist, seconds in best_setlist:
-                    # 秒数を MM:SS 形式に変換
-                    minutes = seconds // 60
-                    secs = seconds % 60
-                    start_time = f"{minutes:02d}:{secs:02d}"
-                    
+                print(f'    抽出: {len(best_setlist)}曲 (いいね: {best_likes})')
+                for title, artist, seconds in best_setlist:
+                    m, s = divmod(seconds, 60)
                     writer.writerow({
                         'video_id': video_id,
                         'video_url_with_timestamp': f'https://www.youtube.com/watch?v={video_id}&t={seconds}s',
                         'video_title': video_title,
                         'video_url': f'https://www.youtube.com/watch?v={video_id}',
-                        'song_title': song_title,
+                        'song_title': title,
                         'artist': artist,
-                        'start_time': start_time,
-                        'start_seconds': seconds
+                        'start_time': f'{m:02d}:{s:02d}',
+                        'start_seconds': seconds,
                     })
             else:
-                print(f"  タイムスタンプ付きコメントが見つかりませんでした")
-            
-            # API制限を避けるため少し待機
+                print(f'    セットリスト未検出')
+
             time.sleep(1)
-    
-    print(f"\n{tag_name}の抽出完了！結果を {csv_filename} に保存しました")
+
+    print(f'\n  {output_path.name} に保存')
