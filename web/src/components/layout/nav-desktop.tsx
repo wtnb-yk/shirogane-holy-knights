@@ -24,7 +24,7 @@ export function DesktopNav({ groups }: { groups: readonly NavGroup[] }) {
             {group.label}
             <ChevronDown />
           </button>
-          <div className="absolute top-[calc(100%+4px)] right-0 min-w-[var(--dropdown-width)] bg-surface border border-border rounded-md p-sm shadow-dropdown opacity-0 invisible -translate-y-1 transition-all duration-200 ease-out-expo pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:pointer-events-auto">
+          <div className="absolute top-[calc(100%+4px)] right-0 min-w-[var(--dropdown-width)] bg-surface border border-border rounded-md p-sm shadow-dropdown opacity-0 invisible -translate-y-1 transition-all duration-200 ease-out-expo pointer-events-none group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:pointer-events-auto before:content-[''] before:absolute before:inset-x-0 before:-top-2 before:h-2">
             {group.items.map((item) => (
               <Link
                 key={item.href}

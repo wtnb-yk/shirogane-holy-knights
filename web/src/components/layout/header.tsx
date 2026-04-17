@@ -1,9 +1,11 @@
 import Link from 'next/link';
-import { NAV_GROUPS } from './nav-items';
+import { getNavGroups } from './nav-items';
 import { DesktopNav } from './nav-desktop';
 import { MobileNav } from './nav-mobile';
 
 export function Header() {
+  const navGroups = getNavGroups();
+
   return (
     <header className="sticky top-0 z-100 bg-header-bg border-b border-header-border">
       <div className="mx-auto max-w-[var(--content-max)] px-lg h-[var(--header-height)] flex items-center gap-xl">
@@ -13,8 +15,8 @@ export function Header() {
         >
           だんいんログ
         </Link>
-        <DesktopNav groups={NAV_GROUPS} />
-        <MobileNav groups={NAV_GROUPS} />
+        <DesktopNav groups={navGroups} />
+        <MobileNav groups={navGroups} />
       </div>
     </header>
   );
