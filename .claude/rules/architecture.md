@@ -133,4 +133,4 @@ xl以上は Tailwind デフォルトより大きい: xl(1.5rem) / 2xl(2rem) / 3x
 
 2グループ構成（v1.0）:
 - 探す: 団員の視聴ログ(/streams) / 楽曲ライブラリ(/music) / 今日のASMR(/asmr)
-- 作る: 団員レポート(/report) / 団員のあしあと(/footprint)
+- 共有する: 団員レポート(/report) / 団員のあしあと(/footprint)

@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { getStreams } from '@/lib/data/streams';
+import { getSongs } from '@/lib/data/music';
+import { getAsmrStreams } from '@/lib/data/asmr';
 
 type CardData = {
   readonly name: string;
@@ -7,41 +10,49 @@ type CardData = {
   readonly href: string;
 };
 
-const EXPLORE_CARDS: readonly CardData[] = [
-  {
-    name: '団員の視聴ログ',
-    desc: '1,419件の配信をタグで絞り込み、視聴チェックで記録する。',
-    meta: '1,419 streams',
-    href: '/streams',
-  },
-  {
-    name: '楽曲ライブラリ',
-    desc: 'レパートリー全曲の検索。曲名から歌った配信を逆引き。',
-    meta: '452 songs',
-    href: '/music',
-  },
-  {
-    name: '今日のASMR',
-    desc: '気分を選ぶと、今日のあなたに合うASMRを一本提案する。',
-    meta: '63 archives',
-    href: '/asmr',
-  },
-];
+function buildCards() {
+  const streamCount = getStreams().length.toLocaleString();
+  const songCount = getSongs().length.toLocaleString();
+  const asmrCount = getAsmrStreams().length.toLocaleString();
 
-const CREATE_CARDS: readonly CardData[] = [
-  {
-    name: '団員レポート',
-    desc: 'あなたの推し活データから、レポート画像を生成。',
-    meta: 'share image',
-    href: '/report',
-  },
-  {
-    name: '団員のあしあと',
-    desc: '視聴履歴を年間ヒートマップ画像にして残す。',
-    meta: 'share image',
-    href: '/footprint',
-  },
-];
+  const explore: readonly CardData[] = [
+    {
+      name: '団員の視聴ログ',
+      desc: `${streamCount}件の配信をタグで絞り込み、視聴チェックで記録する。`,
+      meta: `${streamCount} streams`,
+      href: '/streams',
+    },
+    {
+      name: '楽曲ライブラリ',
+      desc: 'レパートリー全曲の検索。曲名から歌った配信を逆引き。',
+      meta: `${songCount} songs`,
+      href: '/music',
+    },
+    {
+      name: '今日のASMR',
+      desc: '気分を選ぶと、今日のあなたに合うASMRを一本提案する。',
+      meta: `${asmrCount} archives`,
+      href: '/asmr',
+    },
+  ];
+
+  const create: readonly CardData[] = [
+    {
+      name: '団員レポート',
+      desc: 'あなたの推し活データから、レポート画像を生成。',
+      meta: 'share report',
+      href: '/report',
+    },
+    {
+      name: '団員のあしあと',
+      desc: '視聴履歴を年間ヒートマップ画像にして残す。',
+      meta: 'share heatmap',
+      href: '/footprint',
+    },
+  ];
+
+  return { explore, create };
+}
 
 function HubCard({ name, desc, meta, href }: CardData) {
   return (
@@ -83,6 +94,8 @@ function CardGroup({
 }
 
 export function BentoGrid() {
+  const { explore, create } = buildCards();
+
   return (
     <section className="max-w-[var(--content-max)] mx-auto px-lg pt-2xl pb-3xl">
       <div className="font-mono text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-sm">
@@ -96,8 +109,8 @@ export function BentoGrid() {
       </p>
 
       <div className="flex flex-col gap-xl">
-        <CardGroup label="探す" cards={EXPLORE_CARDS} />
-        <CardGroup label="作る" cards={CREATE_CARDS} />
+        <CardGroup label="探す" cards={explore} />
+        <CardGroup label="共有する" cards={create} />
       </div>
     </section>
   );

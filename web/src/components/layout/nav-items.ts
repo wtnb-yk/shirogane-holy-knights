@@ -31,7 +31,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     ],
   },
   {
-    label: '作る',
+    label: '共有する',
     items: [
       {
         name: '団員レポート',
