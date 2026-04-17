@@ -2,7 +2,7 @@ export function Cover() {
   return (
     <section className="flex flex-col items-center justify-center text-center px-lg pt-xl md:pt-2xl pb-lg md:pb-xl bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,var(--glow-gold)_0%,transparent_100%),var(--color-page)]">
       <div
-        className="text-[1.2rem] md:text-[1.4rem] text-silver-300"
+        className="text-xl md:text-xl text-decorative"
         style={{ animation: 'fade-up 0.5s var(--ease-out-expo) 0.1s both' }}
       >
         &#9876;
@@ -12,7 +12,7 @@ export function Cover() {
         style={{ animation: 'draw-line 0.7s var(--ease-out-expo) 0.3s both' }}
       />
       <h1
-        className="font-body text-2xl md:text-4xl font-bold text-heading tracking-[-0.01em] leading-[1.1]"
+        className="font-body text-2xl md:text-4xl font-bold text-heading tracking-tight leading-[1.1]"
         style={{ animation: 'fade-up 0.6s var(--ease-out-expo) 0.6s both' }}
       >
         だんいんログ
@@ -24,7 +24,7 @@ export function Cover() {
         団員の推し活を、もっと楽しく。
       </p>
       <p
-        className="font-mono text-3xs md:text-xs text-silver-400 tracking-wide mt-lg md:mt-xl"
+        className="font-mono text-3xs md:text-xs text-decorative-muted tracking-wide mt-lg md:mt-xl"
         style={{ animation: 'fade-up 0.4s var(--ease-out-expo) 1.2s both' }}
       >
         白銀ノエル非公式ファンサイト
