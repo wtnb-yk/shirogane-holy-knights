@@ -41,9 +41,19 @@ globals.css で2層構造のトークンを定義。プロトタイプ（docs/ho
 
 | 層 | 定義場所 | 用途 |
 |---|---|---|
-| パレット | `@theme` | 生の色値。直接使用は原則禁止 |
-| セマンティック | `@theme inline` | 目的別トークン。コンポーネントで使う |
+| パレット | `@theme` | 生の色値。**コンポーネントでの直接使用は禁止** |
+| セマンティック | `@theme`（非 inline） | 目的別トークン。コンポーネントで使う |
+| タイポグラフィ | `@theme` | フォントサイズ・レタースペーシング |
+| スペーシング | `@theme inline` | 余白スケール |
+| 角丸 | `@theme inline` | コンポーネント種別ごとの丸み |
 | レイアウト定数 | `:root` | 構造的な寸法（`var()` で参照） |
+
+### 重要ルール
+
+- コンポーネントではパレット色（`navy-600`, `cream-300` 等）を**絶対に使わない**。セマンティックトークンを使う
+- arbitrary value（`[10px]`, `[3px]` 等）も使わない。トークン（`text-3xs`, `gap-2xs`, `rounded-xs` 等）を使う
+- 必要なトークンがなければ globals.css に追加する
+- PostToolUse フック（`.claude/scripts/check-component.sh`）がパレット直接参照を自動検出する
 
 ### セマンティック色（コンポーネントで使うのはこちら）
 
@@ -51,18 +61,33 @@ globals.css で2層構造のトークンを定義。プロトタイプ（docs/ho
 |---|---|---|
 | Background | `page` / `surface` / `surface-hover` | ページ背景 / カード面 / ホバー面 |
 | Text | `heading` / `foreground` / `secondary` / `muted` / `subtle` / `faint` | 見出し / 本文 / カード説明 / 補助 / メタ / フッター |
+| Text (装飾) | `decorative` / `decorative-muted` | アイコン / 非公式表記 |
 | Border | `border` / `border-hover` / `border-strong` | 標準 / ホバー / 強調ホバー |
 | Accent | `accent` / `accent-label` | 装飾線 / セクションラベル |
 | Header | `header-bg` / `header-text` / `header-border` | ヘッダー専用 |
-| Interactive | `link-hover` | リンク・矢印ホバー |
+| Interactive | `interactive` / `link-hover` | 操作要素のデフォルト / ホバー |
+
+### タイポグラフィトークン
+
+| トークン | 値 | 用途 |
+|---|---|---|
+| `text-3xs` | 10px | モノタイプメタ情報、バッジ |
+| `text-2xs` | 11px | チェックボタン、タグピル、入力欄 |
+| `tracking-tight` | -0.01em | タイトル |
+| `tracking-normal` | 0.02em | ボタン、ロゴ |
+| `tracking-wide` | 0.1em | セクションタイトル（UPPERCASE） |
+| `tracking-wider` | 0.14em | ラベル（UPPERCASE） |
 
 ### レイアウト定数（`:root` で定義、`var()` で参照）
 
 ```
---content-max: 1120px      コンテンツ最大幅
---header-height: 3.5rem    ヘッダー高さ
---dropdown-width: 280px    ドロップダウン幅
---hub-card-min-h: 140px    ハブカード最小高さ
+--content-max: 1120px          コンテンツ最大幅
+--header-height: 3.5rem        ヘッダー高さ
+--dropdown-width: 280px        ドロップダウン幅
+--hub-card-min-h: 140px        ハブカード最小高さ
+--filter-panel-width: 360px    フィルタパネル幅
+--filter-panel-max-h: 420px    フィルタパネル最大高
+--search-expanded-width: 200px 展開式検索幅
 ```
 
 使用例: `max-w-[var(--content-max)]`（`[--name]` ショートハンドは寸法に効かないため `var()` 必須）
@@ -73,17 +98,18 @@ globals.css で2層構造のトークンを定義。プロトタイプ（docs/ho
 - `shadow-dropdown` — ドロップダウン
 - `shadow-button-hover` — ボタンホバー
 
-### スペーシング（7段スケール）
+### スペーシング（8段スケール）
 
 ```
-xs(4)   微小ギャップ       sm(8)   小パディング
-md(16)  カードグリッド gap   lg(24)  カード padding / セクション横 padding
-xl(40)  セクション内大間隔   2xl(64) セクション上下 padding
-3xl(120) ページ主要セクション間
+2xs(3)  タグ間微小ギャップ    xs(4)   微小ギャップ
+sm(8)   小パディング          md(16)  カードグリッド gap
+lg(24)  カード padding        xl(40)  セクション内大間隔
+2xl(64) セクション上下 padding  3xl(120) ページ主要セクション間
 ```
 
 ### 角丸（コンポーネント種別ごと）
 
+- `rounded-xs`(3px) — 小タグ、バッジ
 - `rounded-sm`(6px) — ボタン、ピル、タグ
 - `rounded-md`(10px) — ドロップダウン、パネル
 - `rounded-lg`(16px) — カード、主要コンテナ
