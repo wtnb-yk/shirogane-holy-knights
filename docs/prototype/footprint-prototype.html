@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>団員のあしあと — だんいんログ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream-50: #FCFCFD; --cream-100: #F8F8FA; --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6; --cream-400: #D4D4D9;
+  --navy-900: #1C2230; --navy-800: #242A3A; --navy-700: #303845;
+  --navy-600: #404A55; --navy-500: #545D68; --navy-400: #6A7380;
+  --navy-300: #888F99; --navy-200: #ACB1B8; --navy-100: #CDD0D4;
+  --gold-600: #8B6D1E; --gold-500: #A6852E; --gold-400: #C8A24C;
+  --gold-300: #D4B56A; --gold-200: #E2CC92; --gold-100: #F2E6C4;
+  --gold-glow: rgba(200, 162, 76, 0.10);
+  --silver-400: #9A949A; --silver-300: #BBB4B8;
+  --dark-900: #1A1D24; --dark-800: #2A2D35; --dark-700: #3A3D45;
+  --white: #FFFFFF; --border: var(--cream-300);
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+  --text-lg: 1.125rem; --text-xl: 1.5rem; --text-2xl: 2rem;
+  --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px;
+  --sp-xl: 40px; --sp-2xl: 64px; --sp-3xl: 120px;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1); --dur: 0.25s;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { background: var(--cream-100); color: var(--navy-700); font-family: var(--font-body); font-size: var(--text-base); line-height: 1.7; overflow-x: hidden; }
+a { color: var(--navy-600); text-decoration: none; }
+
+/* HEADER */
+.site-header { position: sticky; top: 0; z-index: 100; background: var(--navy-700); border-bottom: 1px solid var(--gold-400); }
+.header-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--sp-lg); height: 56px; display: flex; align-items: center; gap: var(--sp-xl); }
+.header-logo { font-family: var(--font-body); font-size: var(--text-base); font-weight: 700; color: var(--gold-100); letter-spacing: 0.02em; transition: color var(--dur) var(--ease); }
+.header-logo:hover { color: #FFF; }
+.header-nav { display: flex; align-items: center; gap: var(--sp-xs); margin-left: auto; }
+.nav-group { position: relative; }
+.nav-trigger { display: flex; align-items: center; gap: 4px; padding: 6px 14px; font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500; color: var(--gold-100); background: none; border: none; border-radius: var(--r-sm); cursor: pointer; transition: all var(--dur) var(--ease); }
+.nav-trigger:hover { color: #FFF; background: rgba(255,255,255,0.08); }
+.nav-trigger svg { width: 12px; height: 12px; opacity: 0.5; transition: transform var(--dur) var(--ease); }
+.nav-group:hover .nav-trigger svg { transform: rotate(180deg); }
+.nav-dropdown { position: absolute; top: calc(100% + 4px); right: 0; min-width: 280px; background: var(--cream-50); border: 1px solid var(--cream-300); border-radius: var(--r-md); padding: var(--sp-sm); box-shadow: 0 8px 24px rgba(26,35,53,0.08); opacity: 0; visibility: hidden; transform: translateY(-4px); transition: all 0.2s var(--ease); pointer-events: none; }
+.nav-group:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+.nav-dd-item { display: flex; flex-direction: column; gap: 2px; padding: var(--sp-sm) var(--sp-md); border-radius: var(--r-sm); transition: background var(--dur) var(--ease); text-decoration: none; color: inherit; }
+.nav-dd-item:hover { background: var(--cream-200); color: inherit; }
+.nav-dd-item.current { background: rgba(48,56,69,0.08); }
+.nav-dd-name { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+.nav-dd-desc { font-size: var(--text-xs); color: var(--navy-400); line-height: 1.5; }
+
+/* PAGE HEADER */
+.page-header { max-width: 1120px; margin: 0 auto; padding: var(--sp-lg) var(--sp-lg) var(--sp-sm); }
+.page-header-top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-lg); }
+.page-title { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--dark-800); }
+.page-desc { color: var(--navy-400); font-size: var(--text-xs); margin-top: 4px; }
+
+/* STATE TOGGLE */
+.state-toggle { display: inline-flex; gap: 0; padding: 3px; background: var(--cream-200); border-radius: var(--r-sm); }
+.state-toggle button { padding: 4px 14px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; background: none; border: none; border-radius: 4px; color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease); }
+.state-toggle button.active { background: var(--cream-50); color: var(--dark-800); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+
+/* MAIN STAGE */
+.fp-stage {
+  display: flex; flex-direction: column; align-items: center;
+  padding: var(--sp-xl) var(--sp-lg) var(--sp-3xl);
+  background: radial-gradient(ellipse 50% 40% at 50% 30%, rgba(200,162,76,0.04) 0%, transparent 100%), var(--cream-100);
+}
+
+/* HEATMAP CARD */
+.hm-card {
+  background: var(--cream-50); border: 1px solid var(--cream-300);
+  border-radius: var(--r-lg); padding: 32px 28px 24px;
+  box-shadow: 0 2px 8px rgba(26,35,53,0.06), 0 12px 40px rgba(26,35,53,0.08);
+  position: relative; max-width: 720px; width: 100%;
+  animation: cardEntrance 0.7s var(--ease) 0.2s both;
+}
+
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Corner ornaments */
+.hm-card::before, .hm-card::after {
+  content: ''; position: absolute; width: 24px; height: 24px;
+  border-color: rgba(200,162,76,0.2); border-style: solid;
+}
+.hm-card::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+.hm-card::after { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+
+.hm-card-header {
+  display: flex; align-items: baseline; gap: var(--sp-sm);
+  margin-bottom: var(--sp-lg);
+}
+.hm-card-year {
+  font-family: var(--font-display); font-size: var(--text-2xl);
+  font-weight: 700; color: var(--dark-800); line-height: 1;
+}
+.hm-card-title {
+  font-family: var(--font-body); font-size: var(--text-sm);
+  color: var(--navy-400); font-weight: 500;
+}
+
+/* HEATMAP GRID */
+.hm-wrap {
+  overflow-x: auto; padding-bottom: var(--sp-sm);
+}
+.hm-wrap::-webkit-scrollbar { height: 4px; }
+.hm-wrap::-webkit-scrollbar-thumb { background: var(--cream-400); border-radius: 2px; }
+
+.hm-grid-container {
+  display: flex; gap: 6px; min-width: 680px;
+}
+
+.hm-day-labels {
+  display: flex; flex-direction: column; gap: 2px;
+  padding-top: 18px; /* align with grid below month labels */
+}
+.hm-day-label {
+  height: 12px; line-height: 12px;
+  font-family: var(--font-mono); font-size: 9px; color: var(--navy-300);
+  text-align: right; padding-right: 4px;
+}
+.hm-day-label.spacer { visibility: hidden; }
+
+.hm-grid-area { flex: 1; }
+
+.hm-months {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  margin-bottom: 4px; padding-left: 1px;
+}
+.hm-month-label {
+  font-family: var(--font-mono); font-size: 9px; color: var(--navy-300);
+  grid-column: span 4;
+}
+
+.hm-grid {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 2px;
+  grid-auto-flow: column;
+}
+
+.hm-cell {
+  width: 12px; height: 12px; border-radius: 2px;
+  background: var(--cream-200);
+  transition: transform 0.15s ease;
+}
+.hm-cell:hover { transform: scale(1.6); z-index: 1; position: relative; }
+.hm-cell.l1 { background: var(--gold-200); }
+.hm-cell.l2 { background: var(--gold-400); }
+.hm-cell.l3 { background: var(--gold-600); }
+
+/* Legend */
+.hm-legend {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: var(--sp-md); justify-content: flex-end;
+}
+.hm-legend-label {
+  font-family: var(--font-mono); font-size: 9px; color: var(--navy-300);
+}
+.hm-legend-cell {
+  width: 10px; height: 10px; border-radius: 2px;
+}
+
+/* STATS */
+.hm-stats {
+  display: flex; gap: var(--sp-xl); margin-top: var(--sp-xl);
+  padding-top: var(--sp-lg); border-top: 1px solid var(--cream-300);
+}
+.hm-stat-num {
+  font-family: var(--font-display); font-size: var(--text-xl);
+  font-weight: 700; color: var(--dark-800); line-height: 1;
+}
+.hm-stat-num .accent { color: var(--gold-500); }
+.hm-stat-num small {
+  font-size: var(--text-sm); font-weight: 400; color: var(--navy-400); margin-left: 2px;
+}
+.hm-stat-label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-300);
+  margin-top: 4px; letter-spacing: 0.04em;
+}
+
+/* Card watermark */
+.hm-card-footer {
+  text-align: center; margin-top: var(--sp-lg); padding-top: var(--sp-md);
+  border-top: 1px solid var(--cream-300);
+}
+.hm-card-footer-text {
+  font-family: var(--font-mono); font-size: 9px; color: var(--navy-200); letter-spacing: 0.08em;
+}
+
+/* ACTIONS */
+.fp-actions {
+  display: flex; gap: var(--sp-sm); margin-top: var(--sp-xl);
+  animation: cardEntrance 0.7s var(--ease) 0.5s both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: none; border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
+.btn-primary svg { width: 16px; height: 16px; }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: none; color: var(--navy-700);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: 1px solid var(--navy-200); border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-secondary:hover { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+.btn-secondary svg { width: 16px; height: 16px; }
+
+/* EMPTY STATE */
+.empty-state { display: none; }
+.empty-ghost { opacity: 0.25; pointer-events: none; }
+.empty-cta-wrap { text-align: center; margin-top: var(--sp-xl); }
+.empty-cta-text { color: var(--navy-500); font-size: var(--text-sm); margin-bottom: var(--sp-md); line-height: 1.8; }
+.btn-cta {
+  display: inline-block; padding: 12px 32px;
+  background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  border: none; border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-cta:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
+
+/* FOOTER */
+.doc-footer { text-align: center; padding: var(--sp-2xl) var(--sp-lg) var(--sp-xl); border-top: 1px solid var(--cream-300); margin: 0 auto; max-width: 1120px; }
+.doc-footer p { font-size: var(--text-xs); color: var(--navy-200); line-height: 1.8; }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 520px) {
+  .hm-card { padding: 24px 16px 20px; }
+  .hm-stats { gap: var(--sp-lg); flex-wrap: wrap; }
+  .fp-actions { flex-direction: column; width: 100%; max-width: 400px; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+  .page-header { padding: var(--sp-md) var(--sp-md) var(--sp-sm); }
+  .page-header-top { flex-direction: column; align-items: flex-start; gap: var(--sp-sm); }
+  .fp-stage { padding: var(--sp-lg) var(--sp-md) var(--sp-2xl); }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="home-prototype.html" class="header-logo">だんいんログ</a>
+    <nav class="header-nav">
+      <div class="nav-group">
+        <button class="nav-trigger">探す <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="log-prototype.html" class="nav-dd-item"><span class="nav-dd-name">団員の視聴ログ</span><span class="nav-dd-desc">1,419件の配信を探索・記録</span></a>
+          <a href="music-prototype.html" class="nav-dd-item"><span class="nav-dd-name">楽曲ライブラリ</span><span class="nav-dd-desc">452曲のレパートリー・セトリ検索</span></a>
+          <a href="asmr-prototype.html" class="nav-dd-item"><span class="nav-dd-name">今日のASMR</span><span class="nav-dd-desc">ランダムでASMRを1本おすすめ</span></a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <button class="nav-trigger">作る <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
+        <div class="nav-dropdown">
+          <a href="report-prototype.html" class="nav-dd-item"><span class="nav-dd-name">団員レポート</span><span class="nav-dd-desc">推し活データをレポート画像に</span></a>
+          <a href="#" class="nav-dd-item current"><span class="nav-dd-name">団員のあしあと</span><span class="nav-dd-desc">視聴履歴のヒートマップ</span></a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header reveal">
+  <div class="page-header-top">
+    <div>
+      <h1 class="page-title">団員のあしあと</h1>
+      <p class="page-desc">あなたの視聴履歴をヒートマップで可視化</p>
+    </div>
+    <div class="state-toggle" id="stateToggle">
+      <button class="active" data-state="filled">蓄積あり</button>
+      <button data-state="empty">記録ゼロ</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILLED STATE -->
+<div class="fp-stage" id="stateFilled">
+  <div class="hm-card">
+    <div class="hm-card-header">
+      <span class="hm-card-year" id="hmYear">2026</span>
+      <span class="hm-card-title">あしあと</span>
+    </div>
+
+    <div class="hm-wrap">
+      <div class="hm-grid-container">
+        <div class="hm-day-labels">
+          <div class="hm-day-label">月</div>
+          <div class="hm-day-label spacer">火</div>
+          <div class="hm-day-label">水</div>
+          <div class="hm-day-label spacer">木</div>
+          <div class="hm-day-label">金</div>
+          <div class="hm-day-label spacer">土</div>
+          <div class="hm-day-label">日</div>
+        </div>
+        <div class="hm-grid-area">
+          <div class="hm-months" id="hmMonths"></div>
+          <div class="hm-grid" id="hmGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hm-legend">
+      <span class="hm-legend-label">少</span>
+      <div class="hm-legend-cell" style="background:var(--cream-200)"></div>
+      <div class="hm-legend-cell" style="background:var(--gold-200)"></div>
+      <div class="hm-legend-cell" style="background:var(--gold-400)"></div>
+      <div class="hm-legend-cell" style="background:var(--gold-600)"></div>
+      <span class="hm-legend-label">多</span>
+    </div>
+
+    <div class="hm-stats" id="hmStats">
+      <div>
+        <div class="hm-stat-num"><span class="accent" id="statDays">142</span><small>日</small></div>
+        <div class="hm-stat-label">視聴あり</div>
+      </div>
+      <div>
+        <div class="hm-stat-num"><span class="accent" id="statStreak">23</span><small>日</small></div>
+        <div class="hm-stat-label">最長連続記録</div>
+      </div>
+      <div>
+        <div class="hm-stat-num"><span class="accent" id="statCount">287</span><small>本</small></div>
+        <div class="hm-stat-label">視聴本数</div>
+      </div>
+    </div>
+
+    <div class="hm-card-footer">
+      <span class="hm-card-footer-text">だんいんログ &mdash; 白銀ノエル非公式ファンサイト</span>
+    </div>
+  </div>
+
+  <div class="fp-actions">
+    <button class="btn-primary" id="dlBtn">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/></svg>
+      画像をダウンロード
+    </button>
+    <button class="btn-secondary" id="shareBtn">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.6 1h2.4l-5.3 6.1L16 15h-4.9l-3.8-5-4.4 5H.5l5.7-6.5L.2 1h5l3.5 4.6L12.6 1zm-.8 12.6h1.3L4.3 2.3H2.9l8.9 11.3z"/></svg>
+      Xでシェア
+    </button>
+  </div>
+</div>
+
+<!-- EMPTY STATE -->
+<div class="fp-stage empty-state" id="stateEmpty">
+  <div class="hm-card empty-ghost">
+    <div class="hm-card-header">
+      <span class="hm-card-year">2026</span>
+      <span class="hm-card-title">あしあと</span>
+    </div>
+    <div class="hm-wrap">
+      <div class="hm-grid-container">
+        <div class="hm-day-labels">
+          <div class="hm-day-label">月</div><div class="hm-day-label spacer">火</div>
+          <div class="hm-day-label">水</div><div class="hm-day-label spacer">木</div>
+          <div class="hm-day-label">金</div><div class="hm-day-label spacer">土</div>
+          <div class="hm-day-label">日</div>
+        </div>
+        <div class="hm-grid-area">
+          <div class="hm-months" id="hmMonthsEmpty"></div>
+          <div class="hm-grid" id="hmGridEmpty"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hm-stats">
+      <div><div class="hm-stat-num"><span class="accent">0</span><small>日</small></div><div class="hm-stat-label">視聴あり</div></div>
+      <div><div class="hm-stat-num"><span class="accent">0</span><small>日</small></div><div class="hm-stat-label">最長連続記録</div></div>
+      <div><div class="hm-stat-num"><span class="accent">0</span><small>本</small></div><div class="hm-stat-label">視聴本数</div></div>
+    </div>
+    <div class="hm-card-footer">
+      <span class="hm-card-footer-text">だんいんログ &mdash; 白銀ノエル非公式ファンサイト</span>
+    </div>
+  </div>
+  <div class="empty-cta-wrap">
+    <p class="empty-cta-text">視聴ログで配信をチェックすると、<br>ここにあなたのあしあとが表示されます。</p>
+    <a href="log-prototype.html" class="btn-cta">団員の視聴ログを開く</a>
+  </div>
+</div>
+
+<footer class="doc-footer">
+  <p>だんいんログ &mdash; 白銀ノエル非公式ファンサイト</p>
+  <p>白銀ノエルさん及びカバー株式会社とは一切関係ありません</p>
+</footer>
+
+<script>
+var MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+var MONTH_WEEKS = [4,4,5,4,5,4,4,5,4,5,4,5]; // approximate weeks per month
+
+function seededRng(seed) {
+  return function() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+}
+
+function generateHeatmap(gridEl, monthsEl, year, empty) {
+  gridEl.innerHTML = '';
+  monthsEl.innerHTML = '';
+
+  // Month labels
+  MONTHS.forEach(function(m, i) {
+    var span = document.createElement('span');
+    span.className = 'hm-month-label';
+    span.textContent = m;
+    span.style.gridColumn = 'span ' + MONTH_WEEKS[i];
+    monthsEl.appendChild(span);
+  });
+
+  var rng = seededRng(year * 7);
+  var totalDays = 0;
+  var maxStreak = 0;
+  var currentStreak = 0;
+  var totalViews = 0;
+
+  // 52 weeks × 7 days
+  for (var d = 0; d < 364; d++) {
+    var cell = document.createElement('div');
+    cell.className = 'hm-cell';
+
+    if (!empty) {
+      var weekIdx = Math.floor(d / 7);
+      // More activity in recent weeks (simulate growing engagement)
+      var baseProb = 0.15 + (weekIdx / 52) * 0.35;
+      // Current year: only fill up to ~week 16 (mid-April)
+      if (year === 2026 && weekIdx > 15) {
+        baseProb = 0;
+      }
+
+      if (rng() < baseProb) {
+        var intensity = rng();
+        if (intensity < 0.5) { cell.classList.add('l1'); totalViews += 1; }
+        else if (intensity < 0.8) { cell.classList.add('l2'); totalViews += 2; }
+        else { cell.classList.add('l3'); totalViews += 3; }
+        totalDays++;
+        currentStreak++;
+        if (currentStreak > maxStreak) maxStreak = currentStreak;
+      } else {
+        currentStreak = 0;
+      }
+    }
+
+    gridEl.appendChild(cell);
+  }
+
+  return { days: totalDays, streak: maxStreak, views: totalViews };
+}
+
+function renderYear(year) {
+  document.getElementById('hmYear').textContent = year;
+  var stats = generateHeatmap(
+    document.getElementById('hmGrid'),
+    document.getElementById('hmMonths'),
+    year, false
+  );
+  document.getElementById('statDays').textContent = stats.days;
+  document.getElementById('statStreak').textContent = stats.streak;
+  document.getElementById('statCount').textContent = stats.views;
+}
+
+// Init
+renderYear(2026);
+generateHeatmap(
+  document.getElementById('hmGridEmpty'),
+  document.getElementById('hmMonthsEmpty'),
+  2026, true
+);
+
+// State toggle
+(function() {
+  var btns = document.querySelectorAll('#stateToggle button');
+  var filled = document.getElementById('stateFilled');
+  var empty = document.getElementById('stateEmpty');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      if (this.getAttribute('data-state') === 'filled') {
+        filled.style.display = 'flex'; empty.style.display = 'none';
+      } else {
+        filled.style.display = 'none'; empty.style.display = 'flex';
+      }
+    });
+  });
+})();
+
+// Download sim
+document.getElementById('dlBtn').addEventListener('click', function() {
+  var b = this, o = b.innerHTML;
+  b.innerHTML = '準備中...'; b.style.opacity = '0.7'; b.style.pointerEvents = 'none';
+  setTimeout(function() {
+    b.innerHTML = '&#10003; ダウンロード完了';
+    setTimeout(function() { b.innerHTML = o; b.style.opacity = ''; b.style.pointerEvents = ''; }, 1500);
+  }, 1000);
+});
+
+// Reveal
+document.querySelectorAll('.reveal').forEach(function(el) {
+  new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.05 }).observe(el);
+});
+</script>
+
+</body>
+</html>
