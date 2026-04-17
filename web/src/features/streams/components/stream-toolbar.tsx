@@ -7,13 +7,9 @@ import {
   ExpandableSearch,
   ToolbarIconButton,
 } from '@/components/ui/toolbar-actions';
-import {
-  FilterPanel,
-  FilterSection,
-  FilterEmptySection,
-} from '@/components/ui/filter-panel';
-import { TagPill } from '@/components/ui/tag-pill';
+import { FilterPanel } from '@/components/ui/filter-panel';
 import type { SortOrder, CheckFilter } from '../hooks/use-stream-filter';
+import { StreamFilterContent } from './stream-filter-content';
 
 type Props = {
   categoryTabs: StreamTagWithCount[];
@@ -32,12 +28,6 @@ type Props = {
   onCheckFilter: (f: CheckFilter) => void;
   onClearAll: () => void;
 };
-
-const checkOptions: { value: CheckFilter; label: string }[] = [
-  { value: 'all', label: 'すべて' },
-  { value: 'unchecked', label: '未チェック' },
-  { value: 'checked', label: 'チェック済み' },
-];
 
 export function StreamToolbar({
   categoryTabs,
@@ -58,7 +48,6 @@ export function StreamToolbar({
 }: Props) {
   const [panelOpen, setPanelOpen] = useState(false);
   const closePanel = useCallback(() => setPanelOpen(false), []);
-
   const tabs = categoryTabs.map((t) => ({ key: t.name, label: t.name }));
 
   return (
@@ -96,38 +85,13 @@ export function StreamToolbar({
               onClose={closePanel}
               onClearAll={onClearAll}
             >
-              <div className="flex gap-1.5 px-md py-sm border-b border-border">
-                {checkOptions.map((opt) => (
-                  <TagPill
-                    key={opt.value}
-                    label={opt.label}
-                    variant={opt.value === checkFilter ? 'gold' : 'filter'}
-                    active={opt.value === checkFilter}
-                    onClick={() => onCheckFilter(opt.value)}
-                  />
-                ))}
-              </div>
-              <FilterSection title="配信タグ">
-                <div className="flex flex-wrap gap-xs">
-                  {panelTags.map((tag) => (
-                    <TagPill
-                      key={tag.id}
-                      label={tag.name}
-                      active={activePanelTags.has(tag.id)}
-                      onClick={() => onTogglePanelTag(tag.id)}
-                    />
-                  ))}
-                </div>
-              </FilterSection>
-              <FilterEmptySection
-                title="ゲームタイトル"
-                placeholder="タイトルを検索..."
+              <StreamFilterContent
+                panelTags={panelTags}
+                activePanelTags={activePanelTags}
+                checkFilter={checkFilter}
+                onTogglePanelTag={onTogglePanelTag}
+                onCheckFilter={onCheckFilter}
               />
-              <FilterEmptySection
-                title="コラボ相手"
-                placeholder="名前を検索..."
-              />
-              <FilterEmptySection title="年" />
             </FilterPanel>
           </div>
           <ToolbarIconButton title="並び替え" onClick={onToggleSort}>
