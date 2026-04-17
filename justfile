@@ -36,3 +36,22 @@ sync-data:
 sync-data-local:
     mkdir -p {{web}}/data
     cp tools/data/*.csv {{web}}/data/
+
+# ---------- データ管理（tools/justfile のエイリアス） ----------
+
+# YouTube データ取得
+fetch *args="":
+    cd tools && just fetch {{args}}
+
+# タグ分類
+tags *args="":
+    cd tools && just tags {{args}}
+
+# ステージング差分確認
+data-diff:
+    cd tools && just diff
+
+# ステージング反映 → web/data/ にも同期
+data-apply:
+    cd tools && just apply
+    just sync-data-local
