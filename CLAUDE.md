@@ -26,7 +26,7 @@ shirogane-holy-knights/
 web/src/
 ├── app/                  # App Router（ルーティング+ページ組み立てのみ）
 │   ├── page.tsx          # トップ（δ型ハブ）
-│   ├── streams/          # B2 団員の視聴ログ
+│   ├── streams/          # 配信一覧
 │   ├── music/            # C3 楽曲ライブラリ
 │   ├── asmr/             # A1 今日のASMR
 │   ├── report/           # B5 団員レポート

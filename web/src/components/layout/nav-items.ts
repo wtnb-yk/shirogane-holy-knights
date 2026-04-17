@@ -23,8 +23,8 @@ export function getNavGroups(): readonly NavGroup[] {
       label: '探す',
       items: [
         {
-          name: '団員の視聴ログ',
-          desc: `${streamCount}件の配信を探索・記録`,
+          name: '配信一覧',
+          desc: `${streamCount}件の配信をタグ検索・チェックで記録`,
           href: '/streams',
         },
         {

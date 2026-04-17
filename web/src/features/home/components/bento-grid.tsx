@@ -17,8 +17,8 @@ function buildCards() {
 
   const explore: readonly CardData[] = [
     {
-      name: '団員の視聴ログ',
-      desc: `${streamCount}件の配信をタグで絞り込み、視聴チェックで記録する。`,
+      name: '配信一覧',
+      desc: `${streamCount}件の配信をタグやキーワードで検索。チェックで視聴記録をつける。`,
       meta: `${streamCount} streams`,
       href: '/streams',
     },
@@ -58,14 +58,16 @@ function HubCard({ name, desc, meta, href }: CardData) {
   return (
     <Link
       href={href}
-      className="group/card relative flex flex-col gap-sm bg-surface border border-border rounded-lg p-lg min-h-[var(--hub-card-min-h)] transition-all duration-300 ease-out-expo hover:border-border-strong hover:shadow-card-hover hover:-translate-y-[3px]"
+      className="group/card relative flex flex-col gap-xs md:gap-sm bg-surface border border-border rounded-lg p-md md:p-lg max-md:min-h-0 md:min-h-[var(--hub-card-min-h)] transition-all duration-300 ease-out-expo hover:border-border-strong hover:shadow-card-hover hover:-translate-y-[3px]"
     >
-      <div className="font-display text-lg font-semibold text-heading">
+      <div className="font-display text-base md:text-lg font-semibold text-heading">
         {name}
       </div>
       <div className="text-xs text-secondary leading-[1.7]">{desc}</div>
-      <div className="mt-auto font-mono text-xs text-subtle">{meta}</div>
-      <span className="absolute bottom-lg right-lg font-mono text-sm text-faint transition-all duration-300 ease-out-expo group-hover/card:text-link-hover group-hover/card:translate-x-1">
+      <div className="mt-auto pt-xs font-mono text-[10px] md:text-xs text-subtle">
+        {meta}
+      </div>
+      <span className="absolute bottom-md md:bottom-lg right-md md:right-lg font-mono text-sm text-faint transition-all duration-300 ease-out-expo group-hover/card:text-link-hover group-hover/card:translate-x-1">
         &rarr;
       </span>
     </Link>
@@ -81,10 +83,10 @@ function CardGroup({
 }) {
   return (
     <div>
-      <div className="font-mono text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-md">
+      <div className="font-mono text-[10px] md:text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-sm md:mb-md">
         {label}
       </div>
-      <div className="grid grid-cols-3 max-md:grid-cols-1 gap-md">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-sm md:gap-md">
         {cards.map((card) => (
           <HubCard key={card.href} {...card} />
         ))}
@@ -97,18 +99,18 @@ export function BentoGrid() {
   const { explore, create } = buildCards();
 
   return (
-    <section className="max-w-[var(--content-max)] mx-auto px-lg pt-2xl pb-3xl">
-      <div className="font-mono text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-sm">
+    <section className="max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-xl md:pt-2xl pb-xl md:pb-3xl">
+      <div className="font-mono text-[10px] md:text-xs font-medium tracking-[0.14em] uppercase text-accent-label mb-xs md:mb-sm">
         03 &mdash; All Tools
       </div>
-      <h2 className="font-display text-2xl font-semibold text-heading leading-[1.3] mb-xs">
+      <h2 className="font-display text-xl md:text-2xl font-semibold text-heading leading-[1.3] mb-xs">
         機能一覧
       </h2>
-      <p className="text-sm text-muted max-w-[560px] mb-xl leading-relaxed">
+      <p className="text-xs md:text-sm text-muted max-w-[560px] mb-lg md:mb-xl leading-relaxed">
         配信の探索・記録から、推し活データの可視化・シェアまで。
       </p>
 
-      <div className="flex flex-col gap-xl">
+      <div className="flex flex-col gap-lg md:gap-xl">
         <CardGroup label="探す" cards={explore} />
         <CardGroup label="共有する" cards={create} />
       </div>
