@@ -28,6 +28,8 @@ export const metadata: Metadata = {
   description: '白銀ノエルファン（団員）のための推し活記録アプリ',
 };
 
+const themeScript = `(function(){var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}})()`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,7 +39,11 @@ export default function RootLayout({
     <html
       lang="ja"
       className={`${outfit.variable} ${mplus2.variable} ${jetbrainsMono.variable} antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-dvh flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>

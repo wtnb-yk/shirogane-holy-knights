@@ -3,7 +3,7 @@ import type { NavGroup } from './nav-items';
 
 export function MobileNav({ groups }: { groups: readonly NavGroup[] }) {
   return (
-    <div className="md:hidden ml-auto group/mobile relative">
+    <div className="md:hidden group/mobile relative">
       <button className="flex flex-col justify-center gap-[5px] w-10 h-10 items-center bg-transparent border-none cursor-pointer">
         <span className="block w-5 h-[1.5px] bg-header-text rounded-full transition-all duration-250 ease-out-expo group-focus-within/mobile:translate-y-[6.5px] group-focus-within/mobile:rotate-45" />
         <span className="block w-5 h-[1.5px] bg-header-text rounded-full transition-all duration-250 ease-out-expo group-focus-within/mobile:opacity-0" />

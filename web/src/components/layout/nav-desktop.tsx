@@ -17,7 +17,7 @@ function ChevronDown() {
 
 export function DesktopNav({ groups }: { groups: readonly NavGroup[] }) {
   return (
-    <nav className="hidden md:flex items-center gap-xs ml-auto">
+    <nav className="hidden md:flex items-center gap-xs">
       {groups.map((group) => (
         <div key={group.label} className="group relative">
           <button className="flex items-center gap-1 px-3.5 py-1.5 font-body text-sm font-medium text-header-text bg-transparent border-none rounded-sm cursor-pointer hover:text-white hover:bg-white/8 transition-all duration-250 ease-out-expo">

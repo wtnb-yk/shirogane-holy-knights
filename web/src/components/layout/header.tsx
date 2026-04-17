@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getNavGroups } from './nav-items';
 import { DesktopNav } from './nav-desktop';
 import { MobileNav } from './nav-mobile';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export function Header() {
   const navGroups = getNavGroups();
@@ -15,8 +16,11 @@ export function Header() {
         >
           だんいんログ
         </Link>
-        <DesktopNav groups={navGroups} />
-        <MobileNav groups={navGroups} />
+        <div className="flex items-center gap-xs ml-auto">
+          <DesktopNav groups={navGroups} />
+          <ThemeToggle />
+          <MobileNav groups={navGroups} />
+        </div>
       </div>
     </header>
   );

@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* ダークモード: class ベース（.dark クラスで切替） */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    DESIGN TOKENS — docs/home-prototype.html 準拠
 
@@ -58,8 +61,11 @@
 
 /* ----- 2. セマンティック色 -----
    コンポーネントではこちらを使う。
+   @theme（非 inline）で定義することで、ユーティリティが var() 経由で参照し、
+   .dark セレクタでの上書きが実行時に反映される。
+   ※ bg-surface/50 等の不透明度修飾子は使用不可（直接 rgba() で記述する）
    ------------------------------------------------------------ */
-@theme inline {
+@theme {
   /* 背景 */
   --color-page: var(--color-cream-100);
   --color-surface: var(--color-cream-50);
@@ -217,4 +223,57 @@ body {
 @keyframes draw-line {
   from { width: 0; }
   to { width: 48px; }
+}
+
+/* ============================================================
+   DARK MODE OVERRIDES
+   .dark クラスがルート要素に付与されたときにセマンティックトークンを上書き。
+   コンポーネント側は変更不要（CSS変数経由で自動適用）。
+   ============================================================ */
+
+.dark {
+  /* ----- 背景 ----- */
+  --color-page: var(--color-dark-900);
+  --color-surface: var(--color-dark-800);
+  --color-surface-hover: var(--color-dark-700);
+
+  /* ----- テキスト ----- */
+  --color-heading: var(--color-cream-100);
+  --color-foreground: var(--color-navy-100);
+  --color-secondary: var(--color-navy-200);
+  --color-muted: var(--color-navy-300);
+  --color-subtle: var(--color-navy-400);
+  --color-faint: var(--color-navy-500);
+
+  /* ----- ボーダー ----- */
+  --color-border: var(--color-dark-700);
+  --color-border-hover: var(--color-navy-600);
+  --color-border-strong: var(--color-navy-400);
+
+  /* ----- アクセント（暗い背景で映えるよう明るめのゴールド） ----- */
+  --color-accent: var(--color-gold-300);
+  --color-accent-label: var(--color-gold-300);
+
+  /* ----- ヘッダー（ページと一体化、ゴールドボーダーで区切り） ----- */
+  --color-header-bg: var(--color-dark-900);
+  --color-header-text: var(--color-gold-100);
+  --color-header-border: var(--color-gold-500);
+
+  /* ----- インタラクション ----- */
+  --color-link-hover: var(--color-cream-200);
+
+  /* ----- シャドウ（暗い背景で視認性を確保） ----- */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 6px 24px rgba(0, 0, 0, 0.3);
+  --shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-button-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+  /* ----- グロー ----- */
+  --glow-navy: rgba(200, 210, 225, 0.03);
+  --glow-gold: rgba(212, 181, 106, 0.08);
+}
+
+.dark ::selection {
+  background: rgba(200, 162, 76, 0.2);
+  color: var(--color-cream-50);
 }
