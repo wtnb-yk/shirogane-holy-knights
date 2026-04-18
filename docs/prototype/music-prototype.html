@@ -3,48 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>楽曲ライブラリ — だんいんログ</title>
+<title>楽曲ライブラリ v2 — だんいんログ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   DESIGN TOKENS — 共通
+   DESIGN TOKENS — home-prototype.html と完全同一
    ============================================================ */
 :root {
-  --cream-50:  #FCFCFD; --cream-100: #F8F8FA; --cream-200: #EDEDF0;
-  --cream-300: #E2E2E6; --cream-400: #D4D4D9;
-  --navy-900: #1C2230; --navy-800: #242A3A; --navy-700: #303845;
-  --navy-600: #404A55; --navy-500: #545D68; --navy-400: #6A7380;
-  --navy-300: #888F99; --navy-200: #ACB1B8; --navy-100: #CDD0D4;
+  --cream-50:  #FCFCFD;
+  --cream-100: #F8F8FA;
+  --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6;
+  --cream-400: #D4D4D9;
+
+  --navy-900: #1C2230;
+  --navy-800: #242A3A;
+  --navy-700: #303845;
+  --navy-600: #404A55;
+  --navy-500: #545D68;
+  --navy-400: #6A7380;
+  --navy-300: #888F99;
+  --navy-200: #ACB1B8;
+  --navy-100: #CDD0D4;
   --navy-glow: rgba(48, 56, 69, 0.08);
-  --gold-600: #8B6D1E; --gold-500: #A6852E; --gold-400: #C8A24C;
-  --gold-300: #D4B56A; --gold-200: #E2CC92; --gold-100: #F2E6C4;
+
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E;
+  --gold-400: #C8A24C;
+  --gold-300: #D4B56A;
+  --gold-200: #E2CC92;
+  --gold-100: #F2E6C4;
   --gold-glow: rgba(200, 162, 76, 0.10);
-  --silver-400: #9A949A; --silver-300: #BBB4B8; --silver-200: #D5D0D3; --silver-100: #ECEAEB;
-  --dark-900: #1A1D24; --dark-800: #2A2D35; --dark-700: #3A3D45;
-  --success: #4A8B6B; --white: #FFFFFF; --border: var(--cream-300);
+
+  --silver-400: #9A949A;
+  --silver-300: #BBB4B8;
+  --silver-200: #D5D0D3;
+  --silver-100: #ECEAEB;
+
+  --dark-900: #1A1D24;
+  --dark-800: #2A2D35;
+  --dark-700: #3A3D45;
+
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300);
+
   --font-display: 'Outfit', sans-serif;
   --font-body: 'M PLUS 2', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
-  --text-lg: 1.125rem; --text-xl: 1.5rem; --text-2xl: 2rem;
-  --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px;
-  --sp-xl: 40px; --sp-2xl: 64px; --sp-3xl: 120px;
-  --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1); --dur: 0.25s;
+
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.5rem;
+  --text-2xl: 2rem;
+
+  --sp-2xs: 3px; --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px; --sp-3xl: 120px;
+  --r-xs: 3px; --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.25s;
+
+  --content-max: 1120px;
+  --header-height: 3.5rem;
 }
 
-/* RESET */
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 body { background: var(--cream-100); color: var(--navy-700); font-family: var(--font-body); font-size: var(--text-base); line-height: 1.7; overflow-x: hidden; }
-::selection { background: rgba(44, 58, 78, 0.12); }
-a { color: var(--navy-600); text-decoration: none; }
-a:hover { color: var(--navy-800); }
+::selection { background: rgba(44,58,78,0.12); color: var(--dark-800); }
+a { color: var(--navy-600); text-decoration: none; } a:hover { color: var(--navy-800); }
 
 /* ============================================================
-   HEADER — 共通
+   HEADER
    ============================================================ */
 .site-header { position: sticky; top: 0; z-index: 100; background: var(--navy-700); border-bottom: 1px solid var(--gold-400); }
 .header-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--sp-lg); height: 56px; display: flex; align-items: center; gap: var(--sp-xl); }
@@ -68,354 +104,205 @@ a:hover { color: var(--navy-800); }
    PAGE HEADER
    ============================================================ */
 .page-header { max-width: 1120px; margin: 0 auto; padding: var(--sp-lg) var(--sp-lg) var(--sp-sm); }
-.page-title { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--dark-800); }
-.page-desc { color: var(--navy-400); font-size: var(--text-xs); margin-top: 4px; }
+.page-header-top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-lg); }
+.page-title { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--dark-800); line-height: 1.3; }
+.page-stats { display: flex; align-items: center; gap: var(--sp-sm); flex-shrink: 0; }
+.page-stat { font-family: var(--font-mono); font-size: 11px; color: var(--navy-300); letter-spacing: 0.02em; }
+.page-stat strong { color: var(--navy-500); font-weight: 500; }
+.page-stat-sep { color: var(--cream-400); font-size: 10px; }
+.page-desc { color: var(--navy-400); font-size: var(--text-xs); margin-top: 4px; line-height: 1.6; }
 
 /* ============================================================
-   SEARCH HERO
+   SEARCH — log-prototype と同じ展開式検索
    ============================================================ */
-.search-hero {
-  max-width: 1120px; margin: 0 auto;
-  padding: var(--sp-lg) var(--sp-lg) var(--sp-md);
-}
-
-.search-bar {
-  position: relative; width: 100%;
-}
-
-.search-bar input {
-  width: 100%;
-  padding: 14px 16px 14px 48px;
-  background: var(--cream-50);
-  border: 1px solid var(--cream-300);
-  border-radius: var(--r-md);
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  color: var(--dark-800);
-  outline: none;
-  transition: all 0.3s var(--ease);
-}
-.search-bar input::placeholder { color: var(--navy-300); }
-.search-bar input:focus {
-  border-color: var(--navy-200);
-  background: var(--white);
-  box-shadow: 0 0 0 4px rgba(48, 56, 69, 0.06), 0 4px 16px rgba(0,0,0,0.04);
-}
-
-.search-bar-icon {
-  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-  width: 18px; height: 18px; color: var(--navy-300); pointer-events: none;
-}
-
-.search-stats {
-  display: flex; gap: var(--sp-lg); margin-top: var(--sp-sm);
-  padding: 0 var(--sp-xs);
-}
-
-.search-stat {
-  font-family: var(--font-mono); font-size: 11px; color: var(--navy-300);
-  letter-spacing: 0.02em;
-}
-
-.search-stat strong {
-  color: var(--navy-500); font-weight: 500;
-}
+.search-expandable { position: relative; display: flex; align-items: center; }
+.search-expanded { width: 0; padding: 0; opacity: 0; border: none; background: var(--cream-100); font-family: var(--font-body); font-size: var(--text-xs); color: var(--dark-800); border-radius: var(--r-sm); outline: none; transition: all 0.3s var(--ease); overflow: hidden; }
+.search-expandable.open .search-expanded { width: 200px; padding: 6px 10px; opacity: 1; border: 1px solid var(--cream-300); margin-right: 4px; }
+.search-expanded:focus { border-color: var(--navy-200); background: var(--white); }
+.search-expanded::placeholder { color: var(--navy-300); }
+.tb-icon-btn { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: var(--r-sm); color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease); }
+.tb-icon-btn:hover { color: var(--navy-700); background: var(--cream-200); }
+.tb-icon-btn svg { width: 16px; height: 16px; }
+.toolbar-meta { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); white-space: nowrap; padding: 0 4px; align-self: center; }
 
 /* ============================================================
-   SEARCH RESULTS (replaces sections when active)
+   SEARCH RESULTS (横断)
    ============================================================ */
-.search-results {
-  max-width: 1120px; margin: 0 auto;
-  padding: var(--sp-md) var(--sp-lg) var(--sp-2xl);
-  display: none;
-}
-
+.search-results { max-width: 1120px; margin: 0 auto; padding: var(--sp-lg) var(--sp-lg) var(--sp-2xl); display: none; }
 .search-results.active { display: block; }
-
-.sr-item {
-  padding: var(--sp-md) 0;
-  border-bottom: 1px solid var(--cream-200);
-}
-.sr-item:last-child { border-bottom: none; }
-
-.sr-title {
-  font-size: var(--text-base); font-weight: 600; color: var(--dark-800);
-}
-
-.sr-artist {
-  font-size: var(--text-xs); color: var(--navy-400); margin-top: 2px;
-}
-
-.sr-appearances {
-  margin-top: var(--sp-sm);
-  display: flex; flex-direction: column; gap: 4px;
-}
-
-.sr-appear {
-  display: flex; align-items: center; gap: var(--sp-sm);
-  padding: 6px 10px;
-  background: var(--cream-50);
-  border: 1px solid var(--cream-200);
-  border-radius: var(--r-sm);
-  font-size: var(--text-xs);
-  color: var(--navy-600);
-  transition: background var(--dur) var(--ease);
-  cursor: pointer;
-}
-.sr-appear:hover { background: var(--cream-200); }
-
-.sr-appear .tag-sm { flex-shrink: 0; }
-
+.sr-item { background: var(--cream-50); border: 1px solid var(--cream-300); border-radius: var(--r-md); padding: var(--sp-md) var(--sp-lg); margin-bottom: var(--sp-sm); transition: border-color var(--dur) var(--ease), box-shadow 0.3s var(--ease); }
+.sr-item:hover { border-color: var(--cream-400); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.sr-header { display: flex; align-items: center; gap: var(--sp-sm); flex-wrap: wrap; margin-bottom: var(--sp-sm); }
+.sr-title { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+.sr-slash { color: var(--cream-400); margin: 0 2px; font-size: var(--text-xs); }
+.sr-artist { font-size: var(--text-xs); color: var(--navy-400); }
+.sr-stats { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); margin-left: auto; }
+.sr-appearances { display: flex; flex-direction: column; gap: var(--sp-2xs); }
+.sr-appear { display: flex; align-items: center; gap: var(--sp-sm); padding: 6px 10px; background: var(--cream-100); border-radius: var(--r-sm); font-size: var(--text-xs); color: var(--navy-600); cursor: pointer; transition: all var(--dur) var(--ease); }
+.sr-appear:hover { background: var(--cream-200); transform: translateX(4px); }
 .sr-appear-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-.sr-appear-time {
-  font-family: var(--font-mono); font-size: 10px; color: var(--navy-300);
-  flex-shrink: 0;
-}
-
-.sr-count {
-  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-300);
-  margin-top: 2px;
-}
+.sr-appear-time { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; }
+.sr-play { width: 18px; height: 18px; border-radius: 50%; background: var(--gold-glow); color: var(--gold-500); display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.sr-appear:hover .sr-play { opacity: 1; }
+.sr-play svg { width: 7px; height: 7px; margin-left: 1px; }
+.sr-empty { text-align: center; padding: var(--sp-2xl) 0; color: var(--navy-400); font-size: var(--text-sm); }
 
 /* ============================================================
-   CONTENT SECTIONS (default browse view)
+   TAG CHIPS
    ============================================================ */
-.sections-wrap {
-  max-width: 1120px; margin: 0 auto;
-  padding: 0 var(--sp-lg) var(--sp-2xl);
-}
-
-.content-section {
-  margin-bottom: var(--sp-2xl);
-}
-
-.cs-header {
-  display: flex; align-items: baseline; justify-content: space-between;
-  margin-bottom: var(--sp-md);
-}
-
-.cs-num {
-  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
-  color: var(--gold-500); margin-bottom: var(--sp-xs);
-}
-
-.cs-title {
-  font-family: var(--font-display); font-size: var(--text-lg);
-  font-weight: 600; color: var(--dark-800);
-}
-
-.cs-link {
-  font-size: var(--text-xs); color: var(--navy-400);
-  transition: color var(--dur) var(--ease);
-}
-.cs-link:hover { color: var(--navy-700); }
+.tag-sm { display: inline-block; padding: 0 6px; font-family: var(--font-mono); font-size: 10px; border-radius: 3px; letter-spacing: 0.02em; width: fit-content; line-height: 1.7; }
+.tag-sm.utawaku { background: rgba(74,139,107,0.12); color: var(--success); }
+.tag-sm.live { background: rgba(200,162,76,0.14); color: var(--gold-600); }
+.tag-sm.mv { background: var(--navy-glow); color: var(--navy-600); }
 
 /* ============================================================
-   SECTION A: MV GALLERY
+   LATEST FEED — サムネイル横スクロール
    ============================================================ */
-.mv-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--sp-md);
-}
+.feed-section { max-width: 1120px; margin: 0 auto; padding: var(--sp-lg) var(--sp-lg) var(--sp-sm); }
+.feed-label { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 400; letter-spacing: 0.14em; color: var(--gold-500); text-transform: uppercase; margin-bottom: var(--sp-sm); }
+.feed-track-wrap { overflow: hidden; position: relative; }
+.feed-track-wrap::before,
+.feed-track-wrap::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40px; z-index: 2; pointer-events: none; }
+.feed-track-wrap::before { left: 0; background: linear-gradient(90deg, var(--cream-100), transparent); }
+.feed-track-wrap::after { right: 0; background: linear-gradient(270deg, var(--cream-100), transparent); }
+.feed-scroll { display: flex; gap: var(--sp-md); width: max-content; animation: feedSlide 30s linear infinite; }
+.feed-track-wrap:hover .feed-scroll { animation-play-state: paused; }
+@keyframes feedSlide { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-.mv-card {
-  background: var(--cream-50);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  transition: all 0.3s var(--ease);
-  cursor: pointer;
-}
-.mv-card:hover {
-  border-color: var(--cream-400);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  transform: translateY(-2px);
-}
+.feed-card { flex-shrink: 0; width: 340px; cursor: pointer; position: relative; border-radius: var(--r-lg); overflow: hidden; transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.feed-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.feed-thumb { width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden; }
+.feed-thumb-bg { position: absolute; inset: 0; }
+.feed-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 50%); }
+.feed-thumb-tag { position: absolute; top: var(--sp-sm); left: var(--sp-sm); }
+.feed-thumb-info { position: absolute; bottom: 0; left: 0; right: 0; padding: var(--sp-sm) 10px; }
+.feed-thumb-date { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.7); }
+.feed-thumb-title { font-size: var(--text-xs); font-weight: 600; color: #FFF; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 2px; }
+.feed-thumb-count { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 2px; }
 
-.mv-thumb {
-  position: relative; width: 100%; aspect-ratio: 16 / 9;
-  background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
-  overflow: hidden;
-}
+/* ============================================================
+   DATABASE SECTION (lower layer)
+   ============================================================ */
+.db-section { max-width: 1120px; margin: 0 auto; padding: var(--sp-md) var(--sp-lg) var(--sp-2xl); }
 
-.mv-play-overlay {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.15);
-  opacity: 0; transition: opacity 0.3s var(--ease);
-}
+/* Source Tabs */
+.db-tabs { display: flex; align-items: stretch; justify-content: space-between; margin-bottom: var(--sp-lg); border-bottom: 1px solid var(--cream-300); }
+.db-tabs-left { display: flex; gap: 0; }
+.db-tabs-right { display: flex; align-items: center; gap: 2px; }
+.db-tab { position: relative; padding: 12px 16px; font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500; color: var(--navy-400); background: none; border: none; cursor: pointer; transition: color var(--dur) var(--ease); white-space: nowrap; }
+.db-tab:hover { color: var(--navy-700); }
+.db-tab::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 2px; background: transparent; border-radius: 1px 1px 0 0; transition: all 0.3s var(--ease); }
+.db-tab.active { color: var(--dark-800); font-weight: 600; }
+.db-tab.active::after { background: var(--gold-400); left: 8px; right: 8px; }
+.db-tab-count { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); margin-left: 4px; }
+
+/* State Toggle & Toolbar — components-prototype.html と同一 */
+.db-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-md); gap: var(--sp-md); }
+.state-toggle { display: inline-flex; gap: 0; padding: 3px; background: var(--cream-200); border-radius: var(--r-sm); }
+.state-toggle button { padding: 4px 14px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; background: none; border: none; border-radius: 4px; color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease); }
+.state-toggle button.active { background: var(--cream-50); color: var(--dark-800); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+
+/* Sort select */
+.db-sort { display: flex; align-items: center; gap: var(--sp-xs); }
+.db-sort label { font-size: var(--text-xs); color: var(--navy-400); }
+.db-sort select { padding: 4px 8px; font-family: var(--font-body); font-size: var(--text-xs); color: var(--navy-600); background: var(--cream-50); border: 1px solid var(--cream-300); border-radius: var(--r-sm); outline: none; cursor: pointer; }
+
+/* Tab panels */
+.db-panel { display: none; }
+.db-panel.active { display: block; }
+
+/* ============================================================
+   STREAM GRID VIEW (配信ビュー — サムネグリッド)
+   ============================================================ */
+.stream-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-md); }
+.stream-card { background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; cursor: pointer; transition: all 0.3s var(--ease); }
+.stream-card:hover { border-color: var(--cream-400); box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.stream-card.selected { border-color: var(--gold-300); box-shadow: 0 4px 20px rgba(200,162,76,0.15); transform: none; }
+.stream-card-thumb { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; }
+.stream-card-thumb-bg { position: absolute; inset: 0; }
+.stream-card-thumb-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, transparent 40%); }
+.stream-card-thumb-count { position: absolute; bottom: var(--sp-sm); right: var(--sp-sm); font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.45); padding: 1px 6px; border-radius: var(--r-xs); backdrop-filter: blur(4px); }
+.stream-card-body { padding: 10px 12px 12px; }
+.stream-card-date { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); }
+.stream-card-title { font-size: var(--text-xs); font-weight: 600; color: var(--dark-800); line-height: 1.4; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Stream detail (カード選択時に表示) */
+.stream-detail { grid-column: 1 / -1; background: var(--cream-50); border: 1px solid var(--gold-300); border-radius: var(--r-lg); padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.5s var(--ease), padding 0.3s var(--ease), opacity 0.3s var(--ease); opacity: 0; }
+.stream-detail.open { max-height: 600px; padding: var(--sp-lg); opacity: 1; }
+.stream-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-md); }
+.stream-detail-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--dark-800); }
+.stream-detail-meta { font-family: var(--font-mono); font-size: 11px; color: var(--navy-300); }
+.stream-detail-close { width: 28px; height: 28px; border-radius: 50%; background: var(--cream-200); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--navy-400); transition: all var(--dur) var(--ease); }
+.stream-detail-close:hover { background: var(--cream-300); color: var(--dark-800); }
+.stream-detail-close svg { width: 14px; height: 14px; }
+.stream-detail-songs { display: flex; flex-direction: column; gap: 2px; }
+.sd-row { display: flex; align-items: center; gap: var(--sp-sm); padding: 7px 10px; font-size: var(--text-xs); border-radius: var(--r-sm); cursor: pointer; transition: all var(--dur) var(--ease); }
+.sd-row:hover { background: var(--cream-200); transform: translateX(4px); }
+.sd-num { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); width: 20px; text-align: right; flex-shrink: 0; }
+.sd-song { color: var(--dark-800); font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sd-artist { font-size: var(--text-xs); color: var(--navy-400); flex-shrink: 0; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sd-time { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; }
+.sd-fav { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; color: var(--navy-300); transition: color var(--dur) var(--ease), transform var(--dur) var(--ease); border: none; background: var(--cream-200); padding: 0; border-radius: 50%; }
+.sd-fav:hover { color: var(--gold-500); transform: scale(1.1); background: var(--gold-glow); }
+.sd-fav.active { color: var(--gold-400); background: var(--gold-glow); }
+.sd-fav svg { width: 14px; height: 14px; }
+.sd-play { width: 18px; height: 18px; border-radius: 50%; background: var(--gold-glow); color: var(--gold-500); display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.sd-row:hover .sd-play { opacity: 1; }
+.sd-play svg { width: 7px; height: 7px; margin-left: 1px; }
+
+/* ============================================================
+   SONG VIEW (曲ビュー)
+   ============================================================ */
+.song-list { background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.song-row { display: flex; align-items: center; gap: var(--sp-md); padding: 12px var(--sp-lg); border-bottom: 1px solid var(--cream-200); cursor: pointer; transition: background var(--dur) var(--ease); }
+.song-row:last-child { border-bottom: none; }
+.song-row:hover { background: var(--cream-100); }
+.song-info { flex: 1; min-width: 0; }
+.song-name { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.song-artist { font-size: var(--text-xs); color: var(--navy-400); }
+.song-count { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 600; color: var(--gold-500); flex-shrink: 0; }
+.song-count small { font-size: 10px; font-weight: 400; color: var(--navy-300); margin-left: 1px; }
+.song-chevron { width: 14px; height: 14px; color: var(--navy-300); transition: transform 0.3s var(--ease); flex-shrink: 0; }
+.song-row.open .song-chevron { transform: rotate(180deg); }
+.song-detail { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease); background: var(--cream-100); border-bottom: 1px solid var(--cream-200); }
+.song-detail:last-child { border-bottom: none; }
+.song-detail.open { max-height: 500px; }
+.song-detail-inner { padding: var(--sp-sm) var(--sp-lg) var(--sp-md); display: flex; flex-direction: column; gap: var(--sp-2xs); }
+.sdi-item { display: flex; align-items: center; gap: var(--sp-sm); padding: 6px 10px; font-size: var(--text-xs); color: var(--navy-600); border-radius: var(--r-sm); cursor: pointer; transition: all var(--dur) var(--ease); }
+.sdi-item:hover { background: var(--cream-200); transform: translateX(4px); }
+.sdi-date { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; width: 64px; }
+.sdi-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sdi-time { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; }
+.sdi-fav { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; color: var(--navy-300); transition: color var(--dur) var(--ease), transform var(--dur) var(--ease); border: none; background: var(--cream-200); padding: 0; border-radius: 50%; }
+.sdi-fav:hover { color: var(--gold-500); transform: scale(1.1); background: var(--gold-glow); }
+.sdi-fav.active { color: var(--gold-400); background: var(--gold-glow); }
+.sdi-fav svg { width: 14px; height: 14px; }
+.sdi-play { width: 18px; height: 18px; border-radius: 50%; background: var(--gold-glow); color: var(--gold-500); display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.sdi-item:hover .sdi-play { opacity: 1; }
+.sdi-play svg { width: 7px; height: 7px; margin-left: 1px; }
+
+/* ============================================================
+   MV GRID
+   ============================================================ */
+.mv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--sp-md); }
+.mv-card { background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; transition: all 0.3s var(--ease); cursor: pointer; }
+.mv-card:hover { border-color: var(--cream-400); box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+.mv-thumb { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; }
+.mv-thumb-bg { position: absolute; inset: 0; }
+.mv-play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.1); opacity: 0; transition: opacity 0.3s var(--ease); }
 .mv-card:hover .mv-play-overlay { opacity: 1; }
-
-.mv-play-circle {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: rgba(255,255,255,0.92); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  transition: transform 0.3s var(--ease);
-}
+.mv-play-circle { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,0.15); transition: transform 0.3s var(--ease); }
 .mv-card:hover .mv-play-circle { transform: scale(1.08); }
 .mv-play-circle svg { width: 16px; height: 16px; color: var(--navy-700); margin-left: 2px; }
-
-/* MV title area */
-.mv-body { padding: 10px 12px 12px; }
-
-.mv-title {
-  font-size: var(--text-sm); font-weight: 600; color: var(--dark-800);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.mv-meta {
-  display: flex; align-items: center; gap: 6px; margin-top: 4px;
-}
-
-.tag-sm {
-  display: inline-block; padding: 0px 6px;
-  background: var(--navy-glow); color: var(--navy-600);
-  font-family: var(--font-mono); font-size: 10px;
-  border-radius: 3px; letter-spacing: 0.02em; width: fit-content;
-}
-.tag-sm.original { background: var(--gold-glow); color: var(--gold-600); }
-
-/* ============================================================
-   SECTION B: LIVE EVENTS
-   ============================================================ */
-.live-list {
-  display: flex; flex-direction: column; gap: 0;
-}
-
-.live-item {
-  border-bottom: 1px solid var(--cream-200);
-}
-.live-item:last-child { border-bottom: none; }
-
-.live-header {
-  display: flex; align-items: center; gap: var(--sp-md);
-  padding: 14px 0;
-  cursor: pointer;
-  transition: background var(--dur) var(--ease);
-}
-.live-header:hover { background: var(--cream-50); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: var(--r-sm); }
-
-.live-date {
-  font-family: var(--font-mono); font-size: var(--text-xs);
-  color: var(--navy-300); flex-shrink: 0; width: 72px;
-}
-
-.live-name {
-  font-size: var(--text-sm); font-weight: 600; color: var(--dark-800);
-  flex: 1; min-width: 0;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.live-count {
-  font-family: var(--font-mono); font-size: var(--text-xs);
-  color: var(--navy-400); flex-shrink: 0;
-}
-
-.live-chevron {
-  width: 14px; height: 14px; color: var(--navy-300);
-  transition: transform 0.3s var(--ease); flex-shrink: 0;
-}
-.live-item.open .live-chevron { transform: rotate(180deg); }
-
-/* Expanded setlist */
-.live-setlist {
-  display: none;
-  padding: 0 0 var(--sp-md) 84px;
-}
-.live-item.open .live-setlist { display: block; }
-
-.setlist-row {
-  display: flex; align-items: baseline; gap: var(--sp-sm);
-  padding: 4px 0;
-  font-size: var(--text-xs);
-}
-
-.setlist-num {
-  font-family: var(--font-mono); font-size: 10px;
-  color: var(--navy-300); width: 20px; text-align: right; flex-shrink: 0;
-}
-
-.setlist-song { color: var(--dark-800); font-weight: 500; }
-
-.setlist-time {
-  font-family: var(--font-mono); font-size: 10px;
-  color: var(--navy-300); margin-left: auto;
-}
-
-/* ============================================================
-   SECTION C: 歌枠ランキング
-   ============================================================ */
-.ranking-list { display: flex; flex-direction: column; }
-
-.ranking-row {
-  display: flex; align-items: center; gap: var(--sp-md);
-  padding: 10px 0;
-  border-bottom: 1px solid var(--cream-200);
-  cursor: pointer;
-  transition: background var(--dur) var(--ease);
-}
-.ranking-row:hover { background: var(--cream-50); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: var(--r-sm); }
-.ranking-row:last-child { border-bottom: none; }
-
-.ranking-num {
-  font-family: var(--font-display); font-size: var(--text-sm);
-  font-weight: 600; color: var(--navy-300);
-  width: 28px; text-align: right; flex-shrink: 0;
-}
-/* Top 3 gold */
-.ranking-row:nth-child(1) .ranking-num,
-.ranking-row:nth-child(2) .ranking-num,
-.ranking-row:nth-child(3) .ranking-num { color: var(--gold-400); font-size: var(--text-base); }
-
-.ranking-info { flex: 1; min-width: 0; }
-
-.ranking-song {
-  font-size: var(--text-sm); font-weight: 600; color: var(--dark-800);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.ranking-artist {
-  font-size: var(--text-xs); color: var(--navy-400);
-}
-
-.ranking-count {
-  font-family: var(--font-mono); font-size: var(--text-sm);
-  font-weight: 600; color: var(--gold-500); flex-shrink: 0;
-}
-.ranking-count small {
-  font-size: 10px; font-weight: 400; color: var(--navy-300); margin-left: 1px;
-}
-
-.ranking-chevron {
-  width: 14px; height: 14px; color: var(--navy-300);
-  transition: transform 0.3s var(--ease); flex-shrink: 0;
-}
-.ranking-row.open .ranking-chevron { transform: rotate(180deg); }
-
-/* Expanded reverse lookup */
-.ranking-detail {
-  display: none;
-  padding: 0 0 var(--sp-sm) 44px;
-}
-.ranking-row.open + .ranking-detail { display: block; }
-
-.rd-item {
-  display: flex; align-items: center; gap: var(--sp-sm);
-  padding: 5px 10px;
-  font-size: var(--text-xs);
-  color: var(--navy-600);
-  border-radius: var(--r-sm);
-  transition: background var(--dur) var(--ease);
-  cursor: pointer;
-}
-.rd-item:hover { background: var(--cream-200); }
-
-.rd-item-date { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; }
-.rd-item-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rd-item-time { font-family: var(--font-mono); font-size: 10px; color: var(--gold-500); flex-shrink: 0; }
+.mv-body { padding: 10px 12px 12px; display: flex; align-items: flex-start; gap: var(--sp-sm); }
+.mv-body-info { flex: 1; min-width: 0; }
+.mv-title { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mv-meta { display: flex; align-items: center; gap: 6px; margin-top: var(--sp-2xs); }
+.mv-artist { font-size: var(--text-xs); color: var(--navy-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mv-fav { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; color: var(--navy-300); transition: color var(--dur) var(--ease), transform var(--dur) var(--ease); border: none; background: none; padding: 0; margin-top: 2px; }
+.mv-fav:hover { color: var(--gold-500); transform: scale(1.15); }
+.mv-fav.active { color: var(--gold-400); }
+.mv-fav svg { width: 14px; height: 14px; }
 
 /* ============================================================
    FOOTER
@@ -426,21 +313,25 @@ a:hover { color: var(--navy-800); }
 /* ============================================================
    REVEAL
    ============================================================ */
-.reveal { opacity: 0; transform: translateY(12px); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+.stagger > * { opacity: 0; animation: fadeUp 0.5s var(--ease) both; }
+.stagger.visible > *:nth-child(1){animation-delay:0s}.stagger.visible>*:nth-child(2){animation-delay:.05s}.stagger.visible>*:nth-child(3){animation-delay:.1s}.stagger.visible>*:nth-child(4){animation-delay:.15s}.stagger.visible>*:nth-child(5){animation-delay:.2s}.stagger.visible>*:nth-child(6){animation-delay:.25s}
 
 /* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 860px) {
+  .stream-grid { grid-template-columns: repeat(3, 1fr); }
   .mv-grid { grid-template-columns: repeat(3, 1fr); }
-  .search-stats { flex-wrap: wrap; gap: var(--sp-sm) var(--sp-lg); }
 }
 @media (max-width: 600px) {
+  .stream-grid { grid-template-columns: 1fr; }
   .mv-grid { grid-template-columns: repeat(2, 1fr); }
-  .page-header, .search-hero, .sections-wrap, .search-results { padding-left: var(--sp-md); padding-right: var(--sp-md); }
-  .live-setlist { padding-left: 40px; }
-  .ranking-detail { padding-left: 20px; }
+  .feed-card { width: 280px; }
+  .page-header, .search-area, .feed-section, .db-section, .search-results { padding-left: var(--sp-md); padding-right: var(--sp-md); }
+  .page-header-top { flex-direction: column; align-items: flex-start; gap: var(--sp-xs); }
 }
 </style>
 </head>
@@ -454,16 +345,16 @@ a:hover { color: var(--navy-800); }
       <div class="nav-group">
         <button class="nav-trigger">探す <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
         <div class="nav-dropdown">
-          <a href="log-prototype.html" class="nav-dd-item"><span class="nav-dd-name">配信一覧</span><span class="nav-dd-desc">1,419件の配信をタグ検索・チェックで記録</span></a>
-          <a href="#" class="nav-dd-item current"><span class="nav-dd-name">楽曲ライブラリ</span><span class="nav-dd-desc">452曲のレパートリー・セトリ検索</span></a>
-          <a href="#" class="nav-dd-item"><span class="nav-dd-name">今日のASMR</span><span class="nav-dd-desc">気分に合わせたASMRを今日一本</span></a>
+          <a href="log-prototype.html" class="nav-dd-item"><span class="nav-dd-name">配信一覧</span><span class="nav-dd-desc">1,511件の配信をタグ検索・チェックで記録</span></a>
+          <a href="#" class="nav-dd-item current"><span class="nav-dd-name">楽曲ライブラリ</span><span class="nav-dd-desc">555曲のレパートリー・セトリ検索</span></a>
+          <a href="asmr-prototype.html" class="nav-dd-item"><span class="nav-dd-name">今日のASMR</span><span class="nav-dd-desc">気分に合わせたASMRを今日一本</span></a>
         </div>
       </div>
       <div class="nav-group">
-        <button class="nav-trigger">作る <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
+        <button class="nav-trigger">共有する <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5l3 3 3-3"/></svg></button>
         <div class="nav-dropdown">
           <a href="report-prototype.html" class="nav-dd-item"><span class="nav-dd-name">団員レポート</span><span class="nav-dd-desc">推し活データをレポート画像に</span></a>
-          <a href="#" class="nav-dd-item"><span class="nav-dd-name">団員のあしあと</span><span class="nav-dd-desc">視聴履歴のヒートマップ</span></a>
+          <a href="footprint-prototype.html" class="nav-dd-item"><span class="nav-dd-name">団員のあしあと</span><span class="nav-dd-desc">視聴履歴のヒートマップ</span></a>
         </div>
       </div>
     </nav>
@@ -472,130 +363,82 @@ a:hover { color: var(--navy-800); }
 
 <!-- PAGE HEADER -->
 <div class="page-header reveal">
-  <h1 class="page-title">楽曲ライブラリ</h1>
+  <div class="page-header-top">
+    <h1 class="page-title">楽曲ライブラリ</h1>
+    <div class="page-stats">
+      <span class="page-stat"><strong>555</strong> 曲</span><span class="page-stat-sep">·</span>
+      <span class="page-stat">歌枠 <strong>112</strong> 回</span><span class="page-stat-sep">·</span>
+      <span class="page-stat">MV <strong>29</strong></span><span class="page-stat-sep">·</span>
+      <span class="page-stat">ライブ <strong>62</strong></span>
+    </div>
+  </div>
   <p class="page-desc">オリジナル・カバー・歌枠セトリを横断検索</p>
 </div>
 
-<!-- SEARCH HERO -->
-<div class="search-hero">
-  <div class="search-bar">
-    <svg class="search-bar-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M13 13l4 4"/></svg>
-    <input type="text" id="searchInput" placeholder="曲名で検索...">
-  </div>
-  <div class="search-stats">
-    <span class="search-stat"><strong>452</strong> 曲</span>
-    <span class="search-stat">歌枠 <strong>114</strong> 回</span>
-    <span class="search-stat">MV <strong>28</strong> 本</span>
-    <span class="search-stat">ライブ <strong>62</strong> 公演</span>
-  </div>
-</div>
-
-<!-- SEARCH RESULTS (hidden by default) -->
+<!-- SEARCH RESULTS -->
 <div class="search-results" id="searchResults"></div>
 
-<!-- DEFAULT BROWSE SECTIONS -->
-<div class="sections-wrap" id="sectionsWrap">
+<!-- MAIN CONTENT -->
+<div id="mainContent">
 
-  <!-- A: MV -->
-  <section class="content-section reveal">
-    <div class="cs-header">
-      <div><div class="cs-num">01 &mdash; MUSIC VIDEOS</div><div class="cs-title">Music Videos</div></div>
-      <a href="#" class="cs-link">すべて見る (28) &rarr;</a>
-    </div>
-    <div class="mv-grid">
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">トレビアンナイト</div><div class="mv-meta"><span class="tag-sm original">オリジナル</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">REALITY FANTASY</div><div class="mv-meta"><span class="tag-sm original">オリジナル</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">Merry Holy Date♡</div><div class="mv-meta"><span class="tag-sm original">オリジナル</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">ほめのび</div><div class="mv-meta"><span class="tag-sm original">オリジナル</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">リリカルMonster</div><div class="mv-meta"><span class="tag-sm original">オリジナル</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">VAVAVA!</div><div class="mv-meta"><span class="tag-sm original">オリジナル</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">恋愛サーキュレーション</div><div class="mv-meta"><span class="tag-sm">カバー</span></div></div></div>
-      <div class="mv-card"><div class="mv-thumb"><div class="mv-play-overlay"><div class="mv-play-circle"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div></div></div><div class="mv-body"><div class="mv-title">グッバイ宣言</div><div class="mv-meta"><span class="tag-sm">カバー</span></div></div></div>
-    </div>
-  </section>
+  <!-- LATEST FEED — サムネ横スクロール -->
+  <div class="feed-section reveal">
+    <div class="feed-label">Latest</div>
+    <div class="feed-track-wrap"><div class="feed-scroll" id="feedScroll"></div></div>
+  </div>
 
-  <!-- B: LIVE -->
-  <section class="content-section reveal">
-    <div class="cs-header">
-      <div><div class="cs-num">02 &mdash; LIVE PERFORMANCES</div><div class="cs-title">ライブ</div></div>
-      <a href="#" class="cs-link">すべて見る (62) &rarr;</a>
-    </div>
-    <div class="live-list">
-      <div class="live-item" data-live>
-        <div class="live-header">
-          <span class="live-date">2024.12</span>
-          <span class="live-name">白銀ノエル生誕祭2024 Xmas 3D LIVE</span>
-          <span class="live-count">12曲</span>
-          <svg class="live-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>
-        </div>
-        <div class="live-setlist">
-          <div class="setlist-row"><span class="setlist-num">1</span><span class="setlist-song">あわてんぼうのサンタクロース</span><span class="setlist-time">03:32</span></div>
-          <div class="setlist-row"><span class="setlist-num">2</span><span class="setlist-song">好き！雪！本気マジック</span><span class="setlist-time">10:18</span></div>
-          <div class="setlist-row"><span class="setlist-num">3</span><span class="setlist-song">初めての恋が終わる時</span><span class="setlist-time">13:45</span></div>
-          <div class="setlist-row"><span class="setlist-num">4</span><span class="setlist-song">Merry Holy Date♡</span><span class="setlist-time">18:20</span></div>
-          <div class="setlist-row"><span class="setlist-num">5</span><span class="setlist-song">ほめのび</span><span class="setlist-time">24:10</span></div>
-        </div>
+  <!-- DATABASE -->
+  <div class="db-section reveal">
+    <div class="db-tabs">
+      <div class="db-tabs-left">
+        <button class="db-tab active" data-tab="utawaku">歌枠<span class="db-tab-count">112</span></button>
+        <button class="db-tab" data-tab="live">ライブ<span class="db-tab-count">62</span></button>
+        <button class="db-tab" data-tab="mv">MV<span class="db-tab-count">29</span></button>
       </div>
-      <div class="live-item" data-live>
-        <div class="live-header">
-          <span class="live-date">2024.09</span>
-          <span class="live-name">hololive 5th fes. Capture the Moment</span>
-          <span class="live-count">8曲</span>
-          <svg class="live-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>
+      <div class="db-tabs-right">
+        <div class="search-expandable" id="searchWrap">
+          <input type="text" class="search-expanded" id="searchInput" placeholder="曲名・アーティスト...">
+          <button class="tb-icon-btn" id="searchToggle" title="検索">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5"/></svg>
+          </button>
         </div>
-        <div class="live-setlist">
-          <div class="setlist-row"><span class="setlist-num">1</span><span class="setlist-song">REALITY FANTASY</span><span class="setlist-time">—</span></div>
-          <div class="setlist-row"><span class="setlist-num">2</span><span class="setlist-song">リリカルMonster</span><span class="setlist-time">—</span></div>
-        </div>
-      </div>
-      <div class="live-item" data-live>
-        <div class="live-header">
-          <span class="live-date">2024.08</span>
-          <span class="live-name">白銀ノエル 5周年記念LIVE</span>
-          <span class="live-count">15曲</span>
-          <svg class="live-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>
-        </div>
-        <div class="live-setlist">
-          <div class="setlist-row"><span class="setlist-num">1</span><span class="setlist-song">ほめのび</span><span class="setlist-time">05:10</span></div>
-          <div class="setlist-row"><span class="setlist-num">2</span><span class="setlist-song">シャカビーチ～Laka Laka La～</span><span class="setlist-time">10:32</span></div>
-        </div>
-      </div>
-      <div class="live-item" data-live>
-        <div class="live-header">
-          <span class="live-date">2023.11</span>
-          <span class="live-name">Shirogane Noel Birthday 3D Live</span>
-          <span class="live-count">10曲</span>
-          <svg class="live-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>
-        </div>
-        <div class="live-setlist">
-          <div class="setlist-row"><span class="setlist-num">1</span><span class="setlist-song">はっぴー</span><span class="setlist-time">03:45</span></div>
-        </div>
-      </div>
-      <div class="live-item" data-live>
-        <div class="live-header">
-          <span class="live-date">2023.07</span>
-          <span class="live-name">不知火建設 3Dライブ</span>
-          <span class="live-count">6曲</span>
-          <svg class="live-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>
-        </div>
-        <div class="live-setlist">
-          <div class="setlist-row"><span class="setlist-num">1</span><span class="setlist-song">なかま歌</span><span class="setlist-time">08:20</span></div>
-        </div>
+        <button class="tb-icon-btn" id="sortToggle" title="並び替え">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v8M3 7l3 3 3-3"/></svg>
+        </button>
+        <span class="toolbar-meta" id="toolbarMeta">555曲</span>
       </div>
     </div>
-  </section>
 
-  <!-- C: 歌枠ランキング -->
-  <section class="content-section reveal">
-    <div class="cs-header">
-      <div><div class="cs-num">03 &mdash; SETLIST REPERTOIRE</div><div class="cs-title">歌枠レパートリー</div></div>
-      <a href="#" class="cs-link">すべて見る (452) &rarr;</a>
+    <!-- 歌枠パネル -->
+    <div class="db-panel active" id="panel-utawaku">
+      <div class="db-toolbar">
+        <div class="state-toggle">
+          <button class="active" data-view="stream" data-panel="utawaku">配信で見る</button>
+          <button data-view="song" data-panel="utawaku">曲で見る</button>
+        </div>
+        <div class="db-sort" id="sort-utawaku-song" style="display:none">
+          <label>並び替え</label>
+          <select id="sortSelect-utawaku"><option value="count">歌唱回数</option><option value="recent">最終歌唱日</option><option value="name">あいうえお順</option></select>
+        </div>
+      </div>
+      <div id="utawaku-stream-view">
+        <div class="stream-grid stagger" id="utawakuStreamGrid"></div>
+      </div>
+      <div id="utawaku-song-view" style="display:none">
+        <div class="song-list" id="utawakuSongList"></div>
+      </div>
     </div>
-    <div class="ranking-list" id="rankingList">
-      <!-- Generated by JS -->
-    </div>
-  </section>
 
+    <!-- ライブパネル -->
+    <div class="db-panel" id="panel-live">
+      <div class="stream-grid stagger" id="liveStreamGrid"></div>
+    </div>
+
+    <!-- MVパネル -->
+    <div class="db-panel" id="panel-mv">
+      <div class="mv-grid stagger" id="mvGrid"></div>
+    </div>
+  </div>
 </div>
 
 <!-- FOOTER -->
@@ -605,157 +448,457 @@ a:hover { color: var(--navy-800); }
 </footer>
 
 <script>
-// === RANKING DATA ===
-var RANKING = [
-  { song: 'シャカビーチ～Laka Laka La～', artist: 'UVERworld', count: 47, streams: [{date:'2026.04.03',title:'【歌枠】春の歌を歌いまくる！',time:'16:45'},{date:'2026.03.25',title:'【歌枠】シャカビーチ47回目記念！',time:'08:20'},{date:'2026.03.10',title:'【歌枠】リクエスト歌枠',time:'42:15'}] },
-  { song: 'ココロオドル', artist: 'nobodyknows+', count: 23, streams: [{date:'2026.03.15',title:'【歌枠】ココロオドル23回目！アニソン祭り',time:'12:30'},{date:'2026.02.20',title:'【歌枠】懐かしの曲メドレー',time:'28:10'}] },
-  { song: '楽園ベイベー', artist: 'iri', count: 16, streams: [{date:'2026.04.03',title:'【歌枠】春の歌を歌いまくる！',time:'32:00'}] },
-  { song: 'HOT LIMIT', artist: 'T.M.Revolution', count: 13, streams: [{date:'2026.03.10',title:'【歌枠】リクエスト歌枠',time:'55:20'}] },
-  { song: 'ほめのび', artist: '白銀ノエル', count: 12, streams: [{date:'2026.04.03',title:'【歌枠】春の歌を歌いまくる！',time:'1:02:30'}] },
-  { song: '恋愛サーキュレーション', artist: '花澤香菜', count: 10, streams: [] },
-  { song: 'グッバイ宣言', artist: 'Chinozo', count: 10, streams: [] },
-  { song: 'かつて天才だった俺たちへ', artist: 'Creepy Nuts', count: 10, streams: [] },
-  { song: 'リリカルMonster', artist: '白銀ノエル', count: 9, streams: [] },
-  { song: 'ウェカピポ', artist: 'Omoinotake', count: 9, streams: [] },
-  { song: '残酷な天使のテーゼ', artist: '高橋洋子', count: 8, streams: [] },
-  { song: 'おどるポンポコリン', artist: 'B.B.クィーンズ', count: 8, streams: [] },
-  { song: 'にじいろ', artist: '絢香', count: 7, streams: [] },
-  { song: '群青', artist: 'YOASOBI', count: 6, streams: [] },
-  { song: 'ドライフラワー', artist: '優里', count: 6, streams: [] },
+/* SVG Icons */
+var ICON_PLAY = '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg>';
+var ICON_HEART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+var ICON_HEART_FILL = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+var ICON_CLOSE = '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>';
+var ICON_CHEVRON = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>';
+
+/* ダミーサムネイル — 配信ごとに異なるグラデーションを生成 */
+var THUMB_COLORS = [
+  ['#2C3E50','#4CA1AF'],['#1A1A2E','#16213E'],['#0F2027','#2C5364'],
+  ['#373B44','#4286f4'],['#2B5876','#4E4376'],['#1D2B64','#F8CDDA'],
+  ['#200122','#6f0000'],['#3A1C71','#D76D77'],['#141E30','#243B55'],
+  ['#0f0c29','#302b63'],['#1e3c72','#2a5298'],['#0B486B','#F56217'],
+];
+function thumbGrad(i) { var c = THUMB_COLORS[i % THUMB_COLORS.length]; return 'linear-gradient(135deg,' + c[0] + ',' + c[1] + ')'; }
+
+/* ============================================================
+   SAMPLE DATA
+   ============================================================ */
+var UTAWAKU = [
+  { t:'【歌枠】春の歌を歌いまくる！リクエスト受付中♪', dt:'2026.04.10', sg:[
+    {n:1,s:'シャカビーチ～Laka Laka La～',a:'UVERworld',tm:'16:45'},
+    {n:2,s:'楽園ベイベー',a:'iri',tm:'32:00'},
+    {n:3,s:'グッバイ宣言',a:'Chinozo',tm:'48:20'},
+    {n:4,s:'ほめのび',a:'白銀ノエル',tm:'1:02:30'},
+    {n:5,s:'ドライフラワー',a:'優里',tm:'1:15:00'},
+    {n:6,s:'残酷な天使のテーゼ',a:'高橋洋子',tm:'1:28:40'},
+    {n:7,s:'にじいろ',a:'絢香',tm:'1:42:10'},
+    {n:8,s:'ウェカピポ',a:'Omoinotake',tm:'1:55:30'}
+  ]},
+  { t:'【歌枠】シャカビーチ47回目記念！夏曲多め', dt:'2026.03.25', sg:[
+    {n:1,s:'シャカビーチ～Laka Laka La～',a:'UVERworld',tm:'08:20'},
+    {n:2,s:'HOT LIMIT',a:'T.M.Revolution',tm:'18:45'},
+    {n:3,s:'ココロオドル',a:'nobodyknows+',tm:'32:00'},
+    {n:4,s:'おどるポンポコリン',a:'B.B.クィーンズ',tm:'45:10'},
+    {n:5,s:'群青',a:'YOASOBI',tm:'58:30'},
+    {n:6,s:'かつて天才だった俺たちへ',a:'Creepy Nuts',tm:'1:12:00'}
+  ]},
+  { t:'【歌枠】ココロオドル23回目！アニソン祭り', dt:'2026.03.15', sg:[
+    {n:1,s:'ココロオドル',a:'nobodyknows+',tm:'12:30'},
+    {n:2,s:'残酷な天使のテーゼ',a:'高橋洋子',tm:'25:10'},
+    {n:3,s:'恋愛サーキュレーション',a:'花澤香菜',tm:'38:00'},
+    {n:4,s:'グッバイ宣言',a:'Chinozo',tm:'50:20'},
+    {n:5,s:'シャカビーチ～Laka Laka La～',a:'UVERworld',tm:'1:05:00'},
+    {n:6,s:'にじいろ',a:'絢香',tm:'1:18:30'},
+    {n:7,s:'おどるポンポコリン',a:'B.B.クィーンズ',tm:'1:32:00'}
+  ]},
+  { t:'【歌枠】リクエスト歌枠', dt:'2026.03.10', sg:[
+    {n:1,s:'恋愛サーキュレーション',a:'花澤香菜',tm:'18:00'},
+    {n:2,s:'シャカビーチ～Laka Laka La～',a:'UVERworld',tm:'42:15'},
+    {n:3,s:'HOT LIMIT',a:'T.M.Revolution',tm:'55:20'},
+    {n:4,s:'ドライフラワー',a:'優里',tm:'1:08:00'},
+    {n:5,s:'リリカルMonster',a:'白銀ノエル',tm:'1:22:30'}
+  ]},
+  { t:'【歌枠】懐かしの曲メドレー', dt:'2026.02.20', sg:[
+    {n:1,s:'ココロオドル',a:'nobodyknows+',tm:'28:10'},
+    {n:2,s:'おどるポンポコリン',a:'B.B.クィーンズ',tm:'52:30'},
+    {n:3,s:'HOT LIMIT',a:'T.M.Revolution',tm:'1:05:20'},
+    {n:4,s:'楽園ベイベー',a:'iri',tm:'1:18:00'}
+  ]},
+  { t:'【歌枠】2月のリクエスト祭り', dt:'2026.02.10', sg:[
+    {n:1,s:'かつて天才だった俺たちへ',a:'Creepy Nuts',tm:'35:20'},
+    {n:2,s:'群青',a:'YOASOBI',tm:'48:00'},
+    {n:3,s:'ドライフラワー',a:'優里',tm:'1:02:10'}
+  ]},
 ];
 
-// === SEARCH DATA (merged) ===
-var ALL_SONGS = [
-  { title: 'シャカビーチ～Laka Laka La～', artist: 'UVERworld', appearances: [
-    { type: '歌枠', text: '【歌枠】春の歌を歌いまくる！', date: '2026.04.03', time: '16:45' },
-    { type: '歌枠', text: '【歌枠】シャカビーチ47回目記念！', date: '2026.03.25', time: '08:20' },
-    { type: 'ライブ', text: '白銀ノエル 5周年記念LIVE', date: '2024.08', time: '10:32' },
+var LIVES = [
+  { t:'白銀ノエル生誕祭2024 Xmas 3D LIVE', dt:'2024.12.24', sg:[
+    {n:1,s:'あわてんぼうのサンタクロース',a:'—',tm:'03:32'},
+    {n:2,s:'好き！雪！本気マジック',a:'Mitchie M',tm:'10:18'},
+    {n:3,s:'初めての恋が終わる時',a:'ジェリーフィッシュ',tm:'13:45'},
+    {n:4,s:'Merry Holy Date♡',a:'白銀ノエル',tm:'18:20'},
+    {n:5,s:'ほめのび',a:'白銀ノエル',tm:'24:10'}
   ]},
-  { title: 'ほめのび', artist: '白銀ノエル', appearances: [
-    { type: 'MV', text: 'ほめのび — Music Video', date: '', time: '' },
-    { type: 'ライブ', text: '白銀ノエル生誕祭2024 Xmas 3D LIVE', date: '2024.12', time: '24:10' },
-    { type: 'ライブ', text: '白銀ノエル 5周年記念LIVE', date: '2024.08', time: '05:10' },
-    { type: '歌枠', text: '【歌枠】春の歌を歌いまくる！', date: '2026.04.03', time: '1:02:30' },
+  { t:'hololive 5th fes. Capture the Moment', dt:'2024.09.21', sg:[
+    {n:1,s:'REALITY FANTASY',a:'白銀ノエル',tm:'—'},
+    {n:2,s:'リリカルMonster',a:'白銀ノエル',tm:'—'},
+    {n:3,s:'ほめのび',a:'白銀ノエル',tm:'—'}
   ]},
-  { title: 'REALITY FANTASY', artist: '白銀ノエル', appearances: [
-    { type: 'MV', text: 'REALITY FANTASY — Music Video', date: '', time: '' },
-    { type: 'ライブ', text: 'hololive 5th fes.', date: '2024.09', time: '' },
+  { t:'白銀ノエル 5周年記念LIVE', dt:'2024.08.14', sg:[
+    {n:1,s:'ほめのび',a:'白銀ノエル',tm:'05:10'},
+    {n:2,s:'シャカビーチ～Laka Laka La～',a:'UVERworld',tm:'10:32'},
+    {n:3,s:'トレビアンナイト',a:'白銀ノエル',tm:'15:20'},
+    {n:4,s:'REALITY FANTASY',a:'白銀ノエル',tm:'22:00'},
+    {n:5,s:'リリカルMonster',a:'白銀ノエル',tm:'28:15'}
   ]},
-  { title: 'ココロオドル', artist: 'nobodyknows+', appearances: [
-    { type: '歌枠', text: '【歌枠】ココロオドル23回目！', date: '2026.03.15', time: '12:30' },
-    { type: '歌枠', text: '【歌枠】懐かしの曲メドレー', date: '2026.02.20', time: '28:10' },
+  { t:'Shirogane Noel Birthday 3D Live', dt:'2023.11.24', sg:[
+    {n:1,s:'はっぴー',a:'白銀ノエル',tm:'03:45'},
+    {n:2,s:'トレビアンナイト',a:'白銀ノエル',tm:'08:20'}
   ]},
-  { title: '恋愛サーキュレーション', artist: '花澤香菜', appearances: [
-    { type: 'MV', text: '恋愛サーキュレーション — Cover MV', date: '', time: '' },
-    { type: '歌枠', text: '【歌枠】リクエスト歌枠', date: '2026.03.10', time: '18:00' },
-  ]},
-  { title: 'グッバイ宣言', artist: 'Chinozo', appearances: [
-    { type: 'MV', text: 'グッバイ宣言 — Cover MV', date: '', time: '' },
-    { type: '歌枠', text: '【歌枠】春の歌を歌いまくる！', date: '2026.04.03', time: '48:20' },
-  ]},
-  { title: 'トレビアンナイト', artist: '白銀ノエル', appearances: [
-    { type: 'MV', text: 'トレビアンナイト — Music Video', date: '', time: '' },
-  ]},
-  { title: 'Merry Holy Date♡', artist: '白銀ノエル', appearances: [
-    { type: 'MV', text: 'Merry Holy Date♡ — Music Video', date: '', time: '' },
-    { type: 'ライブ', text: '白銀ノエル生誕祭2024 Xmas 3D LIVE', date: '2024.12', time: '18:20' },
+  { t:'不知火建設 3Dライブ', dt:'2023.07.15', sg:[
+    {n:1,s:'なかま歌',a:'不知火建設',tm:'08:20'}
   ]},
 ];
 
-// === Render Ranking ===
-function renderRanking() {
-  var list = document.getElementById('rankingList');
-  list.innerHTML = RANKING.map(function(r, i) {
-    var streamsHTML = r.streams.length > 0
-      ? r.streams.map(function(s) {
-          return '<div class="rd-item"><span class="rd-item-date">' + s.date + '</span><span class="rd-item-title">' + s.title + '</span><span class="rd-item-time">' + s.time + '</span></div>';
-        }).join('')
-      : '<div class="rd-item" style="color:var(--navy-300)">歌唱履歴データ準備中...</div>';
+var MVS = [
+  {t:'トレビアンナイト',a:'白銀ノエル',y:'original',dt:'2024.06'},
+  {t:'REALITY FANTASY',a:'白銀ノエル',y:'original',dt:'2024.03'},
+  {t:'Merry Holy Date♡',a:'白銀ノエル',y:'original',dt:'2023.12'},
+  {t:'ほめのび',a:'白銀ノエル',y:'original',dt:'2023.08'},
+  {t:'リリカルMonster',a:'白銀ノエル',y:'original',dt:'2023.05'},
+  {t:'VAVAVA!',a:'白銀ノエル',y:'original',dt:'2023.02'},
+  {t:'はっぴー',a:'白銀ノエル',y:'original',dt:'2022.11'},
+  {t:'恋愛サーキュレーション',a:'花澤香菜',y:'cover',dt:'2024.02'},
+];
 
-    return '<div class="ranking-row" data-rank>' +
-      '<span class="ranking-num">' + (i + 1) + '</span>' +
-      '<div class="ranking-info"><div class="ranking-song">' + r.song + '</div><div class="ranking-artist">' + r.artist + '</div></div>' +
-      '<span class="ranking-count">' + r.count + '<small>回</small></span>' +
-      '<svg class="ranking-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>' +
-    '</div>' +
-    '<div class="ranking-detail">' + streamsHTML + '</div>';
+/* Aggregate songs for 曲ビュー */
+function aggregateSongs(data) {
+  var map = {};
+  data.forEach(function(item) {
+    item.sg.forEach(function(s) {
+      if (!map[s.s]) map[s.s] = { s: s.s, a: s.a, c: 0, appearances: [] };
+      map[s.s].c++;
+      map[s.s].appearances.push({ dt: item.dt, title: item.t, tm: s.tm });
+    });
+  });
+  return Object.values(map).sort(function(a,b) { return b.c - a.c; });
+}
+var UTAWAKU_SONGS = aggregateSongs(UTAWAKU);
+
+/* All songs for search */
+var ALL_MAP = {};
+function addAll(data, src) {
+  data.forEach(function(item) {
+    item.sg.forEach(function(s) {
+      if (!ALL_MAP[s.s]) ALL_MAP[s.s] = { s: s.s, a: s.a, utawaku: [], live: [], mv: [] };
+      ALL_MAP[s.s][src].push({ dt: item.dt, title: item.t, tm: s.tm });
+    });
+  });
+}
+addAll(UTAWAKU, 'utawaku'); addAll(LIVES, 'live');
+MVS.forEach(function(m) {
+  if (!ALL_MAP[m.t]) ALL_MAP[m.t] = { s: m.t, a: m.a, utawaku: [], live: [], mv: [] };
+  ALL_MAP[m.t].mv.push({ dt: m.dt, title: m.t + ' — Music Video', tm: '' });
+});
+var ALL_SONGS = Object.values(ALL_MAP);
+
+/* ============================================================
+   RENDER: Feed (サムネ横スクロール)
+   ============================================================ */
+function renderFeed() {
+  var items = [];
+  UTAWAKU.slice(0,4).forEach(function(u,i) { items.push({type:'utawaku',dt:u.dt,data:u,ci:i,srcIdx:i}); });
+  LIVES.slice(0,2).forEach(function(l,i) { items.push({type:'live',dt:l.dt,data:l,ci:i+6,srcIdx:i}); });
+  MVS.slice(0,2).forEach(function(m,i) { items.push({type:'mv',dt:m.dt,data:m,ci:i+9,srcIdx:i}); });
+  items.sort(function(a,b) { return b.dt.localeCompare(a.dt); });
+
+  var cardsHtml = items.map(function(item) {
+    var tagClass = item.type === 'utawaku' ? 'utawaku' : item.type === 'live' ? 'live' : 'mv';
+    var tagLabel = item.type === 'utawaku' ? '歌枠' : item.type === 'live' ? 'ライブ' : 'MV';
+    var title = item.type === 'mv' ? item.data.t : item.data.t;
+    var countText = item.type === 'mv' ? '' : '<div class="feed-thumb-count">' + item.data.sg.length + '曲</div>';
+
+    return '<div class="feed-card" data-feed-type="' + item.type + '" data-feed-idx="' + item.srcIdx + '">'
+      + '<div class="feed-thumb">'
+      + '<div class="feed-thumb-bg" style="background:' + thumbGrad(item.ci) + '"></div>'
+      + '<div class="feed-thumb-overlay"></div>'
+      + '<div class="feed-thumb-tag"><span class="tag-sm ' + tagClass + '">' + tagLabel + '</span></div>'
+      + '<div class="feed-thumb-info">'
+      + '<div class="feed-thumb-date">' + item.dt + '</div>'
+      + '<div class="feed-thumb-title">' + title + '</div>'
+      + countText
+      + '</div></div></div>';
+  }).join('');
+  /* 無限ループ用に2セット */
+  document.getElementById('feedScroll').innerHTML = cardsHtml + cardsHtml;
+}
+
+/* ============================================================
+   RENDER: Stream Grid (配信ビュー — サムネグリッド)
+   ============================================================ */
+function renderStreamGrid(containerId, data, colorOffset) {
+  var container = document.getElementById(containerId);
+  container.innerHTML = data.map(function(item, i) {
+    return '<div class="stream-card" data-stream-idx="' + i + '">'
+      + '<div class="stream-card-thumb">'
+      + '<div class="stream-card-thumb-bg" style="background:' + thumbGrad(i + (colorOffset||0)) + '"></div>'
+      + '<div class="stream-card-thumb-overlay"></div>'
+      + '<div class="stream-card-thumb-count">' + item.sg.length + '曲</div>'
+      + '</div>'
+      + '<div class="stream-card-body">'
+      + '<div class="stream-card-date">' + item.dt + '</div>'
+      + '<div class="stream-card-title">' + item.t + '</div>'
+      + '</div></div>';
   }).join('');
 }
 
-// === Search ===
-function renderSearch(query) {
-  var results = document.getElementById('searchResults');
-  var sections = document.getElementById('sectionsWrap');
+/* ============================================================
+   RENDER: Stream Detail (カード選択時のセトリ)
+   ============================================================ */
+function showStreamDetail(container, data, idx) {
+  /* Remove existing detail */
+  var existing = container.querySelector('.stream-detail');
+  var cards = container.querySelectorAll('.stream-card');
 
-  if (!query) {
-    results.classList.remove('active');
-    results.innerHTML = '';
-    sections.style.display = '';
-    return;
+  /* Deselect all */
+  cards.forEach(function(c) { c.classList.remove('selected'); });
+
+  if (existing) {
+    var wasIdx = existing.dataset.idx;
+    existing.classList.remove('open');
+    setTimeout(function() { existing.remove(); }, 300);
+    if (wasIdx == idx) return; /* toggle off */
   }
 
-  var q = query.toLowerCase();
-  var matches = ALL_SONGS.filter(function(s) {
-    return s.title.toLowerCase().indexOf(q) !== -1 || s.artist.toLowerCase().indexOf(q) !== -1;
+  var item = data[idx];
+  cards[idx].classList.add('selected');
+
+  var songsHtml = item.sg.map(function(s) {
+    return '<div class="sd-row">'
+      + '<span class="sd-num">' + s.n + '</span>'
+      + '<button class="sd-fav">' + ICON_HEART + '</button>'
+      + '<span class="sd-song">' + s.s + '</span>'
+      + '<span class="sd-artist">' + (s.a || '') + '</span>'
+      + '<span class="sd-time">' + s.tm + '</span>'
+      + '<div class="sd-play">' + ICON_PLAY + '</div>'
+      + '</div>';
+  }).join('');
+
+  var detail = document.createElement('div');
+  detail.className = 'stream-detail';
+  detail.dataset.idx = idx;
+  detail.innerHTML =
+    '<div class="stream-detail-header">'
+    + '<div><div class="stream-detail-title">' + item.t + '</div>'
+    + '<div class="stream-detail-meta">' + item.dt + ' · ' + item.sg.length + '曲</div></div>'
+    + '<button class="stream-detail-close">' + ICON_CLOSE + '</button>'
+    + '</div>'
+    + '<div class="stream-detail-songs">' + songsHtml + '</div>';
+
+  /* Insert after the row of the clicked card */
+  var cols = 4;
+  if (window.innerWidth <= 600) cols = 1;
+  else if (window.innerWidth <= 860) cols = 3;
+  var rowEnd = Math.min((Math.floor(idx / cols) + 1) * cols, cards.length);
+  var afterEl = cards[rowEnd - 1];
+  afterEl.after(detail);
+
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() { detail.classList.add('open'); });
   });
 
-  if (matches.length === 0) {
-    results.innerHTML = '<div style="text-align:center;padding:var(--sp-2xl) 0;color:var(--navy-400);font-size:var(--text-sm);">該当する楽曲が見つかりません</div>';
-  } else {
-    results.innerHTML = matches.map(function(m) {
-      var appears = m.appearances.map(function(a) {
-        var typeClass = a.type === 'MV' ? ' original' : '';
-        return '<div class="sr-appear">' +
-          '<span class="tag-sm' + typeClass + '">' + a.type + '</span>' +
-          '<span class="sr-appear-text">' + a.text + '</span>' +
-          (a.time ? '<span class="sr-appear-time">' + a.time + '</span>' : '') +
-        '</div>';
-      }).join('');
-
-      return '<div class="sr-item">' +
-        '<div class="sr-title">' + m.title + '</div>' +
-        '<div class="sr-artist">' + m.artist + '</div>' +
-        (m.appearances.length > 1 ? '<div class="sr-count">' + m.appearances.length + '件の出演</div>' : '') +
-        '<div class="sr-appearances">' + appears + '</div>' +
-      '</div>';
-    }).join('');
-  }
-
-  results.classList.add('active');
-  sections.style.display = 'none';
+  /* Close button */
+  detail.querySelector('.stream-detail-close').addEventListener('click', function(e) {
+    e.stopPropagation();
+    cards[idx].classList.remove('selected');
+    detail.classList.remove('open');
+    setTimeout(function() { detail.remove(); }, 300);
+  });
 }
 
-// === Events ===
-var searchTimer;
-document.getElementById('searchInput').addEventListener('input', function() {
-  var v = this.value.trim();
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(function() { renderSearch(v); }, 150);
+/* ============================================================
+   RENDER: Song View (曲ビュー)
+   ============================================================ */
+function renderSongView(containerId, songs) {
+  document.getElementById(containerId).innerHTML = songs.map(function(song) {
+    var details = song.appearances.map(function(a) {
+      return '<div class="sdi-item">'
+        + '<button class="sdi-fav">' + ICON_HEART + '</button>'
+        + '<span class="sdi-date">' + a.dt + '</span>'
+        + '<span class="sdi-title">' + a.title + '</span>'
+        + '<span class="sdi-time">' + (a.tm||'') + '</span>'
+        + '<div class="sdi-play">' + ICON_PLAY + '</div>'
+        + '</div>';
+    }).join('');
+    return '<div class="song-row" data-song-row>'
+      + '<div class="song-info"><div class="song-name">' + song.s + '</div><div class="song-artist">' + song.a + '</div></div>'
+      + '<span class="song-count">' + song.c + '<small>回</small></span>'
+      + '<svg class="song-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>'
+      + '</div>'
+      + '<div class="song-detail"><div class="song-detail-inner">' + details + '</div></div>';
+  }).join('');
+}
+
+/* ============================================================
+   RENDER: MV Grid
+   ============================================================ */
+function renderMV() {
+  document.getElementById('mvGrid').innerHTML = MVS.map(function(m, i) {
+    var tag = m.y === 'original' ? '<span class="tag-sm mv">オリジナル</span>' : '<span class="tag-sm mv">カバー</span>';
+    return '<div class="mv-card">'
+      + '<div class="mv-thumb"><div class="mv-thumb-bg" style="background:' + thumbGrad(i+9) + '"></div><div class="mv-play-overlay"><div class="mv-play-circle">' + ICON_PLAY + '</div></div></div>'
+      + '<div class="mv-body">'
+      + '<div class="mv-body-info"><div class="mv-title">' + m.t + '</div><div class="mv-meta">' + tag + '<span class="mv-artist">' + m.a + '</span></div></div>'
+      + '<button class="mv-fav">' + ICON_HEART + '</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+/* ============================================================
+   RENDER: Search (横断)
+   ============================================================ */
+function renderSearch(q) {
+  var el = document.getElementById('searchResults');
+  var main = document.getElementById('mainContent');
+  if (!q) { el.classList.remove('active'); el.innerHTML = ''; main.style.display = ''; return; }
+  var ql = q.toLowerCase();
+  var matches = ALL_SONGS.filter(function(s) { return s.s.toLowerCase().indexOf(ql)!==-1 || s.a.toLowerCase().indexOf(ql)!==-1; });
+
+  if (!matches.length) {
+    el.innerHTML = '<div class="sr-empty">「' + q + '」に該当する楽曲が見つかりません</div>';
+  } else {
+    el.innerHTML = matches.map(function(s) {
+      var sections = [];
+      if (s.utawaku.length) sections.push({label:'歌枠',items:s.utawaku,tc:'utawaku'});
+      if (s.live.length) sections.push({label:'ライブ',items:s.live,tc:'live'});
+      if (s.mv.length) sections.push({label:'MV',items:s.mv,tc:'mv'});
+      var stats = [];
+      if (s.utawaku.length) stats.push('歌枠'+s.utawaku.length+'回');
+      if (s.live.length) stats.push('ライブ'+s.live.length+'回');
+      if (s.mv.length) stats.push('MV');
+
+      var body = sections.map(function(sec) {
+        return sec.items.map(function(a) {
+          return '<div class="sr-appear"><span class="tag-sm '+sec.tc+'">'+sec.label+'</span>'
+            + '<span class="sr-appear-text">'+a.title+'</span>'
+            + (a.tm?'<span class="sr-appear-time">'+a.tm+'</span>':'')
+            + '<div class="sr-play">'+ICON_PLAY+'</div></div>';
+        }).join('');
+      }).join('');
+
+      return '<div class="sr-item"><div class="sr-header">'
+        + '<span class="sr-title">'+s.s+'</span><span class="sr-slash">/</span><span class="sr-artist">'+s.a+'</span>'
+        + '<span class="sr-stats">'+stats.join(' · ')+'</span>'
+        + '</div><div class="sr-appearances">'+body+'</div></div>';
+    }).join('');
+  }
+  el.classList.add('active'); main.style.display = 'none';
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+
+/* Search toggle + input */
+document.getElementById('searchToggle').addEventListener('click', function() {
+  var wrap = document.getElementById('searchWrap');
+  wrap.classList.toggle('open');
+  if (wrap.classList.contains('open')) {
+    document.getElementById('searchInput').focus();
+  } else {
+    document.getElementById('searchInput').value = '';
+    renderSearch('');
+  }
+});
+var st; document.getElementById('searchInput').addEventListener('input', function() {
+  var v = this.value.trim(); clearTimeout(st); st = setTimeout(function() { renderSearch(v); }, 150);
 });
 
-// Live expand/collapse
-document.querySelectorAll('[data-live]').forEach(function(item) {
-  item.querySelector('.live-header').addEventListener('click', function() {
-    item.classList.toggle('open');
+/* Tab switching */
+document.querySelectorAll('.db-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.db-tab').forEach(function(t){t.classList.remove('active')});
+    document.querySelectorAll('.db-panel').forEach(function(p){p.classList.remove('active')});
+    this.classList.add('active');
+    document.getElementById('panel-'+this.dataset.tab).classList.add('active');
   });
 });
 
-// Ranking expand/collapse
+/* View toggle (state-toggle) */
+document.querySelectorAll('.state-toggle button').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var panel = this.dataset.panel, view = this.dataset.view;
+    this.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('active')});
+    this.classList.add('active');
+    var sv = document.getElementById(panel+'-stream-view');
+    var sov = document.getElementById(panel+'-song-view');
+    var sort = document.getElementById('sort-'+panel+'-song');
+    if (view==='stream') { sv.style.display=''; sov.style.display='none'; if(sort)sort.style.display='none'; }
+    else { sv.style.display='none'; sov.style.display=''; if(sort)sort.style.display=''; }
+  });
+});
+
+/* Stream card click → detail */
+document.getElementById('utawakuStreamGrid').addEventListener('click', function(e) {
+  var card = e.target.closest('.stream-card');
+  if (!card || e.target.closest('.stream-detail')) return;
+  showStreamDetail(this, UTAWAKU, parseInt(card.dataset.streamIdx));
+});
+document.getElementById('liveStreamGrid').addEventListener('click', function(e) {
+  var card = e.target.closest('.stream-card');
+  if (!card || e.target.closest('.stream-detail')) return;
+  showStreamDetail(this, LIVES, parseInt(card.dataset.streamIdx));
+});
+
+/* Feed card click → 該当タブに切替えてカード展開 */
+function switchTabAndOpen(tabName, idx) {
+  /* タブ切替 */
+  document.querySelectorAll('.db-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.db-panel').forEach(function(p){p.classList.remove('active')});
+  var tab = document.querySelector('.db-tab[data-tab="'+tabName+'"]');
+  if (tab) tab.classList.add('active');
+  var panel = document.getElementById('panel-'+tabName);
+  if (panel) panel.classList.add('active');
+
+  /* 配信ビューに切替（歌枠の場合） */
+  if (tabName === 'utawaku') {
+    var sv = document.getElementById('utawaku-stream-view');
+    var sov = document.getElementById('utawaku-song-view');
+    if (sv) sv.style.display = '';
+    if (sov) sov.style.display = 'none';
+    var btns = panel.querySelectorAll('.state-toggle button');
+    btns.forEach(function(b) { b.classList.toggle('active', b.dataset.view === 'stream'); });
+  }
+
+  /* スクロール → カード展開 */
+  var gridId = tabName === 'utawaku' ? 'utawakuStreamGrid' : 'liveStreamGrid';
+  var grid = document.getElementById(gridId);
+  var dataSource = tabName === 'utawaku' ? UTAWAKU : LIVES;
+
+  setTimeout(function() {
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function() {
+      showStreamDetail(grid, dataSource, idx);
+    }, 400);
+  }, 100);
+}
+
+document.getElementById('feedScroll').addEventListener('click', function(e) {
+  var card = e.target.closest('.feed-card');
+  if (!card) return;
+  var type = card.dataset.feedType;
+  var idx = parseInt(card.dataset.feedIdx);
+  if (type === 'utawaku' || type === 'live') {
+    switchTabAndOpen(type, idx);
+  }
+  /* MV: 将来的にはMVタブに切替等 */
+});
+
+/* Song row accordion */
 document.addEventListener('click', function(e) {
-  var row = e.target.closest('[data-rank]');
-  if (row) row.classList.toggle('open');
+  var sr = e.target.closest('[data-song-row]');
+  if (sr) { sr.classList.toggle('open'); var d=sr.nextElementSibling; if(d&&d.classList.contains('song-detail'))d.classList.toggle('open'); return; }
+  /* Fav toggle */
+  var fav = e.target.closest('.sd-fav,.sdi-fav,.mv-fav,.sr-fav');
+  if (fav) { e.stopPropagation(); fav.classList.toggle('active'); fav.innerHTML=fav.classList.contains('active')?ICON_HEART_FILL:ICON_HEART; return; }
 });
 
-// Reveal
-document.querySelectorAll('.reveal').forEach(function(el) {
-  new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.05 }).observe(el);
-});
+/* Reveal */
+var obs = new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:0.08});
+document.querySelectorAll('.reveal,.stagger').forEach(function(el){obs.observe(el)});
 
-// Init
-renderRanking();
+/* ============================================================
+   INIT
+   ============================================================ */
+renderFeed();
+renderStreamGrid('utawakuStreamGrid', UTAWAKU, 0);
+renderStreamGrid('liveStreamGrid', LIVES, 6);
+renderSongView('utawakuSongList', UTAWAKU_SONGS);
+renderMV();
 </script>
-
 </body>
 </html>
