@@ -2,6 +2,7 @@
 
 import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
+import { SectionHeader } from '@/components/ui/section-header';
 import { useAsmrDraw } from '../hooks/use-asmr-draw';
 import { SlotReel } from './slot-reel';
 import { ResultInfo } from './result-info';
@@ -26,22 +27,20 @@ export function AsmrPage({ streams }: Props) {
   return (
     <div className="min-h-[calc(100dvh-var(--header-height)-var(--page-bottom-margin))] flex flex-col items-center justify-center py-xl">
       {/* ---- ヘッダー ---- */}
-      <div className="text-center px-md md:px-lg mb-lg">
-        <p className="font-mono text-2xs font-medium tracking-wider text-accent-label mb-sm">
-          TODAY&apos;S ASMR
-        </p>
-        <h1 className="font-body text-xl md:text-2xl font-bold text-heading mb-sm">
-          今日のASMR
-        </h1>
-        {phase === 'idle' && (
-          <p className="text-sm text-muted max-w-[var(--slot-desc-max)] mx-auto leading-relaxed-plus">
-            どれを聴くか迷ったら。
-            <br />
-            {streams.length}
-            本のASMRアーカイブからランダムで1本おすすめします。
-          </p>
-        )}
-      </div>
+      <SectionHeader
+        label="TODAY'S ASMR"
+        title="今日のASMR"
+        description={
+          phase === 'idle' ? (
+            <>
+              どれを聴くか迷ったら。
+              <br />
+              {streams.length}
+              本のASMRアーカイブからランダムで1本おすすめします。
+            </>
+          ) : undefined
+        }
+      />
 
       {/* ---- リール（画面幅いっぱい） ---- */}
       <div className="w-screen overflow-hidden relative mb-xl">

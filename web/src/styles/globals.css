@@ -143,7 +143,7 @@
   --search-expanded-width: 200px;
   --page-bottom-margin: 80px;    /* ページ下部マージン（CTA余白等） */
   --slot-width: 480px;           /* スロットウィンドウ幅 */
-  --slot-desc-max: 400px;        /* スロット説明文最大幅 */
+  --section-desc-max: 400px;     /* SectionHeader 説明文最大幅 */
   --slot-bg: var(--color-navy-800); /* スロット背景（テーマ不変） */
 }
 

@@ -17,13 +17,13 @@ function buildCards() {
 
   const explore: readonly CardData[] = [
     {
-      name: '配信一覧',
+      name: '配信',
       desc: `${streamCount}件の配信をタグやキーワードで検索。チェックで視聴記録をつける。`,
       meta: `${streamCount} streams`,
       href: '/streams',
     },
     {
-      name: '楽曲ライブラリ',
+      name: '楽曲',
       desc: 'レパートリー全曲の検索。曲名から歌った配信を逆引き。',
       meta: `${songCount} songs`,
       href: '/music',

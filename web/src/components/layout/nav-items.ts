@@ -23,12 +23,12 @@ export function getNavGroups(): readonly NavGroup[] {
       label: '探す',
       items: [
         {
-          name: '配信一覧',
+          name: '配信',
           desc: `${streamCount}件の配信をタグ検索・チェックで記録`,
           href: '/streams',
         },
         {
-          name: '楽曲ライブラリ',
+          name: '楽曲',
           desc: `${songCount}曲のレパートリー・セトリ検索`,
           href: '/music',
         },

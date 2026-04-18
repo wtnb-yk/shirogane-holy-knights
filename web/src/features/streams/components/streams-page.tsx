@@ -34,7 +34,7 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
   return (
     <>
       <PageHeader
-        title="配信一覧"
+        title="配信"
         description="配信をタグで探索し、視聴した配信をチェック。あなたの推し活記録を作ろう。"
         right={
           isClient ? (

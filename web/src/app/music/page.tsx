@@ -9,7 +9,7 @@ import {
 import { MusicPage } from '@/features/music/components/music-page';
 
 export const metadata: Metadata = {
-  title: '楽曲ライブラリ',
+  title: '楽曲',
   description:
     'オリジナル・カバー・歌枠セトリを横断検索。白銀ノエルの全楽曲レパートリーを収録。',
 };

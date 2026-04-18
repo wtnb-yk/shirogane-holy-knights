@@ -104,7 +104,7 @@ export function MusicPage({
   return (
     <>
       <PageHeader
-        title="楽曲ライブラリ"
+        title="楽曲"
         description="オリジナル・カバー・歌枠セトリを横断検索"
         right={<MusicStatsDisplay stats={stats} />}
       />

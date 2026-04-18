@@ -190,7 +190,7 @@ export type Album = {
   tracks: AlbumTrack[];
 };
 
-// --- 楽曲ライブラリ ---
+// --- 楽曲 ---
 
 export type MusicStreamSong = {
   songId: string;

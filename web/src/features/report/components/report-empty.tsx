@@ -25,12 +25,12 @@ export function ReportEmpty({ theme }: Props) {
 
       <div className="text-center mt-xl animate-card-entrance-delayed">
         <p className="text-sm text-secondary leading-[1.8] mb-md">
-          配信一覧でチェックすると、
+          配信でチェックすると、
           <br />
           あなただけの報告書が生成されます。
         </p>
         <a href="/streams">
-          <Button variant="cta">配信一覧を開く</Button>
+          <Button variant="cta">配信を開く</Button>
         </a>
       </div>
     </div>

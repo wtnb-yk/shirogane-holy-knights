@@ -273,7 +273,7 @@ export function getMusicVideoCards(): MusicVideoCard[] {
 }
 
 /**
- * 楽曲ライブラリの統計情報
+ * 楽曲の統計情報
  */
 export function getMusicStats(): MusicStats {
   return {
