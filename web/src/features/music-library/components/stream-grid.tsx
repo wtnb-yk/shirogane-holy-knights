@@ -6,6 +6,8 @@ import { StreamDetail } from './stream-detail';
 
 type Props = {
   streams: MusicStream[];
+  favoriteIds: Set<string>;
+  onToggleFavorite: (songId: string) => void;
   /** 外部から指定された展開対象の videoId（フィードカード経由） */
   externalSelectedId?: string | null;
   onClearExternal?: () => void;
@@ -17,6 +19,8 @@ function formatDate(dateStr: string): string {
 
 export function StreamGrid({
   streams,
+  favoriteIds,
+  onToggleFavorite,
   externalSelectedId,
   onClearExternal,
 }: Props) {
@@ -92,6 +96,8 @@ export function StreamGrid({
           title={selectedStream.title}
           date={selectedStream.date}
           songs={selectedStream.songs}
+          favoriteIds={favoriteIds}
+          onToggleFavorite={onToggleFavorite}
           onClose={() => setSelectedId(null)}
         />,
       );

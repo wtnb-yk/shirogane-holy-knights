@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 import type { AggregatedSong } from '../hooks/use-music-filter';
+import { FavButton } from './fav-button';
 
 type Props = {
   songs: AggregatedSong[];
+  favoriteIds: Set<string>;
+  onToggleFavorite: (songId: string) => void;
 };
 
 function formatDate(dateStr: string): string {
@@ -21,7 +24,7 @@ function formatTime(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-export function SongList({ songs }: Props) {
+export function SongList({ songs, favoriteIds, onToggleFavorite }: Props) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
@@ -31,6 +34,8 @@ export function SongList({ songs }: Props) {
           key={song.id}
           song={song}
           isOpen={openId === song.id}
+          isFav={favoriteIds.has(song.id)}
+          onToggleFav={() => onToggleFavorite(song.id)}
           onToggle={() =>
             setOpenId((prev) => (prev === song.id ? null : song.id))
           }
@@ -43,10 +48,14 @@ export function SongList({ songs }: Props) {
 function SongRow({
   song,
   isOpen,
+  isFav,
+  onToggleFav,
   onToggle,
 }: {
   song: AggregatedSong;
   isOpen: boolean;
+  isFav: boolean;
+  onToggleFav: () => void;
   onToggle: () => void;
 }) {
   return (
@@ -61,6 +70,7 @@ function SongRow({
           </div>
           <div className="text-xs text-muted">{song.artist}</div>
         </div>
+        <FavButton active={isFav} onClick={onToggleFav} size="sm" />
         <span className="font-mono text-sm font-semibold text-accent-label flex-shrink-0">
           {song.count}
           <small className="text-3xs font-normal text-subtle ml-px">回</small>

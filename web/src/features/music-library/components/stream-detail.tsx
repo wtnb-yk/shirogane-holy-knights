@@ -1,9 +1,12 @@
 import type { MusicStreamSong } from '@/lib/data/types';
+import { FavButton } from './fav-button';
 
 type Props = {
   title: string;
   date: string;
   songs: MusicStreamSong[];
+  favoriteIds: Set<string>;
+  onToggleFavorite: (songId: string) => void;
   onClose: () => void;
 };
 
@@ -21,7 +24,14 @@ function formatDate(dateStr: string): string {
   return dateStr.slice(0, 10).replace(/-/g, '.');
 }
 
-export function StreamDetail({ title, date, songs, onClose }: Props) {
+export function StreamDetail({
+  title,
+  date,
+  songs,
+  favoriteIds,
+  onToggleFavorite,
+  onClose,
+}: Props) {
   return (
     <div className="col-span-full bg-surface border border-accent rounded-lg p-lg animate-fade-in">
       <div className="flex items-center justify-between mb-md">
@@ -51,22 +61,38 @@ export function StreamDetail({ title, date, songs, onClose }: Props) {
       </div>
       <div className="flex flex-col gap-0.5">
         {songs.map((song, i) => (
-          <SetlistRow key={`${song.songId}-${i}`} index={i + 1} song={song} />
+          <SetlistRow
+            key={`${song.songId}-${i}`}
+            index={i + 1}
+            song={song}
+            isFav={favoriteIds.has(song.songId)}
+            onToggleFav={() => onToggleFavorite(song.songId)}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function SetlistRow({ index, song }: { index: number; song: MusicStreamSong }) {
+function SetlistRow({
+  index,
+  song,
+  isFav,
+  onToggleFav,
+}: {
+  index: number;
+  song: MusicStreamSong;
+  isFav: boolean;
+  onToggleFav: () => void;
+}) {
   const timeStr = formatTime(song.startSeconds);
-  const url = `https://www.youtube.com/watch?v=`;
 
   return (
     <div className="flex items-center gap-sm px-2.5 py-[7px] text-xs rounded-sm cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1">
       <span className="font-mono text-3xs text-subtle w-5 text-right flex-shrink-0">
         {index}
       </span>
+      <FavButton active={isFav} onClick={onToggleFav} />
       <span className="text-heading font-medium flex-1 min-w-0 truncate">
         {song.title}
       </span>

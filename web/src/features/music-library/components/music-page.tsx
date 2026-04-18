@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useSyncExternalStore } from 'react';
 import type {
   Song,
   MusicStream,
@@ -21,6 +21,12 @@ import { MvGrid } from './mv-grid';
 import { SearchResults } from './search-results';
 import { useMusicFilter } from '../hooks/use-music-filter';
 import type { ViewMode, SongSort, SourceTab } from '../hooks/use-music-filter';
+import {
+  getFavoritesSnapshot,
+  getFavoritesServerSnapshot,
+  subscribeFavorites,
+  toggleFavorite,
+} from '../lib/favorite-songs';
 
 type Props = {
   songs: Song[];
@@ -50,6 +56,17 @@ export function MusicPage({
 }: Props) {
   const filter = useMusicFilter(songs, utawakuStreams, concertStreams, mvCards);
   const isSearching = filter.search.trim().length > 0;
+
+  // いいね状態
+  const favoriteIds = useSyncExternalStore(
+    subscribeFavorites,
+    getFavoritesSnapshot,
+    getFavoritesServerSnapshot,
+  );
+  const handleToggleFavorite = useCallback(
+    (songId: string) => toggleFavorite(songId),
+    [],
+  );
 
   // フィードカード → タブ切替 + カード展開
   const [pendingVideoId, setPendingVideoId] = useState<string | null>(null);
@@ -163,11 +180,17 @@ export function MusicPage({
                 {filter.viewMode === 'stream' ? (
                   <StreamGrid
                     streams={filter.visibleUtawaku}
+                    favoriteIds={favoriteIds}
+                    onToggleFavorite={handleToggleFavorite}
                     externalSelectedId={pendingVideoId}
                     onClearExternal={clearPendingVideo}
                   />
                 ) : (
-                  <SongList songs={filter.visibleAggSongs} />
+                  <SongList
+                    songs={filter.visibleAggSongs}
+                    favoriteIds={favoriteIds}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
                 )}
               </>
             )}
@@ -176,6 +199,8 @@ export function MusicPage({
             {filter.activeTab === 'live' && (
               <StreamGrid
                 streams={filter.visibleConcerts}
+                favoriteIds={favoriteIds}
+                onToggleFavorite={handleToggleFavorite}
                 externalSelectedId={pendingVideoId}
                 onClearExternal={clearPendingVideo}
               />
@@ -183,7 +208,11 @@ export function MusicPage({
 
             {/* MVパネル */}
             {filter.activeTab === 'mv' && (
-              <MvGrid cards={filter.visibleMvCards} />
+              <MvGrid
+                cards={filter.visibleMvCards}
+                favoriteIds={favoriteIds}
+                onToggleFavorite={handleToggleFavorite}
+              />
             )}
 
             {/* ページネーション */}
