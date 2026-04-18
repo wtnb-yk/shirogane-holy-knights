@@ -133,7 +133,7 @@ function StreamCard({
         {stream.thumbnailUrl ? (
           <img
             src={stream.thumbnailUrl}
-            alt=""
+            alt={stream.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (

@@ -111,7 +111,7 @@ function FeedCard({ item, onClick }: { item: FeedItem; onClick: () => void }) {
         {item.thumbnailUrl ? (
           <img
             src={item.thumbnailUrl}
-            alt=""
+            alt={item.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (

@@ -25,8 +25,10 @@ export function getCheckedSnapshot(): Set<string> {
   return cache;
 }
 
+const EMPTY_SET = new Set<string>();
+
 export function getCheckedServerSnapshot(): Set<string> {
-  return new Set();
+  return EMPTY_SET;
 }
 
 export function subscribeChecked(callback: () => void): () => void {

@@ -21,6 +21,7 @@ export function StreamCard({ stream, isChecked, onToggleCheck }: Props) {
       <StreamThumb
         id={stream.id}
         thumbnailUrl={stream.thumbnailUrl}
+        title={stream.title}
         duration={stream.duration}
         isChecked={isChecked}
       />
@@ -55,11 +56,13 @@ export function StreamCard({ stream, isChecked, onToggleCheck }: Props) {
 function StreamThumb({
   id,
   thumbnailUrl,
+  title,
   duration,
   isChecked,
 }: {
   id: string;
   thumbnailUrl: string;
+  title: string;
   duration: string;
   isChecked: boolean;
 }) {
@@ -73,7 +76,7 @@ function StreamThumb({
       {/* eslint-disable-next-line @next/next/no-img-element -- YouTube外部サムネイル */}
       <img
         src={thumbnailUrl}
-        alt=""
+        alt={title}
         loading="lazy"
         className="w-full h-full object-cover"
       />

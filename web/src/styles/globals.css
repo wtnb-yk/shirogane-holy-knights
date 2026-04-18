@@ -339,3 +339,103 @@ body {
   background: rgba(200, 162, 76, 0.2);
   color: var(--color-cream-50);
 }
+
+/* ============================================================
+   REPORT CARD THEMES
+   カードは画像キャプチャ対象のため、サイトのダークモードとは独立。
+   [data-report-theme] スコープで閉じた CSS 変数を定義する。
+   @layer base で Tailwind v4 のツリーシェイクを回避。
+   ============================================================ */
+
+@layer base {
+  [data-report-theme='light'] {
+    --rc-bg: var(--color-cream-50);
+    --rc-border: var(--color-cream-300);
+    --rc-corner: var(--color-gold-300);
+    --rc-corner-opacity: 0.5;
+    --rc-icon: var(--color-silver-300);
+    --rc-mono-label: var(--color-gold-500);
+    --rc-line: var(--color-gold-400);
+    --rc-heading: var(--color-dark-800);
+    --rc-num: var(--color-dark-800);
+    --rc-unit: var(--color-navy-400);
+    --rc-featured-label: var(--color-navy-300);
+    --rc-stat-border: var(--color-cream-300);
+    --rc-stat-label: var(--color-navy-400);
+    --rc-stat-value: var(--color-dark-800);
+    --rc-accent: var(--color-gold-500);
+    --rc-footer-border: var(--color-cream-300);
+    --rc-footer-text: var(--color-navy-300);
+    --rc-footer-date: var(--color-navy-200);
+  }
+
+  [data-report-theme='dark'] {
+    --rc-bg: var(--color-navy-800);
+    --rc-border: var(--color-navy-600);
+    --rc-corner: var(--color-gold-400);
+    --rc-corner-opacity: 0.3;
+    --rc-icon: var(--color-navy-400);
+    --rc-mono-label: var(--color-gold-300);
+    --rc-line: var(--color-gold-400);
+    --rc-heading: var(--color-cream-100);
+    --rc-num: var(--color-cream-50);
+    --rc-unit: var(--color-navy-300);
+    --rc-featured-label: var(--color-navy-400);
+    --rc-stat-border: var(--color-navy-600);
+    --rc-stat-label: var(--color-navy-400);
+    --rc-stat-value: var(--color-cream-200);
+    --rc-accent: var(--color-gold-300);
+    --rc-footer-border: var(--color-navy-600);
+    --rc-footer-text: var(--color-navy-400);
+    --rc-footer-date: var(--color-navy-500);
+  }
+
+  [data-report-theme='gold'] {
+    --rc-bg: linear-gradient(170deg, #FBF6EC 0%, #F5EDD8 100%);
+    --rc-border: var(--color-gold-200);
+    --rc-corner: var(--color-gold-400);
+    --rc-corner-opacity: 0.6;
+    --rc-icon: var(--color-silver-300);
+    --rc-mono-label: var(--color-gold-600);
+    --rc-line: var(--color-gold-500);
+    --rc-heading: var(--color-dark-800);
+    --rc-num: var(--color-dark-800);
+    --rc-unit: var(--color-navy-400);
+    --rc-featured-label: var(--color-navy-300);
+    --rc-stat-border: var(--color-gold-100);
+    --rc-stat-label: var(--color-gold-500);
+    --rc-stat-value: var(--color-dark-800);
+    --rc-accent: var(--color-gold-600);
+    --rc-footer-border: var(--color-gold-200);
+    --rc-footer-text: var(--color-gold-500);
+    --rc-footer-date: var(--color-gold-300);
+  }
+
+  /* カード四隅角装飾 */
+  .rc-inner::before,
+  .rc-inner::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--rc-corner);
+    border-style: solid;
+    opacity: var(--rc-corner-opacity);
+  }
+  .rc-inner::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+  .rc-inner::after  { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+}
+
+/* カードエントランスアニメーション */
+@keyframes card-entrance {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-card-entrance {
+  animation: card-entrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.animate-card-entrance-delayed {
+  animation: card-entrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}

@@ -3,6 +3,7 @@ import { Outfit, JetBrains_Mono } from 'next/font/google';
 import { M_PLUS_2 } from 'next/font/google';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site';
 import '@/styles/globals.css';
 
 const outfit = Outfit({
@@ -23,26 +24,29 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : 'https://danin-log.vercel.app';
-
 export const metadata: Metadata = {
-  title: 'だんいんログ',
-  description: '白銀ノエルファン（団員）のための推し活記録アプリ',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s — ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: './',
+  },
   openGraph: {
-    title: 'だんいんログ',
-    description: '白銀ノエルファン（団員）のための推し活記録アプリ',
-    siteName: 'だんいんログ',
-    images: [{ url: `${siteUrl}/api/og`, width: 1200, height: 630 }],
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
+    images: [{ url: '/api/og', width: 1200, height: 630 }],
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'だんいんログ',
-    description: '白銀ノエルファン（団員）のための推し活記録アプリ',
-    images: [`${siteUrl}/api/og`],
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: ['/api/og'],
   },
 };
 

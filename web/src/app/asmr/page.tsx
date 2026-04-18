@@ -3,7 +3,7 @@ import { getAsmrStreams } from '@/lib/data/asmr';
 import { AsmrPage } from '@/features/asmr-today/components/asmr-page';
 
 export const metadata: Metadata = {
-  title: '今日のASMR — だんいんログ',
+  title: '今日のASMR',
   description:
     'どれを聴くか迷ったら。ASMRアーカイブからランダムで1本おすすめします。',
 };

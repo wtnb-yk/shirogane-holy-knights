@@ -41,7 +41,7 @@ export function SlotReel({ streams, phase, targetIndex, ref }: Props) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={stream.thumbnailUrl}
-              alt=""
+              alt={stream.title}
               className="w-full h-full object-cover"
               loading="lazy"
             />

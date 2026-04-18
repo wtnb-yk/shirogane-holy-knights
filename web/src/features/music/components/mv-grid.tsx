@@ -47,7 +47,7 @@ function MvCard({
         {card.thumbnailUrl ? (
           <img
             src={card.thumbnailUrl}
-            alt=""
+            alt={card.songTitle}
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
