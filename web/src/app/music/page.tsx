@@ -5,7 +5,7 @@ import {
   getMusicVideoCards,
   getMusicStats,
 } from '@/lib/data/music';
-import { MusicPage } from '@/features/music-library/components/music-page';
+import { MusicPage } from '@/features/music/components/music-page';
 
 export default function Page() {
   const songs = getSongs();

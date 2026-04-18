@@ -34,7 +34,7 @@ web/src/
 │   └── api/og/           # E5 OGP画像生成
 ├── features/             # 機能単位モジュール（components/, hooks/, lib/）
 │   ├── streams/
-│   ├── music-library/
+│   ├── music/
 │   ├── asmr-today/
 │   ├── report/
 │   ├── footprint/
