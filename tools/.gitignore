@@ -7,7 +7,9 @@ config/.env.prd
 
 # 出力ディレクトリ
 output/
-data-staging/
+
+# 中間CSV（レビュー用）
+data-review/
 
 scripts/.db-session
 
