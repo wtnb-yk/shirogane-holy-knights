@@ -1,4 +1,5 @@
 import type { Song } from '@/lib/data/types';
+import { formatTime } from '@/lib/format';
 
 type Props = {
   query: string;
@@ -19,16 +20,6 @@ const SOURCE_STYLES: Record<string, { label: string; className: string }> = {
     className: 'bg-[var(--glow-navy)] text-interactive',
   },
 };
-
-function formatTime(seconds: number): string {
-  if (seconds <= 0) return '';
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0)
-    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 export function SearchResults({ query, results }: Props) {
   if (results.length === 0) {

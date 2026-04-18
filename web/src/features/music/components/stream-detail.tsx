@@ -1,4 +1,5 @@
 import type { MusicStreamSong } from '@/lib/data/types';
+import { formatDate, formatTime } from '@/lib/format';
 import { FavButton } from './fav-button';
 
 type Props = {
@@ -9,20 +10,6 @@ type Props = {
   onToggleFavorite: (songId: string) => void;
   onClose: () => void;
 };
-
-function formatTime(seconds: number): string {
-  if (seconds <= 0) return '';
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0)
-    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
-function formatDate(dateStr: string): string {
-  return dateStr.slice(0, 10).replace(/-/g, '.');
-}
 
 export function StreamDetail({
   title,

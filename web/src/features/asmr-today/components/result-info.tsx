@@ -1,20 +1,6 @@
 import type { Stream } from '@/lib/data/types';
+import { formatDate, formatDuration } from '@/lib/format';
 import { TagPill } from '@/components/ui/tag-pill';
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function formatDuration(dur: string): string {
-  const parts = dur.split(':').map(Number);
-  if (parts.length === 3) {
-    const [h, m] = parts;
-    if (h > 0) return `${h}h${String(m).padStart(2, '0')}m`;
-    return `${m}m`;
-  }
-  return dur;
-}
 
 type Props = {
   stream: Stream;

@@ -1,22 +1,7 @@
 import type { Stream } from '@/lib/data/types';
+import { formatDate, formatDurationTimestamp } from '@/lib/format';
 import { Button } from '@/components/ui/button';
 import { TagPill } from '@/components/ui/tag-pill';
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function formatDuration(dur: string): string {
-  const parts = dur.split(':').map(Number);
-  if (parts.length === 3) {
-    const [h, m, s] = parts;
-    if (h > 0)
-      return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
-  return dur;
-}
 
 type Props = {
   stream: Stream;
@@ -104,7 +89,7 @@ function StreamThumb({
         </div>
       </div>
       <span className="absolute bottom-1.5 right-1.5 px-1.5 py-px bg-page/78 text-surface font-mono text-3xs rounded-xs">
-        {formatDuration(duration)}
+        {formatDurationTimestamp(duration)}
       </span>
       {isChecked && (
         <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-foreground text-surface font-mono text-3xs rounded-xs">

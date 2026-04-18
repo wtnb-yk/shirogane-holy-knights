@@ -1,4 +1,5 @@
 import type { MusicStream, MusicVideoCard } from '@/lib/data/types';
+import { formatDate } from '@/lib/format';
 
 type FeedItem = {
   type: 'utawaku' | 'live' | 'mv';
@@ -66,11 +67,6 @@ function buildFeedItems(
   }
 
   return items.sort((a, b) => b.date.localeCompare(a.date));
-}
-
-function formatDate(dateStr: string): string {
-  if (!dateStr) return '';
-  return dateStr.slice(0, 10).replace(/-/g, '.');
 }
 
 export function LatestFeed({

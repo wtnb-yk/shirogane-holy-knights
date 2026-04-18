@@ -2,12 +2,8 @@
 
 import type { Stream } from '@/lib/data/types';
 import type { Phase } from '../types';
-import {
-  useSlotAnimation,
-  type SlotReelHandle,
-} from '../hooks/use-slot-animation';
-
-export type { SlotReelHandle };
+import { useSlotAnimation } from '../hooks/use-slot-animation';
+import type { SlotReelHandle } from '../hooks/use-slot-animation';
 
 type Props = {
   streams: Stream[];
@@ -56,9 +52,9 @@ export function SlotReel({ streams, phase, targetIndex, ref }: Props) {
                 rel="noopener noreferrer"
                 className="absolute inset-0 flex items-center justify-center"
               >
-                <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center transition-colors duration-300 ease-out-expo hover:bg-white/25">
+                <div className="w-14 h-14 rounded-full bg-overlay-bg backdrop-blur-sm border border-overlay-border flex items-center justify-center transition-colors duration-300 ease-out-expo hover:bg-overlay-bg-hover">
                   <svg
-                    className="w-5 h-5 text-white ml-0.5"
+                    className="w-5 h-5 text-overlay-icon ml-0.5"
                     viewBox="0 0 16 16"
                     fill="currentColor"
                   >

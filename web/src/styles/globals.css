@@ -98,6 +98,12 @@
   /* インタラクション */
   --color-interactive: var(--color-navy-600);
   --color-link-hover: var(--color-navy-600);
+
+  /* オーバーレイ（動画サムネイル上、テーマ不変） */
+  --color-overlay-bg: rgba(255, 255, 255, 0.15);
+  --color-overlay-bg-hover: rgba(255, 255, 255, 0.25);
+  --color-overlay-border: rgba(255, 255, 255, 0.2);
+  --color-overlay-icon: #ffffff;
 }
 
 /* ----- 3. タイポグラフィ -----

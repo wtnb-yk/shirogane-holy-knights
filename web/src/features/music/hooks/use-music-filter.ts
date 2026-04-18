@@ -28,6 +28,7 @@ export function useMusicFilter(
   utawakuStreams: MusicStream[],
   concertStreams: MusicStream[],
   mvCards: MusicVideoCard[],
+  favoriteIds: Set<string>,
 ) {
   const [activeTab, setActiveTab] = useState<SourceTab>('utawaku');
   const [viewMode, setViewMode] = useState<ViewMode>('stream');
@@ -35,6 +36,7 @@ export function useMusicFilter(
   const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
   const [songSort, setSongSort] = useState<SongSort>('count');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [favOnly, setFavOnly] = useState(false);
 
   // 歌枠の曲ビュー用: 曲を集約
   const aggregatedSongs = useMemo(() => {
@@ -70,57 +72,66 @@ export function useMusicFilter(
   const q = search.trim().toLowerCase();
 
   const filteredUtawaku = useMemo(() => {
-    let result = q
-      ? utawakuStreams.filter(
-          (s) =>
-            s.title.toLowerCase().includes(q) ||
-            s.songs.some(
-              (sg) =>
-                sg.title.toLowerCase().includes(q) ||
-                sg.artist.toLowerCase().includes(q),
-            ),
-        )
-      : utawakuStreams;
+    let result = utawakuStreams;
+    if (favOnly)
+      result = result.filter((s) =>
+        s.songs.some((sg) => favoriteIds.has(sg.songId)),
+      );
+    if (q)
+      result = result.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) ||
+          s.songs.some(
+            (sg) =>
+              sg.title.toLowerCase().includes(q) ||
+              sg.artist.toLowerCase().includes(q),
+          ),
+      );
     if (sortOrder === 'oldest') result = [...result].reverse();
     return result;
-  }, [utawakuStreams, q, sortOrder]);
+  }, [utawakuStreams, q, sortOrder, favOnly, favoriteIds]);
 
   const filteredConcerts = useMemo(() => {
-    let result = q
-      ? concertStreams.filter(
-          (s) =>
-            s.title.toLowerCase().includes(q) ||
-            s.songs.some(
-              (sg) =>
-                sg.title.toLowerCase().includes(q) ||
-                sg.artist.toLowerCase().includes(q),
-            ),
-        )
-      : concertStreams;
+    let result = concertStreams;
+    if (favOnly)
+      result = result.filter((s) =>
+        s.songs.some((sg) => favoriteIds.has(sg.songId)),
+      );
+    if (q)
+      result = result.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) ||
+          s.songs.some(
+            (sg) =>
+              sg.title.toLowerCase().includes(q) ||
+              sg.artist.toLowerCase().includes(q),
+          ),
+      );
     if (sortOrder === 'oldest') result = [...result].reverse();
     return result;
-  }, [concertStreams, q, sortOrder]);
+  }, [concertStreams, q, sortOrder, favOnly, favoriteIds]);
 
-  const filteredMvCards = useMemo(
-    () =>
-      q
-        ? mvCards.filter(
-            (mv) =>
-              mv.songTitle.toLowerCase().includes(q) ||
-              mv.artist.toLowerCase().includes(q),
-          )
-        : mvCards,
-    [mvCards, q],
-  );
+  const filteredMvCards = useMemo(() => {
+    let result = mvCards;
+    if (favOnly) result = result.filter((mv) => favoriteIds.has(mv.songId));
+    if (q)
+      result = result.filter(
+        (mv) =>
+          mv.songTitle.toLowerCase().includes(q) ||
+          mv.artist.toLowerCase().includes(q),
+      );
+    return result;
+  }, [mvCards, q, favOnly, favoriteIds]);
 
   const filteredAggSongs = useMemo(() => {
-    let result = q
-      ? aggregatedSongs.filter(
-          (s) =>
-            s.title.toLowerCase().includes(q) ||
-            s.artist.toLowerCase().includes(q),
-        )
-      : aggregatedSongs;
+    let result = aggregatedSongs;
+    if (favOnly) result = result.filter((s) => favoriteIds.has(s.id));
+    if (q)
+      result = result.filter(
+        (s) =>
+          s.title.toLowerCase().includes(q) ||
+          s.artist.toLowerCase().includes(q),
+      );
 
     if (songSort === 'count') {
       result = [...result].sort((a, b) => b.count - a.count);
@@ -130,16 +141,18 @@ export function useMusicFilter(
       result = [...result].sort((a, b) => a.title.localeCompare(b.title, 'ja'));
     }
     return result;
-  }, [aggregatedSongs, q, songSort]);
+  }, [aggregatedSongs, q, songSort, favOnly, favoriteIds]);
 
   // 横断検索用: 全曲を検索
   const crossSearchResults = useMemo(() => {
     if (!q) return [];
-    return songs.filter(
+    let result = songs.filter(
       (s) =>
         s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q),
     );
-  }, [songs, q]);
+    if (favOnly) result = result.filter((s) => favoriteIds.has(s.id));
+    return result;
+  }, [songs, q, favOnly, favoriteIds]);
 
   // 現在のタブ・ビューに応じた件数
   const currentCount = useMemo(() => {
@@ -193,6 +206,7 @@ export function useMusicFilter(
     search,
     sortOrder,
     songSort,
+    favOnly,
     currentCount,
     crossSearchResults,
     visibleUtawaku,
@@ -218,6 +232,10 @@ export function useMusicFilter(
     },
     setSongSort(sort: SongSort) {
       setSongSort(sort);
+      resetPage();
+    },
+    toggleFavOnly() {
+      setFavOnly((f) => !f);
       resetPage();
     },
     loadMore() {

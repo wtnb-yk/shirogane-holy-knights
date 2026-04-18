@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { MusicStream } from '@/lib/data/types';
+import { formatDate } from '@/lib/format';
 import { StreamDetail } from './stream-detail';
 
 type Props = {
@@ -12,10 +13,6 @@ type Props = {
   externalSelectedId?: string | null;
   onClearExternal?: () => void;
 };
-
-function formatDate(dateStr: string): string {
-  return dateStr.slice(0, 10).replace(/-/g, '.');
-}
 
 export function StreamGrid({
   streams,
