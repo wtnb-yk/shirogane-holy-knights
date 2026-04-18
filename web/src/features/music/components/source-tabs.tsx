@@ -16,7 +16,7 @@ const TABS: {
 }[] = [
   { key: 'utawaku', label: '歌枠', countKey: 'utawaku' },
   { key: 'live', label: 'ライブ', countKey: 'live' },
-  { key: 'mv', label: 'MV', countKey: 'mv' },
+  { key: 'mv', label: 'MV・歌ってみた', countKey: 'mv' },
 ];
 
 export function SourceTabs({
