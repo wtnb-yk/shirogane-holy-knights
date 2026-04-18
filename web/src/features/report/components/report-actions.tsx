@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import type { ReportStats } from '../lib/compute-stats';
 import type { ReportTheme } from './report-card';
 import { captureCardAsDataUrl, downloadImage } from '../lib/capture';
+import { SITE_URL } from '@/lib/site';
 
 type Props = {
   stats: ReportStats;
@@ -28,8 +29,6 @@ const THEMES: { key: ReportTheme; label: string; style: string }[] = [
       'bg-gradient-to-br from-[var(--color-gold-200)] to-[var(--color-gold-400)]',
   },
 ];
-
-const SITE_URL = 'https://danin-log.vercel.app';
 
 function shareOnX(stats: ReportStats): void {
   const text = [
