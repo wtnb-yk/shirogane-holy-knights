@@ -3,7 +3,7 @@
 YouTube Data API から動画データを取得し、既存データとマージして出力する。
 
 既存データ: tools/data/
-出力先:     tools/data-staging/
+出力先:     tools/data/
 
 出力CSV（07-csv-design.md 準拠）:
   - channels.csv          id, title, handle, icon_url
@@ -30,7 +30,6 @@ from googleapiclient.errors import HttpError
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/
 DATA_DIR = ROOT / 'data'
-STAGING_DIR = ROOT / 'data-staging'
 
 NOEL_CHANNEL_ID = 'UCdyqAaZDKHXg4Ahi7VENThQ'
 
@@ -68,9 +67,8 @@ def read_csv_keyed(filename, key_field):
 
 
 def write_csv(filename, fieldnames, rows):
-    """data-staging/ に CSV を書き出す。"""
-    STAGING_DIR.mkdir(parents=True, exist_ok=True)
-    path = STAGING_DIR / filename
+    """data/ に CSV を書き出す。"""
+    path = DATA_DIR / filename
     with open(path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -268,7 +266,7 @@ def main():
     s_details = merge(existing_stream_details, new_stream_details, 'video_id')
 
     # 書き出し
-    print(f'\n=== data-staging/ に出力 ===')
+    print(f'\n=== data/ に出力 ===')
     write_csv('channels.csv', ['id', 'title', 'handle', 'icon_url'], channels)
     write_csv('videos.csv', ['id', 'title', 'thumbnail_url', 'duration', 'channel_id', 'published_at'], videos)
     write_csv('video_video_types.csv', ['video_id', 'video_type_id'], vv_types)

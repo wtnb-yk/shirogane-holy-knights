@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """
-配信タイトルからタグを自動判定し、video_stream_tags.csv を更新する。
+配信タイトルからタグを自動判定し、人間がレビューする中間CSVを出力する。
 
 既存データ: tools/data/
-出力先:     tools/data-staging/video_stream_tags.csv
+出力先:     tools/data-review/extracted_tags.csv（中間CSV）
 
 キーワードルール: tools/data/tag_keywords.csv（CSV駆動）
 特殊ルール:       コード内（雑談/ゲーム/企画/記念/ライブの5タグ）
 
 モード:
-  通常:   新着（未分類）のみ分類 → staging 出力
+  通常:   新着（未分類）のみ分類 → 中間CSV出力（人手レビュー用）
+  --all:  全件再分類 → 中間CSV出力
   --verify: 全件再分類 → 人手タグとの精度レポート
+
+ワークフロー:
+  1. just tags          → extracted_tags.csv 出力
+  2. [人手レビュー]     → extracted_tags.csv を編集
+  3. just tags-import   → video_stream_tags.csv に反映
 """
 
 import argparse
@@ -24,7 +30,7 @@ from typing import Dict, List, Optional, Set
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/
 DATA_DIR = ROOT / 'data'
-STAGING_DIR = ROOT / 'data-staging'
+REVIEW_DIR = ROOT / 'data-review'
 
 
 # ---------- CSV 読み込み ----------
@@ -46,16 +52,6 @@ def read_csv_keyed(filename, key_field):
                 result[row[key_field]] = row
     return result
 
-
-def write_csv(filename, fieldnames, rows):
-    STAGING_DIR.mkdir(parents=True, exist_ok=True)
-    path = STAGING_DIR / filename
-    with open(path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({k: row.get(k, '') for k in fieldnames})
-    print(f'  {filename}: {len(rows)}件')
 
 
 # ---------- データ読み込み ----------
@@ -159,42 +155,85 @@ def classify(title: str, duration: Optional[str], started_at: Optional[str],
     return matched
 
 
-# ---------- 通常モード ----------
+# ---------- 中間CSV出力 ----------
+
+def write_extracted_tags(rows):
+    """中間CSV（extracted_tags.csv）を data-review/ に出力。"""
+    REVIEW_DIR.mkdir(parents=True, exist_ok=True)
+    path = REVIEW_DIR / 'extracted_tags.csv'
+    fieldnames = ['video_id', 'video_title', 'published_at', 'tags']
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({k: row.get(k, '') for k in fieldnames})
+    print(f'  extracted_tags.csv: {len(rows)}件')
+
 
 def run_normal(tag_master, tag_keywords):
-    """新着のみ分類 → staging 出力。"""
+    """新着のみ分類 → 中間CSV出力。"""
     streams = load_stream_data()
     existing = load_existing_tags()
+    videos = read_csv_keyed('videos.csv', 'id')
     print(f'配信: {len(streams)}件, 既存タグ付き: {len(existing)}件')
 
     new_ids = set(streams.keys()) - set(existing.keys())
     print(f'新着（未分類）: {len(new_ids)}件')
 
-    # 新着を分類
-    new_rows = []
-    new_report = []
+    if not new_ids:
+        print('\n新着の未分類配信はありません')
+        return
+
+    # 新着を分類 → 中間CSV
+    rows = []
     for vid in sorted(new_ids):
         s = streams[vid]
         tags = classify(s['title'], s['duration'], s['started_at'], tag_master, tag_keywords)
-        for tid in sorted(tags):
-            new_rows.append({'video_id': vid, 'tag_id': str(tid)})
-        tag_names = [tag_master[t] for t in sorted(tags)]
-        new_report.append((vid, s['title'], tag_names))
+        tag_names = sorted([tag_master[t] for t in tags])
+        published = videos[vid]['published_at'] if vid in videos else ''
+        rows.append({
+            'video_id': vid,
+            'video_title': s['title'],
+            'published_at': published,
+            'tags': ','.join(tag_names),
+        })
 
-    # 既存 + 新着をマージ
-    existing_rows = read_csv_list('video_stream_tags.csv')
-    merged = list(existing_rows) + new_rows
+    print(f'\n=== data-review/ に出力 ===')
+    write_extracted_tags(rows)
 
-    print(f'\n=== data-staging/ に出力 ===')
-    write_csv('video_stream_tags.csv', ['video_id', 'tag_id'], merged)
+    print(f'\n=== 新着 {len(rows)}件の自動分類 ===')
+    for r in rows:
+        tag_str = r['tags'] if r['tags'] else '(タグなし)'
+        print(f'  {r["video_id"]} | {r["video_title"][:50]} → {tag_str}')
 
-    if new_report:
-        print(f'\n=== 新着 {len(new_report)}件の自動分類 ===')
-        for vid, title, tags in new_report:
-            tag_str = ', '.join(tags) if tags else '(タグなし)'
-            print(f'  {vid} | {title[:50]} → {tag_str}')
-    else:
-        print('\n新着の未分類配信はありません')
+    print(f'\n→ data-review/extracted_tags.csv をレビューしてから just tags-import を実行してください')
+
+
+def run_all(tag_master, tag_keywords):
+    """全件再分類 → 中間CSV出力。"""
+    streams = load_stream_data()
+    videos = read_csv_keyed('videos.csv', 'id')
+    print(f'配信: {len(streams)}件')
+
+    rows = []
+    for vid in sorted(streams.keys()):
+        s = streams[vid]
+        tags = classify(s['title'], s['duration'], s['started_at'], tag_master, tag_keywords)
+        tag_names = sorted([tag_master[t] for t in tags])
+        published = videos[vid]['published_at'] if vid in videos else ''
+        rows.append({
+            'video_id': vid,
+            'video_title': s['title'],
+            'published_at': published,
+            'tags': ','.join(tag_names),
+        })
+
+    print(f'\n=== data-review/ に出力 ===')
+    write_extracted_tags(rows)
+
+    tagged = sum(1 for r in rows if r['tags'])
+    print(f'  タグあり: {tagged}件, タグなし: {len(rows) - tagged}件')
+    print(f'\n→ data-review/extracted_tags.csv をレビューしてから just tags-import を実行してください')
 
 
 # ---------- 検証モード ----------
@@ -266,6 +305,7 @@ def run_verify(tag_master, tag_keywords):
 def main():
     parser = argparse.ArgumentParser(description='配信タグ自動分類')
     parser.add_argument('--verify', action='store_true', help='全件再分類 → 精度レポート')
+    parser.add_argument('--all', action='store_true', help='全件再分類 → 中間CSV出力')
     args = parser.parse_args()
 
     tag_master = load_tag_master()
@@ -274,6 +314,8 @@ def main():
 
     if args.verify:
         run_verify(tag_master, tag_keywords)
+    elif args.all:
+        run_all(tag_master, tag_keywords)
     else:
         run_normal(tag_master, tag_keywords)
 

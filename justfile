@@ -51,15 +51,23 @@ fetch-one video_id:
 channel-add +channel_ids:
     cd tools && just channel-add {{channel_ids}}
 
-# タグ自動分類
+# タグ自動分類（中間CSV出力）
 tags:
     cd tools && just tags
+
+# タグ全件再分類（中間CSV出力）
+tags-all:
+    cd tools && just tags-all
+
+# タグインポート（レビュー済み中間CSV → video_stream_tags.csv）
+tags-import:
+    cd tools && just tags-import
 
 # タグ精度検証
 tags-verify:
     cd tools && just tags-verify
 
-# 楽曲抽出（歌枠+ライブ）
+# 楽曲抽出（中間CSV出力）
 songs:
     cd tools && just songs
 
@@ -71,19 +79,17 @@ songs-stream:
 songs-live:
     cd tools && just songs-live
 
-# アーティスト情報補完
+# 楽曲インポート（レビュー済み中間CSV → 正規化CSV）
+songs-import-stream:
+    cd tools && just songs-import-stream
+
+songs-import-live:
+    cd tools && just songs-import-live
+
+# アーティスト補完
 artists:
     cd tools && just artists
 
-# ステージング差分確認
-data-diff:
-    cd tools && just diff
-
-# ステージング反映 → web/data/ にも同期
-data-apply:
-    cd tools && just apply
+# tools/data/ → web/data/ に同期
+data-sync:
     just sync-data-local
-
-# ステージングクリア
-data-clean:
-    cd tools && just clean

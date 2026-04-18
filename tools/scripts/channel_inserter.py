@@ -3,7 +3,7 @@
 チャンネルIDを指定して channels.csv に追加/更新する。
 
 既存データ: tools/data/channels.csv
-出力先:     tools/data-staging/channels.csv
+出力先:     tools/data/channels.csv
 
 使い方:
   YOUTUBE_API_KEY=xxx python3 channel_inserter.py <CHANNEL_ID> [<CHANNEL_ID> ...]
@@ -19,7 +19,6 @@ from googleapiclient.errors import HttpError
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/
 DATA_DIR = ROOT / 'data'
-STAGING_DIR = ROOT / 'data-staging'
 
 CHANNELS_FIELDS = ['id', 'title', 'handle', 'icon_url']
 
@@ -48,8 +47,7 @@ def read_channels():
 
 
 def write_channels(rows):
-    STAGING_DIR.mkdir(parents=True, exist_ok=True)
-    path = STAGING_DIR / 'channels.csv'
+    path = DATA_DIR / 'channels.csv'
     with open(path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=CHANNELS_FIELDS)
         writer.writeheader()
@@ -114,7 +112,7 @@ def main():
                 added += 1
             channels[cid] = info
 
-    print(f'\n=== data-staging/ に出力 ===')
+    print(f'\n=== data/ に出力 ===')
     write_channels(list(channels.values()))
     print(f'\n追加: {added}件, 更新: {updated}件')
 

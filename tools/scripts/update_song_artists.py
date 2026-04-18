@@ -3,7 +3,7 @@
 Spotify API で songs.csv のアーティスト情報を補完する。
 
 対象: tools/data/songs.csv の artist が 'TODO' の曲
-出力: tools/data-staging/songs.csv（全曲。TODO 分を更新済み）
+出力: tools/data/songs.csv（全曲。TODO 分を更新済み）
 
 使い方:
   python3 update_song_artists.py
@@ -21,7 +21,6 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/
 DATA_DIR = ROOT / 'data'
-STAGING_DIR = ROOT / 'data-staging'
 
 SONGS_FIELDS = ['id', 'title', 'artist']
 
@@ -29,7 +28,6 @@ SONGS_FIELDS = ['id', 'title', 'artist']
 # ---------- 環境・API ----------
 
 def load_env():
-    """config/.env.local から環境変数を読み込み。"""
     env_file = ROOT / 'config' / '.env.local'
     if env_file.exists():
         for line in env_file.read_text(encoding='utf-8').splitlines():
@@ -52,14 +50,12 @@ def init_spotify():
 # ---------- CSV ----------
 
 def read_songs():
-    path = DATA_DIR / 'songs.csv'
-    with open(path, newline='', encoding='utf-8') as f:
+    with open(DATA_DIR / 'songs.csv', newline='', encoding='utf-8') as f:
         return list(csv.DictReader(f))
 
 
 def write_songs(rows):
-    STAGING_DIR.mkdir(parents=True, exist_ok=True)
-    path = STAGING_DIR / 'songs.csv'
+    path = DATA_DIR / 'songs.csv'
     with open(path, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=SONGS_FIELDS)
         writer.writeheader()
@@ -100,7 +96,6 @@ def search_artist(sp, song_title):
 
         candidates = exact or partial[:10] or results['tracks']['items'][:5]
 
-        # 白銀ノエルがいたら即決定
         for track in candidates:
             artist_name = ', '.join(a['name'] for a in track['artists'])
             if '白銀ノエル' in artist_name:
@@ -175,7 +170,7 @@ def main():
 
     print(f'\n更新: {updated}件, 未検出: {not_found}件')
 
-    print('\n=== data-staging/ に出力 ===')
+    print('\n=== data/ に出力 ===')
     write_songs(songs)
 
 

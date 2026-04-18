@@ -51,8 +51,10 @@ function parseCsvLine(line: string): string[] {
 export function readCsv<T extends Record<string, string>>(
   filename: string,
 ): T[] {
-  const cached = cache.get(filename);
-  if (cached) return cached as T[];
+  if (process.env.NODE_ENV === 'production') {
+    const cached = cache.get(filename);
+    if (cached) return cached as T[];
+  }
 
   const filepath = join(DATA_DIR, filename);
   const content = readFileSync(filepath, 'utf-8');

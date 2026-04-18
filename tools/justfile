@@ -18,15 +18,23 @@ channel-add +channel_ids:
 
 # ---------- タグ分類 ----------
 
-# 新着のみ自動分類 → data-staging/
+# 新着のみ自動分類 → 中間CSV出力（人手レビュー用）
 tags:
     cd {{scripts}} && python3 stream_tag_extractor.py
+
+# 全件再分類 → 中間CSV出力
+tags-all:
+    cd {{scripts}} && python3 stream_tag_extractor.py --all
+
+# レビュー済み中間CSV → video_stream_tags.csv
+tags-import:
+    cd {{scripts}} && python3 tags_importer.py
 
 # 全件精度検証（人手タグとの突合レポート）
 tags-verify:
     cd {{scripts}} && python3 stream_tag_extractor.py --verify
 
-# ---------- 楽曲抽出 ----------
+# ---------- 楽曲抽出（Step 1: 中間CSV出力） ----------
 
 # 歌枠+ライブ両方
 songs:
@@ -40,54 +48,19 @@ songs-stream:
 songs-live:
     cd {{scripts}} && python3 extract_songs.py --type live
 
-# ---------- アーティスト情報 ----------
+# ---------- 楽曲インポート（Step 3: レビュー済み中間CSV → 正規化CSV） ----------
+
+# 歌枠の中間CSV → songs.csv + stream_songs.csv
+songs-import-stream:
+    cd {{scripts}} && python3 songs_importer.py stream
+
+# ライブの中間CSV → songs.csv + concert_songs.csv
+songs-import-live:
+    cd {{scripts}} && python3 songs_importer.py live
+
+# ---------- アーティスト補完（Step 4） ----------
 
 # Spotify API で TODO 曲のアーティストを補完
 artists:
     cd {{scripts}} && python3 update_song_artists.py
 
-# ---------- ステージング管理 ----------
-
-# data と data-staging の差分を表示
-diff:
-    #!/usr/bin/env bash
-    if [ ! -d data-staging ] || [ -z "$(ls data-staging/*.csv 2>/dev/null)" ]; then
-        echo "data-staging/ に CSV がありません"
-        exit 0
-    fi
-    for f in data-staging/*.csv; do
-        name=$(basename "$f")
-        if [ -f "data/$name" ]; then
-            d=$(diff <(wc -l < "data/$name") <(wc -l < "$f"))
-            if [ -n "$d" ]; then
-                echo "$name: $(wc -l < "data/$name" | tr -d ' ')行 → $(wc -l < "$f" | tr -d ' ')行"
-            else
-                echo "$name: 変更なし"
-            fi
-        else
-            echo "$name: 新規 ($(wc -l < "$f" | tr -d ' ')行)"
-        fi
-    done
-
-# data-staging/ → data/ に反映
-apply:
-    #!/usr/bin/env bash
-    if [ ! -d data-staging ] || [ -z "$(ls data-staging/*.csv 2>/dev/null)" ]; then
-        echo "data-staging/ に CSV がありません"
-        exit 1
-    fi
-    echo "=== 反映するファイル ==="
-    ls data-staging/*.csv | while read f; do echo "  $(basename "$f")"; done
-    echo ""
-    read -p "data/ に反映しますか？ [y/N] " confirm
-    if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
-        cp data-staging/*.csv data/
-        echo "反映完了"
-    else
-        echo "キャンセル"
-    fi
-
-# data-staging/ をクリア
-clean:
-    rm -f data-staging/*.csv
-    echo "data-staging/ をクリアしました"
