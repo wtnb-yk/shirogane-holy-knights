@@ -9,16 +9,24 @@ import type {
   AlbumTypeRow,
   AlbumTrackRow,
   VideoRow,
+  StreamDetailRow,
   Song,
   Album,
   SongPerformance,
   SongMusicVideo,
   SongAlbumInfo,
   AlbumTrack,
+  MusicStream,
+  MusicStreamSong,
+  MusicVideoCard,
+  MusicStats,
 } from './types';
 
 let cachedSongs: Song[] | null = null;
 let cachedAlbums: Album[] | null = null;
+let cachedUtawakuStreams: MusicStream[] | null = null;
+let cachedConcertStreams: MusicStream[] | null = null;
+let cachedMusicVideoCards: MusicVideoCard[] | null = null;
 
 /**
  * 全楽曲データを取得
@@ -157,4 +165,121 @@ export function getAlbums(): Album[] {
     .sort((a, b) => b.releaseDate.localeCompare(a.releaseDate));
 
   return cachedAlbums;
+}
+
+/**
+ * セトリ付き配信データを構築するヘルパー
+ *
+ * stream_songs / concert_songs のような「song_id + video_id + start_seconds」形式の
+ * 行データを、video_id でグループ化して MusicStream[] を返す
+ */
+function buildMusicStreams(
+  rows: { song_id: string; video_id: string; start_seconds: string }[],
+): MusicStream[] {
+  const videos = readCsv<VideoRow>('videos.csv');
+  const songs = readCsv<SongRow>('songs.csv');
+  const streamDetails = readCsv<StreamDetailRow>('stream_details.csv');
+
+  const videoMap = new Map(videos.map((v) => [v.id, v]));
+  const songMap = new Map(songs.map((s) => [s.id, s]));
+  const detailMap = new Map(streamDetails.map((sd) => [sd.video_id, sd]));
+
+  // video_id → songs をグループ化
+  const grouped = new Map<string, MusicStreamSong[]>();
+  for (const row of rows) {
+    const song = songMap.get(row.song_id);
+    const list = grouped.get(row.video_id) ?? [];
+    list.push({
+      songId: row.song_id,
+      title: song?.title ?? '',
+      artist: song?.artist ?? '',
+      startSeconds: Number(row.start_seconds),
+    });
+    grouped.set(row.video_id, list);
+  }
+
+  const result: MusicStream[] = [];
+  for (const [videoId, songList] of grouped) {
+    const video = videoMap.get(videoId);
+    if (!video) continue;
+    const detail = detailMap.get(videoId);
+    result.push({
+      videoId,
+      title: video.title,
+      thumbnailUrl: video.thumbnail_url,
+      date: detail?.started_at ?? video.published_at,
+      songs: songList.sort((a, b) => a.startSeconds - b.startSeconds),
+    });
+  }
+
+  return result.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/**
+ * 歌枠配信一覧（セトリ付き、日付降順）
+ */
+export function getUtawakuStreams(): MusicStream[] {
+  if (cachedUtawakuStreams) return cachedUtawakuStreams;
+  cachedUtawakuStreams = buildMusicStreams(
+    readCsv<StreamSongRow>('stream_songs.csv'),
+  );
+  return cachedUtawakuStreams;
+}
+
+/**
+ * ライブ/コンサート配信一覧（セトリ付き、日付降順）
+ */
+export function getConcertStreams(): MusicStream[] {
+  if (cachedConcertStreams) return cachedConcertStreams;
+  cachedConcertStreams = buildMusicStreams(
+    readCsv<ConcertSongRow>('concert_songs.csv'),
+  );
+  return cachedConcertStreams;
+}
+
+/**
+ * MVカード一覧（公開日降順）
+ */
+export function getMusicVideoCards(): MusicVideoCard[] {
+  if (cachedMusicVideoCards) return cachedMusicVideoCards;
+
+  const musicVideos = readCsv<MusicVideoRow>('music_videos.csv');
+  const musicVideoTypes = readCsv<MusicVideoTypeRow>('music_video_types.csv');
+  const videos = readCsv<VideoRow>('videos.csv');
+  const songs = readCsv<SongRow>('songs.csv');
+
+  const mvTypeMap = new Map(musicVideoTypes.map((t) => [t.id, t.type_name]));
+  const videoMap = new Map(videos.map((v) => [v.id, v]));
+  const songMap = new Map(songs.map((s) => [s.id, s]));
+
+  cachedMusicVideoCards = musicVideos
+    .map((mv) => {
+      const video = videoMap.get(mv.video_id);
+      const song = songMap.get(mv.song_id);
+      return {
+        songId: mv.song_id,
+        songTitle: song?.title ?? '',
+        artist: song?.artist ?? '',
+        videoId: mv.video_id,
+        videoTitle: video?.title ?? '',
+        thumbnailUrl: video?.thumbnail_url ?? '',
+        type: mvTypeMap.get(mv.music_video_type_id) ?? '',
+        publishedAt: video?.published_at ?? '',
+      };
+    })
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+
+  return cachedMusicVideoCards;
+}
+
+/**
+ * 楽曲ライブラリの統計情報
+ */
+export function getMusicStats(): MusicStats {
+  return {
+    songCount: getSongs().length,
+    utawakuCount: getUtawakuStreams().length,
+    liveCount: getConcertStreams().length,
+    mvCount: getMusicVideoCards().length,
+  };
 }

@@ -1,6 +1,7 @@
 type TabItem = {
   key: string;
   label: string;
+  count?: number;
 };
 
 type Props = {
@@ -8,14 +9,17 @@ type Props = {
   activeKey: string | null;
   onSelect: (key: string | null) => void;
   allLabel?: string;
+  showAll?: boolean;
 };
 
 function Tab({
   label,
+  count,
   isActive,
   onClick,
 }: {
   label: string;
+  count?: number;
   isActive: boolean;
   onClick: () => void;
 }) {
@@ -29,6 +33,9 @@ function Tab({
       }`}
     >
       {label}
+      {count != null && (
+        <span className="font-mono text-3xs text-subtle ml-1">{count}</span>
+      )}
       {isActive && (
         <span className="absolute bottom-0 left-sm right-sm h-0.5 bg-accent rounded-t-[1px]" />
       )}
@@ -41,18 +48,22 @@ export function CategoryTabs({
   activeKey,
   onSelect,
   allLabel = 'すべて',
+  showAll = true,
 }: Props) {
   return (
     <nav className="flex">
-      <Tab
-        label={allLabel}
-        isActive={activeKey === null}
-        onClick={() => onSelect(null)}
-      />
+      {showAll && (
+        <Tab
+          label={allLabel}
+          isActive={activeKey === null}
+          onClick={() => onSelect(null)}
+        />
+      )}
       {tabs.map((tab) => (
         <Tab
           key={tab.key}
           label={tab.label}
+          count={tab.count}
           isActive={activeKey === tab.key}
           onClick={() => onSelect(activeKey === tab.key ? null : tab.key)}
         />

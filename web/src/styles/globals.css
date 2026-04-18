@@ -136,12 +136,6 @@
   --slot-width: 480px;           /* スロットウィンドウ幅 */
   --slot-desc-max: 400px;        /* スロット説明文最大幅 */
   --slot-bg: var(--color-navy-800); /* スロット背景（テーマ不変） */
-  --slot-slide-bg-1: linear-gradient(135deg, #2a3545, #303845);
-  --slot-slide-bg-2: linear-gradient(135deg, #303845, #283040);
-  --slot-slide-bg-3: linear-gradient(135deg, #283040, #354050);
-  --slot-slide-bg-4: linear-gradient(135deg, #354050, #2a3545);
-  --slot-slide-bg-5: linear-gradient(135deg, #2a3040, #303845);
-  --slot-slide-bg-6: linear-gradient(135deg, #303845, #2a3040);
 }
 
 /* ----- 5. シャドウ -----
@@ -260,6 +254,15 @@ body {
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes feed-slide {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-feed-slide {
+  animation: feed-slide 30s linear infinite;
 }
 
 .animate-fade-in {

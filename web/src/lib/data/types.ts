@@ -189,3 +189,38 @@ export type Album = {
   coverImageUrl: string;
   tracks: AlbumTrack[];
 };
+
+// --- 楽曲ライブラリ ---
+
+export type MusicStreamSong = {
+  songId: string;
+  title: string;
+  artist: string;
+  startSeconds: number;
+};
+
+export type MusicStream = {
+  videoId: string;
+  title: string;
+  thumbnailUrl: string;
+  date: string;
+  songs: MusicStreamSong[];
+};
+
+export type MusicVideoCard = {
+  songId: string;
+  songTitle: string;
+  artist: string;
+  videoId: string;
+  videoTitle: string;
+  thumbnailUrl: string;
+  type: string;
+  publishedAt: string;
+};
+
+export type MusicStats = {
+  songCount: number;
+  utawakuCount: number;
+  liveCount: number;
+  mvCount: number;
+};
