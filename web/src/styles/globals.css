@@ -113,6 +113,8 @@
   --text-2xl: 2rem;    /* Tailwind default: 1.5rem  → proto: 2rem  */
   --text-3xl: 2.5rem;  /* Tailwind default: 1.875rem→ proto: 2.5rem */
   --text-4xl: 3.5rem;  /* Tailwind default: 2.25rem → proto: 3.5rem */
+
+  --leading-relaxed-plus: 1.8;  /* 説明文（ASMR等）の広めの行間 */
 }
 
 @theme inline {
@@ -133,6 +135,7 @@
   --filter-panel-width: 360px;
   --filter-panel-max-h: 420px;
   --search-expanded-width: 200px;
+  --page-bottom-margin: 80px;    /* ページ下部マージン（CTA余白等） */
   --slot-width: 480px;           /* スロットウィンドウ幅 */
   --slot-desc-max: 400px;        /* スロット説明文最大幅 */
   --slot-bg: var(--color-navy-800); /* スロット背景（テーマ不変） */

@@ -1,5 +1,6 @@
 import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
+import { RetryIcon } from './icons';
 
 type Props = {
   stream: Stream;
@@ -7,6 +8,16 @@ type Props = {
 };
 
 export function ResultActions({ stream, onRetry }: Props) {
+  const handleShare = () => {
+    const text = `今日のASMRは「${stream.title}」に決まり！\n#だんいんログ #白銀ノエル`;
+    const url = `https://www.youtube.com/watch?v=${stream.id}`;
+    window.open(
+      `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+
   return (
     <div className="flex flex-col items-center gap-sm animate-fade-up-delay">
       <div className="flex gap-sm max-md:flex-col max-md:w-full">
@@ -34,32 +45,17 @@ export function ResultActions({ stream, onRetry }: Props) {
         </Button>
         <Button
           variant="secondary"
-          disabled
+          onClick={handleShare}
           className="max-md:w-full max-md:justify-center"
         >
-          <svg
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M8 2v9M4 8l4 4 4-4" />
-            <path d="M2 13h12" />
+          <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5">
+            <path d="M12.6 2h2.1L10 7.6 15.3 14h-4.4L7.6 9.7 3.8 14H1.6l5.1-5.8L1.3 2h4.5l3 3.9L12.6 2zm-.7 10.8h1.2L4.8 3.3H3.5l8.4 9.5z" />
           </svg>
-          画像をダウンロード
+          Xに共有する
         </Button>
       </div>
       <Button variant="ghost" onClick={onRetry}>
-        <svg
-          viewBox="0 0 18 18"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          className="w-3.5 h-3.5"
-        >
-          <path d="M1 9a8 8 0 0 1 14.3-4.9M17 9a8 8 0 0 1-14.3 4.9" />
-          <path d="M15.3 1v3.1h-3.1M2.7 17v-3.1h3.1" />
-        </svg>
+        <RetryIcon className="w-3.5 h-3.5" />
         もう一回
       </Button>
     </div>

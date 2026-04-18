@@ -3,43 +3,61 @@
 import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
 import { useAsmrDraw } from '../hooks/use-asmr-draw';
-import { SlotWindow } from './slot-window';
 import { SlotReel } from './slot-reel';
 import { ResultInfo } from './result-info';
 import { ResultActions } from './result-actions';
+import { RetryIcon } from './icons';
 
 type Props = {
   streams: Stream[];
 };
 
 export function AsmrPage({ streams }: Props) {
-  const { phase, result, slotRef, isResolved, handleDraw, handleRetry } =
-    useAsmrDraw(streams);
+  const {
+    phase,
+    result,
+    targetIndex,
+    slotRef,
+    isResolved,
+    handleDraw,
+    handleRetry,
+  } = useAsmrDraw(streams);
 
   return (
-    <div className="min-h-[calc(100dvh-var(--header-height)-80px)] flex flex-col items-center justify-center px-md md:px-lg py-xl">
-      <div className="w-full max-w-[var(--slot-width)] text-center">
+    <div className="min-h-[calc(100dvh-var(--header-height)-var(--page-bottom-margin))] flex flex-col items-center justify-center py-xl">
+      {/* ---- ヘッダー ---- */}
+      <div className="text-center px-md md:px-lg mb-lg">
         <p className="font-mono text-2xs font-medium tracking-wider text-accent-label mb-sm">
           TODAY&apos;S ASMR
         </p>
-
         <h1 className="font-body text-xl md:text-2xl font-bold text-heading mb-sm">
           今日のASMR
         </h1>
-
         {phase === 'idle' && (
-          <p className="text-sm text-muted max-w-[var(--slot-desc-max)] mx-auto leading-[1.8] mb-lg">
+          <p className="text-sm text-muted max-w-[var(--slot-desc-max)] mx-auto leading-relaxed-plus">
             どれを聴くか迷ったら。
             <br />
             {streams.length}
             本のASMRアーカイブからランダムで1本おすすめします。
           </p>
         )}
+      </div>
 
-        <SlotWindow resolved={isResolved} resultStream={result}>
-          <SlotReel ref={slotRef} streams={streams} />
-        </SlotWindow>
+      {/* ---- リール（画面幅いっぱい） ---- */}
+      <div className="w-screen overflow-hidden relative mb-xl">
+        <div className="absolute inset-y-0 left-0 w-12 md:w-20 bg-gradient-to-r from-page to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-12 md:w-20 bg-gradient-to-l from-page to-transparent z-10 pointer-events-none" />
 
+        <SlotReel
+          ref={slotRef}
+          streams={streams}
+          phase={phase}
+          targetIndex={targetIndex}
+        />
+      </div>
+
+      {/* ---- 情報・アクション ---- */}
+      <div className="w-full max-w-[var(--slot-width)] text-center px-md md:px-lg">
         {result && <ResultInfo stream={result} visible={isResolved} />}
 
         {phase === 'idle' && (
@@ -50,18 +68,9 @@ export function AsmrPage({ streams }: Props) {
             <Button
               variant="cta"
               onClick={handleDraw}
-              className="gap-2.5 text-base rounded-md max-md:w-full"
+              className="gap-xs text-base rounded-md max-md:w-full"
             >
-              <svg
-                viewBox="0 0 18 18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                className="w-5 h-5"
-              >
-                <path d="M1 9a8 8 0 0 1 14.3-4.9M17 9a8 8 0 0 1-14.3 4.9" />
-                <path d="M15.3 1v3.1h-3.1M2.7 17v-3.1h3.1" />
-              </svg>
+              <RetryIcon />
               今日のASMRを選ぶ
             </Button>
           </div>
