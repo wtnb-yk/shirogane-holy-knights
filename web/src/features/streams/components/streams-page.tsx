@@ -35,7 +35,7 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
     <>
       <PageHeader
         title="配信"
-        description="配信をタグで探索し、視聴した配信をチェック。あなたの推し活記録を作ろう。"
+        description="配信を探索し、視聴した配信をチェック。あなたの推し活記録を作ろう。"
         right={
           isClient ? (
             <ProgressBar checked={checkedIds.size} total={streams.length} />

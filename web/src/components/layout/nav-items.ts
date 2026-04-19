@@ -24,7 +24,7 @@ export function getNavGroups(): readonly NavGroup[] {
       items: [
         {
           name: '配信',
-          desc: `${streamCount}件の配信をタグ検索・チェックで記録`,
+          desc: `${streamCount}件の配信を検索・チェックで記録`,
           href: '/streams',
         },
         {
