@@ -9,11 +9,7 @@ type Props = {
 export function ReportEmpty({ theme }: Props) {
   return (
     <div className="flex flex-col items-center">
-      <div className="opacity-25 blur-[1px] pointer-events-none">
-        <ReportCard stats={EMPTY_STATS} theme={theme} />
-      </div>
-
-      <div className="text-center mt-xl animate-card-entrance-delayed">
+      <div className="text-center mb-md animate-card-entrance-delayed">
         <p className="text-sm text-secondary leading-[1.8] mb-md">
           配信でチェックすると、
           <br />
@@ -22,6 +18,10 @@ export function ReportEmpty({ theme }: Props) {
         <a href="/streams">
           <Button variant="cta">配信を開く</Button>
         </a>
+      </div>
+
+      <div className="opacity-25 blur-[1px] pointer-events-none">
+        <ReportCard stats={EMPTY_STATS} theme={theme} />
       </div>
     </div>
   );
