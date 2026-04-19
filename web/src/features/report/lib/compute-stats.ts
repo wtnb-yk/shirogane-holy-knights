@@ -1,27 +1,34 @@
 import type { Stream } from '@/lib/data/types';
-import { formatDate } from '@/lib/format';
 import { extractSeriesName } from './series-detector';
 
 const GAME_TAG_ID = 2;
 
+const DAY_NAMES = ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'];
+
+export type GenreShare = {
+  name: string;
+  count: number;
+  percentage: number;
+};
+
 export type ReportStats = {
   streamCount: number;
-  daysSinceFirst: number;
   totalHours: number;
-  topGenre: { name: string; count: number } | null;
+  genreDistribution: GenreShare[];
   maxStreak: number;
-  lastWatchedDate: string;
   favoriteSeries: string | null;
+  mostActiveDay: { day: string; count: number } | null;
+  favoriteSongCount: number;
 };
 
 const EMPTY_STATS: ReportStats = {
   streamCount: 0,
-  daysSinceFirst: 0,
   totalHours: 0,
-  topGenre: null,
+  genreDistribution: [],
   maxStreak: 0,
-  lastWatchedDate: '',
   favoriteSeries: null,
+  mostActiveDay: null,
+  favoriteSongCount: 0,
 };
 
 /** HH:MM:SS → 秒数 */
@@ -67,22 +74,15 @@ function longestConsecutiveStreak(sortedDates: string[]): number {
 export function computeStats(
   allStreams: Stream[],
   checkedIds: Set<string>,
+  favoriteSongCount: number,
 ): ReportStats {
-  if (checkedIds.size === 0) return EMPTY_STATS;
+  if (checkedIds.size === 0) return { ...EMPTY_STATS, favoriteSongCount };
 
   const checked = allStreams.filter((s) => checkedIds.has(s.id));
-  if (checked.length === 0) return EMPTY_STATS;
+  if (checked.length === 0) return { ...EMPTY_STATS, favoriteSongCount };
 
   // --- streamCount ---
   const streamCount = checked.length;
-
-  // --- daysSinceFirst ---
-  const dates = checked.map((s) => s.startedAt).sort();
-  const earliest = new Date(dates[0]);
-  const now = new Date();
-  const daysSinceFirst = Math.floor(
-    (now.getTime() - earliest.getTime()) / 86_400_000,
-  );
 
   // --- totalHours ---
   const totalSeconds = checked.reduce(
@@ -91,21 +91,22 @@ export function computeStats(
   );
   const totalHours = Math.floor(totalSeconds / 3600);
 
-  // --- topGenre ---
+  // --- genreDistribution (上位4件) ---
   const tagCounts = new Map<string, number>();
   for (const s of checked) {
     for (const t of s.tags) {
       tagCounts.set(t.name, (tagCounts.get(t.name) ?? 0) + 1);
     }
   }
-  let topGenre: ReportStats['topGenre'] = null;
-  let maxTagCount = 0;
-  for (const [name, count] of tagCounts) {
-    if (count > maxTagCount) {
-      maxTagCount = count;
-      topGenre = { name, count };
-    }
-  }
+  const totalTags = [...tagCounts.values()].reduce((a, b) => a + b, 0);
+  const genreDistribution: GenreShare[] = [...tagCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([name, count]) => ({
+      name,
+      count,
+      percentage: totalTags > 0 ? Math.round((count / totalTags) * 100) : 0,
+    }));
 
   // --- maxStreak ---
   const uniqueDates = [...new Set(checked.map((s) => toDateKey(s.startedAt)))]
@@ -113,9 +114,19 @@ export function computeStats(
     .sort();
   const maxStreak = longestConsecutiveStreak(uniqueDates);
 
-  // --- lastWatchedDate ---
-  const latest = dates[dates.length - 1];
-  const lastWatchedDate = formatDate(latest);
+  // --- mostActiveDay ---
+  const dayCounts = new Array<number>(7).fill(0);
+  for (const s of checked) {
+    const d = new Date(s.startedAt);
+    if (!Number.isNaN(d.getTime())) {
+      dayCounts[d.getDay()]++;
+    }
+  }
+  const maxDayCount = Math.max(...dayCounts);
+  const mostActiveDay =
+    maxDayCount > 0
+      ? { day: DAY_NAMES[dayCounts.indexOf(maxDayCount)], count: maxDayCount }
+      : null;
 
   // --- favoriteSeries ---
   const seriesCounts = new Map<string, number>();
@@ -138,11 +149,11 @@ export function computeStats(
 
   return {
     streamCount,
-    daysSinceFirst,
     totalHours,
-    topGenre,
+    genreDistribution,
     maxStreak,
-    lastWatchedDate,
     favoriteSeries,
+    mostActiveDay,
+    favoriteSongCount,
   };
 }

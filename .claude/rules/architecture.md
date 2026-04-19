@@ -20,7 +20,6 @@ styles/        → globals.css等
 
 - デフォルト Server Component。ブラウザAPI（useState, useEffect, localStorage等）使用時のみ `"use client"`
 - ヘッダー・フッター等のレイアウトは Server Component
-- ナビのドロップダウン開閉は CSS（:hover / :focus-within）で実装し JS を避ける
 
 ## データフロー
 
