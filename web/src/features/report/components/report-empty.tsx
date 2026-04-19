@@ -1,16 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { ReportCard, type ReportTheme } from './report-card';
-import type { ReportStats } from '../lib/compute-stats';
-
-const EMPTY_STATS: ReportStats = {
-  streamCount: 0,
-  daysSinceFirst: 0,
-  totalHours: 0,
-  topGenre: null,
-  maxStreak: 0,
-  lastWatchedDate: '',
-  favoriteSeries: null,
-};
+import { EMPTY_STATS } from '../lib/compute-stats';
 
 type Props = {
   theme: ReportTheme;

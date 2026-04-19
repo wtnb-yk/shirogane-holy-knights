@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>団員レポート v2 — ボタン配置比較</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream-50:  #FCFCFD; --cream-100: #F8F8FA; --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6; --cream-400: #D4D4D9;
+  --navy-700: #303845; --navy-800: #242A3A;
+  --navy-600: #404A55; --navy-400: #6A7380; --navy-300: #888F99;
+  --navy-200: #ACB1B8;
+  --gold-600: #8B6D1E; --gold-500: #A6852E; --gold-400: #C8A24C;
+  --gold-300: #D4B56A; --gold-200: #E2CC92; --gold-100: #F2E6C4;
+  --silver-300: #BBB4B8; --dark-800: #2A2D35;
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--cream-100); font-family: var(--font-body);
+  padding: 40px 16px; }
+
+/* Layout */
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  gap: 48px; max-width: 1500px; margin: 0 auto; justify-items: center; }
+.col { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 520px; }
+.col-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--navy-400); letter-spacing: 0.08em; background: var(--cream-200);
+  padding: 4px 14px; border-radius: 4px; margin-bottom: 20px; }
+.col-desc { font-size: 12px; color: var(--navy-300); text-align: center;
+  margin-bottom: 16px; line-height: 1.6; }
+
+h1 { font-family: var(--font-mono); font-size: 13px; color: var(--navy-400);
+  letter-spacing: 0.1em; text-align: center; margin-bottom: 8px; }
+.subtitle { font-size: 13px; color: var(--navy-300); text-align: center;
+  margin-bottom: 40px; line-height: 1.8; }
+
+/* ---- Shared: page header ---- */
+.pg-head { text-align: center; margin-bottom: 12px; width: 100%; }
+.pg-head h2 { font-family: var(--font-body); font-size: 1.3rem; font-weight: 700;
+  color: var(--dark-800); }
+.pg-head p { font-size: 0.8rem; color: var(--navy-400); margin-top: 2px; }
+
+/* ---- Shared: theme pills ---- */
+.theme-pills { display: flex; gap: 0; padding: 3px; background: var(--cream-200); border-radius: 6px; }
+.tp {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 10px; font-family: var(--font-mono); font-size: 10px;
+  font-weight: 500; background: none; border: none; border-radius: 4px;
+  color: var(--navy-400); cursor: pointer; transition: all 0.15s var(--ease);
+}
+.tp .dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--cream-400); }
+.tp .dot.l { background: var(--cream-50); }
+.tp .dot.d { background: var(--navy-800); border-color: var(--navy-600); }
+.tp .dot.g { background: linear-gradient(135deg, var(--gold-200), var(--gold-400)); border-color: var(--gold-300); }
+.tp.active { background: var(--cream-50); color: var(--dark-800);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+
+/* ---- Shared: buttons ---- */
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 18px; font-family: var(--font-body); font-size: 0.8rem;
+  font-weight: 600; border: none; border-radius: 6px; cursor: pointer;
+  transition: all 0.2s var(--ease); letter-spacing: 0.02em;
+}
+.btn-p { background: var(--navy-700); color: white; }
+.btn-p:hover { background: var(--navy-800); }
+.btn-s { background: none; color: var(--navy-700); border: 1px solid var(--navy-200); }
+.btn-s:hover { background: var(--navy-700); color: white; border-color: var(--navy-700); }
+.btn-icon { width: 14px; height: 14px; }
+
+/* ---- Card (shared, compact) ---- */
+.rc { width: 380px; max-width: 100%; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 6px rgba(26,35,53,0.05), 0 12px 36px rgba(26,35,53,0.08); }
+.rc-inner { position: relative; padding: 22px 20px 18px;
+  background: var(--cream-50); border: 1px solid var(--cream-300); }
+.rc-inner::before, .rc-inner::after {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  border-color: var(--gold-300); border-style: solid; opacity: 0.35; }
+.rc-inner::before { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+.rc-inner::after  { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+.rc-h { text-align: center; margin-bottom: 10px; }
+.rc-h .icon { font-size: 0.9rem; color: var(--silver-300); margin-bottom: 3px; }
+.rc-h .lbl { font-family: var(--font-mono); font-size: 8px; font-weight: 500;
+  letter-spacing: 0.18em; color: var(--gold-500); text-transform: uppercase; }
+.rc-h .ln { width: 24px; height: 1.5px; background: var(--gold-400); margin: 6px auto; border-radius: 1px; }
+.rc-h .ttl { font-family: var(--font-body); font-size: 0.9rem; font-weight: 700;
+  color: var(--dark-800); letter-spacing: 0.04em; line-height: 1.4; }
+.rc-donut { display: flex; flex-direction: column; align-items: center; padding: 6px 0 4px; }
+.rc-donut .sec { font-family: var(--font-mono); font-size: 8px; font-weight: 500;
+  letter-spacing: 0.12em; color: var(--navy-300); text-transform: uppercase; margin-bottom: 6px; }
+.dsv { width: 120px; height: 120px; }
+.dseg { fill: none; stroke-width: 12; }
+.dnum { font-family: var(--font-display); font-size: 22px; font-weight: 800;
+  fill: var(--dark-800); text-anchor: middle; }
+.dunit { font-family: var(--font-body); font-size: 8px; fill: var(--navy-300); text-anchor: middle; }
+.dsub { font-family: var(--font-mono); font-size: 6px; fill: var(--navy-300);
+  text-anchor: middle; letter-spacing: 0.08em; }
+.leg { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; margin-top: 6px; }
+.leg-i { display: flex; align-items: center; gap: 3px;
+  font-family: var(--font-mono); font-size: 8px; color: var(--navy-400); }
+.leg-d { width: 6px; height: 6px; border-radius: 50%; }
+.rdiv { height: 1px; background: var(--cream-300); margin: 3px 0; }
+.rc-wk { padding: 8px 0 4px; }
+.rc-wk .sec { font-family: var(--font-mono); font-size: 8px; font-weight: 500;
+  letter-spacing: 0.12em; color: var(--navy-300); text-transform: uppercase; margin-bottom: 6px; }
+.wbars { display: flex; align-items: flex-end; justify-content: center; gap: 4px; }
+.wcol { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; max-width: 36px; }
+.wnum { font-family: var(--font-display); font-size: 7px; font-weight: 700; color: var(--gold-500); }
+.wtrk { width: 100%; height: 36px; border-radius: 3px; background: var(--cream-200);
+  display: flex; align-items: flex-end; overflow: hidden; }
+.wfill { width: 100%; border-radius: 3px; background: var(--gold-400); }
+.wfill.top { background: var(--gold-500); }
+.wday { font-family: var(--font-mono); font-size: 7px; color: var(--navy-400); }
+.wday.top { color: var(--gold-600); font-weight: 600; }
+.rc-st { padding: 8px 0 2px; }
+.rc-st .sec { font-family: var(--font-mono); font-size: 8px; font-weight: 500;
+  letter-spacing: 0.12em; color: var(--navy-300); text-transform: uppercase; margin-bottom: 6px; }
+.sgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.scell { background: var(--cream-100); border: 1px solid var(--cream-300);
+  border-radius: 6px; padding: 7px 9px; }
+.scell-l { font-family: var(--font-mono); font-size: 7px; color: var(--navy-400); letter-spacing: 0.04em; }
+.scell-v { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
+  color: var(--dark-800); line-height: 1.2; margin-top: 1px; }
+.scell-v .a { color: var(--gold-500); }
+.scell-v .u { font-family: var(--font-body); font-size: 0.6rem; color: var(--navy-400); margin-left: 1px; }
+.rc-ft { text-align: center; margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid var(--cream-300); }
+.rc-ft span { font-family: var(--font-mono); font-size: 7px; color: var(--navy-300);
+  letter-spacing: 0.06em; display: block; }
+.rc-ft span+span { color: var(--navy-200); margin-top: 1px; }
+
+/* ============================================================
+   PATTERN-SPECIFIC LAYOUTS
+   ============================================================ */
+
+/* A: テーマ+ボタン同列バー */
+.toolbar-a {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 420px; margin-bottom: 16px; gap: 8px;
+}
+.toolbar-a .btns { display: flex; gap: 4px; }
+
+/* B: ボタンをカード上に独立行で配置 */
+.btn-row-b {
+  display: flex; gap: 6px; margin-bottom: 12px;
+}
+
+/* C: ボタンカード下に残す（現行踏襲） */
+.btn-row-c { display: flex; gap: 6px; margin-top: 16px; }
+
+@media (max-width: 500px) {
+  .compare { grid-template-columns: 1fr; }
+  .toolbar-a { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<h1>ボタン配置パターン比較</h1>
+<p class="subtitle">
+  「シェアできること」がファーストビューで伝わるか？
+</p>
+
+<div class="compare">
+
+<!-- ============================================================
+     A: テーマ+ボタン同列ツールバー
+     ============================================================ -->
+<div class="col">
+<span class="col-label">A. ツールバー統合</span>
+<p class="col-desc">テーマ選択とアクションボタンを1行にまとめる。<br>カード上部で「カスタマイズ＋共有」が一目でわかる。</p>
+
+<div class="pg-head"><h2>団員レポート</h2><p>視聴チェック・お気に入り楽曲から、あなただけの報告書を生成します。</p></div>
+<div class="toolbar-a">
+  <div class="theme-pills">
+    <button class="tp active"><span class="dot l"></span>ライト</button>
+    <button class="tp"><span class="dot d"></span>ダーク</button>
+    <button class="tp"><span class="dot g"></span>ゴールド</button>
+  </div>
+  <div class="btns">
+    <button class="btn btn-p">⬇ 保存</button>
+    <button class="btn btn-s">𝕏 シェア</button>
+  </div>
+</div>
+<div class="rc"><div class="rc-inner">
+  <div class="rc-h"><div class="icon">&#9876;</div><div class="lbl">Activity Report</div><div class="ln"></div><div class="ttl">白銀聖騎士団<br>団員レポート</div></div>
+  <div class="rc-donut"><div class="sec">Genre</div>
+    <svg class="dsv" viewBox="0 0 120 120"><circle class="dseg" cx="60" cy="60" r="38" stroke="#C8A24C" stroke-dasharray="150.8 88" stroke-dashoffset="59.7"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#6A7380" stroke-dasharray="35.8 203" stroke-dashoffset="-91.1"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#ACB1B8" stroke-dasharray="23.9 214.9" stroke-dashoffset="-126.9"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#D4B56A" stroke-dasharray="19.1 219.7" stroke-dashoffset="-150.8"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#E2E2E6" stroke-dasharray="9.6 229.2" stroke-dashoffset="-169.9"/><text class="dnum" x="60" y="56">312</text><text class="dunit" x="60" y="68">本</text><text class="dsub" x="60" y="80">STREAMS WATCHED</text></svg>
+    <div class="leg"><div class="leg-i"><div class="leg-d" style="background:#C8A24C"></div>ゲーム 198</div><div class="leg-i"><div class="leg-d" style="background:#6A7380"></div>雑談 47</div><div class="leg-i"><div class="leg-d" style="background:#ACB1B8"></div>歌枠 31</div><div class="leg-i"><div class="leg-d" style="background:#D4B56A"></div>ASMR 25</div><div class="leg-i"><div class="leg-d" style="background:#E2E2E6"></div>他 11</div></div>
+  </div><div class="rdiv"></div>
+  <div class="rc-wk"><div class="sec">Weekly Pattern</div><div class="wbars"><div class="wcol"><span class="wnum">28</span><div class="wtrk"><div class="wfill" style="height:44%"></div></div><span class="wday">月</span></div><div class="wcol"><span class="wnum">22</span><div class="wtrk"><div class="wfill" style="height:34%"></div></div><span class="wday">火</span></div><div class="wcol"><span class="wnum">38</span><div class="wtrk"><div class="wfill" style="height:59%"></div></div><span class="wday">水</span></div><div class="wcol"><span class="wnum">30</span><div class="wtrk"><div class="wfill" style="height:47%"></div></div><span class="wday">木</span></div><div class="wcol"><span class="wnum">48</span><div class="wtrk"><div class="wfill" style="height:75%"></div></div><span class="wday">金</span></div><div class="wcol"><span class="wnum">64</span><div class="wtrk"><div class="wfill top" style="height:100%"></div></div><span class="wday top">土</span></div><div class="wcol"><span class="wnum">52</span><div class="wtrk"><div class="wfill" style="height:81%"></div></div><span class="wday">日</span></div></div></div><div class="rdiv"></div>
+  <div class="rc-st"><div class="sec">Your Stats</div><div class="sgrid"><div class="scell"><span class="scell-l">配信カバー率</span><span class="scell-v"><span class="a">22</span><span class="u">%</span></span></div><div class="scell"><span class="scell-l">週あたり平均</span><span class="scell-v"><span class="a">3.2</span><span class="u">本/週</span></span></div><div class="scell"><span class="scell-l">連続視聴記録</span><span class="scell-v"><span class="a">12</span><span class="u">日</span></span></div><div class="scell"><span class="scell-l">お気に入り楽曲</span><span class="scell-v"><span class="a">23</span><span class="u">曲</span></span></div></div></div>
+  <div class="rc-ft"><span>だんいんログ — 白銀ノエル非公式ファンサイト</span><span>Generated 2026.04.19</span></div>
+</div></div>
+</div>
+
+<!-- ============================================================
+     B: ボタンをカード上に独立行で
+     ============================================================ -->
+<div class="col">
+<span class="col-label">B. ボタン上配置</span>
+<p class="col-desc">アクションボタンをテーマの下・カードの上に配置。<br>「テーマ選ぶ→DL/シェア」の流れが上から下に一直線。</p>
+
+<div class="pg-head"><h2>団員レポート</h2><p>視聴チェック・お気に入り楽曲から、あなただけの報告書を生成します。</p></div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+  <span style="font-family:var(--font-mono);font-size:10px;color:var(--navy-300);letter-spacing:0.06em;">THEME</span>
+  <div class="theme-pills">
+    <button class="tp active"><span class="dot l"></span>ライト</button>
+    <button class="tp"><span class="dot d"></span>ダーク</button>
+    <button class="tp"><span class="dot g"></span>ゴールド</button>
+  </div>
+</div>
+<div class="btn-row-b">
+  <button class="btn btn-p">⬇ 画像をダウンロード</button>
+  <button class="btn btn-s">𝕏 Xでシェア</button>
+</div>
+<div class="rc"><div class="rc-inner">
+  <div class="rc-h"><div class="icon">&#9876;</div><div class="lbl">Activity Report</div><div class="ln"></div><div class="ttl">白銀聖騎士団<br>団員レポート</div></div>
+  <div class="rc-donut"><div class="sec">Genre</div>
+    <svg class="dsv" viewBox="0 0 120 120"><circle class="dseg" cx="60" cy="60" r="38" stroke="#C8A24C" stroke-dasharray="150.8 88" stroke-dashoffset="59.7"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#6A7380" stroke-dasharray="35.8 203" stroke-dashoffset="-91.1"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#ACB1B8" stroke-dasharray="23.9 214.9" stroke-dashoffset="-126.9"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#D4B56A" stroke-dasharray="19.1 219.7" stroke-dashoffset="-150.8"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#E2E2E6" stroke-dasharray="9.6 229.2" stroke-dashoffset="-169.9"/><text class="dnum" x="60" y="56">312</text><text class="dunit" x="60" y="68">本</text><text class="dsub" x="60" y="80">STREAMS WATCHED</text></svg>
+    <div class="leg"><div class="leg-i"><div class="leg-d" style="background:#C8A24C"></div>ゲーム 198</div><div class="leg-i"><div class="leg-d" style="background:#6A7380"></div>雑談 47</div><div class="leg-i"><div class="leg-d" style="background:#ACB1B8"></div>歌枠 31</div><div class="leg-i"><div class="leg-d" style="background:#D4B56A"></div>ASMR 25</div><div class="leg-i"><div class="leg-d" style="background:#E2E2E6"></div>他 11</div></div>
+  </div><div class="rdiv"></div>
+  <div class="rc-wk"><div class="sec">Weekly Pattern</div><div class="wbars"><div class="wcol"><span class="wnum">28</span><div class="wtrk"><div class="wfill" style="height:44%"></div></div><span class="wday">月</span></div><div class="wcol"><span class="wnum">22</span><div class="wtrk"><div class="wfill" style="height:34%"></div></div><span class="wday">火</span></div><div class="wcol"><span class="wnum">38</span><div class="wtrk"><div class="wfill" style="height:59%"></div></div><span class="wday">水</span></div><div class="wcol"><span class="wnum">30</span><div class="wtrk"><div class="wfill" style="height:47%"></div></div><span class="wday">木</span></div><div class="wcol"><span class="wnum">48</span><div class="wtrk"><div class="wfill" style="height:75%"></div></div><span class="wday">金</span></div><div class="wcol"><span class="wnum">64</span><div class="wtrk"><div class="wfill top" style="height:100%"></div></div><span class="wday top">土</span></div><div class="wcol"><span class="wnum">52</span><div class="wtrk"><div class="wfill" style="height:81%"></div></div><span class="wday">日</span></div></div></div><div class="rdiv"></div>
+  <div class="rc-st"><div class="sec">Your Stats</div><div class="sgrid"><div class="scell"><span class="scell-l">配信カバー率</span><span class="scell-v"><span class="a">22</span><span class="u">%</span></span></div><div class="scell"><span class="scell-l">週あたり平均</span><span class="scell-v"><span class="a">3.2</span><span class="u">本/週</span></span></div><div class="scell"><span class="scell-l">連続視聴記録</span><span class="scell-v"><span class="a">12</span><span class="u">日</span></span></div><div class="scell"><span class="scell-l">お気に入り楽曲</span><span class="scell-v"><span class="a">23</span><span class="u">曲</span></span></div></div></div>
+  <div class="rc-ft"><span>だんいんログ — 白銀ノエル非公式ファンサイト</span><span>Generated 2026.04.19</span></div>
+</div></div>
+</div>
+
+<!-- ============================================================
+     C: カード下（現行）
+     ============================================================ -->
+<div class="col">
+<span class="col-label">C. カード下（現行）</span>
+<p class="col-desc">現在の配置。カードの下にボタン。<br>スクロールしないとシェア手段が見えない。</p>
+
+<div class="pg-head"><h2>団員レポート</h2><p>視聴チェック・お気に入り楽曲から、あなただけの報告書を生成します。</p></div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+  <span style="font-family:var(--font-mono);font-size:10px;color:var(--navy-300);letter-spacing:0.06em;">THEME</span>
+  <div class="theme-pills">
+    <button class="tp active"><span class="dot l"></span>ライト</button>
+    <button class="tp"><span class="dot d"></span>ダーク</button>
+    <button class="tp"><span class="dot g"></span>ゴールド</button>
+  </div>
+</div>
+<div class="rc"><div class="rc-inner">
+  <div class="rc-h"><div class="icon">&#9876;</div><div class="lbl">Activity Report</div><div class="ln"></div><div class="ttl">白銀聖騎士団<br>団員レポート</div></div>
+  <div class="rc-donut"><div class="sec">Genre</div>
+    <svg class="dsv" viewBox="0 0 120 120"><circle class="dseg" cx="60" cy="60" r="38" stroke="#C8A24C" stroke-dasharray="150.8 88" stroke-dashoffset="59.7"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#6A7380" stroke-dasharray="35.8 203" stroke-dashoffset="-91.1"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#ACB1B8" stroke-dasharray="23.9 214.9" stroke-dashoffset="-126.9"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#D4B56A" stroke-dasharray="19.1 219.7" stroke-dashoffset="-150.8"/><circle class="dseg" cx="60" cy="60" r="38" stroke="#E2E2E6" stroke-dasharray="9.6 229.2" stroke-dashoffset="-169.9"/><text class="dnum" x="60" y="56">312</text><text class="dunit" x="60" y="68">本</text><text class="dsub" x="60" y="80">STREAMS WATCHED</text></svg>
+    <div class="leg"><div class="leg-i"><div class="leg-d" style="background:#C8A24C"></div>ゲーム 198</div><div class="leg-i"><div class="leg-d" style="background:#6A7380"></div>雑談 47</div><div class="leg-i"><div class="leg-d" style="background:#ACB1B8"></div>歌枠 31</div><div class="leg-i"><div class="leg-d" style="background:#D4B56A"></div>ASMR 25</div><div class="leg-i"><div class="leg-d" style="background:#E2E2E6"></div>他 11</div></div>
+  </div><div class="rdiv"></div>
+  <div class="rc-wk"><div class="sec">Weekly Pattern</div><div class="wbars"><div class="wcol"><span class="wnum">28</span><div class="wtrk"><div class="wfill" style="height:44%"></div></div><span class="wday">月</span></div><div class="wcol"><span class="wnum">22</span><div class="wtrk"><div class="wfill" style="height:34%"></div></div><span class="wday">火</span></div><div class="wcol"><span class="wnum">38</span><div class="wtrk"><div class="wfill" style="height:59%"></div></div><span class="wday">水</span></div><div class="wcol"><span class="wnum">30</span><div class="wtrk"><div class="wfill" style="height:47%"></div></div><span class="wday">木</span></div><div class="wcol"><span class="wnum">48</span><div class="wtrk"><div class="wfill" style="height:75%"></div></div><span class="wday">金</span></div><div class="wcol"><span class="wnum">64</span><div class="wtrk"><div class="wfill top" style="height:100%"></div></div><span class="wday top">土</span></div><div class="wcol"><span class="wnum">52</span><div class="wtrk"><div class="wfill" style="height:81%"></div></div><span class="wday">日</span></div></div></div><div class="rdiv"></div>
+  <div class="rc-st"><div class="sec">Your Stats</div><div class="sgrid"><div class="scell"><span class="scell-l">配信カバー率</span><span class="scell-v"><span class="a">22</span><span class="u">%</span></span></div><div class="scell"><span class="scell-l">週あたり平均</span><span class="scell-v"><span class="a">3.2</span><span class="u">本/週</span></span></div><div class="scell"><span class="scell-l">連続視聴記録</span><span class="scell-v"><span class="a">12</span><span class="u">日</span></span></div><div class="scell"><span class="scell-l">お気に入り楽曲</span><span class="scell-v"><span class="a">23</span><span class="u">曲</span></span></div></div></div>
+  <div class="rc-ft"><span>だんいんログ — 白銀ノエル非公式ファンサイト</span><span>Generated 2026.04.19</span></div>
+</div></div>
+<div class="btn-row-c">
+  <button class="btn btn-p">⬇ 画像をダウンロード</button>
+  <button class="btn btn-s">𝕏 Xでシェア</button>
+</div>
+</div>
+
+</div><!-- /compare -->
+
+</body>
+</html>
