@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = ['', '/streams', '/music', '/asmr', '/report'];
+  const pages = ['', '/streams', '/music', '/asmr', '/report', '/footprint'];
 
   return pages.map((path) => ({
     url: `${SITE_URL}${path}`,

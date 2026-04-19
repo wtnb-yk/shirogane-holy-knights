@@ -451,6 +451,44 @@ body {
   }
   .rc-inner::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
   .rc-inner::after  { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+
+  /* ============================================================
+     HEATMAP CARD TOKENS
+     画像キャプチャ対象のため、サイトのダークモードとは独立。
+     ============================================================ */
+
+  [data-hm-theme='light'] {
+    --hm-bg: var(--color-cream-50);
+    --hm-border: var(--color-cream-300);
+    --hm-corner: var(--color-gold-400);
+    --hm-corner-opacity: 0.2;
+    --hm-year: var(--color-dark-800);
+    --hm-title: var(--color-navy-400);
+    --hm-label: var(--color-navy-300);
+    --hm-cell-l0: var(--color-cream-200);
+    --hm-cell-l1: var(--color-gold-200);
+    --hm-cell-l2: var(--color-gold-400);
+    --hm-cell-l3: var(--color-gold-600);
+    --hm-stat-num: var(--color-dark-800);
+    --hm-stat-accent: var(--color-gold-500);
+    --hm-stat-unit: var(--color-navy-400);
+    --hm-stat-label: var(--color-navy-300);
+    --hm-divider: var(--color-cream-300);
+    --hm-footer: var(--color-navy-200);
+  }
+
+  .hm-card-inner::before,
+  .hm-card-inner::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--hm-corner);
+    border-style: solid;
+    opacity: var(--hm-corner-opacity);
+  }
+  .hm-card-inner::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+  .hm-card-inner::after  { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
 }
 
 /* カードエントランスアニメーション */

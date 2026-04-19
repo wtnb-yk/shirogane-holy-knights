@@ -2,13 +2,13 @@
 
 import { useRef, useState } from 'react';
 import type { Stream } from '@/lib/data/types';
-import { SectionHeader } from '@/components/ui/section-header';
+import { ShareCardLayout } from '@/components/ui/share-card-layout';
+import { ShareActions } from '@/components/ui/share-actions';
 import { SITE_URL } from '@/lib/site';
+import { captureCardAsDataUrl, downloadImage } from '@/lib/capture';
 import { useReportStats } from '../hooks/use-report-stats';
-import { captureCardAsDataUrl, downloadImage } from '../lib/capture';
 import type { ReportStats } from '../lib/compute-stats';
 import { ReportCard, type ReportTheme } from './report-card';
-import { ReportActions } from './report-actions';
 import { ThemeSelector } from './theme-selector';
 import { ReportEmpty } from './report-empty';
 
@@ -55,36 +55,24 @@ export function ReportPage({ streams }: Props) {
   }
 
   return (
-    <>
-      <div className="pt-lg">
-        <SectionHeader
-          label="Activity Report"
-          title="団員レポート"
-          description="視聴チェック・お気に入り楽曲から、あなただけの報告書を生成します。"
-        />
-      </div>
-
-      <div
-        className="flex flex-col items-center px-lg max-md:px-md py-xl min-h-[60vh]"
-        style={{
-          background:
-            'radial-gradient(ellipse 50% 40% at 50% 30%, rgba(200,162,76,0.04) 0%, transparent 100%)',
-        }}
-      >
-        {isEmpty ? (
-          <ReportEmpty theme={theme} />
-        ) : (
-          <>
-            <ThemeSelector theme={theme} onThemeChange={setTheme} />
-            <ReportActions
-              downloading={downloading}
-              onDownload={handleDownload}
-              onShare={handleShare}
-            />
-            <ReportCard ref={cardRef} stats={stats} theme={theme} />
-          </>
-        )}
-      </div>
-    </>
+    <ShareCardLayout
+      label="Activity Report"
+      title="団員レポート"
+      description="視聴チェック・お気に入り楽曲から、あなただけの報告書を生成します。"
+      isEmpty={isEmpty}
+      emptyContent={<ReportEmpty theme={theme} />}
+      actions={
+        <>
+          <ThemeSelector theme={theme} onThemeChange={setTheme} />
+          <ShareActions
+            downloading={downloading}
+            onDownload={handleDownload}
+            onShare={handleShare}
+          />
+        </>
+      }
+    >
+      <ReportCard ref={cardRef} stats={stats} theme={theme} />
+    </ShareCardLayout>
   );
 }

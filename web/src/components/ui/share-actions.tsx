@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { DownloadIcon, XIcon } from '@/components/ui/icons';
+import { Button } from './button';
+import { DownloadIcon, XIcon } from './icons';
 
 type Props = {
   downloading: boolean;
@@ -7,7 +7,7 @@ type Props = {
   onShare: () => void;
 };
 
-export function ReportActions({ downloading, onDownload, onShare }: Props) {
+export function ShareActions({ downloading, onDownload, onShare }: Props) {
   return (
     <div className="flex gap-sm max-md:flex-col max-md:w-full mb-md animate-card-entrance-delayed">
       <Button
