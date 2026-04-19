@@ -25,8 +25,10 @@ export function getFavoritesSnapshot(): Set<string> {
   return cache;
 }
 
+const EMPTY_SET = new Set<string>();
+
 export function getFavoritesServerSnapshot(): Set<string> {
-  return new Set();
+  return EMPTY_SET;
 }
 
 export function subscribeFavorites(callback: () => void): () => void {
