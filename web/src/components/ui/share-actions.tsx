@@ -14,7 +14,7 @@ export function ShareActions({ downloading, onDownload, onShare }: Props) {
         variant="primary"
         onClick={onDownload}
         disabled={downloading}
-        className={downloading ? 'opacity-70' : ''}
+        className={`max-md:w-full max-md:justify-center ${downloading ? 'opacity-70' : ''}`}
       >
         {downloading ? (
           '準備中...'
