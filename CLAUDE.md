@@ -8,7 +8,7 @@
 ## 技術スタック
 - **フロントエンド**: Next.js (SSG) / TypeScript → Vercel
 - **バックエンド**: Go → Fly.io
-- **データ**: tools/ 配下のCSVがコンテンツマスタデータ
+- **データ**: web/data/danin-log.db（SQLite）がコンテンツマスタデータ
 - **クライアント保存**: localStorage（推し活記録、ログイン不要）
 
 ## リポジトリ構成
@@ -43,7 +43,7 @@ web/src/
 │   ├── ui/               # ボタン、カード等の部品
 │   └── layout/           # ヘッダー、フッター
 ├── lib/                  # 共通ユーティリティ
-│   ├── data/             # CSV読み込み・型変換（ビルド時）
+│   ├── data/             # SQLite読み込み・型変換（ビルド時）
 │   └── storage/          # localStorage抽象化
 ├── hooks/                # 共通カスタムフック
 ├── types/                # 共通型定義
@@ -70,5 +70,5 @@ web/src/
 ### 設計原則
 - `app/` は薄く保つ。ロジック・UIは `features/` に閉じ込める
 - 機能間の共有は `lib/`、`components/`、`hooks/`、`types/` 経由
-- データ取得はビルド時にCSV読み込み → SSG
+- データ取得はビルド時にSQLite読み込み（better-sqlite3） → SSG
 - クライアント状態は localStorage。`lib/storage/` で型安全なラッパーを共通化

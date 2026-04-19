@@ -15,11 +15,8 @@ out/
 # Go
 /backend/tmp/
 
-# ビルド時生成データ（本番: S3から取得 / ローカル: 手動配置）
+# コンテンツマスタデータ（本番: S3 から取得 / ローカル: tools/scripts/ が生成）
 web/data/
-
-# コンテンツマスタデータ（本番: S3 で管理 / ローカル: tools/ が生成）
-tools/data/
 
 # Playwright
 .playwright-mcp/

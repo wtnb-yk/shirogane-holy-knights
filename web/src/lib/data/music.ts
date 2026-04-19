@@ -1,15 +1,5 @@
-import { readCsv } from './csv-reader';
+import { getDb } from './db';
 import type {
-  SongRow,
-  StreamSongRow,
-  ConcertSongRow,
-  MusicVideoRow,
-  MusicVideoTypeRow,
-  AlbumRow,
-  AlbumTypeRow,
-  AlbumTrackRow,
-  VideoRow,
-  StreamDetailRow,
   Song,
   Album,
   SongPerformance,
@@ -40,69 +30,121 @@ let cachedMusicVideoCards: MusicVideoCard[] | null = null;
 export function getSongs(): Song[] {
   if (cachedSongs) return cachedSongs;
 
-  const songs = readCsv<SongRow>('songs.csv');
-  const streamSongs = readCsv<StreamSongRow>('stream_songs.csv');
-  const concertSongs = readCsv<ConcertSongRow>('concert_songs.csv');
-  const musicVideos = readCsv<MusicVideoRow>('music_videos.csv');
-  const musicVideoTypes = readCsv<MusicVideoTypeRow>('music_video_types.csv');
-  const albums = readCsv<AlbumRow>('albums.csv');
-  const albumTracks = readCsv<AlbumTrackRow>('album_tracks.csv');
-  const videos = readCsv<VideoRow>('videos.csv');
+  const db = getDb();
 
-  const videoMap = new Map(videos.map((v) => [v.id, v]));
-  const mvTypeMap = new Map(musicVideoTypes.map((t) => [t.id, t.type_name]));
-  const albumMap = new Map(albums.map((a) => [a.id, a]));
+  const songs = db.prepare('SELECT id, title, artist FROM songs').all() as {
+    id: string;
+    title: string;
+    artist: string;
+  }[];
 
-  // song_id → 歌枠パフォーマンス
+  // 歌枠パフォーマンス
+  const streamPerfs = db
+    .prepare(
+      `
+    SELECT ss.song_id, ss.video_id, v.title AS video_title, ss.start_seconds
+    FROM stream_songs ss
+    JOIN videos v ON ss.video_id = v.id
+  `,
+    )
+    .all() as {
+    song_id: string;
+    video_id: string;
+    video_title: string;
+    start_seconds: number;
+  }[];
+
   const streamPerfsMap = new Map<string, SongPerformance[]>();
-  for (const ss of streamSongs) {
-    const video = videoMap.get(ss.video_id);
-    const perfs = streamPerfsMap.get(ss.song_id) ?? [];
+  for (const p of streamPerfs) {
+    const perfs = streamPerfsMap.get(p.song_id) ?? [];
     perfs.push({
-      videoId: ss.video_id,
-      videoTitle: video?.title ?? '',
-      startSeconds: Number(ss.start_seconds),
+      videoId: p.video_id,
+      videoTitle: p.video_title,
+      startSeconds: p.start_seconds,
     });
-    streamPerfsMap.set(ss.song_id, perfs);
+    streamPerfsMap.set(p.song_id, perfs);
   }
 
-  // song_id → ライブパフォーマンス
+  // ライブパフォーマンス
+  const concertPerfs = db
+    .prepare(
+      `
+    SELECT cs.song_id, cs.video_id, v.title AS video_title, cs.start_seconds
+    FROM concert_songs cs
+    JOIN videos v ON cs.video_id = v.id
+  `,
+    )
+    .all() as {
+    song_id: string;
+    video_id: string;
+    video_title: string;
+    start_seconds: number;
+  }[];
+
   const concertPerfsMap = new Map<string, SongPerformance[]>();
-  for (const cs of concertSongs) {
-    const video = videoMap.get(cs.video_id);
-    const perfs = concertPerfsMap.get(cs.song_id) ?? [];
+  for (const p of concertPerfs) {
+    const perfs = concertPerfsMap.get(p.song_id) ?? [];
     perfs.push({
-      videoId: cs.video_id,
-      videoTitle: video?.title ?? '',
-      startSeconds: Number(cs.start_seconds),
+      videoId: p.video_id,
+      videoTitle: p.video_title,
+      startSeconds: p.start_seconds,
     });
-    concertPerfsMap.set(cs.song_id, perfs);
+    concertPerfsMap.set(p.song_id, perfs);
   }
 
-  // song_id → MV
+  // MV
+  const mvRows = db
+    .prepare(
+      `
+    SELECT mv.song_id, mv.video_id, v.title AS video_title, mvt.type_name AS type
+    FROM music_videos mv
+    JOIN videos v ON mv.video_id = v.id
+    JOIN music_video_types mvt ON mv.music_video_type_id = mvt.id
+  `,
+    )
+    .all() as {
+    song_id: string;
+    video_id: string;
+    video_title: string;
+    type: string;
+  }[];
+
   const songMvMap = new Map<string, SongMusicVideo[]>();
-  for (const mv of musicVideos) {
-    const video = videoMap.get(mv.video_id);
+  for (const mv of mvRows) {
     const mvs = songMvMap.get(mv.song_id) ?? [];
     mvs.push({
       videoId: mv.video_id,
-      videoTitle: video?.title ?? '',
-      type: mvTypeMap.get(mv.music_video_type_id) ?? '',
+      videoTitle: mv.video_title,
+      type: mv.type,
     });
     songMvMap.set(mv.song_id, mvs);
   }
 
-  // song_id → 収録アルバム
+  // 収録アルバム
+  const albumInfoRows = db
+    .prepare(
+      `
+    SELECT at.song_id, at.album_id, a.title AS album_title, at.track_number
+    FROM album_tracks at
+    JOIN albums a ON at.album_id = a.id
+  `,
+    )
+    .all() as {
+    song_id: string;
+    album_id: string;
+    album_title: string;
+    track_number: number;
+  }[];
+
   const songAlbumsMap = new Map<string, SongAlbumInfo[]>();
-  for (const at of albumTracks) {
-    const album = albumMap.get(at.album_id);
-    const infos = songAlbumsMap.get(at.song_id) ?? [];
+  for (const ai of albumInfoRows) {
+    const infos = songAlbumsMap.get(ai.song_id) ?? [];
     infos.push({
-      albumId: at.album_id,
-      albumTitle: album?.title ?? '',
-      trackNumber: Number(at.track_number),
+      albumId: ai.album_id,
+      albumTitle: ai.album_title,
+      trackNumber: ai.track_number,
     });
-    songAlbumsMap.set(at.song_id, infos);
+    songAlbumsMap.set(ai.song_id, infos);
   }
 
   cachedSongs = songs.map((s) => ({
@@ -127,92 +169,140 @@ export function getSongs(): Song[] {
 export function getAlbums(): Album[] {
   if (cachedAlbums) return cachedAlbums;
 
-  const albums = readCsv<AlbumRow>('albums.csv');
-  const albumTypes = readCsv<AlbumTypeRow>('album_types.csv');
-  const albumTracks = readCsv<AlbumTrackRow>('album_tracks.csv');
-  const songs = readCsv<SongRow>('songs.csv');
+  const db = getDb();
 
-  const albumTypeMap = new Map(albumTypes.map((t) => [t.id, t.type_name]));
-  const songMap = new Map(songs.map((s) => [s.id, s]));
+  const albums = db
+    .prepare(
+      `
+    SELECT a.id, a.title, a.artist, atp.type_name AS type,
+           a.release_date, a.cover_image_url
+    FROM albums a
+    JOIN album_types atp ON a.album_type_id = atp.id
+    ORDER BY a.release_date DESC
+  `,
+    )
+    .all() as {
+    id: string;
+    title: string;
+    artist: string;
+    type: string;
+    release_date: string;
+    cover_image_url: string;
+  }[];
 
-  // album_id → トラックリスト
+  const trackRows = db
+    .prepare(
+      `
+    SELECT at.id, at.album_id, at.track_number,
+           s.id AS song_id, s.title AS song_title, s.artist AS song_artist
+    FROM album_tracks at
+    JOIN songs s ON at.song_id = s.id
+    ORDER BY at.track_number
+  `,
+    )
+    .all() as {
+    id: string;
+    album_id: string;
+    track_number: number;
+    song_id: string;
+    song_title: string;
+    song_artist: string;
+  }[];
+
   const albumTracksMap = new Map<string, AlbumTrack[]>();
-  for (const at of albumTracks) {
-    const song = songMap.get(at.song_id);
-    const tracks = albumTracksMap.get(at.album_id) ?? [];
+  for (const t of trackRows) {
+    const tracks = albumTracksMap.get(t.album_id) ?? [];
     tracks.push({
-      id: at.id,
-      trackNumber: Number(at.track_number),
-      song: song
-        ? { id: song.id, title: song.title, artist: song.artist }
-        : { id: at.song_id, title: '', artist: '' },
+      id: t.id,
+      trackNumber: t.track_number,
+      song: { id: t.song_id, title: t.song_title, artist: t.song_artist },
     });
-    albumTracksMap.set(at.album_id, tracks);
+    albumTracksMap.set(t.album_id, tracks);
   }
 
-  cachedAlbums = albums
-    .map((a) => ({
-      id: a.id,
-      title: a.title,
-      artist: a.artist,
-      type: albumTypeMap.get(a.album_type_id) ?? '',
-      releaseDate: a.release_date,
-      coverImageUrl: a.cover_image_url,
-      tracks: (albumTracksMap.get(a.id) ?? []).sort(
-        (x, y) => x.trackNumber - y.trackNumber,
-      ),
-    }))
-    .sort((a, b) => b.releaseDate.localeCompare(a.releaseDate));
+  cachedAlbums = albums.map((a) => ({
+    id: a.id,
+    title: a.title,
+    artist: a.artist,
+    type: a.type,
+    releaseDate: a.release_date,
+    coverImageUrl: a.cover_image_url,
+    tracks: albumTracksMap.get(a.id) ?? [],
+  }));
 
   return cachedAlbums;
 }
 
 /**
  * セトリ付き配信データを構築するヘルパー
- *
- * stream_songs / concert_songs のような「song_id + video_id + start_seconds」形式の
- * 行データを、video_id でグループ化して MusicStream[] を返す
  */
 function buildMusicStreams(
-  rows: { song_id: string; video_id: string; start_seconds: string }[],
+  table: 'stream_songs' | 'concert_songs',
 ): MusicStream[] {
-  const videos = readCsv<VideoRow>('videos.csv');
-  const songs = readCsv<SongRow>('songs.csv');
-  const streamDetails = readCsv<StreamDetailRow>('stream_details.csv');
+  const db = getDb();
 
-  const videoMap = new Map(videos.map((v) => [v.id, v]));
-  const songMap = new Map(songs.map((s) => [s.id, s]));
-  const detailMap = new Map(streamDetails.map((sd) => [sd.video_id, sd]));
+  const rows = db
+    .prepare(
+      `
+    SELECT t.song_id, t.video_id, t.start_seconds,
+           v.title AS video_title, v.thumbnail_url,
+           s.title AS song_title, s.artist AS song_artist,
+           COALESCE(sd.started_at, v.published_at) AS date
+    FROM ${table} t
+    JOIN videos v ON t.video_id = v.id
+    JOIN songs s ON t.song_id = s.id
+    LEFT JOIN stream_details sd ON t.video_id = sd.video_id
+    ORDER BY date DESC, t.start_seconds ASC
+  `,
+    )
+    .all() as {
+    song_id: string;
+    video_id: string;
+    start_seconds: number;
+    video_title: string;
+    thumbnail_url: string;
+    song_title: string;
+    song_artist: string;
+    date: string;
+  }[];
 
-  // video_id → songs をグループ化
-  const grouped = new Map<string, MusicStreamSong[]>();
-  for (const row of rows) {
-    const song = songMap.get(row.song_id);
-    const list = grouped.get(row.video_id) ?? [];
-    list.push({
-      songId: row.song_id,
-      title: song?.title ?? '',
-      artist: song?.artist ?? '',
-      startSeconds: Number(row.start_seconds),
+  // video_id でグループ化
+  const grouped = new Map<
+    string,
+    {
+      videoTitle: string;
+      thumbnailUrl: string;
+      date: string;
+      songs: MusicStreamSong[];
+    }
+  >();
+
+  for (const r of rows) {
+    let group = grouped.get(r.video_id);
+    if (!group) {
+      group = {
+        videoTitle: r.video_title,
+        thumbnailUrl: r.thumbnail_url,
+        date: r.date,
+        songs: [],
+      };
+      grouped.set(r.video_id, group);
+    }
+    group.songs.push({
+      songId: r.song_id,
+      title: r.song_title,
+      artist: r.song_artist,
+      startSeconds: r.start_seconds,
     });
-    grouped.set(row.video_id, list);
   }
 
-  const result: MusicStream[] = [];
-  for (const [videoId, songList] of grouped) {
-    const video = videoMap.get(videoId);
-    if (!video) continue;
-    const detail = detailMap.get(videoId);
-    result.push({
-      videoId,
-      title: video.title,
-      thumbnailUrl: video.thumbnail_url,
-      date: detail?.started_at ?? video.published_at,
-      songs: songList.sort((a, b) => a.startSeconds - b.startSeconds),
-    });
-  }
-
-  return result.sort((a, b) => b.date.localeCompare(a.date));
+  return Array.from(grouped.entries()).map(([videoId, g]) => ({
+    videoId,
+    title: g.videoTitle,
+    thumbnailUrl: g.thumbnailUrl,
+    date: g.date,
+    songs: g.songs,
+  }));
 }
 
 /**
@@ -220,9 +310,7 @@ function buildMusicStreams(
  */
 export function getUtawakuStreams(): MusicStream[] {
   if (cachedUtawakuStreams) return cachedUtawakuStreams;
-  cachedUtawakuStreams = buildMusicStreams(
-    readCsv<StreamSongRow>('stream_songs.csv'),
-  );
+  cachedUtawakuStreams = buildMusicStreams('stream_songs');
   return cachedUtawakuStreams;
 }
 
@@ -231,9 +319,7 @@ export function getUtawakuStreams(): MusicStream[] {
  */
 export function getConcertStreams(): MusicStream[] {
   if (cachedConcertStreams) return cachedConcertStreams;
-  cachedConcertStreams = buildMusicStreams(
-    readCsv<ConcertSongRow>('concert_songs.csv'),
-  );
+  cachedConcertStreams = buildMusicStreams('concert_songs');
   return cachedConcertStreams;
 }
 
@@ -243,31 +329,42 @@ export function getConcertStreams(): MusicStream[] {
 export function getMusicVideoCards(): MusicVideoCard[] {
   if (cachedMusicVideoCards) return cachedMusicVideoCards;
 
-  const musicVideos = readCsv<MusicVideoRow>('music_videos.csv');
-  const musicVideoTypes = readCsv<MusicVideoTypeRow>('music_video_types.csv');
-  const videos = readCsv<VideoRow>('videos.csv');
-  const songs = readCsv<SongRow>('songs.csv');
+  const db = getDb();
 
-  const mvTypeMap = new Map(musicVideoTypes.map((t) => [t.id, t.type_name]));
-  const videoMap = new Map(videos.map((v) => [v.id, v]));
-  const songMap = new Map(songs.map((s) => [s.id, s]));
+  const mvCardRows = db
+    .prepare(
+      `
+    SELECT mv.song_id, s.title AS song_title, s.artist,
+           mv.video_id, v.title AS video_title, v.thumbnail_url,
+           mvt.type_name AS type, v.published_at
+    FROM music_videos mv
+    JOIN songs s ON mv.song_id = s.id
+    JOIN videos v ON mv.video_id = v.id
+    JOIN music_video_types mvt ON mv.music_video_type_id = mvt.id
+    ORDER BY v.published_at DESC
+  `,
+    )
+    .all() as {
+    song_id: string;
+    song_title: string;
+    artist: string;
+    video_id: string;
+    video_title: string;
+    thumbnail_url: string;
+    type: string;
+    published_at: string;
+  }[];
 
-  cachedMusicVideoCards = musicVideos
-    .map((mv) => {
-      const video = videoMap.get(mv.video_id);
-      const song = songMap.get(mv.song_id);
-      return {
-        songId: mv.song_id,
-        songTitle: song?.title ?? '',
-        artist: song?.artist ?? '',
-        videoId: mv.video_id,
-        videoTitle: video?.title ?? '',
-        thumbnailUrl: video?.thumbnail_url ?? '',
-        type: mvTypeMap.get(mv.music_video_type_id) ?? '',
-        publishedAt: video?.published_at ?? '',
-      };
-    })
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  cachedMusicVideoCards = mvCardRows.map((r) => ({
+    songId: r.song_id,
+    songTitle: r.song_title,
+    artist: r.artist,
+    videoId: r.video_id,
+    videoTitle: r.video_title,
+    thumbnailUrl: r.thumbnail_url,
+    type: r.type,
+    publishedAt: r.published_at,
+  }));
 
   return cachedMusicVideoCards;
 }
@@ -276,10 +373,28 @@ export function getMusicVideoCards(): MusicVideoCard[] {
  * 楽曲の統計情報
  */
 export function getMusicStats(): MusicStats {
+  const db = getDb();
+  const row = db
+    .prepare(
+      `
+    SELECT
+      (SELECT COUNT(*) FROM songs) AS song_count,
+      (SELECT COUNT(DISTINCT video_id) FROM stream_songs) AS utawaku_count,
+      (SELECT COUNT(DISTINCT video_id) FROM concert_songs) AS live_count,
+      (SELECT COUNT(*) FROM music_videos) AS mv_count
+  `,
+    )
+    .get() as {
+    song_count: number;
+    utawaku_count: number;
+    live_count: number;
+    mv_count: number;
+  };
+
   return {
-    songCount: getSongs().length,
-    utawakuCount: getUtawakuStreams().length,
-    liveCount: getConcertStreams().length,
-    mvCount: getMusicVideoCards().length,
+    songCount: row.song_count,
+    utawakuCount: row.utawaku_count,
+    liveCount: row.live_count,
+    mvCount: row.mv_count,
   };
 }

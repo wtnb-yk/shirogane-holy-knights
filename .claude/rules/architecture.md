@@ -23,9 +23,9 @@ styles/        → globals.css等
 
 ## データフロー
 
-- コンテンツデータ: ビルド時に tools/data/ の CSV を lib/data/ で読み込み → SSG
+- コンテンツデータ: web/data/danin-log.db（SQLite）をビルド時に lib/data/ で読み込み（better-sqlite3） → SSG
 - クライアント状態: localStorage。lib/storage/ で型安全なラッパーを共通化
-- tools/data/ と web/data/ は gitignore 済み。本番データは S3 管理
+- web/data/ は gitignore 済み。本番データは S3 管理
 
 ## export ルール
 

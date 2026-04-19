@@ -2,10 +2,10 @@
 """
 配信タイトルからタグを自動判定し、人間がレビューする中間CSVを出力する。
 
-既存データ: tools/data/
+既存データ: web/data/danin-log.db
 出力先:     tools/data-review/extracted_tags.csv（中間CSV）
 
-キーワードルール: tools/data/tag_keywords.csv（CSV駆動）
+キーワードルール: tag_keywords テーブル（DB駆動）
 特殊ルール:       コード内（雑談/ゲーム/企画/記念/ライブの5タグ）
 
 モード:
@@ -16,90 +16,72 @@
 ワークフロー:
   1. just tags          → extracted_tags.csv 出力
   2. [人手レビュー]     → extracted_tags.csv を編集
-  3. just tags-import   → video_stream_tags.csv に反映
+  3. just tags-import   → video_stream_tags に反映
 """
 
 import argparse
 import csv
 import re
-import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
+from db import get_readonly_connection
+
 ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
 REVIEW_DIR = ROOT / 'data-review'
-
-
-# ---------- CSV 読み込み ----------
-
-def read_csv_list(filename):
-    path = DATA_DIR / filename
-    if not path.exists():
-        return []
-    with open(path, newline='', encoding='utf-8') as f:
-        return list(csv.DictReader(f))
-
-
-def read_csv_keyed(filename, key_field):
-    path = DATA_DIR / filename
-    result = {}
-    if path.exists():
-        with open(path, newline='', encoding='utf-8') as f:
-            for row in csv.DictReader(f):
-                result[row[key_field]] = row
-    return result
-
 
 
 # ---------- データ読み込み ----------
 
-def load_tag_master() -> Dict[int, str]:
-    """stream_tags.csv → {tag_id: tag_name}"""
-    rows = read_csv_list('stream_tags.csv')
-    return {int(r['id']): r['name'] for r in rows}
+def load_tag_master(conn) -> Dict[int, str]:
+    """stream_tags → {tag_id: tag_name}"""
+    rows = conn.execute('SELECT id, name FROM stream_tags').fetchall()
+    return {r['id']: r['name'] for r in rows}
 
 
-def load_tag_keywords() -> Dict[int, List[str]]:
-    """tag_keywords.csv → {tag_id: [keyword, ...]}"""
-    rows = read_csv_list('tag_keywords.csv')
+def load_tag_keywords(conn) -> Dict[int, List[str]]:
+    """tag_keywords → {tag_id: [keyword, ...]}"""
+    rows = conn.execute('SELECT tag_id, keyword FROM tag_keywords').fetchall()
     result = defaultdict(list)
     for r in rows:
-        result[int(r['tag_id'])].append(r['keyword'])
+        result[r['tag_id']].append(r['keyword'])
     return dict(result)
 
 
-def load_stream_data():
+def load_stream_data(conn):
     """配信データを読み込み → {video_id: {title, duration, started_at}}"""
-    vv_types = read_csv_list('video_video_types.csv')
-    stream_ids = {r['video_id'] for r in vv_types if r['video_type_id'] == '1'}
+    rows = conn.execute("""
+        SELECT v.id, v.title, v.duration,
+               COALESCE(sd.started_at, v.published_at) AS started_at
+        FROM videos v
+        JOIN video_video_types vvt ON v.id = vvt.video_id
+        JOIN video_types vt ON vvt.video_type_id = vt.id
+        LEFT JOIN stream_details sd ON v.id = sd.video_id
+        WHERE vt.type = 'stream'
+    """).fetchall()
 
-    videos = read_csv_keyed('videos.csv', 'id')
-    details = read_csv_keyed('stream_details.csv', 'video_id')
-
-    streams = {}
-    for vid in stream_ids:
-        v = videos.get(vid)
-        if not v:
-            continue
-        sd = details.get(vid)
-        streams[vid] = {
-            'title': v['title'],
-            'duration': v.get('duration'),
-            'started_at': sd['started_at'] if sd else None,
-        }
-    return streams
+    return {r['id']: {
+        'title': r['title'],
+        'duration': r['duration'],
+        'started_at': r['started_at'],
+    } for r in rows}
 
 
-def load_existing_tags() -> Dict[str, Set[int]]:
-    """video_stream_tags.csv → {video_id: {tag_id, ...}}"""
-    rows = read_csv_list('video_stream_tags.csv')
+def load_existing_tags(conn) -> Dict[str, Set[int]]:
+    """video_stream_tags → {video_id: {tag_id, ...}}"""
+    rows = conn.execute('SELECT video_id, tag_id FROM video_stream_tags').fetchall()
     result = defaultdict(set)
     for r in rows:
-        result[r['video_id']].add(int(r['tag_id']))
+        result[r['video_id']].add(r['tag_id'])
     return dict(result)
+
+
+def load_published_at_map(conn) -> Dict[str, str]:
+    """videos → {video_id: published_at}"""
+    rows = conn.execute('SELECT id, published_at FROM videos').fetchall()
+    return {r['id']: r['published_at'] for r in rows}
 
 
 # ---------- 分類エンジン ----------
@@ -119,7 +101,7 @@ def classify(title: str, duration: Optional[str], started_at: Optional[str],
     """タグ判定。キーワードCSV + 特殊ルール + フォールバックの3段構成。"""
     matched: Set[int] = set()
 
-    # --- Phase 1: キーワードマッチ（CSV駆動） ---
+    # --- Phase 1: キーワードマッチ（DB駆動） ---
     for tag_id, keywords in tag_keywords.items():
         if any(kw in title for kw in keywords):
             matched.add(tag_id)
@@ -170,11 +152,11 @@ def write_extracted_tags(rows):
     print(f'  extracted_tags.csv: {len(rows)}件')
 
 
-def run_normal(tag_master, tag_keywords):
+def run_normal(conn, tag_master, tag_keywords):
     """新着のみ分類 → 中間CSV出力。"""
-    streams = load_stream_data()
-    existing = load_existing_tags()
-    videos = read_csv_keyed('videos.csv', 'id')
+    streams = load_stream_data(conn)
+    existing = load_existing_tags(conn)
+    published_map = load_published_at_map(conn)
     print(f'配信: {len(streams)}件, 既存タグ付き: {len(existing)}件')
 
     new_ids = set(streams.keys()) - set(existing.keys())
@@ -184,17 +166,15 @@ def run_normal(tag_master, tag_keywords):
         print('\n新着の未分類配信はありません')
         return
 
-    # 新着を分類 → 中間CSV
     rows = []
     for vid in sorted(new_ids):
         s = streams[vid]
         tags = classify(s['title'], s['duration'], s['started_at'], tag_master, tag_keywords)
         tag_names = sorted([tag_master[t] for t in tags])
-        published = videos[vid]['published_at'] if vid in videos else ''
         rows.append({
             'video_id': vid,
             'video_title': s['title'],
-            'published_at': published,
+            'published_at': published_map.get(vid, ''),
             'tags': ','.join(tag_names),
         })
 
@@ -209,10 +189,10 @@ def run_normal(tag_master, tag_keywords):
     print(f'\n→ data-review/extracted_tags.csv をレビューしてから just tags-import を実行してください')
 
 
-def run_all(tag_master, tag_keywords):
+def run_all(conn, tag_master, tag_keywords):
     """全件再分類 → 中間CSV出力。"""
-    streams = load_stream_data()
-    videos = read_csv_keyed('videos.csv', 'id')
+    streams = load_stream_data(conn)
+    published_map = load_published_at_map(conn)
     print(f'配信: {len(streams)}件')
 
     rows = []
@@ -220,11 +200,10 @@ def run_all(tag_master, tag_keywords):
         s = streams[vid]
         tags = classify(s['title'], s['duration'], s['started_at'], tag_master, tag_keywords)
         tag_names = sorted([tag_master[t] for t in tags])
-        published = videos[vid]['published_at'] if vid in videos else ''
         rows.append({
             'video_id': vid,
             'video_title': s['title'],
-            'published_at': published,
+            'published_at': published_map.get(vid, ''),
             'tags': ','.join(tag_names),
         })
 
@@ -238,16 +217,14 @@ def run_all(tag_master, tag_keywords):
 
 # ---------- 検証モード ----------
 
-def run_verify(tag_master, tag_keywords):
+def run_verify(conn, tag_master, tag_keywords):
     """全件再分類 → 人手タグとの精度レポート。"""
-    streams = load_stream_data()
-    existing = load_existing_tags()
+    streams = load_stream_data(conn)
+    existing = load_existing_tags(conn)
 
-    # 人手タグ付き配信のみ対象
     target_ids = set(streams.keys()) & set(existing.keys())
     print(f'検証対象: {len(target_ids)}件（人手タグ付き配信）\n')
 
-    # タグごとの TP/FP/FN を集計
     stats = {tid: {'tp': 0, 'fp': 0, 'fn': 0, 'fp_list': [], 'fn_list': []}
              for tid in tag_master}
 
@@ -269,7 +246,6 @@ def run_verify(tag_master, tag_keywords):
                 stats[tid]['fn'] += 1
                 stats[tid]['fn_list'].append((vid, s['title']))
 
-    # レポート出力
     print('=== 精度レポート ===')
     print(f'{"タグ":<12} {"precision":>10} {"recall":>10}    TP    FP    FN')
     print('-' * 70)
@@ -284,7 +260,6 @@ def run_verify(tag_master, tag_keywords):
 
         print(f'  {name:<10} {precision:>9.1f}% {recall:>9.1f}%  {tp:>5} {fp:>5} {fn:>5}')
 
-    # 差分詳細
     for label, key in [('過検知 (FP)', 'fp_list'), ('見逃し (FN)', 'fn_list')]:
         items = []
         for tid in sorted(tag_master.keys()):
@@ -308,16 +283,19 @@ def main():
     parser.add_argument('--all', action='store_true', help='全件再分類 → 中間CSV出力')
     args = parser.parse_args()
 
-    tag_master = load_tag_master()
-    tag_keywords = load_tag_keywords()
+    conn = get_readonly_connection()
+    tag_master = load_tag_master(conn)
+    tag_keywords = load_tag_keywords(conn)
     print(f'タグマスタ: {len(tag_master)}種, キーワード: {sum(len(v) for v in tag_keywords.values())}個\n')
 
     if args.verify:
-        run_verify(tag_master, tag_keywords)
+        run_verify(conn, tag_master, tag_keywords)
     elif args.all:
-        run_all(tag_master, tag_keywords)
+        run_all(conn, tag_master, tag_keywords)
     else:
-        run_normal(tag_master, tag_keywords)
+        run_normal(conn, tag_master, tag_keywords)
+
+    conn.close()
 
 
 if __name__ == '__main__':

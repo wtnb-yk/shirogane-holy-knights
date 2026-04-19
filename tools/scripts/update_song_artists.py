@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Spotify API で songs.csv のアーティスト情報を補完する。
+Spotify API で songs テーブルのアーティスト情報を補完する。
 
-対象: tools/data/songs.csv の artist が 'TODO' の曲
-出力: tools/data/songs.csv（全曲。TODO 分を更新済み）
+対象: artist が 'TODO' の曲
+出力: songs テーブルを直接更新
 
 使い方:
   python3 update_song_artists.py
 """
 
-import csv
 import os
 import re
 import sys
@@ -19,10 +18,9 @@ from pathlib import Path
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
+from db import get_connection
 
-SONGS_FIELDS = ['id', 'title', 'artist']
+ROOT = Path(__file__).resolve().parent.parent  # tools/
 
 
 # ---------- 環境・API ----------
@@ -45,23 +43,6 @@ def init_spotify():
         sys.exit(1)
     auth = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
     return spotipy.Spotify(auth_manager=auth, language='ja')
-
-
-# ---------- CSV ----------
-
-def read_songs():
-    with open(DATA_DIR / 'songs.csv', newline='', encoding='utf-8') as f:
-        return list(csv.DictReader(f))
-
-
-def write_songs(rows):
-    path = DATA_DIR / 'songs.csv'
-    with open(path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=SONGS_FIELDS)
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({k: row.get(k, '') for k in SONGS_FIELDS})
-    print(f'\n  songs.csv: {len(rows)}件')
 
 
 # ---------- Spotify 検索 ----------
@@ -147,31 +128,38 @@ def main():
     sp = init_spotify()
     print('Spotify API 接続OK')
 
-    songs = read_songs()
-    todo = [s for s in songs if s['artist'] == 'TODO']
-    print(f'全曲: {len(songs)}件, TODO: {len(todo)}件\n')
+    conn = get_connection()
+    total = conn.execute('SELECT COUNT(*) FROM songs').fetchone()[0]
+    todo_rows = conn.execute(
+        "SELECT id, title FROM songs WHERE artist = 'TODO'"
+    ).fetchall()
+    print(f'全曲: {total}件, TODO: {len(todo_rows)}件\n')
 
-    if not todo:
+    if not todo_rows:
         print('更新対象の曲がありません')
+        conn.close()
         return
 
     updated = 0
     not_found = 0
-    for i, song in enumerate(todo, 1):
-        artist, spotify_title = search_artist(sp, song['title'])
+    for i, row in enumerate(todo_rows, 1):
+        artist, spotify_title = search_artist(sp, row['title'])
         if artist:
-            song['artist'] = artist
+            conn.execute(
+                'UPDATE songs SET artist = ? WHERE id = ?',
+                (artist, row['id']),
+            )
             updated += 1
-            print(f'  [{i}/{len(todo)}] {song["title"][:30]:<30} → {artist}')
+            print(f'  [{i}/{len(todo_rows)}] {row["title"][:30]:<30} → {artist}')
         else:
             not_found += 1
-            print(f'  [{i}/{len(todo)}] {song["title"][:30]:<30} → 未検出')
+            print(f'  [{i}/{len(todo_rows)}] {row["title"][:30]:<30} → 未検出')
         time.sleep(0.1)
 
-    print(f'\n更新: {updated}件, 未検出: {not_found}件')
+    conn.commit()
+    conn.close()
 
-    print('\n=== data/ に出力 ===')
-    write_songs(songs)
+    print(f'\n更新: {updated}件, 未検出: {not_found}件')
 
 
 if __name__ == '__main__':

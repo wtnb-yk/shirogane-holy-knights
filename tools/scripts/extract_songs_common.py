@@ -2,7 +2,7 @@
 """
 YouTube コメントから楽曲セットリストを抽出する共通モジュール。
 
-動画リスト: tools/data/ の CSV（videos, video_stream_tags, stream_tags）
+動画リスト: web/data/danin-log.db
 出力先:     tools/data-review/
 
 中間CSV:
@@ -18,8 +18,9 @@ from typing import Dict, List, Tuple
 
 from googleapiclient.discovery import build
 
+from db import get_readonly_connection
+
 ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
 REVIEW_DIR = ROOT / 'data-review'
 
 
@@ -48,31 +49,18 @@ def get_youtube_service():
 # ---------- 動画リスト取得 ----------
 
 def get_tagged_video_ids(tag_name: str) -> List[Tuple[str, str]]:
-    """tools/data/ から指定タグの配信動画リストを取得。(video_id, title) のリスト。"""
-    tag_id = None
-    with open(DATA_DIR / 'stream_tags.csv', newline='', encoding='utf-8') as f:
-        for row in csv.DictReader(f):
-            if row['name'] == tag_name:
-                tag_id = row['id']
-                break
-    if tag_id is None:
-        print(f'  警告: タグ「{tag_name}」が stream_tags.csv に見つかりません')
-        return []
-
-    tagged_ids = set()
-    with open(DATA_DIR / 'video_stream_tags.csv', newline='', encoding='utf-8') as f:
-        for row in csv.DictReader(f):
-            if row['tag_id'] == tag_id:
-                tagged_ids.add(row['video_id'])
-
-    videos = []
-    with open(DATA_DIR / 'videos.csv', newline='', encoding='utf-8') as f:
-        for row in csv.DictReader(f):
-            if row['id'] in tagged_ids:
-                videos.append((row['id'], row['title'], row['published_at']))
-
-    videos.sort(key=lambda x: x[2], reverse=True)
-    return [(vid, title) for vid, title, _ in videos]
+    """DB から指定タグの配信動画リストを取得。(video_id, title) のリスト。"""
+    conn = get_readonly_connection()
+    rows = conn.execute("""
+        SELECT v.id, v.title, v.published_at
+        FROM videos v
+        JOIN video_stream_tags vst ON v.id = vst.video_id
+        JOIN stream_tags st ON vst.tag_id = st.id
+        WHERE st.name = ?
+        ORDER BY v.published_at DESC
+    """, (tag_name,)).fetchall()
+    conn.close()
+    return [(r['id'], r['title']) for r in rows]
 
 
 # ---------- YouTube コメント解析 ----------

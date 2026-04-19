@@ -6,7 +6,6 @@ web := "web"
 setup:
     corepack enable
     cd {{web}} && pnpm install
-    just sync-data-local
 
 # 開発サーバー起動
 dev:
@@ -27,15 +26,6 @@ format:
 # フォーマットチェック
 format-check:
     cd {{web}} && pnpm format:check
-
-# データ同期: S3 から取得
-sync-data:
-    aws s3 sync s3://${AWS_S3_BUCKET}/csv/ {{web}}/data/
-
-# データ同期: ローカルの tools/data/ からコピー
-sync-data-local:
-    mkdir -p {{web}}/data
-    cp tools/data/*.csv {{web}}/data/
 
 # ---------- データ管理（tools/justfile のエイリアス） ----------
 
@@ -59,7 +49,7 @@ tags:
 tags-all:
     cd tools && just tags-all
 
-# タグインポート（レビュー済み中間CSV → video_stream_tags.csv）
+# タグインポート（レビュー済み中間CSV → video_stream_tags）
 tags-import:
     cd tools && just tags-import
 
@@ -79,7 +69,7 @@ songs-stream:
 songs-live:
     cd tools && just songs-live
 
-# 楽曲インポート（レビュー済み中間CSV → 正規化CSV）
+# 楽曲インポート（レビュー済み中間CSV → songs + junction）
 songs-import-stream:
     cd tools && just songs-import-stream
 
@@ -90,6 +80,6 @@ songs-import-live:
 artists:
     cd tools && just artists
 
-# tools/data/ → web/data/ に同期
-data-sync:
-    just sync-data-local
+# CSV → SQLite 変換（初回 or 再構築時のみ）
+migrate:
+    cd tools && just migrate

@@ -29,7 +29,7 @@ if (!AWS_S3_BUCKET) {
     console.log(`Using existing local data in ${dataDir}`);
   } else {
     console.warn(
-      `Warning: ${dataDir} does not exist. Run "just sync-data-local" to copy CSV files.`
+      `Warning: ${dataDir} does not exist. Run "just migrate" to create the database.`
     );
   }
 

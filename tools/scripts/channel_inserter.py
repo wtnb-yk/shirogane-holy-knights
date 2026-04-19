@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 """
-チャンネルIDを指定して channels.csv に追加/更新する。
-
-既存データ: tools/data/channels.csv
-出力先:     tools/data/channels.csv
+チャンネルIDを指定して channels テーブルに追加/更新する。
 
 使い方:
   YOUTUBE_API_KEY=xxx python3 channel_inserter.py <CHANNEL_ID> [<CHANNEL_ID> ...]
 """
 
-import csv
 import os
 import sys
 from pathlib import Path
@@ -17,10 +13,9 @@ from pathlib import Path
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
+from db import get_connection
 
-CHANNELS_FIELDS = ['id', 'title', 'handle', 'icon_url']
+ROOT = Path(__file__).resolve().parent.parent  # tools/
 
 
 def load_api_key():
@@ -34,26 +29,6 @@ def load_api_key():
             if line.startswith('YOUTUBE_API_KEY=') and not line.startswith('#'):
                 return line.split('=', 1)[1].strip().strip("'\"")
     return ''
-
-
-def read_channels():
-    path = DATA_DIR / 'channels.csv'
-    result = {}
-    if path.exists():
-        with open(path, newline='', encoding='utf-8') as f:
-            for row in csv.DictReader(f):
-                result[row['id']] = row
-    return result
-
-
-def write_channels(rows):
-    path = DATA_DIR / 'channels.csv'
-    with open(path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=CHANNELS_FIELDS)
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({k: row.get(k, '') for k in CHANNELS_FIELDS})
-    print(f'  channels.csv: {len(rows)}件')
 
 
 def fetch_channel(youtube, channel_id):
@@ -95,8 +70,10 @@ def main():
         sys.exit(1)
 
     youtube = build('youtube', 'v3', developerKey=api_key)
-    channels = read_channels()
-    print(f'既存チャンネル: {len(channels)}件')
+
+    conn = get_connection()
+    existing_count = conn.execute('SELECT COUNT(*) FROM channels').fetchone()[0]
+    print(f'既存チャンネル: {existing_count}件')
 
     channel_ids = [arg.strip() for arg in sys.argv[1:]]
     print(f'\n{len(channel_ids)}件のチャンネルを取得中...')
@@ -106,14 +83,21 @@ def main():
     for cid in channel_ids:
         info = fetch_channel(youtube, cid)
         if info:
-            if cid in channels:
+            existing = conn.execute(
+                'SELECT id FROM channels WHERE id = ?', (cid,)
+            ).fetchone()
+            if existing:
                 updated += 1
             else:
                 added += 1
-            channels[cid] = info
+            conn.execute(
+                'INSERT OR REPLACE INTO channels (id, title, handle, icon_url) VALUES (?, ?, ?, ?)',
+                (info['id'], info['title'], info['handle'], info['icon_url']),
+            )
 
-    print(f'\n=== data/ に出力 ===')
-    write_channels(list(channels.values()))
+    conn.commit()
+    conn.close()
+
     print(f'\n追加: {added}件, 更新: {updated}件')
 
 

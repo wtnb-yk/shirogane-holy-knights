@@ -2,6 +2,12 @@
 
 scripts := "scripts"
 
+# ---------- データベース ----------
+
+# CSV → SQLite 変換
+migrate:
+    cd {{scripts}} && python3 migrate_csv_to_sqlite.py
+
 # ---------- YouTube データ取得 ----------
 
 # 全件取得（白銀ノエルch）

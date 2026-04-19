@@ -1,18 +1,5 @@
-import { readCsv } from './csv-reader';
-import type {
-  ChannelRow,
-  VideoRow,
-  VideoTypeRow,
-  VideoVideoTypeRow,
-  StreamDetailRow,
-  HiddenStreamRow,
-  StreamTagRow,
-  VideoStreamTagRow,
-  Stream,
-  Channel,
-  StreamTag,
-  StreamTagWithCount,
-} from './types';
+import { getDb } from './db';
+import type { Stream, Channel, StreamTag, StreamTagWithCount } from './types';
 
 let cachedStreams: Stream[] | null = null;
 
@@ -27,83 +14,95 @@ let cachedStreams: Stream[] | null = null;
 export function getStreams(): Stream[] {
   if (cachedStreams) return cachedStreams;
 
-  const videos = readCsv<VideoRow>('videos.csv');
-  const videoTypes = readCsv<VideoTypeRow>('video_types.csv');
-  const videoVideoTypes = readCsv<VideoVideoTypeRow>('video_video_types.csv');
-  const streamDetails = readCsv<StreamDetailRow>('stream_details.csv');
-  const hiddenStreams = readCsv<HiddenStreamRow>('hidden_streams.csv');
-  const channels = readCsv<ChannelRow>('channels.csv');
-  const streamTagRows = readCsv<StreamTagRow>('stream_tags.csv');
-  const videoStreamTags = readCsv<VideoStreamTagRow>('video_stream_tags.csv');
+  const db = getDb();
 
-  // stream の video_type_id を取得
-  const streamTypeId = videoTypes.find((vt) => vt.type === 'stream')?.id ?? '1';
+  // 配信一覧（チャンネル結合済み、startedAt降順）
+  const rows = db
+    .prepare(
+      `
+    SELECT
+      v.id,
+      v.title,
+      v.thumbnail_url,
+      v.duration,
+      c.id AS channel_id,
+      c.title AS channel_title,
+      c.handle AS channel_handle,
+      c.icon_url AS channel_icon_url,
+      v.published_at,
+      COALESCE(sd.started_at, v.published_at) AS started_at
+    FROM videos v
+    JOIN video_video_types vvt ON v.id = vvt.video_id
+    JOIN video_types vt ON vvt.video_type_id = vt.id
+    JOIN channels c ON v.channel_id = c.id
+    LEFT JOIN stream_details sd ON v.id = sd.video_id
+    WHERE vt.type = 'stream'
+      AND v.id NOT IN (SELECT video_id FROM hidden_streams)
+    ORDER BY COALESCE(sd.started_at, v.published_at) DESC
+  `,
+    )
+    .all() as {
+    id: string;
+    title: string;
+    thumbnail_url: string;
+    duration: string;
+    channel_id: string;
+    channel_title: string;
+    channel_handle: string;
+    channel_icon_url: string;
+    published_at: string;
+    started_at: string;
+  }[];
 
-  // 配信動画IDのセット
-  const streamVideoIds = new Set(
-    videoVideoTypes
-      .filter((vvt) => vvt.video_type_id === streamTypeId)
-      .map((vvt) => vvt.video_id),
-  );
+  // 全配信のタグを一括取得
+  const tagRows = db
+    .prepare(
+      `
+    SELECT vst.video_id, st.id AS tag_id, st.name AS tag_name
+    FROM video_stream_tags vst
+    JOIN stream_tags st ON vst.tag_id = st.id
+  `,
+    )
+    .all() as { video_id: string; tag_id: number; tag_name: string }[];
 
-  // 非表示動画IDのセット
-  const hiddenVideoIds = new Set(hiddenStreams.map((h) => h.video_id));
-
-  // ルックアップマップ
-  const streamDetailMap = new Map(streamDetails.map((sd) => [sd.video_id, sd]));
-  const channelMap = new Map(channels.map((c) => [c.id, c]));
-  const tagMap = new Map(streamTagRows.map((t) => [t.id, t]));
-
-  // video_id → StreamTag[] マップ
   const videoTagsMap = new Map<string, StreamTag[]>();
-  for (const vst of videoStreamTags) {
-    const tagRow = tagMap.get(vst.tag_id);
-    if (!tagRow) continue;
-    const tags = videoTagsMap.get(vst.video_id) ?? [];
-    tags.push({ id: Number(tagRow.id), name: tagRow.name });
-    videoTagsMap.set(vst.video_id, tags);
+  for (const t of tagRows) {
+    const tags = videoTagsMap.get(t.video_id) ?? [];
+    tags.push({ id: t.tag_id, name: t.tag_name });
+    videoTagsMap.set(t.video_id, tags);
   }
 
-  // フィルタ + 結合
-  const streams: Stream[] = videos
-    .filter((v) => streamVideoIds.has(v.id) && !hiddenVideoIds.has(v.id))
-    .map((v) => {
-      const detail = streamDetailMap.get(v.id);
-      const channelRow = channelMap.get(v.channel_id);
-      const channel: Channel = channelRow
-        ? {
-            id: channelRow.id,
-            title: channelRow.title,
-            handle: channelRow.handle,
-            iconUrl: channelRow.icon_url,
-          }
-        : { id: v.channel_id, title: '', handle: '', iconUrl: '' };
+  cachedStreams = rows.map((r) => {
+    const channel: Channel = {
+      id: r.channel_id,
+      title: r.channel_title,
+      handle: r.channel_handle,
+      iconUrl: r.channel_icon_url,
+    };
+    return {
+      id: r.id,
+      title: r.title,
+      thumbnailUrl: r.thumbnail_url,
+      duration: r.duration,
+      channel,
+      publishedAt: r.published_at,
+      startedAt: r.started_at,
+      tags: videoTagsMap.get(r.id) ?? [],
+    };
+  });
 
-      return {
-        id: v.id,
-        title: v.title,
-        thumbnailUrl: v.thumbnail_url,
-        duration: v.duration,
-        channel,
-        publishedAt: v.published_at,
-        startedAt: detail?.started_at ?? v.published_at,
-        tags: videoTagsMap.get(v.id) ?? [],
-      };
-    })
-    .sort((a, b) => b.startedAt.localeCompare(a.startedAt));
-
-  cachedStreams = streams;
-  return streams;
+  return cachedStreams;
 }
 
 /**
  * 配信タグ一覧を取得（フィルタUI用）
  */
 export function getStreamTags(): StreamTag[] {
-  const tags = readCsv<StreamTagRow>('stream_tags.csv');
-  return tags
-    .map((t) => ({ id: Number(t.id), name: t.name }))
-    .sort((a, b) => a.id - b.id);
+  const db = getDb();
+  const rows = db
+    .prepare('SELECT id, name FROM stream_tags ORDER BY id')
+    .all() as { id: number; name: string }[];
+  return rows.map((t) => ({ id: t.id, name: t.name }));
 }
 
 /**
@@ -112,17 +111,22 @@ export function getStreamTags(): StreamTag[] {
  * カテゴリタブ等の表示優先度判定に使う。
  */
 export function getStreamTagsWithCount(): StreamTagWithCount[] {
-  const streams = getStreams();
-  const tags = getStreamTags();
-
-  const countMap = new Map<number, number>();
-  for (const s of streams) {
-    for (const t of s.tags) {
-      countMap.set(t.id, (countMap.get(t.id) ?? 0) + 1);
-    }
-  }
-
-  return tags
-    .map((t) => ({ ...t, count: countMap.get(t.id) ?? 0 }))
-    .sort((a, b) => b.count - a.count);
+  const db = getDb();
+  const rows = db
+    .prepare(
+      `
+    SELECT st.id, st.name, COUNT(vst.video_id) AS count
+    FROM stream_tags st
+    LEFT JOIN video_stream_tags vst ON st.id = vst.tag_id
+    LEFT JOIN video_video_types vvt ON vst.video_id = vvt.video_id
+    LEFT JOIN video_types vt ON vvt.video_type_id = vt.id
+    LEFT JOIN hidden_streams hs ON vst.video_id = hs.video_id
+    WHERE (vt.type = 'stream' OR vt.type IS NULL)
+      AND hs.video_id IS NULL
+    GROUP BY st.id, st.name
+    ORDER BY count DESC
+  `,
+    )
+    .all() as { id: number; name: string; count: number }[];
+  return rows.map((t) => ({ id: t.id, name: t.name, count: t.count }));
 }

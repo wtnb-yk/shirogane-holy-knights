@@ -1,80 +1,60 @@
 #!/usr/bin/env python3
 """
-レビュー済み中間CSVを video_stream_tags.csv に変換する。
+レビュー済み中間CSVを video_stream_tags テーブルに反映する。
 
 入力: tools/data-review/extracted_tags.csv（レビュー済み）
-参照: tools/data/stream_tags.csv（タグマスタ）
-      tools/data/video_stream_tags.csv（既存タグ）
-出力: tools/data/video_stream_tags.csv
+参照: stream_tags テーブル（タグマスタ）
+出力: video_stream_tags テーブル
 
 処理:
   - tags 列のタグ名 → tag_id に変換
-  - 既存タグとマージ（中間CSVに含まれる動画は上書き、それ以外は維持）
+  - 中間CSVに含まれる動画のタグは上書き、それ以外は維持
 
 ワークフロー:
   1. just tags          → extracted_tags.csv 出力
   2. [人手レビュー]     → extracted_tags.csv を編集
-  3. just tags-import   → video_stream_tags.csv に反映
+  3. just tags-import   → video_stream_tags に反映
 """
 
 import csv
 import sys
-from collections import defaultdict
 from pathlib import Path
-from typing import Dict
+
+from db import get_connection
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
 REVIEW_DIR = ROOT / 'data-review'
 
 
-def read_csv_list(directory, filename):
-    path = directory / filename
-    if not path.exists():
-        return []
-    with open(path, newline='', encoding='utf-8') as f:
-        return list(csv.DictReader(f))
-
-
-def write_csv(filename, fieldnames, rows):
-    path = DATA_DIR / filename
-    with open(path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({k: row.get(k, '') for k in fieldnames})
-    print(f'  {filename}: {len(rows)}件')
-
-
-def load_tag_name_to_id() -> Dict[str, int]:
-    """stream_tags.csv → {tag_name: tag_id}"""
-    rows = read_csv_list(DATA_DIR, 'stream_tags.csv')
-    return {r['name']: int(r['id']) for r in rows}
-
-
 def main():
+    conn = get_connection()
+
     # タグマスタ読み込み
-    name_to_id = load_tag_name_to_id()
+    tag_rows = conn.execute('SELECT id, name FROM stream_tags').fetchall()
+    name_to_id = {r['name']: r['id'] for r in tag_rows}
     print(f'タグマスタ: {len(name_to_id)}種')
 
     # 中間CSV読み込み
-    extracted = read_csv_list(REVIEW_DIR, 'extracted_tags.csv')
+    extracted_path = REVIEW_DIR / 'extracted_tags.csv'
+    if not extracted_path.exists():
+        print(f'エラー: {extracted_path} が見つかりません')
+        sys.exit(1)
+
+    with open(extracted_path, newline='', encoding='utf-8') as f:
+        extracted = list(csv.DictReader(f))
     if not extracted:
-        print(f'エラー: {REVIEW_DIR / "extracted_tags.csv"} が見つからないか空です')
+        print(f'エラー: {extracted_path} が空です')
         sys.exit(1)
     print(f'中間CSV: {len(extracted)}件')
 
-    # 既存タグ読み込み
-    existing_rows = read_csv_list(DATA_DIR, 'video_stream_tags.csv')
-    print(f'既存タグ: {len(existing_rows)}件')
+    # 既存タグ件数
+    existing_count = conn.execute('SELECT COUNT(*) FROM video_stream_tags').fetchone()[0]
+    print(f'既存タグ: {existing_count}件')
 
     # 中間CSVに含まれる video_id を収集
     reviewed_ids = {row['video_id'] for row in extracted}
 
-    # 既存タグのうち、レビュー対象外の動画のタグを維持
-    kept_rows = [r for r in existing_rows if r['video_id'] not in reviewed_ids]
-
-    # 中間CSVからタグ名 → tag_id に変換
+    # タグ名 → tag_id に変換
     new_rows = []
     errors = []
     for row in extracted:
@@ -91,32 +71,34 @@ def main():
             if tag_id is None:
                 errors.append((vid, tag_name))
                 continue
-            new_rows.append({'video_id': vid, 'tag_id': str(tag_id)})
+            new_rows.append((vid, tag_id))
 
     if errors:
         print(f'\n=== 不明なタグ名（{len(errors)}件） ===')
         for vid, name in errors:
             print(f'  {vid}: "{name}"')
         print(f'\n有効なタグ名: {", ".join(sorted(name_to_id.keys()))}')
+        conn.close()
         sys.exit(1)
 
-    # マージ
-    merged = kept_rows + new_rows
+    # トランザクション内でレビュー対象の既存タグを削除 → 新規挿入
+    conn.execute('BEGIN')
+    for vid in reviewed_ids:
+        conn.execute('DELETE FROM video_stream_tags WHERE video_id = ?', (vid,))
 
-    # video_id, tag_id でソート・重複排除
-    seen = set()
-    deduped = []
-    for row in sorted(merged, key=lambda r: (r['video_id'], int(r['tag_id']))):
-        key = (row['video_id'], row['tag_id'])
-        if key not in seen:
-            seen.add(key)
-            deduped.append(row)
+    for vid, tag_id in new_rows:
+        conn.execute(
+            'INSERT OR IGNORE INTO video_stream_tags (video_id, tag_id) VALUES (?, ?)',
+            (vid, tag_id),
+        )
+    conn.execute('COMMIT')
 
-    print(f'\n=== data/ に出力 ===')
-    write_csv('video_stream_tags.csv', ['video_id', 'tag_id'], deduped)
+    final_count = conn.execute('SELECT COUNT(*) FROM video_stream_tags').fetchone()[0]
+    tagged_videos = len({vid for vid, _ in new_rows})
+    conn.close()
 
-    tagged_videos = len({r['video_id'] for r in new_rows})
-    print(f'\nレビュー対象: {len(extracted)}件, タグ付与: {tagged_videos}件, タグなし: {len(extracted) - tagged_videos}件')
+    print(f'\nvideo_stream_tags: {final_count}件')
+    print(f'レビュー対象: {len(extracted)}件, タグ付与: {tagged_videos}件, タグなし: {len(extracted) - tagged_videos}件')
 
 
 if __name__ == '__main__':

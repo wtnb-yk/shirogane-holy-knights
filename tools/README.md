@@ -1,13 +1,12 @@
 # tools/ — データ管理ツール
 
-YouTube API / Spotify API からデータを取得・加工し、CSV マスタデータを管理するスクリプト群。
+YouTube API / Spotify API からデータを取得・加工し、SQLite マスタデータ（`web/data/danin-log.db`）を管理するスクリプト群。
 
 ## ディレクトリ構成
 
 ```
 tools/
 ├── scripts/          # Python スクリプト
-├── data/             # コンテンツマスタ CSV
 ├── data-review/      # 中間 CSV（人手レビュー用、gitignore）
 ├── config/           # .env.template 等
 ├── justfile          # データ管理コマンド
@@ -26,13 +25,15 @@ cp config/.env.template config/.env
 
 | スクリプト | 役割 |
 |-----------|------|
-| `youtube_data_fetcher.py` | YouTube API → channels / videos / stream_details / video_video_types を出力 |
-| `channel_inserter.py` | チャンネル ID 指定 → YouTube API → channels.csv に追加/更新 |
+| `youtube_data_fetcher.py` | YouTube API → channels / videos / stream_details / video_video_types を更新 |
+| `channel_inserter.py` | チャンネル ID 指定 → YouTube API → channels に追加/更新 |
 | `stream_tag_extractor.py` | 配信タイトルからタグ自動分類 → 中間 CSV。`--all` で全件、`--verify` で精度レポート |
-| `tags_importer.py` | レビュー済み中間 CSV → video_stream_tags.csv に変換 |
+| `tags_importer.py` | レビュー済み中間 CSV → video_stream_tags に反映 |
 | `extract_songs.py` | YouTube コメントから楽曲セットリスト抽出 → 中間 CSV |
-| `songs_importer.py` | レビュー済み中間 CSV → songs.csv + junction CSV に正規化 |
-| `update_song_artists.py` | Spotify API で songs.csv の artist='TODO' を補完 |
+| `songs_importer.py` | レビュー済み中間 CSV → songs + junction テーブルに正規化 |
+| `update_song_artists.py` | Spotify API で songs の artist='TODO' を補完 |
+| `migrate_csv_to_sqlite.py` | CSV → SQLite 一括変換（初回 or 再構築時） |
+| `db.py` | 共有 SQLite 接続ヘルパー |
 
 ---
 
@@ -41,11 +42,8 @@ cp config/.env.template config/.env
 ### 1. 動画データ更新
 
 ```bash
-# YouTube から最新データ取得 → data/
+# YouTube から最新データ取得 → DB 更新
 just fetch
-
-# web/data/ に同期
-just data-sync
 ```
 
 ### 2. タグ分類
@@ -74,16 +72,13 @@ video_id,video_title,published_at,tags
 ```bash
 # Step 2: 中間 CSV を人手でレビュー・修正
 #   - 不要なタグを削除、足りないタグを追加
-#   - タグ名は stream_tags.csv のマスタ名と一致させる
+#   - タグ名は stream_tags テーブルのマスタ名と一致させる
 #   - data-review/extracted_tags.csv を直接編集
 ```
 
 ```bash
-# Step 3: インポート → video_stream_tags.csv を更新
+# Step 3: インポート → video_stream_tags を更新
 just tags-import
-
-# web/data/ に同期
-just data-sync
 ```
 
 精度検証:
@@ -92,7 +87,7 @@ just data-sync
 # 全件再分類 → 人手タグとの precision/recall レポート
 just tags-verify
 
-# キーワード追加は data/tag_keywords.csv を編集 → 再度 --verify
+# キーワード追加は tag_keywords テーブルを編集 → 再度 --verify
 ```
 
 ### 3. 楽曲データ更新
@@ -122,15 +117,12 @@ cKVqUyFmM_o,【#ノエル2000日記念】...,KICK BACK,米津玄師,1530
 ```
 
 ```bash
-# Step 3: インポート → songs.csv + junction CSV を更新
-just songs-import-stream     # → songs.csv + stream_songs.csv
-just songs-import-live       # → songs.csv + concert_songs.csv
+# Step 3: インポート → songs + junction テーブルを更新
+just songs-import-stream     # → songs + stream_songs
+just songs-import-live       # → songs + concert_songs
 ```
 
 ```bash
 # Step 4: artist='TODO' の新曲を Spotify API で補完
 just artists
-
-# web/data/ に同期
-just data-sync
 ```

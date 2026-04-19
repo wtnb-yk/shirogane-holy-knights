@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
-レビュー済み中間CSVを正規化CSVに変換する。
+レビュー済み中間CSVを正規化して songs + junction テーブルに反映する。
 
 入力: tools/data-review/extracted_songs_stream.csv or extracted_songs_live.csv（レビュー済み）
-参照: tools/data/songs.csv（既存曲マスタ）
-出力: tools/data/songs.csv, tools/data/stream_songs.csv or concert_songs.csv
+参照: songs テーブル（既存曲マスタ）
+出力: songs テーブル, stream_songs or concert_songs テーブル
 
 処理:
-  - song_title で既存 songs.csv を照合
+  - song_title で既存 songs を照合
   - 既存曲 → song_id 再利用
   - 新曲 → UUID 生成、artist は中間CSVの値（なければ 'TODO'）
-  - junction テーブル（song_id, video_id, start_seconds）を生成
-  - 既存 junction とマージ（重複排除）
+  - junction テーブルに追加（重複排除）
 
 使い方:
   python3 songs_importer.py stream   # 歌枠
@@ -23,29 +22,11 @@ import re
 import sys
 import uuid
 from pathlib import Path
-from typing import Dict, List, Tuple
+
+from db import get_connection
 
 ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
 REVIEW_DIR = ROOT / 'data-review'
-
-
-def read_csv_list(directory, filename):
-    path = directory / filename
-    if not path.exists():
-        return []
-    with open(path, newline='', encoding='utf-8') as f:
-        return list(csv.DictReader(f))
-
-
-def write_csv(filename, fieldnames, rows):
-    path = DATA_DIR / filename
-    with open(path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({k: row.get(k, '') for k in fieldnames})
-    print(f'  {filename}: {len(rows)}件')
 
 
 def normalize_title(title: str) -> str:
@@ -64,39 +45,43 @@ def main():
     mode = sys.argv[1]
     if mode == 'stream':
         input_file = 'extracted_songs_stream.csv'
-        junction_file = 'stream_songs.csv'
+        junction_table = 'stream_songs'
     else:
         input_file = 'extracted_songs_live.csv'
-        junction_file = 'concert_songs.csv'
+        junction_table = 'concert_songs'
 
     # 中間CSV読み込み（data-review/）
-    extracted = read_csv_list(REVIEW_DIR, input_file)
+    extracted_path = REVIEW_DIR / input_file
+    if not extracted_path.exists():
+        print(f'エラー: {extracted_path} が見つかりません')
+        sys.exit(1)
+
+    with open(extracted_path, newline='', encoding='utf-8') as f:
+        extracted = list(csv.DictReader(f))
     if not extracted:
-        print(f'エラー: {REVIEW_DIR / input_file} が見つからないか空です')
+        print(f'エラー: {extracted_path} が空です')
         sys.exit(1)
     print(f'中間CSV: {len(extracted)}件 ({input_file})')
 
+    conn = get_connection()
+
     # 既存曲マスタ読み込み
-    songs_master = read_csv_list(DATA_DIR, 'songs.csv')
+    songs_rows = conn.execute('SELECT id, title FROM songs').fetchall()
     songs_index = {}  # normalized_title → song_id
-    for row in songs_master:
+    for row in songs_rows:
         key = normalize_title(row['title'])
         songs_index[key] = row['id']
-    print(f'既存曲マスタ: {len(songs_master)}件')
+    print(f'既存曲マスタ: {len(songs_rows)}件')
 
-    # 既存 junction 読み込み
-    existing_junction = read_csv_list(DATA_DIR, junction_file)
-    existing_keys = {
-        (row['song_id'], row['video_id'], row['start_seconds'])
-        for row in existing_junction
-    }
-    print(f'既存 junction: {len(existing_junction)}件 ({junction_file})')
+    # 既存 junction 件数
+    existing_count = conn.execute(f'SELECT COUNT(*) FROM {junction_table}').fetchone()[0]
+    print(f'既存 junction: {existing_count}件 ({junction_table})')
 
-    # 正規化
+    # 正規化・挿入
     new_songs = 0
-    junction_rows = list(existing_junction)
     junction_added = 0
 
+    conn.execute('BEGIN')
     for row in extracted:
         title = row['song_title']
         artist = row.get('artist', '') or 'TODO'
@@ -106,29 +91,29 @@ def main():
         if not song_id:
             song_id = str(uuid.uuid4())
             songs_index[key] = song_id
-            songs_master.append({
-                'id': song_id,
-                'title': title,
-                'artist': artist,
-            })
+            conn.execute(
+                'INSERT INTO songs (id, title, artist) VALUES (?, ?, ?)',
+                (song_id, title, artist),
+            )
             new_songs += 1
 
-        junction_row = {
-            'song_id': song_id,
-            'video_id': row['video_id'],
-            'start_seconds': row['start_seconds'],
-        }
-        junction_key = (song_id, row['video_id'], row['start_seconds'])
-        if junction_key not in existing_keys:
-            junction_rows.append(junction_row)
-            existing_keys.add(junction_key)
+        try:
+            conn.execute(
+                f'INSERT INTO {junction_table} (song_id, video_id, start_seconds) VALUES (?, ?, ?)',
+                (song_id, row['video_id'], int(row['start_seconds'])),
+            )
             junction_added += 1
+        except Exception:
+            pass  # 重複は無視
 
-    # 出力
-    print(f'\n=== data/ に出力 ===')
-    write_csv('songs.csv', ['id', 'title', 'artist'], songs_master)
-    write_csv(junction_file, ['song_id', 'video_id', 'start_seconds'], junction_rows)
-    print(f'\n新曲: {new_songs}件, junction追加: {junction_added}件')
+    conn.execute('COMMIT')
+
+    final_songs = conn.execute('SELECT COUNT(*) FROM songs').fetchone()[0]
+    final_junction = conn.execute(f'SELECT COUNT(*) FROM {junction_table}').fetchone()[0]
+    conn.close()
+
+    print(f'\nsongs: {final_songs}件, {junction_table}: {final_junction}件')
+    print(f'新曲: {new_songs}件, junction追加: {junction_added}件')
 
 
 if __name__ == '__main__':

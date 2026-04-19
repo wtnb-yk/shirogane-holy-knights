@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """
-YouTube Data API から動画データを取得し、既存データとマージして出力する。
+YouTube Data API から動画データを取得し、SQLite に保存する。
 
-既存データ: tools/data/
-出力先:     tools/data/
-
-出力CSV（07-csv-design.md 準拠）:
-  - channels.csv          id, title, handle, icon_url
-  - videos.csv            id, title, thumbnail_url, duration, channel_id, published_at
-  - video_video_types.csv video_id, video_type_id
-  - stream_details.csv    video_id, started_at
+出力: web/data/danin-log.db の以下テーブル
+  - channels
+  - videos
+  - video_video_types
+  - stream_details
 
 使い方:
   # 全件取得（白銀ノエルch）
@@ -19,7 +16,6 @@ YouTube Data API から動画データを取得し、既存データとマージ
   YOUTUBE_API_KEY=xxx python3 youtube_data_fetcher.py <video_id>
 """
 
-import csv
 import os
 import re
 import sys
@@ -28,12 +24,13 @@ from pathlib import Path
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+from db import get_connection
+
 ROOT = Path(__file__).resolve().parent.parent  # tools/
-DATA_DIR = ROOT / 'data'
 
 NOEL_CHANNEL_ID = 'UCdyqAaZDKHXg4Ahi7VENThQ'
 
-# video_types.csv: 1=stream, 2=video
+# video_types: 1=stream, 2=video
 VIDEO_TYPE_STREAM = 1
 VIDEO_TYPE_VIDEO = 2
 
@@ -55,42 +52,6 @@ def load_api_key():
     return ''
 
 
-def read_csv_keyed(filename, key_field):
-    """tools/data/ の CSV を key_field でインデックスした OrderedDict 風 dict で返す。"""
-    path = DATA_DIR / filename
-    result = {}
-    if path.exists():
-        with open(path, newline='', encoding='utf-8') as f:
-            for row in csv.DictReader(f):
-                result[row[key_field]] = row
-    return result
-
-
-def write_csv(filename, fieldnames, rows):
-    """data/ に CSV を書き出す。"""
-    path = DATA_DIR / filename
-    with open(path, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({k: row.get(k, '') for k in fieldnames})
-    print(f'  {filename}: {len(rows)}件')
-
-
-def load_premiere_ids():
-    """プレミア公開動画 ID を set で返す。"""
-    path = DATA_DIR / 'premiere_videos.csv'
-    ids = set()
-    if path.exists():
-        with open(path, newline='', encoding='utf-8') as f:
-            for row in csv.DictReader(f):
-                vid = row.get('video_id', '').strip()
-                if vid:
-                    ids.add(vid)
-        print(f'プレミア公開動画: {len(ids)}件')
-    return ids
-
-
 def iso_duration_to_hhmmss(d):
     """ISO 8601 duration (PT1H30M15S) → HH:MM:SS"""
     h = int(m.group(1)) if (m := re.search(r'(\d+)H', d)) else 0
@@ -99,18 +60,10 @@ def iso_duration_to_hhmmss(d):
     return f'{h:02d}:{mi:02d}:{s:02d}'
 
 
-def merge(existing, new_rows, key_field):
-    """既存データに新データを upsert。既存の並び順を維持し、新規は末尾に追加。"""
-    merged = dict(existing)
-    for row in new_rows:
-        merged[row[key_field]] = row
-    return list(merged.values())
-
-
 # ---------- YouTube API ----------
 
 def fetch_channel_info(youtube, channel_id):
-    """チャンネル情報 → channels.csv 形式の dict"""
+    """チャンネル情報 → dict"""
     resp = youtube.channels().list(
         part='snippet,brandingSettings',
         id=channel_id,
@@ -197,7 +150,7 @@ def fetch_video_details(youtube, video_ids, channel_id, premiere_ids):
 
             vv_types.append({
                 'video_id': vid,
-                'video_type_id': str(VIDEO_TYPE_STREAM if is_stream else VIDEO_TYPE_VIDEO),
+                'video_type_id': VIDEO_TYPE_STREAM if is_stream else VIDEO_TYPE_VIDEO,
             })
 
             if is_stream:
@@ -223,15 +176,18 @@ def main():
         sys.exit(1)
 
     youtube = build('youtube', 'v3', developerKey=api_key)
-    premiere_ids = load_premiere_ids()
 
-    # 既存データ読み込み
-    existing_channels = read_csv_keyed('channels.csv', 'id')
-    existing_videos = read_csv_keyed('videos.csv', 'id')
-    existing_vv_types = read_csv_keyed('video_video_types.csv', 'video_id')
-    existing_stream_details = read_csv_keyed('stream_details.csv', 'video_id')
+    conn = get_connection()
 
-    print(f'既存データ: channels={len(existing_channels)}, videos={len(existing_videos)}')
+    # プレミア公開動画 ID
+    premiere_rows = conn.execute('SELECT video_id FROM premiere_videos').fetchall()
+    premiere_ids = {r['video_id'] for r in premiere_rows}
+    print(f'プレミア公開動画: {len(premiere_ids)}件')
+
+    # 既存データ件数
+    existing_videos = conn.execute('SELECT COUNT(*) FROM videos').fetchone()[0]
+    existing_channels = conn.execute('SELECT COUNT(*) FROM channels').fetchone()[0]
+    print(f'既存データ: channels={existing_channels}, videos={existing_videos}')
 
     # YouTube API からデータ取得
     if len(sys.argv) > 1:
@@ -259,20 +215,48 @@ def main():
         if info:
             new_channels.append(info)
 
-    # マージ
-    channels = merge(existing_channels, new_channels, 'id')
-    videos = merge(existing_videos, new_videos, 'id')
-    vv_types = merge(existing_vv_types, new_vv_types, 'video_id')
-    s_details = merge(existing_stream_details, new_stream_details, 'video_id')
+    # DB に書き込み（INSERT OR REPLACE で upsert）
+    conn.execute('BEGIN')
 
-    # 書き出し
-    print(f'\n=== data/ に出力 ===')
-    write_csv('channels.csv', ['id', 'title', 'handle', 'icon_url'], channels)
-    write_csv('videos.csv', ['id', 'title', 'thumbnail_url', 'duration', 'channel_id', 'published_at'], videos)
-    write_csv('video_video_types.csv', ['video_id', 'video_type_id'], vv_types)
-    write_csv('stream_details.csv', ['video_id', 'started_at'], s_details)
+    for ch in new_channels:
+        conn.execute(
+            'INSERT OR REPLACE INTO channels (id, title, handle, icon_url) VALUES (?, ?, ?, ?)',
+            (ch['id'], ch['title'], ch['handle'], ch['icon_url']),
+        )
 
-    print('\n完了')
+    for v in new_videos:
+        conn.execute(
+            'INSERT OR REPLACE INTO videos (id, title, thumbnail_url, duration, channel_id, published_at) VALUES (?, ?, ?, ?, ?, ?)',
+            (v['id'], v['title'], v['thumbnail_url'], v['duration'], v['channel_id'], v['published_at']),
+        )
+
+    for vvt in new_vv_types:
+        conn.execute(
+            'INSERT OR REPLACE INTO video_video_types (video_id, video_type_id) VALUES (?, ?)',
+            (vvt['video_id'], vvt['video_type_id']),
+        )
+
+    for sd in new_stream_details:
+        conn.execute(
+            'INSERT OR REPLACE INTO stream_details (video_id, started_at) VALUES (?, ?)',
+            (sd['video_id'], sd['started_at']),
+        )
+
+    conn.execute('COMMIT')
+
+    # 結果表示
+    final_channels = conn.execute('SELECT COUNT(*) FROM channels').fetchone()[0]
+    final_videos = conn.execute('SELECT COUNT(*) FROM videos').fetchone()[0]
+    final_vvt = conn.execute('SELECT COUNT(*) FROM video_video_types').fetchone()[0]
+    final_sd = conn.execute('SELECT COUNT(*) FROM stream_details').fetchone()[0]
+
+    conn.close()
+
+    print(f'\n=== DB 更新完了 ===')
+    print(f'  channels: {final_channels}件')
+    print(f'  videos: {final_videos}件')
+    print(f'  video_video_types: {final_vvt}件')
+    print(f'  stream_details: {final_sd}件')
 
 
 if __name__ == '__main__':
