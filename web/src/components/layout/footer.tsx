@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export function Footer() {
   return (
     <footer className="mx-auto max-w-[var(--content-max)] w-full border-t border-border text-center px-md md:px-lg py-xl md:py-2xl">
@@ -6,6 +8,14 @@ export function Footer() {
       </p>
       <p className="text-3xs md:text-xs text-faint leading-relaxed mt-0.5">
         白銀ノエルさん及びカバー株式会社とは一切関係ありません
+      </p>
+      <p className="text-3xs md:text-xs text-faint mt-sm">
+        <Link
+          href="/about"
+          className="hover:text-link-hover underline underline-offset-2"
+        >
+          このサイトについて
+        </Link>
       </p>
     </footer>
   );
