@@ -1,3 +1,5 @@
+import { logCheck, unlogCheck } from './check-log';
+
 const STORAGE_KEY = 'checked-streams';
 
 const listeners = new Set<() => void>();
@@ -40,8 +42,10 @@ export function toggleChecked(videoId: string): void {
   const set = new Set(getCheckedSnapshot());
   if (set.has(videoId)) {
     set.delete(videoId);
+    unlogCheck(videoId);
   } else {
     set.add(videoId);
+    logCheck(videoId);
   }
   writeSet(set);
 }

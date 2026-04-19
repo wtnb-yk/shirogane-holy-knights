@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { getStreams } from '@/lib/data/streams';
 import { FootprintPage } from '@/features/footprint/components/footprint-page';
 
 export const metadata: Metadata = {
@@ -15,6 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  const streams = getStreams();
-  return <FootprintPage streams={streams} />;
+  return <FootprintPage />;
 }

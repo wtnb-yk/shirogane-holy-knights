@@ -1,24 +1,21 @@
-import type { Stream } from '@/lib/data/types';
-
-export type HeatmapCell = {
-  date: string;
+export type DayCell = {
+  day: number;
   count: number;
   level: 0 | 1 | 2 | 3;
 };
 
-export type MonthLabel = {
+export type MonthData = {
   name: string;
-  span: number;
+  startDow: number;
+  days: DayCell[];
 };
 
 export type HeatmapData = {
   year: number;
-  cells: HeatmapCell[];
-  months: MonthLabel[];
-  totalColumns: number;
+  months: MonthData[];
   activeDays: number;
   maxStreak: number;
-  totalStreams: number;
+  totalChecks: number;
 };
 
 const MONTH_NAMES = [
@@ -48,17 +45,8 @@ function mondayIndex(date: Date): number {
   return (date.getDay() + 6) % 7;
 }
 
-function toDateKey(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
-function addDays(date: Date, days: number): Date {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
+function daysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
 }
 
 function longestConsecutiveStreak(sortedDates: string[]): number {
@@ -84,71 +72,43 @@ function longestConsecutiveStreak(sortedDates: string[]): number {
 }
 
 /**
- * ヒートマップデータを構築する純粋関数
+ * チェック日付ログから月別グリッドのヒートマップデータを構築する
  *
- * Stream[] と checkedIds から、指定年のヒートマップグリッドと統計を算出する。
+ * checkLog: Map<videoId, checkedAt(YYYY-MM-DD)>
  */
 export function computeHeatmap(
-  allStreams: Stream[],
-  checkedIds: Set<string>,
+  checkLog: Map<string, string>,
   year: number,
 ): HeatmapData {
-  // 対象年のチェック済み配信を日付別に集計
+  // チェック日付を日別にカウント
   const dateCountMap = new Map<string, number>();
   const yearPrefix = String(year);
 
-  for (const s of allStreams) {
-    if (!checkedIds.has(s.id)) continue;
-    const dateKey = s.startedAt.slice(0, 10);
-    if (!dateKey.startsWith(yearPrefix)) continue;
-    dateCountMap.set(dateKey, (dateCountMap.get(dateKey) ?? 0) + 1);
+  for (const [, checkedAt] of checkLog) {
+    if (!checkedAt.startsWith(yearPrefix)) continue;
+    dateCountMap.set(checkedAt, (dateCountMap.get(checkedAt) ?? 0) + 1);
   }
 
-  // グリッド起点: year/1/1 を含む週の月曜日
-  const jan1 = new Date(year, 0, 1);
-  const gridStart = addDays(jan1, -mondayIndex(jan1));
-
-  // グリッド終点: year/12/31 を含む週の日曜日
-  const dec31 = new Date(year, 11, 31);
-  const gridEnd = addDays(dec31, 6 - mondayIndex(dec31));
-
-  const totalDays =
-    Math.round((gridEnd.getTime() - gridStart.getTime()) / 86_400_000) + 1;
-  const totalColumns = totalDays / 7;
-
-  // セル生成 (grid-auto-flow: column 用に列順で格納)
-  const cells: HeatmapCell[] = [];
-  for (let d = 0; d < totalDays; d++) {
-    const cellDate = addDays(gridStart, d);
-    const dateKey = toDateKey(cellDate);
-    const count = dateCountMap.get(dateKey) ?? 0;
-    cells.push({ date: dateKey, count, level: countToLevel(count) });
-  }
-
-  // 月ラベル
-  const months: MonthLabel[] = [];
-  const columnStarts: number[] = [];
+  // 月別グリッド生成
+  const months: MonthData[] = [];
 
   for (let m = 0; m < 12; m++) {
-    const firstOfMonth = new Date(year, m, 1);
-    const dayOffset = Math.round(
-      (firstOfMonth.getTime() - gridStart.getTime()) / 86_400_000,
-    );
-    const columnIndex = Math.floor(dayOffset / 7);
-    columnStarts.push(columnIndex);
-  }
+    const numDays = daysInMonth(year, m);
+    const startDow = mondayIndex(new Date(year, m, 1));
 
-  for (let m = 0; m < 12; m++) {
-    const span =
-      m < 11
-        ? columnStarts[m + 1] - columnStarts[m]
-        : totalColumns - columnStarts[m];
-    months.push({ name: MONTH_NAMES[m], span });
+    const days: DayCell[] = [];
+    for (let d = 1; d <= numDays; d++) {
+      const dateKey = `${year}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const count = dateCountMap.get(dateKey) ?? 0;
+      days.push({ day: d, count, level: countToLevel(count) });
+    }
+
+    months.push({ name: MONTH_NAMES[m], startDow, days });
   }
 
   // 統計
   const activeDays = [...dateCountMap.values()].filter((c) => c > 0).length;
-  const totalStreams = [...dateCountMap.values()].reduce((a, b) => a + b, 0);
+  const totalChecks = [...dateCountMap.values()].reduce((a, b) => a + b, 0);
   const sortedDates = [...dateCountMap.keys()]
     .filter((d) => (dateCountMap.get(d) ?? 0) > 0)
     .sort();
@@ -156,16 +116,13 @@ export function computeHeatmap(
 
   return {
     year,
-    cells,
     months,
-    totalColumns,
     activeDays,
     maxStreak,
-    totalStreams,
+    totalChecks,
   };
 }
 
-/** 空セルで埋めたヒートマップデータ */
 export function emptyHeatmap(year: number): HeatmapData {
-  return computeHeatmap([], new Set(), year);
+  return computeHeatmap(new Map(), year);
 }

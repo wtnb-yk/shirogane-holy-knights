@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import type { Stream } from '@/lib/data/types';
 import { ShareCardLayout } from '@/components/ui/share-card-layout';
 import { ShareActions } from '@/components/ui/share-actions';
 import { SITE_URL } from '@/lib/site';
@@ -10,10 +9,6 @@ import { useFootprintStats } from '../hooks/use-footprint-stats';
 import type { HeatmapData } from '../lib/compute-heatmap';
 import { FootprintCard } from './footprint-card';
 import { FootprintEmpty } from './footprint-empty';
-
-type Props = {
-  streams: Stream[];
-};
 
 function buildShareText(data: HeatmapData): string {
   const lines = [
@@ -25,9 +20,9 @@ function buildShareText(data: HeatmapData): string {
   return lines.join('\n');
 }
 
-export function FootprintPage({ streams }: Props) {
+export function FootprintPage() {
   const year = new Date().getFullYear();
-  const data = useFootprintStats(streams, year);
+  const data = useFootprintStats(year);
   const [downloading, setDownloading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const isEmpty = data.activeDays === 0;

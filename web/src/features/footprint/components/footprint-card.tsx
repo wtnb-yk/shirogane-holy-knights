@@ -12,14 +12,14 @@ export const FootprintCard = forwardRef<HTMLDivElement, Props>(
       <div
         ref={ref}
         data-hm-theme="light"
-        className="max-w-[720px] w-full rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(26,35,53,0.06),0_12px_40px_rgba(26,35,53,0.08)] animate-card-entrance"
+        className="w-[420px] max-w-full rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(26,35,53,0.06),0_16px_48px_rgba(26,35,53,0.10)] animate-card-entrance"
       >
         <div
-          className="hm-card-inner relative px-[28px] pt-[32px] pb-lg max-md:px-md max-md:pt-lg max-md:pb-[20px] border border-[var(--hm-border)]"
+          className="hm-card-inner relative px-lg pt-[28px] pb-[20px] max-md:px-md max-md:pt-lg max-md:pb-[18px] border border-[var(--hm-border)]"
           style={{ background: 'var(--hm-bg)' }}
         >
           {/* ヘッダー */}
-          <div className="flex items-baseline gap-sm mb-lg">
+          <div className="flex items-baseline gap-sm mb-md">
             <span className="font-display text-2xl font-bold text-[var(--hm-year)] leading-none">
               {data.year}
             </span>
@@ -29,17 +29,13 @@ export const FootprintCard = forwardRef<HTMLDivElement, Props>(
           </div>
 
           {/* ヒートマップ */}
-          <HeatmapGrid
-            cells={data.cells}
-            months={data.months}
-            totalColumns={data.totalColumns}
-          />
+          <HeatmapGrid months={data.months} />
 
           {/* 統計 */}
           <div className="flex gap-xl max-md:gap-lg max-md:flex-wrap mt-xl pt-lg border-t border-[var(--hm-divider)]">
             <StatItem value={data.activeDays} unit="日" label="視聴あり" />
             <StatItem value={data.maxStreak} unit="日" label="最長連続記録" />
-            <StatItem value={data.totalStreams} unit="本" label="視聴本数" />
+            <StatItem value={data.totalChecks} unit="本" label="視聴本数" />
           </div>
 
           {/* フッター */}

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>団員のあしあと v2 — 月別グリッド案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream-50: #FCFCFD; --cream-100: #F8F8FA; --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6; --cream-400: #D4D4D9;
+  --navy-900: #1C2230; --navy-800: #242A3A; --navy-700: #303845;
+  --navy-600: #404A55; --navy-500: #545D68; --navy-400: #6A7380;
+  --navy-300: #888F99; --navy-200: #ACB1B8; --navy-100: #CDD0D4;
+  --gold-600: #8B6D1E; --gold-500: #A6852E; --gold-400: #C8A24C;
+  --gold-300: #D4B56A; --gold-200: #E2CC92; --gold-100: #F2E6C4;
+  --dark-800: #2A2D35; --dark-900: #1A1D24;
+  --white: #FFFFFF;
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; }
+body { background: var(--cream-100); color: var(--navy-700); font-family: var(--font-body); line-height: 1.7; }
+
+/* PAGE LAYOUT */
+.page { display: flex; flex-direction: column; align-items: center; padding: 40px 24px 120px; }
+.page-header { text-align: center; margin-bottom: 40px; }
+.page-label { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; color: var(--gold-500); text-transform: uppercase; margin-bottom: 8px; }
+.page-title { font-family: var(--font-body); font-size: 2rem; font-weight: 700; color: var(--dark-800); }
+.page-desc { font-size: 0.875rem; color: var(--navy-400); margin-top: 8px; }
+
+/* CARD — 420px (団員レポートと同じ) */
+.fp-card {
+  width: 420px; max-width: 100%;
+  background: var(--cream-50); border: 1px solid var(--cream-300);
+  border-radius: 16px; padding: 28px 24px 20px;
+  box-shadow: 0 2px 8px rgba(26,35,53,0.06), 0 16px 48px rgba(26,35,53,0.10);
+  position: relative;
+  animation: cardIn 0.7s var(--ease) 0.2s both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Corner ornaments */
+.fp-card::before, .fp-card::after {
+  content: ''; position: absolute; width: 24px; height: 24px;
+  border-color: rgba(200,162,76,0.2); border-style: solid;
+}
+.fp-card::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+.fp-card::after { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+
+/* Card header */
+.card-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+.card-year { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--dark-800); line-height: 1; }
+.card-title { font-family: var(--font-body); font-size: 0.875rem; color: var(--navy-400); font-weight: 500; }
+
+/* MONTH GRID — 4列×3行 */
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.month-block {}
+.month-label {
+  font-family: var(--font-mono); font-size: 9px; color: var(--navy-300);
+  margin-bottom: 3px; letter-spacing: 0.04em;
+}
+.month-cells {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.day-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: var(--cream-200);
+}
+.day-cell.l1 { background: var(--gold-200); }
+.day-cell.l2 { background: var(--gold-400); }
+.day-cell.l3 { background: var(--gold-600); }
+.day-cell.empty { visibility: hidden; }
+
+/* Legend */
+.legend {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 12px; justify-content: flex-end;
+}
+.legend-label { font-family: var(--font-mono); font-size: 9px; color: var(--navy-300); }
+.legend-cell { width: 10px; height: 10px; border-radius: 2px; }
+
+/* Stats */
+.stats-row {
+  display: flex; gap: 40px; margin-top: 20px;
+  padding-top: 16px; border-top: 1px solid var(--cream-300);
+}
+.stat-num {
+  font-family: var(--font-display); font-size: 1.5rem;
+  font-weight: 700; color: var(--dark-800); line-height: 1;
+}
+.stat-num .accent { color: var(--gold-500); }
+.stat-num small { font-size: 0.875rem; font-weight: 400; color: var(--navy-400); margin-left: 2px; }
+.stat-label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-300);
+  margin-top: 4px; letter-spacing: 0.04em;
+}
+
+/* Card footer */
+.card-footer {
+  text-align: center; margin-top: 16px; padding-top: 12px;
+  border-top: 1px solid var(--cream-300);
+}
+.card-footer-text {
+  font-family: var(--font-mono); font-size: 9px; color: var(--navy-200); letter-spacing: 0.08em;
+}
+
+/* Actions */
+.actions {
+  display: flex; gap: 8px; margin-bottom: 16px;
+  animation: cardIn 0.7s var(--ease) 0.5s both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: var(--navy-700); color: var(--white);
+  font-family: var(--font-body); font-size: 0.875rem; font-weight: 600;
+  border: none; border-radius: 6px; cursor: pointer;
+  transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: var(--navy-800); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,35,53,0.15); }
+.btn-primary svg { width: 16px; height: 16px; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; background: none; color: var(--navy-700);
+  font-family: var(--font-body); font-size: 0.875rem; font-weight: 600;
+  border: 1px solid var(--navy-200); border-radius: 6px; cursor: pointer;
+  transition: all 0.3s var(--ease); letter-spacing: 0.02em;
+}
+.btn-secondary:hover { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+.btn-secondary svg { width: 16px; height: 16px; }
+
+/* Responsive */
+@media (max-width: 520px) {
+  .fp-card { padding: 24px 16px 18px; }
+  .months-grid { gap: 8px; }
+  .stats-row { gap: 24px; flex-wrap: wrap; }
+  .actions { flex-direction: column; width: 100%; max-width: 420px; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-label">Footprint</div>
+    <h1 class="page-title">団員のあしあと</h1>
+    <p class="page-desc">あなたの視聴履歴をヒートマップで可視化します。</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 13h12"/></svg>
+      画像をダウンロード
+    </button>
+    <button class="btn-secondary">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M12.6 1h2.4l-5.3 6.1L16 15h-4.9l-3.8-5-4.4 5H.5l5.7-6.5L.2 1h5l3.5 4.6L12.6 1zm-.8 12.6h1.3L4.3 2.3H2.9l8.9 11.3z"/></svg>
+      Xでシェア
+    </button>
+  </div>
+
+  <div class="fp-card" id="card">
+    <div class="card-header">
+      <span class="card-year">2026</span>
+      <span class="card-title">あしあと</span>
+    </div>
+
+    <div class="months-grid" id="monthsGrid"></div>
+
+    <div class="legend">
+      <span class="legend-label">少</span>
+      <div class="legend-cell" style="background:var(--cream-200)"></div>
+      <div class="legend-cell" style="background:var(--gold-200)"></div>
+      <div class="legend-cell" style="background:var(--gold-400)"></div>
+      <div class="legend-cell" style="background:var(--gold-600)"></div>
+      <span class="legend-label">多</span>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div>
+        <div class="stat-num"><span class="accent" id="statDays">0</span><small>日</small></div>
+        <div class="stat-label">視聴あり</div>
+      </div>
+      <div>
+        <div class="stat-num"><span class="accent" id="statStreak">0</span><small>日</small></div>
+        <div class="stat-label">最長連続記録</div>
+      </div>
+      <div>
+        <div class="stat-num"><span class="accent" id="statCount">0</span><small>本</small></div>
+        <div class="stat-label">視聴本数</div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <span class="card-footer-text">だんいんログ &mdash; 白銀ノエル非公式ファンサイト</span>
+    </div>
+  </div>
+</div>
+
+<script>
+var MONTH_NAMES = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+function seededRng(seed) {
+  return function() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+}
+
+function daysInMonth(year, month) {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+function dayOfWeek(year, month, day) {
+  // 0=月 ... 6=日 (月曜始まり)
+  return (new Date(year, month, day).getDay() + 6) % 7;
+}
+
+function generateMonthGrid(year) {
+  var grid = document.getElementById('monthsGrid');
+  grid.innerHTML = '';
+  var rng = seededRng(year * 13);
+  var totalDays = 0;
+  var totalViews = 0;
+  var maxStreak = 0;
+  var currentStreak = 0;
+
+  for (var m = 0; m < 12; m++) {
+    var block = document.createElement('div');
+    block.className = 'month-block';
+
+    var label = document.createElement('div');
+    label.className = 'month-label';
+    label.textContent = MONTH_NAMES[m];
+    block.appendChild(label);
+
+    var cells = document.createElement('div');
+    cells.className = 'month-cells';
+
+    var days = daysInMonth(year, m);
+    var startDow = dayOfWeek(year, m, 1); // 月曜始まりの曜日
+
+    // 空セル（月初の曜日オフセット）
+    for (var e = 0; e < startDow; e++) {
+      var empty = document.createElement('div');
+      empty.className = 'day-cell empty';
+      cells.appendChild(empty);
+    }
+
+    // 実際の日セル
+    for (var d = 1; d <= days; d++) {
+      var cell = document.createElement('div');
+      cell.className = 'day-cell';
+
+      // 2026年4月19日以降は未来なのでスキップ
+      if (year === 2026 && m >= 4) {
+        // 5月以降は空
+      } else if (year === 2026 && m === 3 && d > 19) {
+        // 4月19日以降は空
+      } else {
+        var weekIdx = Math.floor((m * 30 + d) / 7);
+        var baseProb = 0.15 + (weekIdx / 52) * 0.35;
+
+        if (rng() < baseProb) {
+          var intensity = rng();
+          if (intensity < 0.5) { cell.classList.add('l1'); totalViews += 1; }
+          else if (intensity < 0.8) { cell.classList.add('l2'); totalViews += 2; }
+          else { cell.classList.add('l3'); totalViews += 3; }
+          totalDays++;
+          currentStreak++;
+          if (currentStreak > maxStreak) maxStreak = currentStreak;
+        } else {
+          currentStreak = 0;
+        }
+      }
+
+      cells.appendChild(cell);
+    }
+
+    block.appendChild(cells);
+    grid.appendChild(block);
+  }
+
+  document.getElementById('statDays').textContent = totalDays;
+  document.getElementById('statStreak').textContent = maxStreak;
+  document.getElementById('statCount').textContent = totalViews;
+}
+
+generateMonthGrid(2026);
+</script>
+</body>
+</html>
