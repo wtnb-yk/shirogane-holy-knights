@@ -1,12 +1,9 @@
-import { ExpandableSearch } from '@/components/ui/toolbar-actions';
 import { ToolbarIconButton } from '@/components/ui/toolbar-actions';
 
 const HEART_PATH =
   'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z';
 
 type Props = {
-  search: string;
-  onSearch: (v: string) => void;
   sortOrder: 'newest' | 'oldest';
   onToggleSort: () => void;
   favOnly: boolean;
@@ -15,8 +12,6 @@ type Props = {
 };
 
 export function MusicToolbar({
-  search,
-  onSearch,
   sortOrder,
   onToggleSort,
   favOnly,
@@ -25,11 +20,6 @@ export function MusicToolbar({
 }: Props) {
   return (
     <>
-      <ExpandableSearch
-        value={search}
-        onChange={onSearch}
-        placeholder="曲名・アーティスト..."
-      />
       <ToolbarIconButton
         title={favOnly ? 'すべて表示' : 'お気に入りのみ'}
         onClick={onToggleFavOnly}
@@ -61,7 +51,7 @@ export function MusicToolbar({
           <path d="M6 2v8M3 7l3 3 3-3" />
         </svg>
       </ToolbarIconButton>
-      <span className="font-mono text-3xs text-subtle whitespace-nowrap px-1">
+      <span className="font-mono text-3xs text-subtle whitespace-nowrap px-xs">
         {currentCount}件
       </span>
     </>

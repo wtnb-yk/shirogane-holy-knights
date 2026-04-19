@@ -70,6 +70,7 @@
   --color-page: var(--color-cream-100);
   --color-surface: var(--color-cream-50);
   --color-surface-hover: var(--color-cream-200);
+  --color-backdrop: rgba(0, 0, 0, 0.3);
 
   /* テキスト */
   --color-heading: var(--color-dark-800);
@@ -141,6 +142,7 @@
   --filter-panel-width: 360px;
   --filter-panel-max-h: 420px;
   --search-expanded-width: 200px;
+  --bottom-sheet-max-h: 70vh;    /* ボトムシート最大高 */
   --page-bottom-margin: 80px;    /* ページ下部マージン（CTA余白等） */
   --slot-width: 480px;           /* スロットウィンドウ幅 */
   --section-desc-max: 400px;     /* SectionHeader 説明文最大幅 */
@@ -293,6 +295,7 @@ body {
   --color-page: var(--color-dark-900);
   --color-surface: var(--color-dark-800);
   --color-surface-hover: var(--color-dark-700);
+  --color-backdrop: rgba(0, 0, 0, 0.5);
 
   /* ----- テキスト ----- */
   --color-heading: var(--color-cream-100);
