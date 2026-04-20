@@ -83,3 +83,24 @@ artists:
 # CSV → SQLite 変換（初回 or 再構築時のみ）
 migrate:
     cd tools && just migrate
+
+# ---------- インフラ ----------
+
+# ローカル DB を S3 にアップロード + Vercel Deploy Hook でリビルド
+deploy-data:
+    aws s3 cp tools/data/danin-log.db "s3://${AWS_S3_BUCKET:-danin-log-data}/danin-log.db"
+    @echo "DB uploaded to S3."
+    @if [ -n "${VERCEL_DEPLOY_HOOK:-}" ]; then \
+        curl -s -X POST "$VERCEL_DEPLOY_HOOK" && echo "Deploy hook triggered."; \
+    else \
+        echo "VERCEL_DEPLOY_HOOK is not set. Skipping deploy hook."; \
+    fi
+
+# Lambda zip パッケージング
+package-lambda:
+    ./infrastructure/scripts/package-lambda.sh
+
+# Lambda パッケージング + Terraform デプロイ
+deploy-lambda:
+    ./infrastructure/scripts/package-lambda.sh
+    cd infrastructure/terraform && terraform apply -target=module.data_pipeline

@@ -24,3 +24,10 @@ web/data/
 # 調査・リサーチ用画像
 _research/
 .vercel
+
+# Infrastructure
+infrastructure/lambda/package.zip
+infrastructure/lambda/.build/
+infrastructure/terraform/.terraform/
+infrastructure/terraform/*.tfstate*
+infrastructure/terraform/terraform.tfvars

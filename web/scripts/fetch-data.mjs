@@ -1,5 +1,5 @@
 /**
- * prebuild スクリプト: S3 から CSV データを web/data/ にダウンロード
+ * prebuild スクリプト: S3 から danin-log.db を web/data/ にダウンロード
  *
  * Vercel ビルド時に自動実行される（npm prebuild hook）
  * ローカル開発では pnpm dev を使うため実行されない
@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const dataDir = resolve(__dirname, '..', 'data');
+const dbFile = 'danin-log.db';
 
 const { AWS_S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION } =
   process.env;
@@ -25,11 +26,11 @@ const { AWS_S3_BUCKET, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION } =
 if (!AWS_S3_BUCKET) {
   console.log('AWS_S3_BUCKET is not set. Skipping S3 data fetch.');
 
-  if (existsSync(dataDir)) {
+  if (existsSync(resolve(dataDir, dbFile))) {
     console.log(`Using existing local data in ${dataDir}`);
   } else {
     console.warn(
-      `Warning: ${dataDir} does not exist. Run "just migrate" to create the database.`
+      `Warning: ${dataDir}/${dbFile} does not exist. Run "just sync-data-local" to copy the database.`
     );
   }
 
@@ -45,12 +46,13 @@ if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) {
 
 mkdirSync(dataDir, { recursive: true });
 
-const s3Uri = `s3://${AWS_S3_BUCKET}/csv/`;
+const s3Uri = `s3://${AWS_S3_BUCKET}/${dbFile}`;
+const destPath = resolve(dataDir, dbFile);
 
-console.log(`Fetching CSV data from ${s3Uri} ...`);
+console.log(`Downloading ${s3Uri} ...`);
 
 try {
-  execSync(`aws s3 sync ${s3Uri} ${dataDir} --delete`, {
+  execSync(`aws s3 cp ${s3Uri} ${destPath}`, {
     stdio: 'inherit',
     env: {
       ...process.env,
