@@ -220,25 +220,35 @@ def main():
 
     for ch in new_channels:
         conn.execute(
-            'INSERT OR REPLACE INTO channels (id, title, handle, icon_url) VALUES (?, ?, ?, ?)',
+            '''INSERT INTO channels (id, title, handle, icon_url) VALUES (?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET
+                 title=excluded.title, handle=excluded.handle, icon_url=excluded.icon_url''',
             (ch['id'], ch['title'], ch['handle'], ch['icon_url']),
         )
 
     for v in new_videos:
         conn.execute(
-            'INSERT OR REPLACE INTO videos (id, title, thumbnail_url, duration, channel_id, published_at) VALUES (?, ?, ?, ?, ?, ?)',
+            '''INSERT INTO videos (id, title, thumbnail_url, duration, channel_id, published_at) VALUES (?, ?, ?, ?, ?, ?)
+               ON CONFLICT(id) DO UPDATE SET
+                 title=excluded.title, thumbnail_url=excluded.thumbnail_url,
+                 duration=excluded.duration, channel_id=excluded.channel_id,
+                 published_at=excluded.published_at''',
             (v['id'], v['title'], v['thumbnail_url'], v['duration'], v['channel_id'], v['published_at']),
         )
 
     for vvt in new_vv_types:
         conn.execute(
-            'INSERT OR REPLACE INTO video_video_types (video_id, video_type_id) VALUES (?, ?)',
+            '''INSERT INTO video_video_types (video_id, video_type_id) VALUES (?, ?)
+               ON CONFLICT(video_id) DO UPDATE SET
+                 video_type_id=excluded.video_type_id''',
             (vvt['video_id'], vvt['video_type_id']),
         )
 
     for sd in new_stream_details:
         conn.execute(
-            'INSERT OR REPLACE INTO stream_details (video_id, started_at) VALUES (?, ?)',
+            '''INSERT INTO stream_details (video_id, started_at) VALUES (?, ?)
+               ON CONFLICT(video_id) DO UPDATE SET
+                 started_at=excluded.started_at''',
             (sd['video_id'], sd['started_at']),
         )
 
