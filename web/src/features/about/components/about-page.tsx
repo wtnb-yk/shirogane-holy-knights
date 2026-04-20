@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { SectionHeader } from '@/components/ui/section-header';
+import { Reveal } from '@/components/ui/reveal';
 
 function Section({
   label,
@@ -10,21 +12,23 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <div className="py-xl border-t border-border">
-      <p className="font-mono text-3xs font-medium tracking-wider uppercase text-accent-label mb-md">
-        {label}
-      </p>
-      <h2 className="font-display text-base md:text-lg font-semibold text-heading mb-sm">
-        {title}
-      </h2>
-      {children}
-    </div>
+    <Reveal>
+      <div className="py-xl border-t border-border">
+        <p className="font-mono text-3xs font-medium tracking-wider uppercase text-accent-label mb-md">
+          {label}
+        </p>
+        <h2 className="font-display text-base md:text-lg font-semibold text-heading mb-sm">
+          {title}
+        </h2>
+        {children}
+      </div>
+    </Reveal>
   );
 }
 
 function ListItem({ children }: { children: ReactNode }) {
   return (
-    <li className="pl-md relative before:content-[''] before:absolute before:left-0 before:top-[12px] before:w-[6px] before:h-px before:bg-accent">
+    <li className="pl-md relative before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-sm before:h-px before:bg-accent">
       {children}
     </li>
   );
@@ -32,26 +36,27 @@ function ListItem({ children }: { children: ReactNode }) {
 
 export function AboutPage() {
   return (
-    <div className="max-w-[640px] mx-auto px-md md:px-lg pb-3xl">
-      {/* ---- Cover風ヘッダー ---- */}
+    <div className="max-w-[var(--prose-max)] mx-auto px-md md:px-lg pb-3xl">
+      {/* ---- ヘッダー ---- */}
       <div
-        className="flex flex-col items-center text-center py-xl md:py-2xl"
+        className="py-xl md:py-2xl"
         style={{
           background:
             'radial-gradient(ellipse 60% 50% at 50% 45%, var(--glow-gold) 0%, transparent 100%)',
         }}
       >
-        <div className="text-xl text-decorative">&#9876;</div>
-        <div className="h-0.5 w-12 bg-accent rounded-[1px] my-md md:my-lg" />
-        <h1 className="font-body text-xl md:text-2xl font-bold text-heading">
-          このサイトについて
-        </h1>
-        <p className="text-sm text-muted mt-xs md:mt-sm leading-relaxed-plus">
-          白銀ノエルファン（団員）のための
-          <br />
-          非公式推し活記録アプリです。
-        </p>
-        <p className="font-mono text-3xs text-subtle tracking-wide mt-lg md:mt-xl uppercase">
+        <SectionHeader
+          label="About"
+          title="このサイトについて"
+          description={
+            <>
+              白銀ノエルファン（団員）のための
+              <br />
+              非公式推し活記録アプリです。
+            </>
+          }
+        />
+        <p className="font-mono text-3xs text-subtle tracking-wide mt-lg md:mt-xl uppercase text-center">
           Unofficial Fan Site
         </p>
       </div>
