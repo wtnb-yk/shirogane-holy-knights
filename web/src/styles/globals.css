@@ -285,6 +285,39 @@ body {
 }
 
 /* ============================================================
+   SCROLL REVEAL
+   IntersectionObserver で .visible が付与されたとき表示する。
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s var(--ease-out-expo), transform 0.55s var(--ease-out-expo);
+}
+
+.reveal-stagger.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.07s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.14s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.21s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.28s; }
+
+/* ============================================================
    DARK MODE OVERRIDES
    .dark クラスがルート要素に付与されたときにセマンティックトークンを上書き。
    コンポーネント側は変更不要（CSS変数経由で自動適用）。

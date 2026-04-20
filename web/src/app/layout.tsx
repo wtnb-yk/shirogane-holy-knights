@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     template: `%s — ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  other: {
+    'theme-color': '#303845',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+  },
   alternates: {
     canonical: './',
   },

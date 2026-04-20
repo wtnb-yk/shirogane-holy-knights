@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { getStreams } from '@/lib/data/streams';
 import { getSongs } from '@/lib/data/music';
 import { getAsmrStreams } from '@/lib/data/asmr';
+import { Reveal, RevealStagger } from '@/components/ui/reveal';
+import { HomeSectionHeader } from './home-section-header';
 
 type CardData = {
   readonly name: string;
@@ -82,16 +84,16 @@ function CardGroup({
   cards: readonly CardData[];
 }) {
   return (
-    <div>
+    <Reveal>
       <div className="font-mono text-3xs md:text-xs font-medium tracking-wider uppercase text-accent-label mb-sm md:mb-md">
         {label}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-sm md:gap-md">
+      <RevealStagger className="grid grid-cols-1 md:grid-cols-3 gap-sm md:gap-md">
         {cards.map((card) => (
           <HubCard key={card.href} {...card} />
         ))}
-      </div>
-    </div>
+      </RevealStagger>
+    </Reveal>
   );
 }
 
@@ -99,16 +101,13 @@ export function BentoGrid() {
   const { explore, create } = buildCards();
 
   return (
-    <section className="max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-xl md:pt-2xl pb-xl md:pb-3xl">
-      <div className="font-mono text-3xs md:text-xs font-medium tracking-wider uppercase text-accent-label mb-xs md:mb-sm">
-        03 &mdash; All Tools
-      </div>
-      <h2 className="font-display text-xl md:text-2xl font-semibold text-heading leading-[1.3] mb-xs">
-        機能一覧
-      </h2>
-      <p className="text-xs md:text-sm text-muted max-w-[560px] mb-lg md:mb-xl leading-relaxed">
-        配信の探索・記録から、推し活データの可視化・シェアまで。
-      </p>
+    <section className="max-w-[var(--content-max)] mx-auto px-md md:px-lg pb-xl md:pb-3xl">
+      <HomeSectionHeader
+        num="03"
+        label="All Tools"
+        title="機能一覧"
+        description="配信の探索・記録から、推し活データの可視化・シェアまで。"
+      />
 
       <div className="flex flex-col gap-lg md:gap-xl">
         <CardGroup label="探す" cards={explore} />

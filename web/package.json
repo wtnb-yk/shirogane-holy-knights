@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/fetch-data.mjs",
-    "build": "next build",
+    "build": "next build && serwist build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
@@ -30,23 +30,29 @@
     ]
   },
   "devDependencies": {
+    "@serwist/cli": "^9.5.7",
+    "@serwist/next": "^9.5.7",
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.28.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
+    "serwist": "^9.5.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "better-sqlite3"
+      "better-sqlite3",
+      "esbuild"
     ]
   }
 }

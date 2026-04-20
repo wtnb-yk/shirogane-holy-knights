@@ -20,6 +20,12 @@
 # ビルド時生成データ（本番: S3から取得 / ローカル: 手動配置）
 /data/
 
+# service worker (Serwist がビルド時に生成)
+/public/sw.js
+/public/sw.js.map
+/public/swe-worker-*.js
+/public/swe-worker-*.js.map
+
 # production
 /build
 
