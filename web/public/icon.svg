@@ -1,0 +1,10 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#303845"/>
+  <!-- D -->
+  <path d="M108 128 L108 384 L208 384 C296 384 336 320 336 256 C336 192 296 128 208 128 Z" fill="#F8F8FA"/>
+  <!-- L -->
+  <path d="M260 128 L260 384 L404 384 L404 344 L304 344 L304 128 Z" fill="#C8A24C"/>
+  <!-- Overlap darkening -->
+  <path d="M260 128 L260 344 L304 344 L304 128 Z" fill="#303845" opacity="0.3"/>
+  <path d="M260 344 L260 384 L304 384 L304 344 Z" fill="#303845" opacity="0.3"/>
+</svg>
