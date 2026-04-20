@@ -1,8 +1,9 @@
 import type { MusicStreamSong } from '@/lib/data/types';
-import { formatDate, formatTime } from '@/lib/format';
-import { FavButton } from './fav-button';
+import { formatDate } from '@/lib/format';
+import { SetlistBody } from './setlist-body';
 
 type Props = {
+  videoId: string;
   title: string;
   date: string;
   songs: MusicStreamSong[];
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function StreamDetail({
+  videoId,
   title,
   date,
   songs,
@@ -46,51 +48,12 @@ export function StreamDetail({
           </svg>
         </button>
       </div>
-      <div className="flex flex-col gap-0.5">
-        {songs.map((song, i) => (
-          <SetlistRow
-            key={`${song.songId}-${i}`}
-            index={i + 1}
-            song={song}
-            isFav={favoriteIds.has(song.songId)}
-            onToggleFav={() => onToggleFavorite(song.songId)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SetlistRow({
-  index,
-  song,
-  isFav,
-  onToggleFav,
-}: {
-  index: number;
-  song: MusicStreamSong;
-  isFav: boolean;
-  onToggleFav: () => void;
-}) {
-  const timeStr = formatTime(song.startSeconds);
-
-  return (
-    <div className="flex items-center gap-sm px-2.5 py-[7px] text-xs rounded-sm cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1">
-      <span className="font-mono text-3xs text-subtle w-5 text-right flex-shrink-0">
-        {index}
-      </span>
-      <FavButton active={isFav} onClick={onToggleFav} />
-      <span className="text-heading font-medium flex-1 min-w-0 truncate">
-        {song.title}
-      </span>
-      <span className="text-xs text-muted flex-shrink-0 max-w-[140px] truncate">
-        {song.artist}
-      </span>
-      {timeStr && (
-        <span className="font-mono text-3xs text-subtle flex-shrink-0">
-          {timeStr}
-        </span>
-      )}
+      <SetlistBody
+        videoId={videoId}
+        songs={songs}
+        favoriteIds={favoriteIds}
+        onToggleFavorite={onToggleFavorite}
+      />
     </div>
   );
 }

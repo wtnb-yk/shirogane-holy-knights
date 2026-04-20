@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ミニプレイヤー比較 — だんいんログ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --cream-50:  #FCFCFD;
+  --cream-100: #F8F8FA;
+  --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6;
+  --cream-400: #D4D4D9;
+  --navy-900: #1C2230;
+  --navy-800: #242A3A;
+  --navy-700: #303845;
+  --navy-600: #404A55;
+  --navy-500: #545D68;
+  --navy-400: #6A7380;
+  --navy-300: #888F99;
+  --navy-200: #ACB1B8;
+  --navy-100: #CDD0D4;
+  --navy-glow: rgba(48, 56, 69, 0.08);
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E;
+  --gold-400: #C8A24C;
+  --gold-300: #D4B56A;
+  --gold-200: #E2CC92;
+  --gold-100: #F2E6C4;
+  --gold-glow: rgba(200, 162, 76, 0.10);
+  --dark-900: #1A1D24;
+  --dark-800: #2A2D35;
+  --dark-700: #3A3D45;
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300);
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem; --text-xl: 1.5rem;
+  --sp-2xs: 3px; --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px;
+  --r-xs: 3px; --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.25s;
+  --content-max: 1120px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { background: var(--cream-100); color: var(--navy-700); font-family: var(--font-body); font-size: var(--text-base); line-height: 1.7; overflow-x: hidden; }
+a { color: var(--navy-600); text-decoration: none; } a:hover { color: var(--navy-800); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header { position: sticky; top: 0; z-index: 100; background: var(--navy-700); border-bottom: 1px solid var(--gold-400); }
+.header-inner { max-width: 1120px; margin: 0 auto; padding: 0 var(--sp-lg); height: 56px; display: flex; align-items: center; }
+.header-logo { font-family: var(--font-body); font-size: var(--text-base); font-weight: 700; color: var(--gold-100); letter-spacing: 0.02em; }
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.page-header { max-width: 1120px; margin: 0 auto; padding: var(--sp-lg) var(--sp-lg) var(--sp-sm); }
+.page-title { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--dark-800); }
+.page-desc { color: var(--navy-400); font-size: var(--text-xs); margin-top: 4px; }
+
+/* ============================================================
+   PATTERN SWITCHER
+   ============================================================ */
+.pattern-switcher { position: fixed; top: 64px; right: 16px; z-index: 200; display: flex; gap: 0; padding: 3px; background: var(--cream-200); border-radius: var(--r-sm); border: 1px solid var(--cream-300); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.pattern-btn { padding: 6px 16px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; background: none; border: none; border-radius: 4px; color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease); white-space: nowrap; }
+.pattern-btn.active { background: var(--cream-50); color: var(--dark-800); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.pattern-btn:hover:not(.active) { color: var(--navy-600); }
+
+/* ============================================================
+   PATTERN DESCRIPTION
+   ============================================================ */
+.pattern-desc { max-width: 1120px; margin: 0 auto; padding: var(--sp-md) var(--sp-lg); }
+.pattern-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--dark-800); margin-bottom: var(--sp-xs); }
+.pattern-detail { font-size: var(--text-xs); color: var(--navy-400); line-height: 1.8; }
+.pattern-detail strong { color: var(--navy-600); font-weight: 600; }
+
+/* ============================================================
+   TAG CHIPS
+   ============================================================ */
+.tag-sm { display: inline-block; padding: 0 6px; font-family: var(--font-mono); font-size: 10px; border-radius: 3px; letter-spacing: 0.02em; width: fit-content; line-height: 1.7; }
+.tag-sm.utawaku { background: rgba(74,139,107,0.12); color: var(--success); }
+
+/* ============================================================
+   DEMO: SETLIST
+   ============================================================ */
+.demo-section { max-width: 1120px; margin: 0 auto; padding: var(--sp-md) var(--sp-lg); }
+.demo-section.has-bar { padding-bottom: 120px; }
+.demo-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--gold-500); text-transform: uppercase; margin-bottom: var(--sp-sm); }
+.demo-hint { font-size: var(--text-xs); color: var(--navy-300); margin-bottom: var(--sp-md); display: flex; align-items: center; gap: var(--sp-sm); }
+.demo-hint-dot { width: 6px; height: 6px; background: var(--gold-400); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.stream-detail { background: var(--cream-50); border: 1px solid var(--gold-300); border-radius: var(--r-lg); padding: var(--sp-lg); }
+.stream-detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-md); }
+.stream-detail-title { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--dark-800); }
+.stream-detail-meta { font-family: var(--font-mono); font-size: 11px; color: var(--navy-300); }
+.stream-detail-songs { display: flex; flex-direction: column; gap: 2px; }
+
+/* セトリ行 */
+.sd-row { display: flex; align-items: center; gap: var(--sp-sm); padding: 7px 10px; font-size: var(--text-xs); border-radius: var(--r-sm); cursor: pointer; transition: all var(--dur) var(--ease); }
+.sd-row:hover { background: var(--cream-200); transform: translateX(4px); }
+.sd-row.playing { background: var(--gold-glow); }
+.sd-num { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); width: 20px; text-align: right; flex-shrink: 0; }
+.sd-row.playing .sd-num-text { display: none; }
+.sd-row.playing .sd-eq { display: flex; }
+.sd-song { color: var(--dark-800); font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sd-artist { font-size: var(--text-xs); color: var(--navy-400); flex-shrink: 0; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sd-time { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; }
+.sd-play { width: 18px; height: 18px; border-radius: 50%; background: var(--gold-glow); color: var(--gold-500); display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.sd-row:hover .sd-play { opacity: 1; }
+.sd-row.playing .sd-play { opacity: 1; background: var(--gold-400); color: var(--white); }
+.sd-play svg { width: 7px; height: 7px; margin-left: 1px; }
+
+/* EQ bars */
+.sd-eq { display: none; align-items: flex-end; gap: 1.5px; height: 10px; width: 20px; justify-content: center; }
+.sd-eq-bar { width: 2px; background: var(--gold-400); border-radius: 1px; animation: eqBounce 0.6s ease-in-out infinite alternate; }
+.sd-eq-bar:nth-child(1) { height: 4px; animation-delay: 0s; }
+.sd-eq-bar:nth-child(2) { height: 8px; animation-delay: 0.15s; }
+.sd-eq-bar:nth-child(3) { height: 5px; animation-delay: 0.3s; }
+@keyframes eqBounce { 0% { transform: scaleY(0.4); } 100% { transform: scaleY(1); } }
+
+/* ============================================================
+   INLINE VIDEO (Pattern C 用)
+   ============================================================ */
+.sd-inline-video { max-height: 0; overflow: hidden; transition: max-height 0.5s var(--ease), padding 0.3s var(--ease), opacity 0.3s var(--ease); opacity: 0; margin: 0 10px; }
+.sd-inline-video.open { max-height: 400px; opacity: 1; padding: var(--sp-sm) 0; }
+.inline-video-wrap { position: relative; width: 100%; max-width: 560px; margin: 0 auto; border-radius: var(--r-md); overflow: hidden; background: var(--dark-900); aspect-ratio: 16/9; }
+.inline-video-thumb { position: absolute; inset: 0; }
+.inline-video-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.1) 100%); }
+.inline-video-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s var(--ease); }
+.inline-video-play:hover { transform: translate(-50%, -50%) scale(1.08); }
+.inline-video-play svg { width: 20px; height: 20px; color: var(--dark-800); margin-left: 2px; }
+/* 再生中状態 */
+.inline-video-wrap.is-playing .inline-video-play { display: none; }
+.inline-video-wrap.is-playing .inline-video-overlay { background: none; }
+.inline-video-eq { position: absolute; bottom: 12px; left: 12px; display: none; align-items: flex-end; gap: 2px; height: 16px; }
+.inline-video-wrap.is-playing .inline-video-eq { display: flex; }
+.inline-video-eq span { width: 3px; background: var(--gold-300); border-radius: 1px; animation: eqBounce 0.6s ease-in-out infinite alternate; }
+.inline-video-eq span:nth-child(1) { height: 6px; animation-delay: 0s; }
+.inline-video-eq span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+.inline-video-eq span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+.inline-video-eq span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+
+/* 動画下コントロール */
+.inline-video-controls { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-sm) 0 0; }
+.iv-info { flex: 1; min-width: 0; }
+.iv-song { font-size: var(--text-xs); font-weight: 600; color: var(--dark-800); }
+.iv-meta { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); }
+.iv-yt-link { font-family: var(--font-mono); font-size: 10px; color: var(--navy-400); padding: 4px 8px; border-radius: var(--r-xs); border: 1px solid var(--cream-300); transition: all var(--dur) var(--ease); display: flex; align-items: center; gap: 4px; text-decoration: none; flex-shrink: 0; }
+.iv-yt-link:hover { color: var(--navy-700); border-color: var(--navy-200); background: var(--cream-200); }
+.iv-yt-link svg { width: 10px; height: 10px; }
+
+/* ============================================================
+   曲ビュー
+   ============================================================ */
+.song-list { background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin-top: var(--sp-lg); }
+.song-row { display: flex; align-items: center; gap: var(--sp-md); padding: 12px var(--sp-lg); border-bottom: 1px solid var(--cream-200); cursor: pointer; transition: background var(--dur) var(--ease); }
+.song-row:last-child { border-bottom: none; }
+.song-row:hover { background: var(--cream-100); }
+.song-info { flex: 1; min-width: 0; }
+.song-name { font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+.song-artist { font-size: var(--text-xs); color: var(--navy-400); }
+.song-count { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 600; color: var(--gold-500); flex-shrink: 0; }
+.song-count small { font-size: 10px; font-weight: 400; color: var(--navy-300); margin-left: 1px; }
+.song-chevron { width: 14px; height: 14px; color: var(--navy-300); transition: transform 0.3s var(--ease); flex-shrink: 0; }
+.song-row.open .song-chevron { transform: rotate(180deg); }
+.song-detail { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease); background: var(--cream-100); border-bottom: 1px solid var(--cream-200); }
+.song-detail.open { max-height: 800px; }
+.song-detail-inner { padding: var(--sp-sm) var(--sp-lg) var(--sp-md); display: flex; flex-direction: column; gap: var(--sp-2xs); }
+
+.sdi-item { display: flex; align-items: center; gap: var(--sp-sm); padding: 6px 10px; font-size: var(--text-xs); color: var(--navy-600); border-radius: var(--r-sm); cursor: pointer; transition: all var(--dur) var(--ease); }
+.sdi-item:hover { background: var(--cream-200); transform: translateX(4px); }
+.sdi-item.playing { background: var(--gold-glow); }
+.sdi-date { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; width: 64px; }
+.sdi-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sdi-time { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); flex-shrink: 0; }
+.sdi-play { width: 18px; height: 18px; border-radius: 50%; background: var(--gold-glow); color: var(--gold-500); display: flex; align-items: center; justify-content: center; flex-shrink: 0; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.sdi-item:hover .sdi-play { opacity: 1; }
+.sdi-item.playing .sdi-play { opacity: 1; background: var(--gold-400); color: var(--white); }
+.sdi-play svg { width: 7px; height: 7px; margin-left: 1px; }
+
+/* 曲ビュー内インラインビデオ */
+.sdi-inline-video { max-height: 0; overflow: hidden; transition: max-height 0.5s var(--ease), opacity 0.3s var(--ease); opacity: 0; margin: 0 10px; }
+.sdi-inline-video.open { max-height: 400px; opacity: 1; padding: var(--sp-sm) 0; }
+
+/* ============================================================
+   MINI PLAYER BAR (Pattern B)
+   ============================================================ */
+.mini-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 150;
+  background: var(--dark-800);
+  border-top: 1px solid rgba(200,162,76,0.25);
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease);
+}
+.mini-player.visible { transform: translateY(0); }
+
+/* プログレスバー */
+.mp-progress { position: absolute; top: -2px; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.06); cursor: pointer; }
+.mp-progress-fill { height: 100%; background: var(--gold-400); width: 0%; transition: width 0.3s linear; border-radius: 0 1px 1px 0; }
+.mp-progress:hover { height: 4px; top: -3px; }
+
+/* 展開ビデオ領域 */
+.mp-video-area { max-height: 0; overflow: hidden; transition: max-height 0.5s var(--ease); background: var(--dark-900); }
+.mp-video-area.open { max-height: 360px; }
+.mp-video-inner { padding: var(--sp-md) var(--sp-lg); max-width: 1120px; margin: 0 auto; display: flex; justify-content: center; }
+.mp-video-wrap { position: relative; width: 100%; max-width: 480px; border-radius: var(--r-md); overflow: hidden; background: #000; aspect-ratio: 16/9; }
+.mp-video-thumb { position: absolute; inset: 0; }
+.mp-video-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, transparent 40%); }
+.mp-video-eq { position: absolute; bottom: 10px; left: 10px; display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+.mp-video-eq span { width: 3px; background: var(--gold-300); border-radius: 1px; animation: eqBounce 0.6s ease-in-out infinite alternate; }
+.mp-video-eq span:nth-child(1) { height: 5px; animation-delay: 0s; }
+.mp-video-eq span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+.mp-video-eq span:nth-child(3) { height: 7px; animation-delay: 0.3s; }
+.mp-video-eq span:nth-child(4) { height: 12px; animation-delay: 0.1s; }
+.mp-video-yt { position: absolute; bottom: 10px; right: 10px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.7); padding: 3px 8px; border-radius: var(--r-xs); background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; gap: 4px; text-decoration: none; transition: color var(--dur) var(--ease); }
+.mp-video-yt:hover { color: #fff; }
+.mp-video-yt svg { width: 10px; height: 10px; }
+
+/* バー本体 */
+.mp-bar { max-width: 1120px; margin: 0 auto; padding: 0 var(--sp-lg); height: 60px; display: flex; align-items: center; gap: var(--sp-md); }
+
+/* サムネイル */
+.mp-thumb { position: relative; width: 72px; height: 40px; border-radius: var(--r-xs); overflow: hidden; flex-shrink: 0; }
+.mp-thumb-bg { position: absolute; inset: 0; }
+.mp-thumb-eq { position: absolute; bottom: 2px; left: 3px; display: flex; align-items: flex-end; gap: 1px; height: 8px; }
+.mp-thumb-eq span { width: 2px; background: var(--gold-300); border-radius: 1px; animation: eqBounce 0.6s ease-in-out infinite alternate; }
+.mp-thumb-eq span:nth-child(1) { height: 3px; animation-delay: 0s; }
+.mp-thumb-eq span:nth-child(2) { height: 6px; animation-delay: 0.15s; }
+.mp-thumb-eq span:nth-child(3) { height: 4px; animation-delay: 0.3s; }
+
+/* 曲情報 */
+.mp-info { min-width: 0; flex: 1; }
+.mp-song { font-size: var(--text-sm); font-weight: 600; color: var(--cream-50); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.mp-meta { font-size: 10px; color: var(--navy-300); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.mp-meta-artist { color: var(--navy-200); }
+
+/* コントロール */
+.mp-controls { display: flex; align-items: center; gap: var(--sp-xs); flex-shrink: 0; }
+.mp-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: 50%; color: var(--cream-200); cursor: pointer; transition: all var(--dur) var(--ease); }
+.mp-btn:hover { color: var(--white); background: rgba(255,255,255,0.08); }
+.mp-btn svg { width: 14px; height: 14px; }
+.mp-btn-play { width: 36px; height: 36px; background: var(--gold-400); color: var(--dark-900); }
+.mp-btn-play:hover { background: var(--gold-300); color: var(--dark-900); transform: scale(1.06); }
+.mp-btn-play svg { width: 16px; height: 16px; margin-left: 1px; }
+
+/* 展開トグル — chevron */
+.mp-expand { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: 50%; color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease); flex-shrink: 0; }
+.mp-expand:hover { color: var(--cream-200); background: rgba(255,255,255,0.08); }
+.mp-expand svg { width: 14px; height: 14px; transition: transform 0.3s var(--ease); }
+.mp-expand.open svg { transform: rotate(180deg); }
+
+.mp-time { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); white-space: nowrap; flex-shrink: 0; }
+.mp-close { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: none; border: none; border-radius: 50%; color: var(--navy-400); cursor: pointer; transition: all var(--dur) var(--ease); flex-shrink: 0; }
+.mp-close:hover { color: var(--cream-200); background: rgba(255,255,255,0.08); }
+.mp-close svg { width: 12px; height: 12px; }
+
+/* ============================================================
+   HIDDEN
+   ============================================================ */
+.hidden { display: none !important; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .demo-section { padding-left: var(--sp-md); padding-right: var(--sp-md); }
+  .pattern-switcher { right: 8px; }
+  .mp-bar { height: 56px; padding: 0 var(--sp-md); gap: var(--sp-sm); }
+  .mp-thumb { width: 56px; height: 32px; }
+  .mp-time { display: none; }
+  .mp-btn { width: 28px; height: 28px; }
+  .mp-btn-play { width: 32px; height: 32px; }
+  .mp-video-inner { padding: var(--sp-sm); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <span class="header-logo">だんいんログ</span>
+  </div>
+</header>
+
+<!-- PATTERN SWITCHER -->
+<div class="pattern-switcher">
+  <button class="pattern-btn active" data-pattern="b">B: バー+展開動画</button>
+  <button class="pattern-btn" data-pattern="c">C: インライン埋込</button>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1 class="page-title">楽曲</h1>
+  <p class="page-desc">ミニプレイヤー デザイン比較（映像重視）</p>
+</div>
+
+<!-- PATTERN DESCRIPTION -->
+<div class="pattern-desc" id="descB">
+  <div class="pattern-title">Pattern B: 下部バー + 展開式ビデオ</div>
+  <div class="pattern-detail">
+    <strong>YouTube Music型</strong>。曲クリックで下部にバーが出現。<br>
+    バーの ▲ ボタンで動画エリアが展開され映像を見られる。<br>
+    普段はコンパクトに流し聴き、見たい時だけ動画を開く。<br>
+    <strong>特徴</strong>: 「ながら聴き」と「映像を見る」の切り替えが自在
+  </div>
+</div>
+<div class="pattern-desc hidden" id="descC">
+  <div class="pattern-title">Pattern C: インラインプレイヤー</div>
+  <div class="pattern-detail">
+    <strong>セトリ内に直接動画を埋め込む</strong>シンプルな方式。<br>
+    曲をクリックするとその行の直下に動画が展開される。<br>
+    フローティング要素なし。セトリのコンテキストの中で再生。<br>
+    <strong>特徴</strong>: 「この配信のこの曲を見る」に特化。UIが最もシンプル
+  </div>
+</div>
+
+<!-- DEMO: セトリ展開 -->
+<div class="demo-section" id="demoSection">
+  <div class="demo-hint"><span class="demo-hint-dot"></span> セトリの曲をクリックするとプレイヤーが起動します</div>
+
+  <div class="demo-label">配信ビュー — セトリ展開</div>
+  <div class="stream-detail">
+    <div class="stream-detail-header">
+      <div>
+        <div class="stream-detail-title">【歌枠】春の歌を歌いまくる！リクエスト受付中♪</div>
+        <div class="stream-detail-meta">2026.04.10 · 8曲</div>
+      </div>
+    </div>
+    <div class="stream-detail-songs" id="setlistDemo"></div>
+  </div>
+
+  <div class="demo-label" style="margin-top: var(--sp-xl);">曲ビュー — 出演一覧</div>
+  <div class="song-list" id="songListDemo"></div>
+</div>
+
+<!-- ============================================================
+     MINI PLAYER (Pattern B)
+     ============================================================ -->
+<div class="mini-player" id="miniPlayer">
+  <div class="mp-progress">
+    <div class="mp-progress-fill" id="mpProgress"></div>
+  </div>
+  <div class="mp-video-area" id="mpVideoArea">
+    <div class="mp-video-inner">
+      <div class="mp-video-wrap">
+        <div class="mp-video-thumb" id="mpVideoThumb" style="background: linear-gradient(135deg, #2C3E50, #4CA1AF);"></div>
+        <div class="mp-video-overlay"></div>
+        <div class="mp-video-eq"><span></span><span></span><span></span><span></span></div>
+        <a class="mp-video-yt" href="#" target="_blank">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 3h7v7"/><path d="M13 3L6 10"/></svg>
+          YouTubeで見る
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="mp-bar">
+    <div class="mp-thumb">
+      <div class="mp-thumb-bg" id="mpThumbBg" style="background: linear-gradient(135deg, #2C3E50, #4CA1AF);"></div>
+      <div class="mp-thumb-eq"><span></span><span></span><span></span></div>
+    </div>
+    <div class="mp-info">
+      <div class="mp-song" id="mpSong">—</div>
+      <div class="mp-meta">
+        <span class="mp-meta-artist" id="mpArtist"></span>
+        <span id="mpStream" style="margin-left:6px; color:var(--navy-400)"></span>
+      </div>
+    </div>
+    <div class="mp-controls">
+      <button class="mp-btn" title="前の曲" id="mpPrev">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h2v12H3V2zm3 6l8-6v12L6 8z"/></svg>
+      </button>
+      <button class="mp-btn mp-btn-play" id="mpPlayBtn" title="再生/一時停止">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6V2z"/></svg>
+      </button>
+      <button class="mp-btn" title="次の曲" id="mpNext">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M11 2h2v12h-2V2zM2 2l8 6-8 6V2z"/></svg>
+      </button>
+    </div>
+    <div class="mp-time" id="mpTime">—</div>
+    <button class="mp-expand" id="mpExpand" title="動画を表示">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7.5l3-3 3 3"/></svg>
+    </button>
+    <button class="mp-close" id="mpClose" title="閉じる">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ICONS
+   ============================================================ */
+var ICON_PLAY_SM = '<svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg>';
+var ICON_PLAY_BTN = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6V2z"/></svg>';
+var ICON_PAUSE_BTN = '<svg viewBox="0 0 16 16" fill="currentColor"><rect x="3" y="2" width="4" height="12" rx="1"/><rect x="9" y="2" width="4" height="12" rx="1"/></svg>';
+var ICON_CHEVRON = '<svg class="song-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>';
+
+var THUMB_COLORS = [
+  ['#2C3E50','#4CA1AF'],['#1A1A2E','#16213E'],['#0F2027','#2C5364'],
+  ['#373B44','#4286f4'],['#2B5876','#4E4376'],['#1D2B64','#F8CDDA'],
+];
+function thumbGrad(i) { var c = THUMB_COLORS[i % THUMB_COLORS.length]; return 'linear-gradient(135deg,' + c[0] + ',' + c[1] + ')'; }
+
+/* ============================================================
+   DATA
+   ============================================================ */
+var STREAM_TITLE = '【歌枠】春の歌を歌いまくる！リクエスト受付中♪';
+var SETLIST = [
+  {n:1, s:'シャカビーチ～Laka Laka La～', a:'UVERworld', tm:'16:45', sec:1005},
+  {n:2, s:'楽園ベイベー', a:'iri', tm:'32:00', sec:1920},
+  {n:3, s:'グッバイ宣言', a:'Chinozo', tm:'48:20', sec:2900},
+  {n:4, s:'ほめのび', a:'白銀ノエル', tm:'1:02:30', sec:3750},
+  {n:5, s:'ドライフラワー', a:'優里', tm:'1:15:00', sec:4500},
+  {n:6, s:'残酷な天使のテーゼ', a:'高橋洋子', tm:'1:28:40', sec:5320},
+  {n:7, s:'にじいろ', a:'絢香', tm:'1:42:10', sec:6130},
+  {n:8, s:'ウェカピポ', a:'Omoinotake', tm:'1:55:30', sec:6930},
+];
+
+var SONG_APPEARANCES = [
+  { dt:'2026.04.10', title:'【歌枠】春の歌を歌いまくる！', tm:'16:45', ci:0 },
+  { dt:'2026.03.25', title:'【歌枠】シャカビーチ47回目記念！', tm:'08:20', ci:1 },
+  { dt:'2026.03.15', title:'【歌枠】ココロオドル23回目！', tm:'1:05:00', ci:2 },
+  { dt:'2026.03.10', title:'【歌枠】リクエスト歌枠', tm:'42:15', ci:3 },
+];
+
+var activePattern = 'b';
+var isPlaying = false;
+var progressInterval = null;
+var currentProgress = 0;
+var videoExpanded = false;
+
+/* ============================================================
+   RENDER: Setlist
+   ============================================================ */
+function renderSetlist() {
+  document.getElementById('setlistDemo').innerHTML = SETLIST.map(function(s) {
+    return '<div class="sd-row" data-idx="' + (s.n-1) + '" data-source="setlist">'
+      + '<span class="sd-num"><span class="sd-num-text">' + s.n + '</span><span class="sd-eq"><span class="sd-eq-bar"></span><span class="sd-eq-bar"></span><span class="sd-eq-bar"></span></span></span>'
+      + '<span class="sd-song">' + s.s + '</span>'
+      + '<span class="sd-artist">' + s.a + '</span>'
+      + '<span class="sd-time">' + s.tm + '</span>'
+      + '<div class="sd-play">' + ICON_PLAY_SM + '</div>'
+      + '</div>'
+      + '<div class="sd-inline-video" data-inline-for="' + (s.n-1) + '"></div>';
+  }).join('');
+}
+
+function renderSongList() {
+  var details = SONG_APPEARANCES.map(function(a, i) {
+    return '<div class="sdi-item" data-appear-idx="' + i + '" data-source="songview">'
+      + '<span class="sdi-date">' + a.dt + '</span>'
+      + '<span class="sdi-title">' + a.title + '</span>'
+      + '<span class="sdi-time">' + a.tm + '</span>'
+      + '<div class="sdi-play">' + ICON_PLAY_SM + '</div>'
+      + '</div>'
+      + '<div class="sdi-inline-video" data-sdi-inline-for="' + i + '"></div>';
+  }).join('');
+
+  document.getElementById('songListDemo').innerHTML =
+    '<div class="song-row open" data-song-toggle>'
+    + '<div class="song-info"><div class="song-name">シャカビーチ～Laka Laka La～</div><div class="song-artist">UVERworld</div></div>'
+    + '<span class="song-count">47<small>回</small></span>'
+    + '<svg class="song-chevron" style="transform:rotate(180deg)" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4.5l3 3 3-3"/></svg>'
+    + '</div>'
+    + '<div class="song-detail open"><div class="song-detail-inner">' + details + '</div></div>'
+    + '<div class="song-row">'
+    + '<div class="song-info"><div class="song-name">ココロオドル</div><div class="song-artist">nobodyknows+</div></div>'
+    + '<span class="song-count">23<small>回</small></span>'
+    + ICON_CHEVRON
+    + '</div>'
+    + '<div class="song-row">'
+    + '<div class="song-info"><div class="song-name">ほめのび</div><div class="song-artist">白銀ノエル</div></div>'
+    + '<span class="song-count">18<small>回</small></span>'
+    + ICON_CHEVRON
+    + '</div>';
+}
+
+/* ============================================================
+   INLINE VIDEO HTML (Pattern C)
+   ============================================================ */
+function inlineVideoHTML(songName, artist, time, colorIdx) {
+  return '<div class="inline-video-wrap is-playing">'
+    + '<div class="inline-video-thumb" style="background:' + thumbGrad(colorIdx) + '"></div>'
+    + '<div class="inline-video-overlay"></div>'
+    + '<div class="inline-video-play"><svg viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.5l7.5 4.5-7.5 4.5z"/></svg></div>'
+    + '<div class="inline-video-eq"><span></span><span></span><span></span><span></span></div>'
+    + '</div>'
+    + '<div class="inline-video-controls">'
+    + '<div class="iv-info"><div class="iv-song">' + songName + ' — ' + artist + '</div>'
+    + '<div class="iv-meta">' + time + ' から再生</div></div>'
+    + '<a class="iv-yt-link" href="#" target="_blank">'
+    + '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 3h7v7"/><path d="M13 3L6 10"/></svg>'
+    + 'YouTubeで開く</a>'
+    + '</div>';
+}
+
+/* ============================================================
+   PLAY LOGIC
+   ============================================================ */
+function clearAllHighlights() {
+  document.querySelectorAll('.playing').forEach(function(el) { el.classList.remove('playing'); });
+}
+
+function closeAllInlineVideos() {
+  document.querySelectorAll('.sd-inline-video.open, .sdi-inline-video.open').forEach(function(el) {
+    el.classList.remove('open');
+    setTimeout(function() { el.innerHTML = ''; }, 300);
+  });
+}
+
+/* Pattern B: バー再生 */
+function playWithBar(songName, artist, streamTitle, time, colorIdx, rowEl) {
+  clearAllHighlights();
+  closeAllInlineVideos();
+  if (rowEl) rowEl.classList.add('playing');
+
+  var grad = thumbGrad(colorIdx);
+  document.getElementById('mpSong').textContent = songName;
+  document.getElementById('mpArtist').textContent = artist;
+  document.getElementById('mpStream').textContent = streamTitle;
+  document.getElementById('mpTime').textContent = time + ' / —';
+  document.getElementById('mpThumbBg').style.background = grad;
+  document.getElementById('mpVideoThumb').style.background = grad;
+
+  document.getElementById('miniPlayer').classList.add('visible');
+  document.getElementById('demoSection').classList.add('has-bar');
+
+  isPlaying = true;
+  currentProgress = 0;
+  updatePlayBtnBar(true);
+  startProgressBar();
+}
+
+/* Pattern C: インライン再生 */
+function playInline(songName, artist, time, colorIdx, containerEl, rowEl) {
+  clearAllHighlights();
+  closeAllInlineVideos();
+  hideMiniPlayer();
+  if (rowEl) rowEl.classList.add('playing');
+
+  containerEl.innerHTML = inlineVideoHTML(songName, artist, time, colorIdx);
+  requestAnimationFrame(function() {
+    containerEl.classList.add('open');
+    /* スクロールして見えるようにする */
+    setTimeout(function() {
+      containerEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 200);
+  });
+
+  isPlaying = true;
+}
+
+function updatePlayBtnBar(playing) {
+  isPlaying = playing;
+  document.getElementById('mpPlayBtn').innerHTML = playing ? ICON_PAUSE_BTN : ICON_PLAY_BTN;
+}
+
+function startProgressBar() {
+  clearInterval(progressInterval);
+  progressInterval = setInterval(function() {
+    if (!isPlaying) return;
+    currentProgress = Math.min(currentProgress + 0.3, 100);
+    document.getElementById('mpProgress').style.width = currentProgress + '%';
+    if (currentProgress >= 100) clearInterval(progressInterval);
+  }, 100);
+}
+
+function hideMiniPlayer() {
+  document.getElementById('miniPlayer').classList.remove('visible');
+  document.getElementById('demoSection').classList.remove('has-bar');
+  document.getElementById('mpVideoArea').classList.remove('open');
+  document.getElementById('mpExpand').classList.remove('open');
+  videoExpanded = false;
+  clearInterval(progressInterval);
+}
+
+/* ============================================================
+   EVENTS: Setlist clicks
+   ============================================================ */
+document.getElementById('setlistDemo').addEventListener('click', function(e) {
+  var row = e.target.closest('.sd-row');
+  if (!row) return;
+  var idx = parseInt(row.dataset.idx);
+  var s = SETLIST[idx];
+
+  if (activePattern === 'b') {
+    playWithBar(s.s, s.a, STREAM_TITLE, s.tm, 0, row);
+  } else {
+    var container = document.querySelector('.sd-inline-video[data-inline-for="' + idx + '"]');
+    playInline(s.s, s.a, s.tm, 0, container, row);
+  }
+});
+
+/* Song view clicks */
+document.getElementById('songListDemo').addEventListener('click', function(e) {
+  var item = e.target.closest('.sdi-item');
+  if (!item) return;
+  var idx = parseInt(item.dataset.appearIdx);
+  var a = SONG_APPEARANCES[idx];
+
+  if (activePattern === 'b') {
+    playWithBar('シャカビーチ～Laka Laka La～', 'UVERworld', a.title, a.tm, a.ci, item);
+  } else {
+    var container = document.querySelector('.sdi-inline-video[data-sdi-inline-for="' + idx + '"]');
+    playInline('シャカビーチ～Laka Laka La～', 'UVERworld', a.tm, a.ci, container, item);
+  }
+});
+
+/* ============================================================
+   EVENTS: Mini player controls (Pattern B)
+   ============================================================ */
+document.getElementById('mpPlayBtn').addEventListener('click', function() {
+  updatePlayBtnBar(!isPlaying);
+});
+
+document.getElementById('mpExpand').addEventListener('click', function() {
+  videoExpanded = !videoExpanded;
+  document.getElementById('mpVideoArea').classList.toggle('open', videoExpanded);
+  this.classList.toggle('open', videoExpanded);
+  this.title = videoExpanded ? '動画を閉じる' : '動画を表示';
+});
+
+document.getElementById('mpClose').addEventListener('click', function() {
+  hideMiniPlayer();
+  clearAllHighlights();
+  isPlaying = false;
+});
+
+/* ============================================================
+   EVENTS: Pattern switcher
+   ============================================================ */
+document.querySelectorAll('.pattern-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.pattern-btn').forEach(function(b) { b.classList.remove('active'); });
+    this.classList.add('active');
+
+    /* 切り替え前にリセット */
+    hideMiniPlayer();
+    clearAllHighlights();
+    closeAllInlineVideos();
+    isPlaying = false;
+
+    activePattern = this.dataset.pattern;
+
+    document.getElementById('descB').classList.toggle('hidden', activePattern !== 'b');
+    document.getElementById('descC').classList.toggle('hidden', activePattern !== 'c');
+  });
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderSetlist();
+renderSongList();
+</script>
+</body>
+</html>

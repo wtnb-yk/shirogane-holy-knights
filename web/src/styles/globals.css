@@ -147,6 +147,7 @@
   --slot-width: 480px;           /* スロットウィンドウ幅 */
   --section-desc-max: 400px;     /* SectionHeader 説明文最大幅 */
   --prose-max: 640px;            /* 読み物ページ最大幅 */
+  --inline-player-max: 560px;    /* インラインプレイヤー最大幅 */
   --slot-bg: var(--color-navy-800); /* スロット背景（テーマ不変） */
 }
 
@@ -160,6 +161,7 @@
   --shadow-button-hover: 0 4px 16px rgba(26, 35, 53, 0.15);
   --shadow-slot: 0 4px 16px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(0, 0, 0, 0.08);
   --shadow-slot-glow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(0, 0, 0, 0.08), 0 0 0 2px var(--color-accent);
+  --shadow-card-active: 0 4px 20px rgba(200, 162, 76, 0.15);
 }
 
 /* ----- 6. スペーシング -----
@@ -366,6 +368,7 @@ body {
   --shadow-button-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-slot: 0 4px 16px rgba(0, 0, 0, 0.3), 0 16px 48px rgba(0, 0, 0, 0.2);
   --shadow-slot-glow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 16px 48px rgba(0, 0, 0, 0.2), 0 0 0 2px var(--color-accent);
+  --shadow-card-active: 0 4px 20px rgba(212, 181, 106, 0.2);
 
   /* ----- グロー ----- */
   --glow-navy: rgba(200, 210, 225, 0.03);

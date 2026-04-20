@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import type { AggregatedSong } from '../hooks/use-music-filter';
-import { formatDate, formatTime } from '@/lib/format';
 import { FavButton } from './fav-button';
+import { AppearanceList } from './appearance-list';
 
 type Props = {
   songs: AggregatedSong[];
@@ -74,35 +74,7 @@ function SongRow({
       </div>
       {isOpen && (
         <div className="bg-page border-b border-surface-hover last:border-b-0">
-          <div className="px-lg py-sm pb-md flex flex-col gap-2xs">
-            {song.appearances
-              .sort((a, b) => b.date.localeCompare(a.date))
-              .map((a, i) => (
-                <a
-                  key={`${a.videoId}-${i}`}
-                  href={
-                    a.startSeconds > 0
-                      ? `https://www.youtube.com/watch?v=${a.videoId}&t=${a.startSeconds}`
-                      : `https://www.youtube.com/watch?v=${a.videoId}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-sm px-2.5 py-1.5 text-xs text-interactive rounded-sm transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1"
-                >
-                  <span className="font-mono text-3xs text-subtle flex-shrink-0 w-16">
-                    {formatDate(a.date)}
-                  </span>
-                  <span className="flex-1 min-w-0 truncate">
-                    {a.videoTitle}
-                  </span>
-                  {a.startSeconds > 0 && (
-                    <span className="font-mono text-3xs text-subtle flex-shrink-0">
-                      {formatTime(a.startSeconds)}
-                    </span>
-                  )}
-                </a>
-              ))}
-          </div>
+          <AppearanceList song={song} />
         </div>
       )}
     </>

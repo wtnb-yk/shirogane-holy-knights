@@ -90,6 +90,7 @@ export function StreamGrid({
       elements.push(
         <StreamDetail
           key={`detail-${selectedStream.videoId}`}
+          videoId={selectedStream.videoId}
           title={selectedStream.title}
           date={selectedStream.date}
           songs={selectedStream.songs}
@@ -125,7 +126,7 @@ function StreamCard({
       onClick={onClick}
       className={`bg-surface border rounded-md overflow-hidden cursor-pointer transition-all duration-300 ease-out-expo ${
         isSelected
-          ? 'border-accent shadow-[0_4px_20px_rgba(200,162,76,0.15)]'
+          ? 'border-accent shadow-card-active'
           : 'border-border hover:border-border-hover hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5'
       }`}
     >
