@@ -30,6 +30,7 @@
     ]
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1032.0",
     "@serwist/cli": "^9.5.7",
     "@serwist/next": "^9.5.7",
     "@tailwindcss/postcss": "^4",

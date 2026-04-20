@@ -11,10 +11,11 @@
  *   AWS_REGION - AWS リージョン
  */
 
-import { execSync } from 'node:child_process';
-import { mkdirSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const dataDir = resolve(__dirname, '..', 'data');
@@ -46,22 +47,25 @@ if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY || !AWS_REGION) {
 
 mkdirSync(dataDir, { recursive: true });
 
-const s3Uri = `s3://${AWS_S3_BUCKET}/${dbFile}`;
+const s3 = new S3Client({
+  region: AWS_REGION,
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
+});
+
 const destPath = resolve(dataDir, dbFile);
 
-console.log(`Downloading ${s3Uri} ...`);
+console.log(`Downloading s3://${AWS_S3_BUCKET}/${dbFile} ...`);
 
 try {
-  execSync(`aws s3 cp ${s3Uri} ${destPath}`, {
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      AWS_ACCESS_KEY_ID,
-      AWS_SECRET_ACCESS_KEY,
-      AWS_DEFAULT_REGION: AWS_REGION,
-    },
-  });
-  console.log('Data fetch complete.');
+  const resp = await s3.send(
+    new GetObjectCommand({ Bucket: AWS_S3_BUCKET, Key: dbFile })
+  );
+  const body = await resp.Body.transformToByteArray();
+  writeFileSync(destPath, body);
+  console.log(`Data fetch complete. (${(body.length / 1024).toFixed(0)} KB)`);
 } catch (error) {
   console.error('Failed to fetch data from S3:', error.message);
   process.exit(1);
