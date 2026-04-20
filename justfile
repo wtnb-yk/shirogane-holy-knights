@@ -88,13 +88,10 @@ migrate:
 
 # ローカル DB を S3 にアップロード + Vercel Deploy Hook でリビルド
 deploy-data:
-    aws s3 cp tools/data/danin-log.db "s3://${AWS_S3_BUCKET:-danin-log-data}/danin-log.db"
+    aws s3 cp web/data/danin-log.db "s3://${AWS_S3_BUCKET:-danin-log-data}/danin-log.db"
     @echo "DB uploaded to S3."
-    @if [ -n "${VERCEL_DEPLOY_HOOK:-}" ]; then \
-        curl -s -X POST "$VERCEL_DEPLOY_HOOK" && echo "Deploy hook triggered."; \
-    else \
-        echo "VERCEL_DEPLOY_HOOK is not set. Skipping deploy hook."; \
-    fi
+    @HOOK=$$(aws secretsmanager get-secret-value --secret-id /danin-log/vercel-deploy-hook --region ap-northeast-1 --query SecretString --output text) && \
+        curl -s -X POST "$$HOOK" && echo "Deploy hook triggered."
 
 # Lambda zip パッケージング
 package-lambda:
