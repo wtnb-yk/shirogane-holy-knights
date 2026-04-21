@@ -112,9 +112,9 @@
   --color-asmr-border: rgba(58, 52, 80, 0.5);
   --color-asmr-border-hover: rgba(74, 68, 96, 0.6);
   --color-asmr-text: #f0ecf8;
-  --color-asmr-muted: rgba(200, 195, 215, 0.6);
-  --color-asmr-subtle: rgba(200, 195, 215, 0.4);
-  --color-asmr-label: rgba(200, 180, 240, 0.7);
+  --color-asmr-muted: rgba(220, 216, 232, 0.85);
+  --color-asmr-subtle: rgba(200, 195, 215, 0.5);
+  --color-asmr-label: rgba(210, 200, 240, 0.85);
   --color-asmr-glow: rgba(200, 180, 240, 0.12);
   --color-asmr-btn-bg: rgba(200, 180, 240, 0.15);
   --color-asmr-btn-border: rgba(200, 180, 240, 0.2);

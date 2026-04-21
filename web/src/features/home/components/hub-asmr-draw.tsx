@@ -67,7 +67,7 @@ export function HubAsmrDraw({ count, thumbnails }: Props) {
       <HubCardHeader
         icon={ICON}
         iconBg="var(--color-asmr-glow)"
-        label="Today's Pick"
+        label="Today's ASMR"
         title="今日のASMR"
         labelClassName="font-mono text-3xs tracking-wider text-asmr-label uppercase"
         titleClassName="font-display text-base font-semibold text-asmr-text"
@@ -89,7 +89,7 @@ export function HubAsmrDraw({ count, thumbnails }: Props) {
         ))}
       </div>
 
-      <p className="text-2xs text-asmr-text/70 text-center mb-md relative">
+      <p className="text-2xs text-asmr-muted text-center mb-md relative">
         {count}本のアーカイブからランダムで1本を提案
       </p>
 
