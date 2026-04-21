@@ -1,5 +1,6 @@
 import { getDb } from './db';
 import type { Stream, Channel, StreamTag, StreamTagWithCount } from './types';
+import { NOEL_CHANNEL_ID } from '@/lib/site';
 
 let cachedStreams: Stream[] | null = null;
 
@@ -37,11 +38,12 @@ export function getStreams(): Stream[] {
     JOIN channels c ON v.channel_id = c.id
     LEFT JOIN stream_details sd ON v.id = sd.video_id
     WHERE vt.type = 'stream'
+      AND v.channel_id = ?
       AND v.id NOT IN (SELECT video_id FROM hidden_streams)
     ORDER BY COALESCE(sd.started_at, v.published_at) DESC
   `,
     )
-    .all() as {
+    .all(NOEL_CHANNEL_ID) as {
     id: string;
     title: string;
     thumbnail_url: string;
@@ -121,12 +123,14 @@ export function getStreamTagsWithCount(): StreamTagWithCount[] {
     LEFT JOIN video_video_types vvt ON vst.video_id = vvt.video_id
     LEFT JOIN video_types vt ON vvt.video_type_id = vt.id
     LEFT JOIN hidden_streams hs ON vst.video_id = hs.video_id
+    LEFT JOIN videos v ON vst.video_id = v.id
     WHERE (vt.type = 'stream' OR vt.type IS NULL)
       AND hs.video_id IS NULL
+      AND (v.channel_id = ? OR v.channel_id IS NULL)
     GROUP BY st.id, st.name
     ORDER BY count DESC
   `,
     )
-    .all() as { id: number; name: string; count: number }[];
+    .all(NOEL_CHANNEL_ID) as { id: number; name: string; count: number }[];
   return rows.map((t) => ({ id: t.id, name: t.name, count: t.count }));
 }
