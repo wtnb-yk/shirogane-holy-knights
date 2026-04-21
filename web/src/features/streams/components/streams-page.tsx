@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import type { Stream, StreamTagWithCount } from '@/lib/data/types';
 import { PageHeader } from '@/components/ui/page-header';
 import {
@@ -8,6 +8,7 @@ import {
   getCheckedServerSnapshot,
   subscribeChecked,
   toggleChecked,
+  bulkCheck,
 } from '../lib/checked-streams';
 import { useStreamFilter } from '../hooks/use-stream-filter';
 import { StreamToolbar } from './stream-toolbar';
@@ -30,6 +31,23 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
   const filter = useStreamFilter(streams, tagsWithCount, checkedIds);
   const handleToggleCheck = useCallback((id: string) => toggleChecked(id), []);
   const isClient = checkedIds !== getCheckedServerSnapshot();
+
+  const uncheckedVisible = useMemo(
+    () => filter.visible.filter((s) => !checkedIds.has(s.id)),
+    [filter.visible, checkedIds],
+  );
+
+  const handleBulkCheck = useCallback(() => {
+    const ids = uncheckedVisible.map((s) => s.id);
+    if (ids.length === 0) return;
+    if (
+      !window.confirm(
+        `表示中の未チェック ${ids.length} 件をまとめてチェックしますか？`,
+      )
+    )
+      return;
+    bulkCheck(ids);
+  }, [uncheckedVisible]);
 
   return (
     <>
@@ -70,8 +88,10 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
         hasMore={filter.hasMore}
         filteredCount={filter.filtered.length}
         checkedIds={checkedIds}
+        uncheckedVisibleCount={uncheckedVisible.length}
         onToggleCheck={handleToggleCheck}
         onLoadMore={filter.loadMore}
+        onBulkCheck={handleBulkCheck}
       />
     </>
   );

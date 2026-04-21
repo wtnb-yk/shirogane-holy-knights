@@ -38,6 +38,17 @@ export function subscribeChecked(callback: () => void): () => void {
   return () => listeners.delete(callback);
 }
 
+export function bulkCheck(videoIds: string[]): void {
+  const set = new Set(getCheckedSnapshot());
+  for (const id of videoIds) {
+    if (!set.has(id)) {
+      set.add(id);
+      logCheck(id);
+    }
+  }
+  writeSet(set);
+}
+
 export function toggleChecked(videoId: string): void {
   const set = new Set(getCheckedSnapshot());
   if (set.has(videoId)) {
