@@ -33,7 +33,7 @@ export function HubSetlist({ stream }: Props) {
         icon={ICON}
         iconBg="rgba(200,162,76,0.1)"
         label="Latest Setlist"
-        title="歌枠"
+        title="最新の歌枠"
       />
       <div className="font-mono text-3xs text-subtle mb-md">
         {stream.title} &mdash; {formatDate(stream.date)}
