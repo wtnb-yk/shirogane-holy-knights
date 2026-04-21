@@ -41,8 +41,9 @@ export function HubSetlist({ stream }: Props) {
 
       <div className="flex-1 flex flex-col gap-0">
         {stream.songs.slice(0, 5).map((song, i) => (
-          <div
+          <Link
             key={`${song.songId}-${i}`}
+            href={`/music?play=${stream.videoId}&t=${song.startSeconds}`}
             className="flex items-center gap-sm px-sm py-xs rounded-sm transition-colors duration-150 hover:bg-surface-hover"
           >
             <span className="font-mono text-3xs text-subtle w-md text-right shrink-0">
@@ -54,7 +55,7 @@ export function HubSetlist({ stream }: Props) {
             <span className="font-mono text-3xs text-subtle shrink-0 max-w-[var(--setlist-artist-max)] truncate text-right">
               {song.artist}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
 

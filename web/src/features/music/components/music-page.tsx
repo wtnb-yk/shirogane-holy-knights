@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import type {
   Song,
   MusicStream,
@@ -15,7 +15,7 @@ import { MusicToolbar } from './music-toolbar';
 import { MusicPanels } from './music-panels';
 import { SearchResults } from './search-results';
 import { useMusicFilter } from '../hooks/use-music-filter';
-import type { SourceTab } from '../hooks/use-music-filter';
+import { usePendingPlay } from '../hooks/use-pending-play';
 import {
   getFavoritesSnapshot,
   getFavoritesServerSnapshot,
@@ -58,21 +58,12 @@ export function MusicPage({
   );
   const isSearching = filter.search.trim().length > 0;
 
-  // フィードカード → タブ切替 + カード展開
-  const [pendingVideoId, setPendingVideoId] = useState<string | null>(null);
-
-  const handleFeedSelect = useCallback(
-    (type: SourceTab, videoId: string) => {
-      filter.setActiveTab(type);
-      if (type === 'utawaku' || type === 'live') {
-        filter.setViewMode('stream');
-        setPendingVideoId(videoId);
-      }
-    },
-    [filter],
-  );
-
-  const clearPendingVideo = useCallback(() => setPendingVideoId(null), []);
+  const {
+    pendingVideoId,
+    pendingStartSeconds,
+    handleFeedSelect,
+    clearPending,
+  } = usePendingPlay(filter);
 
   const toolbarRight = (
     <MusicToolbar
@@ -103,7 +94,7 @@ export function MusicPage({
     <>
       <PageHeader
         title="楽曲"
-        description="オリジナル・カバー・歌枠セトリを横断検索"
+        description="歌枠・ライブ・MVを横断検索"
         right={<MusicStatsDisplay stats={stats} />}
       />
 
@@ -146,7 +137,8 @@ export function MusicPage({
             favoriteIds={favoriteIds}
             onToggleFavorite={handleToggleFavorite}
             pendingVideoId={pendingVideoId}
-            onClearPendingVideo={clearPendingVideo}
+            pendingStartSeconds={pendingStartSeconds}
+            onClearPendingVideo={clearPending}
             hasMore={filter.hasMore}
             filteredTotal={filter.filteredTotal}
             visibleCount={panelVisibleCount}

@@ -31,6 +31,7 @@ type Props = {
   favoriteIds: Set<string>;
   onToggleFavorite: (songId: string) => void;
   pendingVideoId: string | null;
+  pendingStartSeconds: number | null;
   onClearPendingVideo: () => void;
   hasMore: boolean;
   filteredTotal: number;
@@ -51,6 +52,7 @@ export function MusicPanels({
   favoriteIds,
   onToggleFavorite,
   pendingVideoId,
+  pendingStartSeconds,
   onClearPendingVideo,
   hasMore,
   filteredTotal,
@@ -92,6 +94,7 @@ export function MusicPanels({
               onToggleFavorite={onToggleFavorite}
               externalSelectedId={pendingVideoId}
               onClearExternal={onClearPendingVideo}
+              externalStartSeconds={pendingStartSeconds}
             />
           ) : (
             <SongList

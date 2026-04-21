@@ -10,6 +10,8 @@ type Props = {
   favoriteIds: Set<string>;
   onToggleFavorite: (songId: string) => void;
   onClose: () => void;
+  /** URL遷移時の自動再生開始秒数 */
+  autoPlayStartSeconds?: number | null;
 };
 
 export function StreamDetail({
@@ -20,6 +22,7 @@ export function StreamDetail({
   favoriteIds,
   onToggleFavorite,
   onClose,
+  autoPlayStartSeconds,
 }: Props) {
   return (
     <div className="col-span-full bg-surface border border-accent rounded-lg p-lg animate-fade-in">
@@ -53,6 +56,7 @@ export function StreamDetail({
         songs={songs}
         favoriteIds={favoriteIds}
         onToggleFavorite={onToggleFavorite}
+        autoPlayStartSeconds={autoPlayStartSeconds}
       />
     </div>
   );

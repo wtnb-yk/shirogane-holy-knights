@@ -29,12 +29,12 @@ export function getNavGroups(): readonly NavGroup[] {
         },
         {
           name: '楽曲',
-          desc: `${songCount}曲のレパートリー・セトリ検索`,
+          desc: `${songCount}曲のレパートリー・歌枠検索`,
           href: '/music',
         },
         {
           name: '今日のASMR',
-          desc: `気分に合わせたASMRを今日一本`,
+          desc: `気分に合わせたASMRを提案`,
           href: '/asmr',
         },
       ],

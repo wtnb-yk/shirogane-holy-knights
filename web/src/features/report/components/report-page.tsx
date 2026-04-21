@@ -58,7 +58,7 @@ export function ReportPage({ streams }: Props) {
     <ShareCardLayout
       label="Activity Report"
       title="団員レポート"
-      description="視聴チェック・お気に入り楽曲から、あなただけの報告書を生成します。"
+      description="視聴チェック・お気に入り楽曲から、あなただけのレポートを生成します。"
       isEmpty={isEmpty}
       emptyContent={<ReportEmpty theme={theme} />}
       actions={

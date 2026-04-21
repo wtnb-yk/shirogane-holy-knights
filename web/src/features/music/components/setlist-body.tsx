@@ -11,6 +11,8 @@ type Props = {
   songs: MusicStreamSong[];
   favoriteIds: Set<string>;
   onToggleFavorite: (songId: string) => void;
+  /** URL遷移時の自動再生開始秒数 */
+  autoPlayStartSeconds?: number | null;
 };
 
 export function SetlistBody({
@@ -18,8 +20,17 @@ export function SetlistBody({
   songs,
   favoriteIds,
   onToggleFavorite,
+  autoPlayStartSeconds,
 }: Props) {
-  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+  const [playingIndex, setPlayingIndex] = useState<number | null>(() => {
+    if (autoPlayStartSeconds != null) {
+      const idx = songs.findIndex(
+        (s) => s.startSeconds === autoPlayStartSeconds,
+      );
+      return idx >= 0 ? idx : null;
+    }
+    return null;
+  });
 
   return (
     <div className="flex flex-col gap-0.5">

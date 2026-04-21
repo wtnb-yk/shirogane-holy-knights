@@ -68,7 +68,7 @@ export function AboutPage() {
         </p>
         <ul className="mt-sm space-y-xs text-sm text-secondary leading-relaxed-plus">
           <ListItem>配信アーカイブの検索・フィルタリング</ListItem>
-          <ListItem>楽曲レパートリー・セットリスト検索</ListItem>
+          <ListItem>楽曲レパートリー・歌枠検索</ListItem>
           <ListItem>気分に合わせたASMRおすすめ</ListItem>
           <ListItem>視聴履歴のヒートマップ・レポート作成</ListItem>
         </ul>

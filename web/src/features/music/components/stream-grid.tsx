@@ -12,6 +12,8 @@ type Props = {
   /** 外部から指定された展開対象の videoId（フィードカード経由） */
   externalSelectedId?: string | null;
   onClearExternal?: () => void;
+  /** 外部から指定された自動再生開始秒数（ハブ経由） */
+  externalStartSeconds?: number | null;
 };
 
 export function StreamGrid({
@@ -20,6 +22,7 @@ export function StreamGrid({
   onToggleFavorite,
   externalSelectedId,
   onClearExternal,
+  externalStartSeconds,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [cols, setCols] = useState(4);
@@ -97,6 +100,7 @@ export function StreamGrid({
           favoriteIds={favoriteIds}
           onToggleFavorite={onToggleFavorite}
           onClose={() => setSelectedId(null)}
+          autoPlayStartSeconds={externalStartSeconds}
         />,
       );
     }

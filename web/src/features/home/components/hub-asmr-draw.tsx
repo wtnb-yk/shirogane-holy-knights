@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { HubCard } from './hub-card';
 import { HubCardHeader } from './hub-card-header';
 
@@ -13,7 +14,7 @@ const ICON = (
     height="18"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="var(--color-asmr-label)"
+    stroke="var(--color-accent-label)"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
@@ -48,31 +49,17 @@ const STACK_STYLES: import('react').CSSProperties[] = [
 
 export function HubAsmrDraw({ count, thumbnails }: Props) {
   return (
-    <HubCard
-      className="border border-asmr-border hover:border-asmr-border-hover relative overflow-hidden"
-      style={{
-        background:
-          'linear-gradient(165deg, var(--color-asmr-bg) 0%, var(--color-asmr-bg-end) 100%)',
-      }}
-    >
-      {/* グロー演出 */}
-      <div
-        className="absolute -top-7.5 -right-7.5 w-(--asmr-glow-size) h-(--asmr-glow-size) rounded-full pointer-events-none"
-        style={{
-          background: 'var(--color-asmr-glow)',
-          filter: 'blur(40px)',
-        }}
-      />
-
+    <HubCard>
       <HubCardHeader
         icon={ICON}
-        iconBg="var(--color-asmr-glow)"
+        iconBg="rgba(200,162,76,0.1)"
         label="Today's ASMR"
         title="今日のASMR"
-        labelClassName="font-mono text-3xs tracking-wider text-asmr-label uppercase"
-        titleClassName="font-display text-base font-semibold text-asmr-text"
-        className="mb-xs relative"
       />
+
+      <p className="text-xs text-muted mb-sm">
+        {count}本のアーカイブからランダムで1本を提案
+      </p>
 
       {/* サムネイルスタック */}
       <div className="relative h-40 my-md">
@@ -82,22 +69,17 @@ export function HubAsmrDraw({ count, thumbnails }: Props) {
             key={url}
             src={url}
             alt=""
-            className="absolute w-[75%] aspect-video rounded-md object-cover border-2 border-[rgba(255,255,255,0.1)] shadow-[0_4px_16px_rgba(0,0,0,0.3)]"
+            className="absolute w-[75%] aspect-video rounded-md object-cover border border-border shadow-card"
             style={STACK_STYLES[i]}
             loading="lazy"
           />
         ))}
       </div>
 
-      <p className="text-2xs text-asmr-muted text-center mb-md relative">
-        {count}本のアーカイブからランダムで1本を提案
-      </p>
-
-      <Link
-        href="/asmr"
-        className="mt-auto relative inline-flex items-center justify-center w-full px-lg py-2.5 bg-asmr-btn-bg text-asmr-btn-text border border-asmr-btn-border rounded-sm font-body text-sm font-semibold tracking-normal transition-all duration-300 ease-out-expo hover:bg-[rgba(200,180,240,0.25)] hover:-translate-y-px"
-      >
-        今日のASMRを選ぶ
+      <Link href="/asmr" className="mt-auto">
+        <Button variant="secondary" className="w-full justify-center">
+          今日のASMRを選ぶ
+        </Button>
       </Link>
     </HubCard>
   );

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import {
   getSongs,
@@ -11,7 +12,7 @@ import { MusicPage } from '@/features/music/components/music-page';
 export const metadata: Metadata = {
   title: '楽曲',
   description:
-    'オリジナル・カバー・歌枠セトリを横断検索。白銀ノエルの全楽曲レパートリーを収録。',
+    '歌枠・ライブ・MVを横断検索。白銀ノエルの全楽曲レパートリーを収録。',
 };
 
 export default function Page() {
@@ -22,12 +23,14 @@ export default function Page() {
   const stats = getMusicStats();
 
   return (
-    <MusicPage
-      songs={songs}
-      utawakuStreams={utawakuStreams}
-      concertStreams={concertStreams}
-      mvCards={mvCards}
-      stats={stats}
-    />
+    <Suspense>
+      <MusicPage
+        songs={songs}
+        utawakuStreams={utawakuStreams}
+        concertStreams={concertStreams}
+        mvCards={mvCards}
+        stats={stats}
+      />
+    </Suspense>
   );
 }
