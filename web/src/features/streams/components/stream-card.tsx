@@ -91,7 +91,7 @@ function StreamThumb({
           </svg>
         </div>
       </div>
-      <span className="absolute bottom-1.5 right-1.5 px-1.5 py-px bg-page/78 text-surface font-mono text-3xs rounded-xs">
+      <span className="absolute bottom-1.5 right-1.5 px-1.5 py-px bg-foreground/78 text-surface font-mono text-3xs rounded-xs">
         {formatDurationTimestamp(duration)}
       </span>
       {isChecked && (
