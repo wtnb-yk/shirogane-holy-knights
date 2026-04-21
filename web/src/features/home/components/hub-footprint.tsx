@@ -27,7 +27,7 @@ export function HubFootprint() {
     <HubFootprintContent
       activeDays={heatmap.activeDays}
       maxStreak={heatmap.maxStreak}
-      totalChecks={checkLog.size}
+      cells={heatmap.cells}
     />
   );
 }

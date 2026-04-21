@@ -1,34 +1,49 @@
 import Link from 'next/link';
 import type { Stream } from '@/lib/data/types';
-import { formatDate, formatDuration } from '@/lib/format';
+import { Button } from '@/components/ui/button';
+import { HubCard } from './hub-card';
+import { HubCardHeader } from './hub-card-header';
+import { StreamThumb } from './stream-thumb';
 
 type Props = {
   streams: Stream[];
 };
 
+const ICON = (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="var(--color-accent-label)"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </svg>
+);
+
 export function HubStreams({ streams }: Props) {
   const newCount = streams.length;
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-lg flex flex-col transition-all duration-300 ease-out-expo hover:border-border-hover hover:shadow-card">
-      <div className="flex justify-between items-start mb-lg">
-        <div>
-          <div className="font-mono text-3xs tracking-wider text-accent-label uppercase mb-xs">
-            Latest Streams
-          </div>
-          <h2 className="font-body text-xl font-bold text-heading">
-            最新の配信
-          </h2>
-          <p className="text-xs text-muted mt-2xs">
-            チェックして推し活を記録しよう
-          </p>
-        </div>
+    <HubCard>
+      <HubCardHeader
+        icon={ICON}
+        iconBg="rgba(200,162,76,0.1)"
+        label="Latest Streams"
+        title="最新の配信"
+        className="mb-xs"
+      >
         {newCount > 0 && (
-          <span className="px-sm py-xs bg-[var(--glow-gold)] text-accent-label font-mono text-2xs font-medium rounded-sm">
+          <span className="px-sm py-xs bg-[var(--glow-gold)] text-accent-label font-mono text-2xs font-medium rounded-sm shrink-0">
             {newCount} NEW
           </span>
         )}
-      </div>
+      </HubCardHeader>
+
+      <p className="text-xs text-muted mb-sm">チェックして推し活を記録しよう</p>
 
       <div className="flex gap-sm flex-1">
         {streams.map((stream) => (
@@ -36,40 +51,11 @@ export function HubStreams({ streams }: Props) {
         ))}
       </div>
 
-      <Link
-        href="/streams"
-        className="mt-md text-xs text-muted transition-colors duration-200 hover:text-foreground"
-      >
-        すべての配信を見る &rarr;
+      <Link href="/streams" className="mt-md">
+        <Button variant="secondary" className="w-full justify-center">
+          すべての配信を見る
+        </Button>
       </Link>
-    </div>
-  );
-}
-
-function StreamThumb({ stream }: { stream: Stream }) {
-  return (
-    <a
-      href={`https://www.youtube.com/watch?v=${stream.id}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex-1 flex flex-col rounded-md overflow-hidden bg-surface border border-border transition-all duration-250 ease-out-expo hover:-translate-y-0.5 hover:border-border-hover hover:shadow-card"
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element -- YouTube外部サムネイル */}
-      <img
-        src={stream.thumbnailUrl}
-        alt={stream.title}
-        loading="lazy"
-        className="w-full aspect-video object-cover"
-      />
-      <div className="p-sm flex flex-col gap-2xs flex-1">
-        <div className="text-2xs font-medium text-heading leading-[1.4] line-clamp-2">
-          {stream.title}
-        </div>
-        <div className="font-mono text-3xs text-subtle mt-auto">
-          {formatDate(stream.startedAt)} &mdash;{' '}
-          {formatDuration(stream.duration)}
-        </div>
-      </div>
-    </a>
+    </HubCard>
   );
 }

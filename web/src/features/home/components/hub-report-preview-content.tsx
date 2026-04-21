@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { GenreShare } from '@/features/report/lib/compute-stats';
+import { HubCard } from './hub-card';
+import { HubCardHeader } from './hub-card-header';
+import { DonutChart } from './donut-chart';
+import { StatCell } from './stat-cell';
 
 type Props = {
   genres: GenreShare[];
@@ -10,13 +14,22 @@ type Props = {
   favoriteSongCount: number;
 };
 
-const DONUT_COLORS = [
-  'var(--color-gold-400)',
-  'var(--color-navy-400)',
-  'var(--color-navy-200)',
-  'var(--color-gold-300)',
-  'var(--color-cream-300)',
-];
+const ICON = (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="var(--color-accent-label)"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M18 20V10" />
+    <path d="M12 20V4" />
+    <path d="M6 20v-6" />
+  </svg>
+);
 
 export function HubReportPreviewContent({
   genres,
@@ -26,19 +39,14 @@ export function HubReportPreviewContent({
   favoriteSongCount,
 }: Props) {
   return (
-    <div
-      className="rounded-lg border border-border p-lg flex flex-col transition-all duration-300 ease-out-expo hover:border-border-hover hover:shadow-card"
-      style={{
-        background:
-          'linear-gradient(165deg, var(--color-surface) 0%, #f3f0e6 100%)',
-      }}
-    >
-      <div className="font-mono text-3xs tracking-wider text-accent-label uppercase mb-2xs">
-        Activity Report
-      </div>
-      <h2 className="font-display text-base font-semibold text-heading mb-md">
-        団員レポート
-      </h2>
+    <HubCard>
+      <HubCardHeader
+        icon={ICON}
+        iconBg="rgba(200,162,76,0.1)"
+        label="Activity Report"
+        title="団員レポート"
+        className="mb-md"
+      />
 
       <DonutChart genres={genres} />
 
@@ -58,67 +66,10 @@ export function HubReportPreviewContent({
       </div>
 
       <Link href="/report" className="mt-auto">
-        <Button variant="cta" className="w-full">
+        <Button variant="secondary" className="w-full justify-center">
           レポートを作る
         </Button>
       </Link>
-    </div>
-  );
-}
-
-function DonutChart({ genres }: { genres: GenreShare[] }) {
-  const total = genres.reduce((s, g) => s + g.count, 0);
-  if (total === 0) return null;
-
-  const percentages = genres.map((g) => (g.count / total) * 100);
-  const stops = genres.map((_, i) => {
-    const start = percentages.slice(0, i).reduce((a, b) => a + b, 0);
-    const end = start + percentages[i];
-    return `${DONUT_COLORS[i] ?? DONUT_COLORS[4]} ${start}% ${end}%`;
-  });
-
-  return (
-    <div className="flex items-center gap-md mb-lg">
-      <div
-        className="w-[var(--donut-size)] h-[var(--donut-size)] rounded-full relative shrink-0"
-        style={{ background: `conic-gradient(${stops.join(',')})` }}
-      >
-        <div className="absolute inset-[var(--donut-hole)] rounded-full bg-surface" />
-      </div>
-      <div className="flex flex-col gap-xs flex-1">
-        {genres.map((g, i) => (
-          <div
-            key={g.name}
-            className="flex items-center gap-xs text-2xs text-foreground"
-          >
-            <span
-              className="w-sm h-sm rounded-2xs flex-shrink-0"
-              style={{ background: DONUT_COLORS[i] ?? DONUT_COLORS[4] }}
-            />
-            {g.name} {Math.round((g.count / total) * 100)}%
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StatCell({
-  value,
-  unit,
-  label,
-}: {
-  value: string;
-  unit: string;
-  label: string;
-}) {
-  return (
-    <div className="p-sm bg-page rounded-sm">
-      <div className="font-display text-lg font-semibold text-heading leading-none">
-        {value}
-        <span className="text-3xs font-normal text-subtle">{unit}</span>
-      </div>
-      <div className="font-mono text-4xs text-subtle mt-2xs">{label}</div>
-    </div>
+    </HubCard>
   );
 }

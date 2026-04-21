@@ -41,7 +41,10 @@ export default function Home() {
           {latestUtawaku && <HubSetlist stream={latestUtawaku} />}
         </div>
         <div className="md:col-span-4">
-          <HubAsmrDraw count={asmrStreams.length} />
+          <HubAsmrDraw
+            count={asmrStreams.length}
+            thumbnails={asmrStreams.slice(0, 3).map((s) => s.thumbnailUrl)}
+          />
         </div>
         <div className="md:col-span-3">
           <HubFootprint />
