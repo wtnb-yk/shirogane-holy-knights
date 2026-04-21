@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ホーム画面リデザイン v2 — ゼロベース3案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --cream-50:  #FCFCFD;
+  --cream-100: #F8F8FA;
+  --cream-200: #EDEDF0;
+  --cream-300: #E2E2E6;
+  --cream-400: #D4D4D9;
+  --navy-900: #1C2230;
+  --navy-800: #242A3A;
+  --navy-700: #303845;
+  --navy-600: #404A55;
+  --navy-500: #545D68;
+  --navy-400: #6A7380;
+  --navy-300: #888F99;
+  --navy-200: #ACB1B8;
+  --navy-100: #CDD0D4;
+  --navy-glow: rgba(48, 56, 69, 0.08);
+  --gold-600: #8B6D1E;
+  --gold-500: #A6852E;
+  --gold-400: #C8A24C;
+  --gold-300: #D4B56A;
+  --gold-200: #E2CC92;
+  --gold-100: #F2E6C4;
+  --gold-glow: rgba(200, 162, 76, 0.10);
+  --silver-400: #9A949A;
+  --silver-300: #BBB4B8;
+  --silver-200: #D5D0D3;
+  --silver-100: #ECEAEB;
+  --dark-900: #1A1D24;
+  --dark-800: #2A2D35;
+  --dark-700: #3A3D45;
+  --success: #4A8B6B;
+  --white: #FFFFFF;
+  --border: var(--cream-300);
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'M PLUS 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --text-3xs: 10px;
+  --text-2xs: 11px;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.5rem;
+  --sp-2xs: 3px; --sp-xs: 4px; --sp-sm: 8px; --sp-md: 16px; --sp-lg: 24px; --sp-xl: 40px; --sp-2xl: 64px; --sp-3xl: 120px;
+  --r-xs: 3px; --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.25s;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  background: var(--cream-200);
+  color: var(--navy-700);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.7;
+}
+a { color: var(--navy-600); text-decoration: none; }
+a:hover { color: var(--navy-800); }
+
+/* ============================================================
+   PROPOSAL SELECTOR
+   ============================================================ */
+.proposal-bar {
+  position: sticky; top: 0; z-index: 999;
+  background: var(--navy-900);
+  border-bottom: 2px solid var(--gold-400);
+  padding: 0 var(--sp-lg);
+  display: flex; align-items: center; justify-content: center; gap: var(--sp-sm);
+  height: 48px;
+}
+.proposal-bar-label {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--navy-300); letter-spacing: 0.1em; margin-right: var(--sp-md);
+}
+.proposal-tab {
+  padding: 6px 18px;
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  color: var(--navy-200); background: none;
+  border: 1px solid transparent; border-radius: var(--r-sm);
+  cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.proposal-tab:hover { color: var(--gold-100); background: rgba(255,255,255,0.05); }
+.proposal-tab.active { color: var(--gold-100); background: rgba(200,162,76,0.12); border-color: var(--gold-400); }
+
+.proposal-frame { display: none; max-width: 1200px; margin: 0 auto; padding: var(--sp-md) var(--sp-md) var(--sp-3xl); }
+.proposal-frame.active { display: block; }
+.device-frame { background: var(--cream-100); border-radius: var(--r-lg); box-shadow: 0 4px 32px rgba(0,0,0,0.08); overflow: hidden; }
+
+/* ============================================================
+   SHARED: HEADER
+   ============================================================ */
+.site-header {
+  background: var(--navy-700);
+  border-bottom: 1px solid var(--gold-400);
+}
+.header-inner {
+  max-width: 1120px; margin: 0 auto; padding: 0 var(--sp-lg);
+  height: 52px; display: flex; align-items: center;
+}
+.header-logo {
+  font-family: var(--font-body); font-size: var(--text-sm);
+  font-weight: 700; color: var(--gold-100); letter-spacing: 0.02em;
+}
+.header-nav { display: flex; align-items: center; gap: var(--sp-xs); margin-left: auto; }
+.nav-link {
+  padding: 5px 12px; font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  color: var(--gold-100); background: none; border: none; border-radius: var(--r-sm); cursor: pointer;
+  text-decoration: none;
+}
+.nav-link:hover { color: var(--white); }
+
+/* ============================================================
+   SHARED: UTILITIES
+   ============================================================ */
+.tag-sm {
+  display: inline-block; padding: 1px 6px; background: var(--navy-glow); color: var(--navy-600);
+  font-family: var(--font-mono); font-size: 10px; border-radius: 3px; letter-spacing: 0.02em; width: fit-content;
+}
+.badge-new {
+  display: inline-block; padding: 1px 7px;
+  background: var(--gold-glow); color: var(--gold-500);
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  border-radius: var(--r-xs); letter-spacing: 0.06em;
+}
+.btn-check {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; margin-top: 3px;
+  background: none; border: 1px solid var(--cream-400); border-radius: var(--r-sm);
+  color: var(--navy-600); font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  cursor: pointer; width: fit-content; transition: all 0.2s var(--ease);
+}
+.btn-check:hover { background: var(--navy-glow); border-color: var(--navy-300); }
+.btn-check.checked { background: var(--navy-700); color: var(--white); border-color: var(--navy-700); }
+.heatmap { display: grid; grid-template-columns: repeat(26, 1fr); gap: 2px; }
+.hm-cell { aspect-ratio: 1; border-radius: 2px; background: var(--cream-200); }
+.hm-cell.l1 { background: var(--gold-200); }
+.hm-cell.l2 { background: var(--gold-400); }
+.hm-cell.l3 { background: var(--gold-600); }
+
+.doc-footer {
+  text-align: center; padding: var(--sp-xl) var(--sp-lg);
+  border-top: 1px solid var(--cream-300); max-width: 1120px; margin: 0 auto;
+}
+.doc-footer p { font-size: var(--text-xs); color: var(--navy-200); line-height: 1.8; }
+
+/* ============================================================
+   案A: MAGAZINE — ビジュアルヒーロー + フィード型
+   最新配信のサムネイルをヒーローに。雑誌の表紙のように毎日変わる。
+   ============================================================ */
+#proposal-a .hero-magazine {
+  position: relative;
+  background: var(--navy-800);
+  overflow: hidden;
+}
+#proposal-a .hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 50%, rgba(200,162,76,0.15) 100%);
+  opacity: 0.95;
+}
+#proposal-a .hero-content {
+  position: relative; z-index: 1;
+  max-width: 1120px; margin: 0 auto;
+  padding: var(--sp-xl) var(--sp-lg);
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-xl);
+  align-items: center;
+  min-height: 340px;
+}
+#proposal-a .hero-text { color: var(--cream-50); }
+#proposal-a .hero-eyecatch {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--gold-400); text-transform: uppercase; margin-bottom: var(--sp-sm);
+}
+#proposal-a .hero-title {
+  font-family: var(--font-body); font-size: var(--text-3xl); font-weight: 700;
+  line-height: 1.25; margin-bottom: var(--sp-sm); color: var(--white);
+}
+#proposal-a .hero-desc {
+  font-size: var(--text-sm); color: var(--navy-100); line-height: 1.8;
+  margin-bottom: var(--sp-lg);
+}
+#proposal-a .hero-actions {
+  display: flex; gap: var(--sp-sm); align-items: center;
+}
+#proposal-a .btn-hero {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 24px; border-radius: var(--r-sm);
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 600;
+  cursor: pointer; border: none; transition: all 0.2s var(--ease);
+}
+#proposal-a .btn-hero-primary {
+  background: var(--gold-400); color: var(--navy-900);
+}
+#proposal-a .btn-hero-primary:hover { background: var(--gold-300); transform: translateY(-1px); }
+#proposal-a .btn-hero-ghost {
+  background: rgba(255,255,255,0.08); color: var(--cream-100); border: 1px solid rgba(255,255,255,0.15);
+}
+#proposal-a .btn-hero-ghost:hover { background: rgba(255,255,255,0.14); }
+
+#proposal-a .hero-feature-card {
+  background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+}
+#proposal-a .hero-stream-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--gold-300); margin-bottom: var(--sp-sm);
+}
+#proposal-a .hero-stream-title {
+  font-size: var(--text-lg); font-weight: 600; color: var(--white); line-height: 1.4;
+  margin-bottom: var(--sp-xs);
+}
+#proposal-a .hero-stream-meta {
+  font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-200);
+  margin-bottom: var(--sp-md);
+}
+#proposal-a .hero-thumb {
+  width: 100%; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--navy-600), var(--navy-700));
+  border-radius: var(--r-sm); margin-bottom: var(--sp-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy-300); font-size: 32px;
+}
+#proposal-a .hero-btn-check {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--r-sm);
+  color: var(--cream-100); font-family: var(--font-body); font-size: var(--text-xs); font-weight: 500;
+  cursor: pointer;
+}
+
+/* Feed */
+#proposal-a .feed {
+  max-width: 1120px; margin: 0 auto;
+  padding: var(--sp-xl) var(--sp-lg);
+  display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-xl);
+}
+#proposal-a .feed-main { display: flex; flex-direction: column; gap: var(--sp-lg); }
+#proposal-a .feed-sidebar { display: flex; flex-direction: column; gap: var(--sp-lg); }
+
+#proposal-a .feed-section-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--gold-500); text-transform: uppercase; margin-bottom: var(--sp-sm);
+}
+
+/* Stream card (compact) */
+#proposal-a .stream-card {
+  display: grid; grid-template-columns: 100px 1fr; gap: var(--sp-md);
+  padding: var(--sp-md);
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-md);
+  transition: all 0.2s var(--ease);
+}
+#proposal-a .stream-card:hover { border-color: var(--cream-400); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+#proposal-a .stream-card-thumb {
+  width: 100px; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--silver-100), var(--cream-200));
+  border-radius: var(--r-xs); display: flex; align-items: center; justify-content: center;
+  color: var(--navy-300); font-size: 18px;
+}
+#proposal-a .stream-card-info { display: flex; flex-direction: column; gap: 2px; }
+#proposal-a .stream-card-title { font-size: var(--text-sm); font-weight: 500; color: var(--dark-800); line-height: 1.4; }
+#proposal-a .stream-card-date { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); }
+
+/* Sidebar cards */
+#proposal-a .sidebar-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-md);
+  padding: var(--sp-lg); transition: all 0.2s var(--ease);
+}
+#proposal-a .sidebar-card:hover { border-color: var(--cream-400); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+#proposal-a .sidebar-card-title {
+  font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600;
+  color: var(--dark-800); margin-bottom: var(--sp-sm); display: flex; align-items: center; gap: var(--sp-sm);
+}
+#proposal-a .sidebar-card-link {
+  display: block; margin-top: var(--sp-md);
+  font-size: var(--text-xs); color: var(--navy-400);
+}
+#proposal-a .sidebar-card-link:hover { color: var(--navy-700); }
+
+#proposal-a .stat-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: var(--sp-xs) 0; border-bottom: 1px dashed var(--cream-200);
+}
+#proposal-a .stat-row:last-child { border-bottom: none; }
+#proposal-a .stat-label { font-size: var(--text-xs); color: var(--navy-400); }
+#proposal-a .stat-value { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--dark-800); }
+#proposal-a .stat-value small { font-size: var(--text-xs); font-weight: 400; color: var(--navy-300); }
+
+/* Tool strip */
+#proposal-a .tool-strip {
+  display: flex; gap: var(--sp-sm);
+}
+#proposal-a .tool-chip {
+  display: flex; align-items: center; gap: var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-md);
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: var(--text-xs); font-weight: 500; color: var(--navy-600);
+  text-decoration: none; transition: all 0.2s var(--ease);
+}
+#proposal-a .tool-chip:hover { border-color: var(--navy-300); color: var(--navy-800); background: var(--navy-glow); }
+#proposal-a .tool-chip-icon { font-size: 14px; }
+#proposal-a .tool-chip-count { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); margin-left: 2px; }
+
+/* ============================================================
+   案B: DASHBOARD — 1画面に全情報を凝縮
+   Monkeytype/GitHub inspired. 説明ゼロ、全機能即アクセス。
+   ============================================================ */
+#proposal-b .dash-body {
+  max-width: 1120px; margin: 0 auto;
+  padding: var(--sp-lg);
+  display: grid; grid-template-columns: 280px 1fr; gap: var(--sp-md);
+  min-height: calc(100vh - 52px - 48px);
+}
+
+/* Left sidebar */
+#proposal-b .dash-sidebar {
+  display: flex; flex-direction: column; gap: var(--sp-md);
+}
+#proposal-b .dash-identity {
+  text-align: center; padding: var(--sp-lg) var(--sp-md);
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+}
+#proposal-b .dash-icon { font-size: 1.8rem; color: var(--gold-400); margin-bottom: var(--sp-sm); }
+#proposal-b .dash-title {
+  font-family: var(--font-body); font-size: var(--text-xl); font-weight: 700;
+  color: var(--dark-800); margin-bottom: var(--sp-2xs);
+}
+#proposal-b .dash-tagline { font-size: var(--text-xs); color: var(--navy-400); }
+
+#proposal-b .dash-nav {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-sm);
+  display: flex; flex-direction: column; gap: 2px;
+}
+#proposal-b .dash-nav-group-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+  color: var(--gold-500); text-transform: uppercase;
+  padding: var(--sp-sm) var(--sp-sm) var(--sp-2xs);
+}
+#proposal-b .dash-nav-item {
+  display: flex; align-items: center; gap: var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-md); border-radius: var(--r-sm);
+  font-size: var(--text-sm); font-weight: 500; color: var(--navy-600);
+  text-decoration: none; transition: all 0.15s var(--ease);
+}
+#proposal-b .dash-nav-item:hover { background: var(--navy-glow); color: var(--navy-800); }
+#proposal-b .dash-nav-item-icon { font-size: 14px; opacity: 0.7; width: 20px; text-align: center; }
+#proposal-b .dash-nav-item-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--navy-300);
+}
+
+#proposal-b .dash-stats-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-md);
+}
+#proposal-b .dash-stats-title {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--navy-400); text-transform: uppercase; margin-bottom: var(--sp-sm);
+}
+#proposal-b .dash-stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-sm);
+}
+#proposal-b .dash-stat-box { text-align: center; padding: var(--sp-sm); }
+#proposal-b .dash-stat-num {
+  font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600;
+  color: var(--dark-800); line-height: 1;
+}
+#proposal-b .dash-stat-num small { font-size: var(--text-xs); font-weight: 400; color: var(--navy-300); }
+#proposal-b .dash-stat-label { font-family: var(--font-mono); font-size: 10px; color: var(--navy-400); margin-top: 2px; }
+
+#proposal-b .dash-heatmap-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-md);
+}
+#proposal-b .dash-heatmap-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--navy-400); text-transform: uppercase; margin-bottom: var(--sp-sm);
+}
+#proposal-b .dash-heatmap-mini { display: grid; grid-template-columns: repeat(13, 1fr); gap: 2px; }
+#proposal-b .dash-heatmap-mini .hm-cell { aspect-ratio: 1; border-radius: 2px; }
+
+/* Main content */
+#proposal-b .dash-main {
+  display: flex; flex-direction: column; gap: var(--sp-md);
+}
+#proposal-b .dash-streams-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-lg); flex: 1;
+}
+#proposal-b .dash-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-md);
+}
+#proposal-b .dash-card-title {
+  font-family: var(--font-display); font-size: var(--text-base); font-weight: 600; color: var(--dark-800);
+  display: flex; align-items: center; gap: var(--sp-sm);
+}
+#proposal-b .dash-card-link { font-size: var(--text-xs); color: var(--navy-400); }
+#proposal-b .dash-card-link:hover { color: var(--navy-700); }
+
+#proposal-b .dash-stream-row {
+  display: grid; grid-template-columns: 88px 1fr auto; gap: var(--sp-md); align-items: center;
+  padding: var(--sp-sm) 0; border-bottom: 1px solid var(--cream-200);
+}
+#proposal-b .dash-stream-row:last-child { border-bottom: none; }
+#proposal-b .dash-stream-thumb {
+  width: 88px; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--silver-100), var(--cream-200));
+  border-radius: var(--r-xs);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy-300); font-size: 16px;
+}
+#proposal-b .dash-stream-info { display: flex; flex-direction: column; gap: 2px; }
+#proposal-b .dash-stream-title { font-size: var(--text-sm); font-weight: 500; color: var(--dark-800); line-height: 1.4; }
+#proposal-b .dash-stream-meta { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); }
+
+/* Bottom row: quick cards */
+#proposal-b .dash-bottom-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-md);
+}
+#proposal-b .dash-quick-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+  display: flex; flex-direction: column; gap: var(--sp-xs);
+  text-decoration: none; color: inherit;
+  transition: all 0.2s var(--ease);
+}
+#proposal-b .dash-quick-card:hover { border-color: var(--navy-200); box-shadow: 0 4px 16px rgba(0,0,0,0.05); transform: translateY(-2px); color: inherit; }
+#proposal-b .dash-quick-card-icon { font-size: 20px; margin-bottom: var(--sp-xs); }
+#proposal-b .dash-quick-card-name { font-family: var(--font-display); font-size: var(--text-sm); font-weight: 600; color: var(--dark-800); }
+#proposal-b .dash-quick-card-desc { font-size: var(--text-xs); color: var(--navy-500); line-height: 1.6; }
+
+/* Empty state overlay for sidebar */
+#proposal-b .dash-empty-overlay {
+  text-align: center; padding: var(--sp-md);
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+}
+#proposal-b .dash-empty-text { font-size: var(--text-xs); color: var(--navy-400); margin-bottom: var(--sp-sm); line-height: 1.7; }
+#proposal-b .dash-empty-btn {
+  display: inline-block; padding: 6px 18px;
+  background: var(--navy-700); color: var(--white);
+  font-size: var(--text-xs); font-weight: 600;
+  border-radius: var(--r-sm); border: none; cursor: pointer;
+}
+
+/* ============================================================
+   案C: GUIDED EXPERIENCE — 体験誘導型
+   StravaのようにEnd Stateを先に見せ、DuolingoのようにCTAを1つに絞る
+   ============================================================ */
+#proposal-c .guided-hero {
+  position: relative;
+  background: linear-gradient(180deg, var(--navy-800) 0%, var(--navy-700) 100%);
+  padding: var(--sp-xl) var(--sp-lg) var(--sp-2xl);
+  overflow: hidden;
+}
+#proposal-c .guided-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(200,162,76,0.08) 0%, transparent 100%);
+}
+#proposal-c .guided-hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1120px; margin: 0 auto;
+  text-align: center;
+}
+#proposal-c .guided-hero-icon { font-size: 1.6rem; color: var(--gold-400); margin-bottom: var(--sp-md); }
+#proposal-c .guided-hero-title {
+  font-family: var(--font-body); font-size: var(--text-3xl); font-weight: 700;
+  color: var(--white); margin-bottom: var(--sp-sm);
+}
+#proposal-c .guided-hero-sub {
+  font-size: var(--text-base); color: var(--navy-100); margin-bottom: var(--sp-xl);
+}
+
+/* Mockup preview: shows what the app looks like with data */
+#proposal-c .mockup-container {
+  max-width: 720px; margin: 0 auto;
+  background: rgba(255,255,255,0.04); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.08); border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+}
+#proposal-c .mockup-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--gold-300); text-transform: uppercase; margin-bottom: var(--sp-md);
+  text-align: left;
+}
+#proposal-c .mockup-grid {
+  display: grid; grid-template-columns: 140px 1fr; gap: var(--sp-md);
+}
+#proposal-c .mockup-stat {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center;
+}
+#proposal-c .mockup-stat-num {
+  font-family: var(--font-display); font-size: var(--text-4xl); font-weight: 700;
+  color: var(--gold-400); line-height: 1;
+}
+#proposal-c .mockup-stat-label {
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-200);
+  margin-top: var(--sp-xs);
+}
+#proposal-c .mockup-heatmap-wrap {
+  background: rgba(255,255,255,0.04);
+  border-radius: var(--r-sm); padding: var(--sp-md);
+}
+#proposal-c .mockup-heatmap-months {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-300);
+  margin-bottom: 4px;
+}
+#proposal-c .mockup-heatmap { display: grid; grid-template-columns: repeat(26, 1fr); gap: 2px; }
+#proposal-c .mockup-heatmap .hm-cell { background: var(--navy-600); }
+#proposal-c .mockup-heatmap .hm-cell.l1 { background: var(--gold-200); }
+#proposal-c .mockup-heatmap .hm-cell.l2 { background: var(--gold-400); }
+#proposal-c .mockup-heatmap .hm-cell.l3 { background: var(--gold-600); }
+
+#proposal-c .mockup-stats-row {
+  display: flex; gap: var(--sp-xl); justify-content: center;
+  margin-top: var(--sp-md);
+}
+#proposal-c .mockup-mini-stat { text-align: center; }
+#proposal-c .mockup-mini-num {
+  font-family: var(--font-display); font-size: var(--text-lg); font-weight: 600; color: var(--cream-100);
+}
+#proposal-c .mockup-mini-num small { font-size: var(--text-xs); font-weight: 400; color: var(--navy-300); }
+#proposal-c .mockup-mini-label { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); }
+
+#proposal-c .guided-cta-area {
+  text-align: center; margin-top: var(--sp-xl);
+}
+#proposal-c .guided-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 36px;
+  background: var(--gold-400); color: var(--navy-900);
+  font-family: var(--font-body); font-size: var(--text-base); font-weight: 700;
+  border: none; border-radius: var(--r-sm); cursor: pointer;
+  transition: all 0.2s var(--ease);
+  letter-spacing: 0.02em;
+}
+#proposal-c .guided-cta:hover { background: var(--gold-300); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,162,76,0.25); }
+#proposal-c .guided-cta-sub {
+  font-size: var(--text-xs); color: var(--navy-200); margin-top: var(--sp-sm);
+}
+
+/* Feature showcase */
+#proposal-c .features-section {
+  max-width: 1120px; margin: 0 auto;
+  padding: var(--sp-2xl) var(--sp-lg);
+}
+#proposal-c .features-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--gold-500); text-transform: uppercase; margin-bottom: var(--sp-lg);
+  text-align: center;
+}
+#proposal-c .features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-md);
+  margin-bottom: var(--sp-xl);
+}
+#proposal-c .feature-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: var(--sp-lg);
+  text-align: center;
+  text-decoration: none; color: inherit;
+  transition: all 0.3s var(--ease);
+}
+#proposal-c .feature-card:hover { border-color: var(--navy-200); box-shadow: 0 6px 24px rgba(0,0,0,0.06); transform: translateY(-3px); color: inherit; }
+#proposal-c .feature-icon {
+  width: 48px; height: 48px; margin: 0 auto var(--sp-md);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy-glow); border-radius: var(--r-md);
+  font-size: 22px;
+}
+#proposal-c .feature-card:nth-child(4) .feature-icon,
+#proposal-c .feature-card:nth-child(5) .feature-icon { background: var(--gold-glow); }
+#proposal-c .feature-name {
+  font-family: var(--font-display); font-size: var(--text-base); font-weight: 600;
+  color: var(--dark-800); margin-bottom: var(--sp-xs);
+}
+#proposal-c .feature-desc {
+  font-size: var(--text-xs); color: var(--navy-500); line-height: 1.7;
+  margin-bottom: var(--sp-sm);
+}
+#proposal-c .feature-meta {
+  font-family: var(--font-mono); font-size: 10px; color: var(--navy-300);
+}
+#proposal-c .features-grid-2 {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-md);
+  max-width: 720px; margin: 0 auto;
+}
+
+/* Latest streams (compact) */
+#proposal-c .latest-section {
+  max-width: 1120px; margin: 0 auto;
+  padding: 0 var(--sp-lg) var(--sp-2xl);
+}
+#proposal-c .latest-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--gold-500); text-transform: uppercase; margin-bottom: var(--sp-md);
+}
+#proposal-c .latest-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-md);
+}
+#proposal-c .latest-card {
+  background: var(--cream-50); border: 1px solid var(--border); border-radius: var(--r-md);
+  padding: var(--sp-md);
+  transition: all 0.2s var(--ease);
+}
+#proposal-c .latest-card:hover { border-color: var(--cream-400); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+#proposal-c .latest-thumb {
+  width: 100%; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--silver-100), var(--cream-200));
+  border-radius: var(--r-xs); margin-bottom: var(--sp-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy-300); font-size: 20px;
+}
+#proposal-c .latest-title { font-size: var(--text-sm); font-weight: 500; color: var(--dark-800); line-height: 1.4; margin-bottom: 2px; }
+#proposal-c .latest-meta { font-family: var(--font-mono); font-size: 10px; color: var(--navy-300); margin-bottom: var(--sp-sm); }
+
+@media (max-width: 860px) {
+  #proposal-a .hero-content { grid-template-columns: 1fr; min-height: auto; }
+  #proposal-a .feed { grid-template-columns: 1fr; }
+  #proposal-b .dash-body { grid-template-columns: 1fr; }
+  #proposal-c .features-grid { grid-template-columns: 1fr; }
+  #proposal-c .features-grid-2 { grid-template-columns: 1fr; }
+  #proposal-c .latest-grid { grid-template-columns: 1fr; }
+  #proposal-c .mockup-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PROPOSAL SELECTOR
+     ============================================================ -->
+<div class="proposal-bar">
+  <span class="proposal-bar-label">PROPOSAL v2</span>
+  <button class="proposal-tab active" data-proposal="a">A: Magazine</button>
+  <button class="proposal-tab" data-proposal="b">B: Dashboard</button>
+  <button class="proposal-tab" data-proposal="c">C: Guided</button>
+</div>
+
+<!-- ============================================================
+     案A: MAGAZINE — ビジュアルヒーロー + フィード型
+     最新配信をビジュアルヒーローに据え、その下にフィード形式で
+     他の配信・ツールを並べる。毎日表紙が変わる雑誌のイメージ。
+     ============================================================ -->
+<div class="proposal-frame active" id="proposal-a">
+  <div class="device-frame">
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="#" class="header-logo">だんいんログ</a>
+        <nav class="header-nav">
+          <a href="#" class="nav-link">配信</a>
+          <a href="#" class="nav-link">楽曲</a>
+          <a href="#" class="nav-link">ASMR</a>
+          <a href="#" class="nav-link">レポート</a>
+          <a href="#" class="nav-link">あしあと</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ヒーロー: 最新の配信がビジュアルとして主役 -->
+    <div class="hero-magazine">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-eyecatch">Latest Stream</div>
+          <h1 class="hero-title">配信をチェックして、<br>推し活を記録しよう。</h1>
+          <p class="hero-desc">
+            白銀ノエルの配信・楽曲・ASMRを探索。<br>
+            視聴記録をつけて、あなただけのレポートを作る。
+          </p>
+          <div class="hero-actions">
+            <button class="btn-hero btn-hero-primary">&#9654; 配信を見る</button>
+            <button class="btn-hero btn-hero-ghost">&#9790; 今日のASMR</button>
+          </div>
+        </div>
+        <div class="hero-feature-card">
+          <div class="hero-stream-label">NEW &mdash; 2026.04.19</div>
+          <div class="hero-thumb">&#9654;</div>
+          <div class="hero-stream-title">【朝活雑談】はじめてのVRCガチ恋距離ぎんま！</div>
+          <div class="hero-stream-meta">VRChat / 雑談 &mdash; 1h30m</div>
+          <button class="hero-btn-check">&#43; 視聴チェック</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- メインフィード + サイドバー -->
+    <div class="feed">
+      <div class="feed-main">
+        <div>
+          <div class="feed-section-label">Recent Streams</div>
+          <div style="display:flex; flex-direction:column; gap:var(--sp-sm);">
+            <div class="stream-card">
+              <div class="stream-card-thumb">&#9654;</div>
+              <div class="stream-card-info">
+                <span class="tag-sm">ゲーム</span>
+                <span class="stream-card-title">【鬼サザエトリ】大好きなネックに癒されつつ…深夜にチル水激水！</span>
+                <span class="stream-card-date">2026.04.18 &mdash; 1h51m</span>
+                <button class="btn-check">&#43; 視聴チェック</button>
+              </div>
+            </div>
+            <div class="stream-card">
+              <div class="stream-card-thumb">&#9654;</div>
+              <div class="stream-card-info">
+                <span class="tag-sm">ゲーム</span>
+                <span class="stream-card-title">【ぱこ あ ポケモン】積み上がりに達しているゲーム…そう、ぱこあ。</span>
+                <span class="stream-card-date">2026.04.17 &mdash; 4h21m</span>
+                <button class="btn-check">&#43; 視聴チェック</button>
+              </div>
+            </div>
+            <div class="stream-card">
+              <div class="stream-card-thumb">&#9654;</div>
+              <div class="stream-card-info">
+                <span class="tag-sm">歌枠</span>
+                <span class="stream-card-title">【歌枠】春の歌特集！リクエスト全部歌うまで終われません</span>
+                <span class="stream-card-date">2026.04.15 &mdash; 2h12m</span>
+                <button class="btn-check checked">&#10003; 視聴済</button>
+              </div>
+            </div>
+            <div class="stream-card">
+              <div class="stream-card-thumb">&#9654;</div>
+              <div class="stream-card-info">
+                <span class="tag-sm">ASMR</span>
+                <span class="stream-card-title">【ASMR】春の夜の耳かき・添い寝シチュ</span>
+                <span class="stream-card-date">2026.04.14 &mdash; 1h28m</span>
+                <button class="btn-check">&#43; 視聴チェック</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-sidebar">
+        <div>
+          <div class="feed-section-label">Tools</div>
+          <div class="tool-strip" style="flex-direction:column;">
+            <a href="#" class="tool-chip"><span class="tool-chip-icon">&#9834;</span> 楽曲を探す <span class="tool-chip-count">555</span></a>
+            <a href="#" class="tool-chip"><span class="tool-chip-icon">&#9790;</span> 今日のASMR <span class="tool-chip-count">62</span></a>
+            <a href="#" class="tool-chip"><span class="tool-chip-icon">&#9997;</span> 団員レポート</a>
+            <a href="#" class="tool-chip"><span class="tool-chip-icon">&#128200;</span> 団員のあしあと</a>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">My Stats <span class="badge-new">7 this week</span></div>
+          <div class="stat-row">
+            <span class="stat-label">今週</span>
+            <span class="stat-value">7<small>本</small></span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">先週比</span>
+            <span class="stat-value" style="color:var(--success);">+2</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">累計</span>
+            <span class="stat-value">142<small>本</small></span>
+          </div>
+          <a href="#" class="sidebar-card-link">レポートを見る &rarr;</a>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">あしあと</div>
+          <div class="heatmap" data-heatmap="filled" style="grid-template-columns:repeat(13,1fr);"></div>
+          <a href="#" class="sidebar-card-link">フル表示 &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+    <footer class="doc-footer">
+      <p>だんいんログ &mdash; 白銀ノエル非公式ファンサイト</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ============================================================
+     案B: DASHBOARD — 1画面完結型
+     サイドバー + メインの2カラム。全機能・全情報に即アクセス。
+     Monkeytype的「ページ=ツール」思想。
+     ============================================================ -->
+<div class="proposal-frame" id="proposal-b">
+  <div class="device-frame">
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="#" class="header-logo">だんいんログ</a>
+        <span style="margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--navy-200); letter-spacing:0.06em;">白銀ノエル非公式ファンサイト</span>
+      </div>
+    </header>
+
+    <div class="dash-body">
+      <!-- Sidebar -->
+      <div class="dash-sidebar">
+        <div class="dash-identity">
+          <div class="dash-icon">&#9876;</div>
+          <div class="dash-title">だんいんログ</div>
+          <div class="dash-tagline">推し活を、もっと楽しく。</div>
+        </div>
+
+        <nav class="dash-nav">
+          <div class="dash-nav-group-label">探す</div>
+          <a href="#" class="dash-nav-item"><span class="dash-nav-item-icon">&#9654;</span> 配信 <span class="dash-nav-item-count">1,511</span></a>
+          <a href="#" class="dash-nav-item"><span class="dash-nav-item-icon">&#9834;</span> 楽曲 <span class="dash-nav-item-count">555</span></a>
+          <a href="#" class="dash-nav-item"><span class="dash-nav-item-icon">&#9790;</span> 今日のASMR <span class="dash-nav-item-count">62</span></a>
+          <div class="dash-nav-group-label" style="margin-top:var(--sp-sm);">共有する</div>
+          <a href="#" class="dash-nav-item"><span class="dash-nav-item-icon">&#9997;</span> 団員レポート</a>
+          <a href="#" class="dash-nav-item"><span class="dash-nav-item-icon">&#128200;</span> 団員のあしあと</a>
+        </nav>
+
+        <div class="dash-stats-card">
+          <div class="dash-stats-title">My Activity</div>
+          <div class="dash-stats-grid">
+            <div class="dash-stat-box">
+              <div class="dash-stat-num">7<small>本</small></div>
+              <div class="dash-stat-label">今週</div>
+            </div>
+            <div class="dash-stat-box">
+              <div class="dash-stat-num">142<small>本</small></div>
+              <div class="dash-stat-label">累計</div>
+            </div>
+            <div class="dash-stat-box">
+              <div class="dash-stat-num">38<small>日</small></div>
+              <div class="dash-stat-label">記録日数</div>
+            </div>
+            <div class="dash-stat-box">
+              <div class="dash-stat-num">12<small>日</small></div>
+              <div class="dash-stat-label">最長連続</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-heatmap-card">
+          <div class="dash-heatmap-label">Footprint</div>
+          <div class="dash-heatmap-mini" data-heatmap="filled-mini"></div>
+        </div>
+      </div>
+
+      <!-- Main -->
+      <div class="dash-main">
+        <div class="dash-streams-card">
+          <div class="dash-card-head">
+            <div class="dash-card-title">最新の配信 <span class="badge-new">3 NEW</span></div>
+            <a href="#" class="dash-card-link">すべて見る &rarr;</a>
+          </div>
+
+          <div class="dash-stream-row">
+            <div class="dash-stream-thumb">&#9654;</div>
+            <div class="dash-stream-info">
+              <span class="tag-sm">VRChat / 雑談</span>
+              <span class="dash-stream-title">【朝活雑談】はじめてのVRCガチ恋距離ぎんま！</span>
+              <span class="dash-stream-meta">2026.04.19 &mdash; 1h30m</span>
+            </div>
+            <button class="btn-check">&#43; チェック</button>
+          </div>
+          <div class="dash-stream-row">
+            <div class="dash-stream-thumb">&#9654;</div>
+            <div class="dash-stream-info">
+              <span class="tag-sm">ゲーム</span>
+              <span class="dash-stream-title">【鬼サザエトリ】大好きなネックに癒されつつ…深夜にチル水激水！</span>
+              <span class="dash-stream-meta">2026.04.18 &mdash; 1h51m</span>
+            </div>
+            <button class="btn-check">&#43; チェック</button>
+          </div>
+          <div class="dash-stream-row">
+            <div class="dash-stream-thumb">&#9654;</div>
+            <div class="dash-stream-info">
+              <span class="tag-sm">ゲーム</span>
+              <span class="dash-stream-title">【ぱこ あ ポケモン】積み上がりに達しているゲーム…そう、ぱこあ。</span>
+              <span class="dash-stream-meta">2026.04.17 &mdash; 4h21m</span>
+            </div>
+            <button class="btn-check">&#43; チェック</button>
+          </div>
+          <div class="dash-stream-row">
+            <div class="dash-stream-thumb">&#9654;</div>
+            <div class="dash-stream-info">
+              <span class="tag-sm">歌枠</span>
+              <span class="dash-stream-title">【歌枠】春の歌特集！リクエスト全部歌うまで終われません</span>
+              <span class="dash-stream-meta">2026.04.15 &mdash; 2h12m</span>
+            </div>
+            <button class="btn-check checked">&#10003; 済</button>
+          </div>
+          <div class="dash-stream-row">
+            <div class="dash-stream-thumb">&#9654;</div>
+            <div class="dash-stream-info">
+              <span class="tag-sm">ASMR</span>
+              <span class="dash-stream-title">【ASMR】春の夜の耳かき・添い寝シチュ</span>
+              <span class="dash-stream-meta">2026.04.14 &mdash; 1h28m</span>
+            </div>
+            <button class="btn-check">&#43; チェック</button>
+          </div>
+        </div>
+
+        <div class="dash-bottom-row">
+          <a href="#" class="dash-quick-card">
+            <div class="dash-quick-card-icon">&#9834;</div>
+            <div class="dash-quick-card-name">楽曲を探す</div>
+            <div class="dash-quick-card-desc">555曲。曲名から歌った配信を逆引き</div>
+          </a>
+          <a href="#" class="dash-quick-card">
+            <div class="dash-quick-card-icon">&#9790;</div>
+            <div class="dash-quick-card-name">今日のASMR</div>
+            <div class="dash-quick-card-desc">気分を選ぶとASMRを1本提案</div>
+          </a>
+          <a href="#" class="dash-quick-card">
+            <div class="dash-quick-card-icon">&#9997;</div>
+            <div class="dash-quick-card-name">団員レポート</div>
+            <div class="dash-quick-card-desc">視聴データからレポート画像生成</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     案C: GUIDED EXPERIENCE — 体験誘導型
+     「使った後の姿」をヒーローで見せ、行動を1つに絞る。
+     Strava + Duolingo ハイブリッド。
+     ============================================================ -->
+<div class="proposal-frame" id="proposal-c">
+  <div class="device-frame">
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a href="#" class="header-logo">だんいんログ</a>
+        <nav class="header-nav">
+          <a href="#" class="nav-link">配信</a>
+          <a href="#" class="nav-link">楽曲</a>
+          <a href="#" class="nav-link">ASMR</a>
+          <a href="#" class="nav-link">レポート</a>
+          <a href="#" class="nav-link">あしあと</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ヒーロー: End Stateを見せる -->
+    <div class="guided-hero">
+      <div class="guided-hero-inner">
+        <div class="guided-hero-icon">&#9876;</div>
+        <h1 class="guided-hero-title">推し活を、記録しよう。</h1>
+        <p class="guided-hero-sub">配信をチェックするだけで、あなただけの視聴ログが育っていきます。</p>
+
+        <!-- あなたのログがこうなるよ、という完成形プレビュー -->
+        <div class="mockup-container">
+          <div class="mockup-label">&#9876; Your Activity — こうなります</div>
+          <div class="mockup-grid">
+            <div class="mockup-stat">
+              <div class="mockup-stat-num">142</div>
+              <div class="mockup-stat-label">配信チェック</div>
+            </div>
+            <div class="mockup-heatmap-wrap">
+              <div class="mockup-heatmap-months"><span>11月</span><span>12月</span><span>1月</span><span>2月</span><span>3月</span><span>4月</span></div>
+              <div class="mockup-heatmap" data-heatmap="mockup"></div>
+            </div>
+          </div>
+          <div class="mockup-stats-row">
+            <div class="mockup-mini-stat"><div class="mockup-mini-num">38<small>日</small></div><div class="mockup-mini-label">記録日数</div></div>
+            <div class="mockup-mini-stat"><div class="mockup-mini-num">12<small>日</small></div><div class="mockup-mini-label">最長連続</div></div>
+            <div class="mockup-mini-stat"><div class="mockup-mini-num">318<small>h</small></div><div class="mockup-mini-label">総視聴時間</div></div>
+            <div class="mockup-mini-stat"><div class="mockup-mini-num">ゲーム</div><div class="mockup-mini-label">最多ジャンル</div></div>
+          </div>
+        </div>
+
+        <div class="guided-cta-area">
+          <button class="guided-cta">&#9654; 配信をチェックしてみる</button>
+          <p class="guided-cta-sub">ログイン不要 &middot; ブラウザに保存 &middot; 完全無料</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 機能カード -->
+    <div class="features-section">
+      <div class="features-label">What you can do</div>
+      <div class="features-grid">
+        <a href="#" class="feature-card">
+          <div class="feature-icon">&#9654;</div>
+          <div class="feature-name">配信</div>
+          <div class="feature-desc">1,511件の配信をタグ・キーワードで検索。視聴チェックで記録。</div>
+          <div class="feature-meta">1,511 streams</div>
+        </a>
+        <a href="#" class="feature-card">
+          <div class="feature-icon">&#9834;</div>
+          <div class="feature-name">楽曲</div>
+          <div class="feature-desc">レパートリー全曲を検索。曲名から歌った配信を逆引き。</div>
+          <div class="feature-meta">555 songs</div>
+        </a>
+        <a href="#" class="feature-card">
+          <div class="feature-icon">&#9790;</div>
+          <div class="feature-name">今日のASMR</div>
+          <div class="feature-desc">気分を選ぶだけ。今日のあなたに合うASMRを1本提案。</div>
+          <div class="feature-meta">62 archives</div>
+        </a>
+      </div>
+      <div class="features-grid-2">
+        <a href="#" class="feature-card">
+          <div class="feature-icon">&#9997;</div>
+          <div class="feature-name">団員レポート</div>
+          <div class="feature-desc">チェックした配信データから推し活レポート画像を自動生成。Xでシェア。</div>
+          <div class="feature-meta">share image</div>
+        </a>
+        <a href="#" class="feature-card">
+          <div class="feature-icon">&#128200;</div>
+          <div class="feature-name">団員のあしあと</div>
+          <div class="feature-desc">視聴履歴を年間ヒートマップ画像にして残す。</div>
+          <div class="feature-meta">share image</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 最新配信（軽め） -->
+    <div class="latest-section">
+      <div class="latest-label">Latest Streams</div>
+      <div class="latest-grid">
+        <div class="latest-card">
+          <div class="latest-thumb">&#9654;</div>
+          <span class="tag-sm">VRChat / 雑談</span>
+          <div class="latest-title">【朝活雑談】はじめてのVRCガチ恋距離ぎんま！</div>
+          <div class="latest-meta">2026.04.19 &mdash; 1h30m</div>
+          <button class="btn-check">&#43; 視聴チェック</button>
+        </div>
+        <div class="latest-card">
+          <div class="latest-thumb">&#9654;</div>
+          <span class="tag-sm">ゲーム</span>
+          <div class="latest-title">【鬼サザエトリ】大好きなネックに癒されつつ…深夜にチル水激水！</div>
+          <div class="latest-meta">2026.04.18 &mdash; 1h51m</div>
+          <button class="btn-check">&#43; 視聴チェック</button>
+        </div>
+        <div class="latest-card">
+          <div class="latest-thumb">&#9654;</div>
+          <span class="tag-sm">ゲーム</span>
+          <div class="latest-title">【ぱこ あ ポケモン】積み上がりに達しているゲーム…そう、ぱこあ。</div>
+          <div class="latest-meta">2026.04.17 &mdash; 4h21m</div>
+          <button class="btn-check">&#43; 視聴チェック</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="doc-footer">
+      <p>だんいんログ &mdash; 白銀ノエル非公式ファンサイト</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script>
+// --- Tab Switch ---
+(function() {
+  var tabs = document.querySelectorAll('.proposal-tab');
+  var frames = document.querySelectorAll('.proposal-frame');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      this.classList.add('active');
+      var id = 'proposal-' + this.getAttribute('data-proposal');
+      frames.forEach(function(f) { f.classList.toggle('active', f.id === id); });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
+
+// --- Heatmap ---
+(function() {
+  function fillHeatmap(el, cols, showData) {
+    var seed = 42;
+    function rng() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    var total = cols * 7;
+    for (var i = 0; i < total; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'hm-cell';
+      if (showData) {
+        var weekIdx = Math.floor(i / 7);
+        var prob = 0.12 + (weekIdx / (cols)) * 0.4;
+        if (rng() < prob) {
+          var intensity = rng();
+          if (intensity < 0.4) cell.classList.add('l1');
+          else if (intensity < 0.75) cell.classList.add('l2');
+          else cell.classList.add('l3');
+        }
+      }
+      el.appendChild(cell);
+    }
+  }
+
+  document.querySelectorAll('[data-heatmap]').forEach(function(el) {
+    var type = el.getAttribute('data-heatmap');
+    if (type === 'filled') fillHeatmap(el, 26, true);
+    else if (type === 'filled-mini') fillHeatmap(el, 13, true);
+    else if (type === 'mockup') fillHeatmap(el, 26, true);
+    else fillHeatmap(el, 26, false);
+  });
+})();
+
+// --- Check Toggle ---
+document.querySelectorAll('.btn-check').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var c = this.classList.toggle('checked');
+    this.innerHTML = c ? '&#10003; 視聴済' : '&#43; 視聴チェック';
+  });
+});
+</script>
+</body>
+</html>
