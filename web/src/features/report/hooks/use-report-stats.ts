@@ -6,6 +6,11 @@ import {
   getCheckedServerSnapshot,
 } from '@/features/streams/lib/checked-streams';
 import {
+  subscribeCheckLog,
+  getCheckLogSnapshot,
+  getCheckLogServerSnapshot,
+} from '@/features/streams/lib/check-log';
+import {
   subscribeFavorites,
   getFavoritesSnapshot,
   getFavoritesServerSnapshot,
@@ -13,15 +18,21 @@ import {
 import { computeStats, type ReportStats } from '../lib/compute-stats';
 
 /**
- * チェック済み配信 + お気に入り楽曲から統計を算出するフック
+ * チェック済み配信 + チェック日付ログ + お気に入り楽曲から統計を算出するフック
  *
- * checked-streams / favorite-songs の変更を購読し、リアクティブに再計算する。
+ * checked-streams / check-log / favorite-songs の変更を購読し、リアクティブに再計算する。
  */
 export function useReportStats(streams: Stream[]): ReportStats {
   const checkedIds = useSyncExternalStore(
     subscribeChecked,
     getCheckedSnapshot,
     getCheckedServerSnapshot,
+  );
+
+  const checkLog = useSyncExternalStore(
+    subscribeCheckLog,
+    getCheckLogSnapshot,
+    getCheckLogServerSnapshot,
   );
 
   const favoriteIds = useSyncExternalStore(
@@ -31,7 +42,7 @@ export function useReportStats(streams: Stream[]): ReportStats {
   );
 
   return useMemo(
-    () => computeStats(streams, checkedIds, favoriteIds.size),
-    [streams, checkedIds, favoriteIds],
+    () => computeStats(streams, checkedIds, checkLog, favoriteIds.size),
+    [streams, checkedIds, checkLog, favoriteIds],
   );
 }

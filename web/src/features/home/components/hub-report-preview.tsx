@@ -8,6 +8,11 @@ import {
   subscribeChecked,
 } from '@/features/streams/lib/checked-streams';
 import {
+  getCheckLogSnapshot,
+  getCheckLogServerSnapshot,
+  subscribeCheckLog,
+} from '@/features/streams/lib/check-log';
+import {
   getFavoritesSnapshot,
   getFavoritesServerSnapshot,
   subscribeFavorites,
@@ -26,13 +31,18 @@ export function HubReportPreview({ allStreams }: Props) {
     getCheckedSnapshot,
     getCheckedServerSnapshot,
   );
+  const checkLog = useSyncExternalStore(
+    subscribeCheckLog,
+    getCheckLogSnapshot,
+    getCheckLogServerSnapshot,
+  );
   const favorites = useSyncExternalStore(
     subscribeFavorites,
     getFavoritesSnapshot,
     getFavoritesServerSnapshot,
   );
 
-  const stats = computeStats(allStreams, checked, favorites.size);
+  const stats = computeStats(allStreams, checked, checkLog, favorites.size);
 
   if (stats.streamCount === 0) {
     return <HubReportPreviewEmpty />;

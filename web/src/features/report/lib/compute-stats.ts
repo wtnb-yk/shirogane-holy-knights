@@ -5,22 +5,27 @@ export type GenreShare = {
   count: number;
 };
 
+export type YearlyCoverage = {
+  year: number;
+  checked: number;
+  total: number;
+  rate: number;
+};
+
 export type ReportStats = {
   streamCount: number;
   genreDistribution: GenreShare[];
-  weekdayDistribution: number[];
+  yearlyCoverage: YearlyCoverage[];
   coverageRate: number;
   weeklyAverage: number;
   maxStreak: number;
   favoriteSongCount: number;
 };
 
-const EMPTY_WEEKDAYS = [0, 0, 0, 0, 0, 0, 0];
-
 export const EMPTY_STATS: ReportStats = {
   streamCount: 0,
   genreDistribution: [],
-  weekdayDistribution: EMPTY_WEEKDAYS,
+  yearlyCoverage: [],
   coverageRate: 0,
   weeklyAverage: 0,
   maxStreak: 0,
@@ -56,11 +61,12 @@ function longestConsecutiveStreak(sortedDates: string[]): number {
 }
 
 /**
- * 全配信データ + チェック済みIDから統計を算出する純粋関数
+ * 全配信データ + チェック済みID + チェック日付ログから統計を算出する純粋関数
  */
 export function computeStats(
   allStreams: Stream[],
   checkedIds: Set<string>,
+  checkLog: Map<string, string>,
   favoriteSongCount: number,
 ): ReportStats {
   if (checkedIds.size === 0) return { ...EMPTY_STATS, favoriteSongCount };
@@ -85,14 +91,29 @@ export function computeStats(
   const genreDistribution: GenreShare[] =
     otherCount > 0 ? [...top, { name: '他', count: otherCount }] : top;
 
-  // --- weekdayDistribution [日,月,火,水,木,金,土] ---
-  const weekdayDistribution = new Array<number>(7).fill(0);
-  for (const s of checked) {
-    const d = new Date(s.startedAt);
-    if (!Number.isNaN(d.getTime())) {
-      weekdayDistribution[d.getDay()]++;
-    }
+  // --- yearlyCoverage（年別カバー率） ---
+  const totalByYear = new Map<number, number>();
+  for (const s of allStreams) {
+    const y = new Date(s.startedAt).getFullYear();
+    if (!Number.isNaN(y)) totalByYear.set(y, (totalByYear.get(y) ?? 0) + 1);
   }
+  const checkedByYear = new Map<number, number>();
+  for (const s of checked) {
+    const y = new Date(s.startedAt).getFullYear();
+    if (!Number.isNaN(y)) checkedByYear.set(y, (checkedByYear.get(y) ?? 0) + 1);
+  }
+  const yearlyCoverage: YearlyCoverage[] = [...totalByYear.keys()]
+    .sort()
+    .map((year) => {
+      const total = totalByYear.get(year) ?? 0;
+      const cnt = checkedByYear.get(year) ?? 0;
+      return {
+        year,
+        checked: cnt,
+        total,
+        rate: total > 0 ? Math.round((cnt / total) * 100) : 0,
+      };
+    });
 
   // --- coverageRate ---
   const coverageRate =
@@ -100,24 +121,27 @@ export function computeStats(
       ? Math.round((streamCount / allStreams.length) * 100)
       : 0;
 
-  // --- weeklyAverage ---
-  const dates = checked.map((s) => s.startedAt).sort();
-  const earliest = new Date(dates[0]);
-  const latest = new Date(dates[dates.length - 1]);
-  const spanMs = latest.getTime() - earliest.getTime();
-  const spanWeeks = Math.max(spanMs / (7 * 86_400_000), 1);
-  const weeklyAverage = Math.round((streamCount / spanWeeks) * 10) / 10;
-
-  // --- maxStreak ---
-  const uniqueDates = [...new Set(checked.map((s) => toDateKey(s.startedAt)))]
+  // --- weeklyAverage（チェック日付ベース） ---
+  const checkDates = [...checkLog.values()]
     .filter((d) => d.length === 10)
     .sort();
-  const maxStreak = longestConsecutiveStreak(uniqueDates);
+  let weeklyAverage = 0;
+  if (checkDates.length > 0) {
+    const earliest = new Date(checkDates[0]);
+    const latest = new Date(checkDates[checkDates.length - 1]);
+    const spanMs = latest.getTime() - earliest.getTime();
+    const spanWeeks = Math.max(spanMs / (7 * 86_400_000), 1);
+    weeklyAverage = Math.round((streamCount / spanWeeks) * 10) / 10;
+  }
+
+  // --- maxStreak（チェック日付ベース） ---
+  const uniqueCheckDates = [...new Set(checkDates)].sort();
+  const maxStreak = longestConsecutiveStreak(uniqueCheckDates);
 
   return {
     streamCount,
     genreDistribution,
-    weekdayDistribution,
+    yearlyCoverage,
     coverageRate,
     weeklyAverage,
     maxStreak,

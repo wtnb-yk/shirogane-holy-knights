@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import type { ReportStats } from '../lib/compute-stats';
 import { DonutChart } from './donut-chart';
-import { WeekdayChart } from './weekday-chart';
+import { YearlyChart } from './yearly-chart';
 import { StatGrid } from './stat-grid';
 
 export type ReportTheme = 'light' | 'dark' | 'gold';
@@ -64,10 +64,10 @@ export const ReportCard = forwardRef<HTMLDivElement, Props>(function ReportCard(
 
         <Divider />
 
-        {/* 曜日パターン */}
+        {/* 年別カバー率 */}
         <div className="py-3">
-          <SectionTitle>Weekly Pattern</SectionTitle>
-          <WeekdayChart distribution={stats.weekdayDistribution} />
+          <SectionTitle>Yearly Coverage</SectionTitle>
+          <YearlyChart coverage={stats.yearlyCoverage} />
         </div>
 
         <Divider />

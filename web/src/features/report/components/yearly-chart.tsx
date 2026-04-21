@@ -1,23 +1,23 @@
-const DAY_LABELS = ['月', '火', '水', '木', '金', '土', '日'];
+import type { YearlyCoverage } from '../lib/compute-stats';
 
 type Props = {
-  /** [日,月,火,水,木,金,土] — getDay() 順 */
-  distribution: number[];
+  coverage: YearlyCoverage[];
 };
 
-export function WeekdayChart({ distribution }: Props) {
-  const display = [1, 2, 3, 4, 5, 6, 0].map((i) => distribution[i] ?? 0);
-  const max = Math.max(...display, 1);
+export function YearlyChart({ coverage }: Props) {
+  if (coverage.length === 0) return null;
+
+  const maxRate = Math.max(...coverage.map((c) => c.rate), 1);
 
   return (
     <div className="flex items-end justify-center gap-[5px]">
-      {display.map((count, i) => {
-        const isTop = count === max && count > 0;
-        const pct = max > 0 ? (count / max) * 100 : 0;
+      {coverage.map((c) => {
+        const isTop = c.rate === maxRate && c.rate > 0;
+        const pct = maxRate > 0 ? (c.rate / maxRate) * 100 : 0;
         return (
           <div
-            key={DAY_LABELS[i]}
-            className="flex flex-col items-center gap-[3px] flex-1 max-w-[40px]"
+            key={c.year}
+            className="flex flex-col items-center gap-[3px] flex-1 max-w-[52px]"
           >
             <span
               className={`font-display text-[8px] font-bold min-h-[12px] ${
@@ -26,7 +26,7 @@ export function WeekdayChart({ distribution }: Props) {
                   : 'text-[var(--rc-accent)]'
               }`}
             >
-              {count > 0 ? count : ''}
+              {c.rate > 0 ? `${c.rate}%` : ''}
             </span>
             <div className="w-full h-[44px] rounded-[3px] bg-[var(--rc-bar-bg)] flex items-end overflow-hidden">
               <div
@@ -43,7 +43,7 @@ export function WeekdayChart({ distribution }: Props) {
                   : 'text-[var(--rc-bar-label)]'
               }`}
             >
-              {DAY_LABELS[i]}
+              {c.year}
             </span>
           </div>
         );
