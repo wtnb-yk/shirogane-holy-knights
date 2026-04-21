@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export function HubReportPreviewEmpty() {
   return (
@@ -14,11 +15,8 @@ export function HubReportPreviewEmpty() {
         <br />
         あなただけのレポートが作れます。
       </p>
-      <Link
-        href="/streams"
-        className="inline-flex items-center gap-sm px-lg py-2 bg-heading text-surface text-xs font-semibold rounded-sm transition-all duration-200 ease-out-expo hover:-translate-y-px hover:shadow-button-hover"
-      >
-        配信をチェック
+      <Link href="/streams">
+        <Button variant="primary">配信をチェック</Button>
       </Link>
     </div>
   );

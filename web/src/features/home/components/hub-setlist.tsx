@@ -31,7 +31,7 @@ export function HubSetlist({ stream }: Props) {
             <span className="text-xs font-medium text-heading flex-1 truncate">
               {song.title}
             </span>
-            <span className="font-mono text-3xs text-subtle flex-shrink-0 max-w-[120px] truncate text-right">
+            <span className="font-mono text-3xs text-subtle flex-shrink-0 max-w-[var(--setlist-artist-max)] truncate text-right">
               {song.artist}
             </span>
           </div>

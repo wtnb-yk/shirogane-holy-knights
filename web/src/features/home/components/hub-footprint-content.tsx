@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 type Props = {
   activeDays: number;
@@ -36,16 +37,14 @@ export function HubFootprintContent({
             {maxStreak}
             <span className="text-3xs font-normal text-subtle">日</span>
           </div>
-          <div className="font-mono text-[8px] text-subtle mt-2xs">
-            最長連続
-          </div>
+          <div className="font-mono text-4xs text-subtle mt-2xs">最長連続</div>
         </div>
         <div className="flex-1 text-center py-sm bg-page rounded-sm">
           <div className="font-display text-base font-semibold text-heading leading-none">
             {totalChecks}
             <span className="text-3xs font-normal text-subtle">本</span>
           </div>
-          <div className="font-mono text-[8px] text-subtle mt-2xs">累計</div>
+          <div className="font-mono text-4xs text-subtle mt-2xs">累計</div>
         </div>
       </div>
 
@@ -56,11 +55,10 @@ export function HubFootprintContent({
         画像にして残せます
       </p>
 
-      <Link
-        href="/footprint"
-        className="mt-auto text-center py-sm rounded-sm text-xs font-semibold bg-[var(--glow-navy)] text-interactive transition-all duration-200 ease-out-expo hover:bg-heading hover:text-surface"
-      >
-        あしあとを見る &rarr;
+      <Link href="/footprint" className="mt-auto">
+        <Button variant="secondary" className="w-full justify-center">
+          あしあとを見る &rarr;
+        </Button>
       </Link>
     </div>
   );

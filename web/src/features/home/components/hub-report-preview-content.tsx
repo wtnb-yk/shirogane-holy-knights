@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import type { GenreShare } from '@/features/report/lib/compute-stats';
 
 type Props = {
@@ -56,11 +57,10 @@ export function HubReportPreviewContent({
         />
       </div>
 
-      <Link
-        href="/report"
-        className="mt-auto text-center py-sm rounded-sm text-xs font-semibold bg-heading text-surface transition-all duration-200 ease-out-expo hover:bg-[var(--color-navy-900)] hover:-translate-y-px"
-      >
-        レポートを作る
+      <Link href="/report" className="mt-auto">
+        <Button variant="cta" className="w-full">
+          レポートを作る
+        </Button>
       </Link>
     </div>
   );
@@ -80,10 +80,10 @@ function DonutChart({ genres }: { genres: GenreShare[] }) {
   return (
     <div className="flex items-center gap-md mb-lg">
       <div
-        className="w-[90px] h-[90px] rounded-full relative flex-shrink-0"
+        className="w-[var(--donut-size)] h-[var(--donut-size)] rounded-full relative shrink-0"
         style={{ background: `conic-gradient(${stops.join(',')})` }}
       >
-        <div className="absolute inset-[18px] rounded-full bg-surface" />
+        <div className="absolute inset-[var(--donut-hole)] rounded-full bg-surface" />
       </div>
       <div className="flex flex-col gap-xs flex-1">
         {genres.map((g, i) => (
@@ -118,7 +118,7 @@ function StatCell({
         {value}
         <span className="text-3xs font-normal text-subtle">{unit}</span>
       </div>
-      <div className="font-mono text-[9px] text-subtle mt-2xs">{label}</div>
+      <div className="font-mono text-4xs text-subtle mt-2xs">{label}</div>
     </div>
   );
 }

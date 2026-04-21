@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export function HubFootprintEmpty() {
   return (
@@ -18,11 +19,10 @@ export function HubFootprintEmpty() {
           年間ヒートマップ画像にして残せます。
         </p>
       </div>
-      <Link
-        href="/streams"
-        className="mt-md inline-flex items-center justify-center gap-sm px-lg py-2 bg-heading text-surface text-xs font-semibold rounded-sm transition-all duration-200 ease-out-expo hover:-translate-y-px hover:shadow-button-hover"
-      >
-        配信をチェック
+      <Link href="/streams" className="mt-md">
+        <Button variant="primary" className="w-full justify-center">
+          配信をチェック
+        </Button>
       </Link>
     </div>
   );

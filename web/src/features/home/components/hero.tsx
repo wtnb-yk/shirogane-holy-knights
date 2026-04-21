@@ -30,7 +30,7 @@ export function Hero({ thumbnails }: Props) {
       </div>
 
       {/* コンテンツ */}
-      <div className="relative z-10 max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-md pb-md min-h-[320px] md:min-h-[400px] flex items-center">
+      <div className="relative z-10 max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-md pb-md min-h-[var(--hero-min-h)] md:min-h-[var(--hero-min-h-md)] flex items-center">
         <div>
           <h1 className="font-body text-4xl font-bold text-heading leading-[1.1] tracking-tight mb-xs">
             だんいんログ
@@ -38,7 +38,7 @@ export function Hero({ thumbnails }: Props) {
           <p className="text-lg text-secondary mb-md">
             団員の推し活を、もっと楽しく。
           </p>
-          <p className="text-sm text-muted leading-relaxed mb-md max-w-[440px]">
+          <p className="text-sm text-muted leading-relaxed mb-md max-w-[var(--hero-desc-max)]">
             白銀ノエル団長のコンテンツを探して、観て、記録する。
             <br />
             あなたの推し活が、ここに積み重なっていく。
@@ -69,7 +69,7 @@ function ThumbRow({
       {doubled.map((url, i) => (
         <div
           key={i}
-          className="w-[180px] aspect-video flex-shrink-0 rounded-sm overflow-hidden bg-surface-hover"
+          className="w-[var(--thumb-flow-w)] aspect-video shrink-0 rounded-sm overflow-hidden bg-surface-hover"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- 背景装飾用サムネイル */}
           <img

@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="mx-auto max-w-[var(--content-max)] w-full border-t border-border text-center px-md md:px-lg py-xl md:py-2xl">
+    <footer className="mx-auto max-w-[var(--content-max)] w-full border-t border-border text-center px-md md:px-lg pt-xl pb-xl md:pt-xl md:pb-2xl">
       <p className="text-3xs md:text-xs text-faint leading-relaxed">
         だんいんログ &mdash; 白銀ノエル非公式ファンサイト
       </p>

@@ -105,6 +105,22 @@
   --color-overlay-bg-hover: rgba(255, 255, 255, 0.25);
   --color-overlay-border: rgba(255, 255, 255, 0.2);
   --color-overlay-icon: #ffffff;
+
+  /* ASMR タイル（ダークパープル、テーマ不変） */
+  --color-asmr-bg: #2a2440;
+  --color-asmr-bg-end: #1e1a2e;
+  --color-asmr-border: #3a3450;
+  --color-asmr-border-hover: #4a4460;
+  --color-asmr-text: #f0ecf8;
+  --color-asmr-muted: rgba(200, 195, 215, 0.6);
+  --color-asmr-subtle: rgba(200, 195, 215, 0.4);
+  --color-asmr-label: rgba(200, 180, 240, 0.7);
+  --color-asmr-glow: rgba(200, 180, 240, 0.12);
+  --color-asmr-btn-bg: rgba(200, 180, 240, 0.15);
+  --color-asmr-btn-border: rgba(200, 180, 240, 0.2);
+  --color-asmr-btn-text: #e8e0f4;
+  --color-asmr-divider: rgba(255, 255, 255, 0.06);
+  --color-asmr-cta-bg: rgba(255, 255, 255, 0.04);
 }
 
 /* ----- 3. タイポグラフィ -----
@@ -114,6 +130,7 @@
    2xs / 3xs はプロトタイプの 11px / 10px メタ情報用。
    ------------------------------------------------------------ */
 @theme {
+  --text-4xs: 8px;     /* 極小メタ情報 */
   --text-3xs: 10px;    /* モノタイプメタ情報、バッジ */
   --text-2xs: 11px;    /* チェックボタン、タグピル、入力欄 */
   --text-xl: 1.5rem;   /* Tailwind default: 1.25rem → proto: 1.5rem */
@@ -149,6 +166,14 @@
   --prose-max: 640px;            /* 読み物ページ最大幅 */
   --inline-player-max: 560px;    /* インラインプレイヤー最大幅 */
   --slot-bg: var(--color-navy-800); /* スロット背景（テーマ不変） */
+  --donut-size: 90px;              /* ドーナツチャート外径 */
+  --donut-hole: 18px;              /* ドーナツチャート穴 inset */
+  --hero-min-h: 320px;             /* ヒーロー最小高（モバイル） */
+  --hero-min-h-md: 400px;          /* ヒーロー最小高（デスクトップ） */
+  --thumb-flow-w: 180px;           /* ヒーロー背景サムネ幅 */
+  --hero-desc-max: 440px;          /* ヒーロー説明文最大幅 */
+  --setlist-artist-max: 120px;     /* セットリストアーティスト名最大幅 */
+  --asmr-glow-size: 140px;         /* ASMR月光グロー径 */
 }
 
 /* ----- 5. シャドウ -----
