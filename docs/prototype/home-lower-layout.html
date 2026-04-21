@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ホーム下層 — B Hub Tiles 修正版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=M+PLUS+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c50:#FCFCFD;--c100:#F8F8FA;--c200:#EDEDF0;--c300:#E2E2E6;--c400:#D4D4D9;
+  --n900:#1C2230;--n800:#242A3A;--n700:#303845;--n600:#404A55;--n500:#545D68;
+  --n400:#6A7380;--n300:#888F99;--n200:#ACB1B8;--n100:#CDD0D4;
+  --ng:rgba(48,56,69,.08);
+  --g600:#8B6D1E;--g500:#A6852E;--g400:#C8A24C;--g300:#D4B56A;--g200:#E2CC92;--g100:#F2E6C4;
+  --gg:rgba(200,162,76,.10);
+  --ok:#4A8B6B;
+  --bd:var(--c300);
+  --fd:'Outfit',sans-serif;--fb:'M PLUS 2',sans-serif;--fm:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --W:1120px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--c200);color:var(--n700);font-family:var(--fb);line-height:1.7;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+
+.hero-ph{background:var(--c200);border-bottom:1px solid var(--c300);padding:24px;text-align:center;font-family:var(--fm);font-size:10px;color:var(--n300);letter-spacing:.1em;}
+.device{background:var(--c100);border-radius:16px;box-shadow:0 4px 32px rgba(0,0,0,.08);overflow:hidden;max-width:1200px;margin:16px auto 80px;}
+
+/* Shared */
+.badge{padding:2px 7px;background:var(--gg);color:var(--g500);font-family:var(--fm);font-size:10px;font-weight:500;border-radius:3px;letter-spacing:.06em;}
+.hm-cell{aspect-ratio:1;border-radius:2px;background:var(--c200);}
+.hm-cell.l1{background:var(--g200);}.hm-cell.l2{background:var(--g400);}.hm-cell.l3{background:var(--g600);}
+
+/* ============================================================ */
+.body{max-width:var(--W);margin:0 auto;padding:24px;}
+.hub{
+  display:grid;grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:minmax(60px,auto);gap:14px;
+}
+.tile{border-radius:16px;overflow:hidden;position:relative;transition:all .35s var(--ease);cursor:pointer;}
+.tile:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.08);}
+
+/* ============ STREAMS (8col) ============ */
+.t-st{
+  grid-column:1/9;grid-row:1/4;
+  /* 変更: ダーク背景→ライト */
+  background:var(--c50);border:1px solid var(--bd);
+  padding:28px;display:flex;flex-direction:column;
+}
+.t-st:hover{border-color:var(--c400);}
+.t-st .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
+.t-st .lbl{font-family:var(--fm);font-size:10px;color:var(--g500);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px;}
+.t-st .ttl{font-family:var(--fb);font-size:1.375rem;font-weight:700;color:var(--n800);}
+.t-st .sub{font-size:.8rem;color:var(--n400);margin-top:2px;}
+.t-st .badge-lg{padding:4px 12px;background:var(--gg);color:var(--g500);font-family:var(--fm);font-size:11px;font-weight:500;border-radius:6px;}
+
+/* Thumb stack — 構造は前回Bと同じ、色だけライトに */
+.t-st .stack{display:flex;gap:12px;flex:1;margin-top:auto;}
+.t-st .si{
+  flex:1;border-radius:10px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,var(--c200),var(--c300));
+  aspect-ratio:16/9;transition:transform .25s var(--ease);
+}
+.t-st .si:hover{transform:scale(1.03);z-index:1;}
+.t-st .si .ov{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:10px 12px;
+  background:linear-gradient(to top,rgba(28,34,48,.75) 0%,transparent 60%);
+}
+.t-st .si .ov .t{font-size:.7rem;font-weight:500;color:white;line-height:1.3;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.t-st .si .ov .m{font-family:var(--fm);font-size:9px;color:var(--n200);margin-top:2px;}
+.t-st .si .ov .badge{position:absolute;top:8px;left:8px;font-size:9px;}
+.t-st .link{margin-top:16px;font-size:.75rem;color:var(--n400);display:flex;align-items:center;gap:4px;}
+.t-st .link:hover{color:var(--n700);}
+
+/* ============ REPORT PREVIEW (4col) ============ */
+.t-rp{
+  grid-column:9/13;grid-row:1/4;
+  background:linear-gradient(165deg,var(--c50) 0%,#f3f0e6 100%);
+  border:1px solid var(--bd);padding:24px;
+  display:flex;flex-direction:column;
+}
+.t-rp:hover{border-color:var(--c400);}
+.t-rp .lbl{font-family:var(--fm);font-size:10px;color:var(--g500);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.t-rp .ttl{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--n800);margin-bottom:16px;}
+/* Donut */
+.t-rp .donut-wrap{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.t-rp .donut{width:90px;height:90px;border-radius:50%;position:relative;flex-shrink:0;
+  background:conic-gradient(var(--g400) 0% 35%,var(--n400) 35% 55%,var(--n200) 55% 72%,var(--g300) 72% 85%,var(--c300) 85% 100%);
+}
+.t-rp .donut::after{content:'';position:absolute;inset:18px;border-radius:50%;background:var(--c50);}
+.t-rp .legend{display:flex;flex-direction:column;gap:5px;flex:1;}
+.t-rp .legend .row{display:flex;align-items:center;gap:6px;font-size:.7rem;color:var(--n600);}
+.t-rp .legend .dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+/* Stats 2x2 */
+.t-rp .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.t-rp .stat{padding:10px;background:var(--c100);border-radius:8px;}
+.t-rp .stat .v{font-family:var(--fd);font-size:1.125rem;font-weight:600;color:var(--n800);line-height:1;}
+.t-rp .stat .v small{font-size:.65rem;font-weight:400;color:var(--n300);}
+.t-rp .stat .l{font-family:var(--fm);font-size:9px;color:var(--n400);margin-top:2px;}
+.t-rp .cta{
+  margin-top:auto;text-align:center;padding:10px 0;border-radius:8px;
+  font-size:.8rem;font-weight:600;background:var(--n800);color:var(--c100);
+  cursor:pointer;transition:all .2s var(--ease);border:none;width:100%;
+}
+.t-rp .cta:hover{background:var(--n900);transform:translateY(-1px);}
+
+/* ============ 歌枠セットリスト (5col) ============ */
+.t-uta{
+  grid-column:1/6;grid-row:4/6;
+  background:var(--c50);border:1px solid var(--bd);
+  padding:24px;display:flex;flex-direction:column;
+}
+.t-uta:hover{border-color:var(--c400);}
+.t-uta .lbl{font-family:var(--fm);font-size:10px;color:var(--g500);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.t-uta .ttl{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--n800);margin-bottom:2px;}
+.t-uta .stream-info{font-family:var(--fm);font-size:10px;color:var(--n300);margin-bottom:14px;}
+.t-uta .list{flex:1;display:flex;flex-direction:column;gap:0;}
+.t-uta .row{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:6px;transition:background .15s;}
+.t-uta .row:hover{background:var(--c100);}
+.t-uta .row .num{font-family:var(--fm);font-size:10px;color:var(--n300);width:16px;text-align:right;flex-shrink:0;}
+.t-uta .row .nm{font-size:.8rem;font-weight:500;color:var(--n800);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-uta .row .artist{font-family:var(--fm);font-size:10px;color:var(--n300);flex-shrink:0;}
+.t-uta .lk{margin-top:auto;padding-top:12px;font-size:.75rem;color:var(--n400);}
+.t-uta .lk:hover{color:var(--n700);}
+
+/* ============ 今日のASMR (4col) — 夜の空気感 ============ */
+.t-asmr{
+  grid-column:6/10;grid-row:4/6;
+  background:linear-gradient(170deg,#2a2440 0%,#1e1a2e 100%);
+  border:1px solid #3a3450;
+  padding:0;display:flex;flex-direction:column;
+  color:#e8e4f0;overflow:hidden;position:relative;
+}
+.t-asmr:hover{border-color:#4a4460;}
+/* 月光グロー */
+.t-asmr::before{
+  content:'';position:absolute;top:-30px;right:-20px;
+  width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,180,240,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.t-asmr .content{padding:28px 24px;flex:1;display:flex;flex-direction:column;position:relative;z-index:1;}
+.t-asmr .moon{font-size:1.6rem;margin-bottom:14px;filter:drop-shadow(0 0 8px rgba(200,180,240,.3));}
+.t-asmr .lbl{font-family:var(--fm);font-size:10px;color:rgba(200,180,240,.7);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.t-asmr .ttl{font-family:var(--fd);font-size:1.125rem;font-weight:600;color:#f0ecf8;margin-bottom:8px;}
+.t-asmr .desc{font-size:.75rem;color:rgba(200,195,215,.6);line-height:1.7;margin-bottom:auto;}
+.t-asmr .num-row{display:flex;align-items:baseline;gap:6px;margin-top:20px;margin-bottom:4px;}
+.t-asmr .num-row .n{font-family:var(--fd);font-size:1.75rem;font-weight:700;color:#f0ecf8;line-height:1;}
+.t-asmr .num-row .u{font-size:.8rem;color:rgba(200,195,215,.5);}
+.t-asmr .num-sub{font-family:var(--fm);font-size:10px;color:rgba(200,195,215,.4);}
+/* CTA: 光るボタン */
+.t-asmr .cta-area{padding:16px 24px;background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.06);position:relative;z-index:1;}
+.t-asmr .draw-btn{
+  width:100%;padding:12px 0;border-radius:8px;font-size:.85rem;font-weight:600;
+  background:rgba(200,180,240,.15);color:#e8e0f4;
+  border:1px solid rgba(200,180,240,.2);
+  cursor:pointer;transition:all .25s var(--ease);
+}
+.t-asmr .draw-btn:hover{
+  background:rgba(200,180,240,.25);border-color:rgba(200,180,240,.4);
+  box-shadow:0 0 20px rgba(200,180,240,.1);transform:translateY(-1px);
+}
+.t-asmr .draw-sub{text-align:center;font-family:var(--fm);font-size:10px;color:rgba(200,195,215,.35);margin-top:8px;}
+
+/* ============ あしあと (3col) ============ */
+.t-fp{
+  grid-column:10/13;grid-row:4/6;
+  background:var(--c50);border:1px solid var(--bd);
+  border-radius:16px;padding:24px;
+  display:flex;flex-direction:column;
+  transition:all .35s var(--ease);cursor:pointer;
+}
+.t-fp:hover{border-color:var(--c400);box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
+.t-fp .lbl{font-family:var(--fm);font-size:10px;color:var(--g500);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.t-fp .ttl{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--n800);margin-bottom:20px;}
+/* メイン統計: 大きく1つ */
+.t-fp .hero-stat{text-align:center;margin-bottom:20px;}
+.t-fp .hero-stat .v{font-family:var(--fd);font-size:2.5rem;font-weight:700;color:var(--n800);line-height:1;}
+.t-fp .hero-stat .v small{font-size:.875rem;font-weight:400;color:var(--n300);}
+.t-fp .hero-stat .l{font-family:var(--fm);font-size:10px;color:var(--n400);margin-top:4px;}
+/* サブ統計 */
+.t-fp .sub-stats{display:flex;gap:8px;margin-bottom:16px;}
+.t-fp .ss{flex:1;text-align:center;padding:10px 0;background:var(--c100);border-radius:8px;}
+.t-fp .ss .v{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--n800);line-height:1;}
+.t-fp .ss .v small{font-size:.6rem;font-weight:400;color:var(--n300);}
+.t-fp .ss .l{font-family:var(--fm);font-size:8px;color:var(--n400);margin-top:3px;}
+.t-fp .desc{font-size:.7rem;color:var(--n400);text-align:center;line-height:1.5;margin-bottom:16px;}
+.t-fp .cta{
+  margin-top:auto;text-align:center;padding:8px 0;border-radius:6px;
+  font-size:.75rem;font-weight:600;background:var(--ng);color:var(--n600);
+  transition:all .2s var(--ease);
+}
+.t-fp .cta:hover{background:var(--n800);color:var(--c100);}
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="hero-ph">HERO AREA</div>
+  <div class="body">
+    <div class="hub">
+
+      <!-- ======== STREAMS (7col) — dark→lightのみ変更 ======== -->
+      <div class="tile t-st">
+        <div class="top">
+          <div>
+            <div class="lbl">Latest Streams</div>
+            <div class="ttl">最新の配信</div>
+            <div class="sub">チェックして推し活を記録しよう</div>
+          </div>
+          <span class="badge-lg">3 NEW</span>
+        </div>
+        <div class="stack">
+          <div class="si"><div class="ov"><span class="badge" style="font-size:9px;">NEW</span><div class="t">【朝活雑談】はじめてのVRC…</div><div class="m">04.19 — 1h30m</div></div></div>
+          <div class="si"><div class="ov"><span class="badge" style="font-size:9px;">NEW</span><div class="t">【鬼サザエトリ】深夜にチル水…</div><div class="m">04.18 — 1h51m</div></div></div>
+          <div class="si"><div class="ov"><span class="badge" style="font-size:9px;">NEW</span><div class="t">【ぱこ あ ポケモン】積み上がり…</div><div class="m">04.17 — 4h21m</div></div></div>
+        </div>
+        <a href="#" class="link">すべての配信を見る &rarr;</a>
+      </div>
+
+      <!-- ======== ACTIVITY → REPORT PREVIEW (5col) ======== -->
+      <div class="tile t-rp">
+        <div class="lbl">Activity Report</div>
+        <div class="ttl">団員レポート</div>
+        <div class="donut-wrap">
+          <div class="donut"></div>
+          <div class="legend">
+            <div class="row"><span class="dot" style="background:var(--g400)"></span>ゲーム 35%</div>
+            <div class="row"><span class="dot" style="background:var(--n400)"></span>ASMR 20%</div>
+            <div class="row"><span class="dot" style="background:var(--n200)"></span>雑談 17%</div>
+            <div class="row"><span class="dot" style="background:var(--g300)"></span>歌枠 13%</div>
+            <div class="row"><span class="dot" style="background:var(--c300)"></span>その他 15%</div>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="v">38<small>%</small></div><div class="l">配信カバー率</div></div>
+          <div class="stat"><div class="v">4.2<small>本/週</small></div><div class="l">週あたり平均</div></div>
+          <div class="stat"><div class="v">12<small>日</small></div><div class="l">連続視聴記録</div></div>
+          <div class="stat"><div class="v">8<small>曲</small></div><div class="l">お気に入り楽曲</div></div>
+        </div>
+        <button class="cta">&#9997; レポートを作る</button>
+      </div>
+
+      <!-- ======== 歌枠セットリスト (5col) ======== -->
+      <div class="tile t-uta">
+        <div class="lbl">Latest Setlist</div>
+        <div class="ttl">歌枠</div>
+        <div class="stream-info">【歌枠】春の歌特集！ &mdash; 2026.04.15</div>
+        <div class="list">
+          <div class="row"><span class="num">1</span><span class="nm">さくらんぼ</span><span class="artist">大塚愛</span></div>
+          <div class="row"><span class="num">2</span><span class="nm">可愛くてごめん</span><span class="artist">HoneyWorks</span></div>
+          <div class="row"><span class="num">3</span><span class="nm">Pretender</span><span class="artist">Official髭男dism</span></div>
+          <div class="row"><span class="num">4</span><span class="nm">Ahoy!! 我ら宝鐘海賊団☆</span><span class="artist">宝鐘マリン</span></div>
+          <div class="row"><span class="num">5</span><span class="nm">STARDUST SONG</span><span class="artist">hololive IDOL PROJECT</span></div>
+          <div class="row"><span class="num">6</span><span class="nm">残酷な天使のテーゼ</span><span class="artist">高橋洋子</span></div>
+          <div class="row"><span class="num">7</span><span class="nm">メラ</span><span class="artist">緑黄色社会</span></div>
+        </div>
+        <a href="#" class="lk">すべての楽曲を見る &rarr;</a>
+      </div>
+
+      <!-- ======== 今日のASMR (4col) ======== -->
+      <div class="tile t-asmr">
+        <div class="content">
+          <div class="lbl">Today's Pick</div>
+          <div class="ttl">今日のASMR</div>
+          <div class="desc">今日のあなたに合うASMRを<br>1本ランダムで提案します。</div>
+          <div class="num-row"><span class="n">62</span><span class="u">本のアーカイブから</span></div>
+          <div class="num-sub">何度でも引き直せます</div>
+        </div>
+        <div class="cta-area">
+          <button class="draw-btn">&#9790; 今日の1本を引く</button>
+        </div>
+      </div>
+
+      <!-- ======== あしあと (3col) ======== -->
+      <div class="t-fp">
+        <div class="lbl">Footprint</div>
+        <div class="ttl">あしあと</div>
+        <div class="hero-stat">
+          <div class="v">38<small>日</small></div>
+          <div class="l">記録日数</div>
+        </div>
+        <div class="sub-stats">
+          <div class="ss"><div class="v">12<small>日</small></div><div class="l">最長連続</div></div>
+          <div class="ss"><div class="v">142<small>本</small></div><div class="l">累計</div></div>
+        </div>
+        <div class="desc">視聴記録を年間ヒートマップ<br>画像にして残せます</div>
+        <a href="#" class="cta">あしあとを見る &rarr;</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function fillHM(el,cols){
+  var s=42;function r(){s=(s*16807)%2147483647;return s/2147483647;}
+  for(var i=0;i<cols*7;i++){
+    var c=document.createElement('div');c.className='hm-cell';
+    var w=Math.floor(i/7),p=0.1+(w/cols)*0.45;
+    if(r()<p){var v=r();c.classList.add(v<0.4?'l1':v<0.75?'l2':'l3');}
+    el.appendChild(c);
+  }
+}
+document.querySelectorAll('[data-hm]').forEach(function(el){fillHM(el,parseInt(el.dataset.hm));});
+document.querySelectorAll('[data-hm-7]').forEach(function(el){fillHM(el,parseInt(el.getAttribute('data-hm-7')));});
+</script>
+</body>
+</html>

@@ -30,34 +30,34 @@ export function HeroReportPreview() {
         <div className="grid grid-cols-2 gap-sm mb-md">
           <div className="p-sm bg-page rounded-xs">
             <div className="font-display text-base font-semibold text-heading leading-none">
-              318<span className="text-xs font-normal text-subtle">h</span>
+              38<span className="text-xs font-normal text-subtle">%</span>
             </div>
-            <div className="font-mono text-[9px] text-subtle mt-0.5">
-              総視聴時間
+            <div className="font-mono text-3xs text-subtle mt-0.5">
+              配信カバー率
+            </div>
+          </div>
+          <div className="p-sm bg-page rounded-xs">
+            <div className="font-display text-base font-semibold text-heading leading-none">
+              4.2<span className="text-xs font-normal text-subtle">本/週</span>
+            </div>
+            <div className="font-mono text-3xs text-subtle mt-0.5">
+              週あたり平均
             </div>
           </div>
           <div className="p-sm bg-page rounded-xs">
             <div className="font-display text-base font-semibold text-heading leading-none">
               12<span className="text-xs font-normal text-subtle">日</span>
             </div>
-            <div className="font-mono text-[9px] text-subtle mt-0.5">
-              最長連続
+            <div className="font-mono text-3xs text-subtle mt-0.5">
+              連続視聴記録
             </div>
           </div>
           <div className="p-sm bg-page rounded-xs">
             <div className="font-display text-base font-semibold text-heading leading-none">
-              7<span className="text-xs font-normal text-subtle">種</span>
+              8<span className="text-xs font-normal text-subtle">曲</span>
             </div>
-            <div className="font-mono text-[9px] text-subtle mt-0.5">
-              タグの幅
-            </div>
-          </div>
-          <div className="p-sm bg-page rounded-xs">
-            <div className="font-display text-base font-semibold text-heading leading-none">
-              ゼルダ
-            </div>
-            <div className="font-mono text-[9px] text-subtle mt-0.5">
-              最多シリーズ
+            <div className="font-mono text-3xs text-subtle mt-0.5">
+              お気に入り楽曲
             </div>
           </div>
         </div>
