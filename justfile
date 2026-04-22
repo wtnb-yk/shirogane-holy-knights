@@ -110,8 +110,8 @@ stats-prod cmd:
 deploy-data:
     aws s3 cp web/data/danin-log.db "s3://${AWS_S3_BUCKET:-danin-log-data}/danin-log.db"
     @echo "DB uploaded to S3."
-    @HOOK=$$(aws secretsmanager get-secret-value --secret-id /danin-log/vercel-deploy-hook --region ap-northeast-1 --query SecretString --output text) && \
-        curl -s -X POST "$$HOOK" && echo "Deploy hook triggered."
+    @HOOK=$(aws secretsmanager get-secret-value --secret-id /danin-log/vercel-deploy-hook --region ap-northeast-1 --query SecretString --output text) && \
+        curl -s -X POST "$HOOK" && echo "Deploy hook triggered."
 
 # Lambda zip パッケージング
 package-lambda:
