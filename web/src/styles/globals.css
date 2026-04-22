@@ -170,7 +170,8 @@
   --donut-hole: 18px;              /* ドーナツチャート穴 inset */
   --hero-min-h: 320px;             /* ヒーロー最小高（モバイル） */
   --hero-min-h-md: 400px;          /* ヒーロー最小高（デスクトップ） */
-  --thumb-flow-w: 180px;           /* ヒーロー背景サムネ幅 */
+  --thumb-flow-w: 140px;            /* ヒーロー背景サムネ幅（モバイル） */
+  --thumb-flow-w-md: 180px;         /* ヒーロー背景サムネ幅（デスクトップ） */
   --hero-desc-max: 440px;          /* ヒーロー説明文最大幅 */
   --setlist-artist-max: 120px;     /* セットリストアーティスト名最大幅 */
   --asmr-glow-size: 140px;         /* ASMR月光グロー径 */

@@ -66,7 +66,7 @@ function ThumbRow({
       {doubled.map((url, i) => (
         <div
           key={i}
-          className="w-[var(--thumb-flow-w)] aspect-video shrink-0 rounded-sm overflow-hidden bg-surface-hover"
+          className="w-[var(--thumb-flow-w)] md:w-[var(--thumb-flow-w-md)] aspect-video shrink-0 rounded-sm overflow-hidden bg-surface-hover"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- 背景装飾用サムネイル */}
           <img
