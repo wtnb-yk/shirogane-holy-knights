@@ -1,6 +1,6 @@
 export const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : 'https://danin-log.vercel.app';
+  : 'https://noe-room.com';
 
 export const SITE_NAME = 'だんいんログ';
 
