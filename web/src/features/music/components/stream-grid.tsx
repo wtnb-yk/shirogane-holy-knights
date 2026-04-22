@@ -2,8 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { MusicStream } from '@/lib/data/types';
+import { useIsMobile } from '@/hooks/use-is-mobile';
+import { BottomSheet } from '@/components/ui/bottom-sheet';
+import { formatDate } from '@/lib/format';
 import { useGridColumns } from '../hooks/use-grid-columns';
 import { MusicStreamCard } from './music-stream-card';
+import { SetlistBody } from './setlist-body';
 import { StreamDetail } from './stream-detail';
 
 type Props = {
@@ -29,6 +33,7 @@ export function StreamGrid({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const cols = useGridColumns(gridRef);
+  const isMobile = useIsMobile();
 
   // props → state 同期
   const [prevExternalId, setPrevExternalId] = useState<string | null>(null);
@@ -78,7 +83,7 @@ export function StreamGrid({
         onClick={() => handleSelect(stream.videoId)}
       />,
     );
-    if (i === rowEndIdx && selectedStream) {
+    if (!isMobile && i === rowEndIdx && selectedStream) {
       elements.push(
         <StreamDetail
           key={`detail-${selectedStream.videoId}`}
@@ -96,11 +101,36 @@ export function StreamGrid({
   }
 
   return (
-    <div
-      ref={gridRef}
-      className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm md:gap-md"
-    >
-      {elements}
-    </div>
+    <>
+      <div
+        ref={gridRef}
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm md:gap-md"
+      >
+        {elements}
+      </div>
+      {isMobile && selectedStream && (
+        <BottomSheet
+          open={!!selectedStream}
+          onClose={() => setSelectedId(null)}
+          title={selectedStream.title}
+          headerRight={
+            <span className="font-mono text-2xs text-subtle">
+              {formatDate(selectedStream.date)} · {selectedStream.songs.length}
+              曲
+            </span>
+          }
+        >
+          <div className="px-md pb-md">
+            <SetlistBody
+              videoId={selectedStream.videoId}
+              songs={selectedStream.songs}
+              favoriteIds={favoriteIds}
+              onToggleFavorite={onToggleFavorite}
+              autoPlayStartSeconds={externalStartSeconds}
+            />
+          </div>
+        </BottomSheet>
+      )}
+    </>
   );
 }
