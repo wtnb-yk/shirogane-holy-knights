@@ -87,6 +87,10 @@ export function useStreamFilter(
     quickTags,
     allTags,
     activeFilters,
+    selectTag(tagId: number | null) {
+      setActiveTags(tagId === null ? new Set() : new Set([tagId]));
+      resetPage();
+    },
     toggleTag(tagId: number) {
       setActiveTags((prev) => {
         const next = new Set(prev);

@@ -71,6 +71,7 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
         filterBadgeCount={
           filter.activeTags.size + (filter.checkFilter !== 'all' ? 1 : 0)
         }
+        onSelectTag={filter.selectTag}
         onToggleTag={filter.toggleTag}
         onSearch={filter.updateSearch}
         onToggleSort={filter.toggleSort}

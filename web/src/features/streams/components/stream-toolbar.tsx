@@ -20,6 +20,7 @@ type Props = {
   checkFilter: CheckFilter;
   filteredCount: number;
   filterBadgeCount: number;
+  onSelectTag: (id: number | null) => void;
   onToggleTag: (id: number) => void;
   onSearch: (q: string) => void;
   onToggleSort: () => void;
@@ -36,6 +37,7 @@ export function StreamToolbar({
   checkFilter,
   filteredCount,
   filterBadgeCount,
+  onSelectTag,
   onToggleTag,
   onSearch,
   onToggleSort,
@@ -45,11 +47,26 @@ export function StreamToolbar({
   const [panelOpen, setPanelOpen] = useState(false);
   const closePanel = useCallback(() => setPanelOpen(false), []);
 
-  // モバイルChipSelect用: activeTags が quickTags に1つだけ含まれる場合にラベル表示
-  const activeQuickLabel =
+  // CategoryTabs 用: activeTags が quickTag 1つだけなら、そのタグ名を activeKey にする
+  const activeTabKey =
     activeTags.size === 1
       ? (quickTags.find((t) => activeTags.has(t.id))?.name ?? null)
       : null;
+
+  const tabs = quickTags.map((t) => ({ key: t.name, label: t.name }));
+
+  // CategoryTabs の onSelect → タグ名から ID に変換して selectTag を呼ぶ
+  const handleTabSelect = useCallback(
+    (key: string | null) => {
+      if (key === null) {
+        onSelectTag(null);
+      } else {
+        const tag = quickTags.find((t) => t.name === key);
+        if (tag) onSelectTag(tag.id);
+      }
+    },
+    [quickTags, onSelectTag],
+  );
 
   const searchIcon = (
     <svg
@@ -121,12 +138,12 @@ export function StreamToolbar({
             <>
               {/* モバイル */}
               <div className="flex items-center justify-between md:hidden py-xs">
-                <ChipSelect label={activeQuickLabel ?? 'すべて'}>
+                <ChipSelect label={activeTabKey ?? 'すべて'}>
                   {(close) => (
                     <div className="py-xs">
                       <button
                         onClick={() => {
-                          onClearAll();
+                          onSelectTag(null);
                           close();
                         }}
                         className={`w-full text-left px-md py-sm font-body text-xs cursor-pointer transition-colors duration-150 ${
@@ -141,7 +158,7 @@ export function StreamToolbar({
                         <button
                           key={tag.id}
                           onClick={() => {
-                            onToggleTag(tag.id);
+                            onSelectTag(tag.id);
                             close();
                           }}
                           className={`w-full text-left px-md py-sm font-body text-xs cursor-pointer transition-colors duration-150 ${
@@ -162,13 +179,9 @@ export function StreamToolbar({
               {/* デスクトップ */}
               <div className="hidden md:flex items-stretch justify-between">
                 <CategoryTabs
-                  tabs={quickTags.map((t) => ({
-                    id: t.id,
-                    label: t.name,
-                  }))}
-                  activeIds={activeTags}
-                  onToggle={onToggleTag}
-                  onClearAll={onClearAll}
+                  tabs={tabs}
+                  activeKey={activeTabKey}
+                  onSelect={handleTabSelect}
                 />
                 <div className="flex items-center gap-2xs shrink-0">
                   {inlineInput ?? (
