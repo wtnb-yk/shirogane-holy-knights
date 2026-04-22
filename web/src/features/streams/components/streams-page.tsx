@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import type { Stream, StreamTagWithCount } from '@/lib/data/types';
 import { PageHeader } from '@/components/ui/page-header';
+import { Button } from '@/components/ui/button';
 import {
   getCheckedSnapshot,
   getCheckedServerSnapshot,
@@ -87,11 +88,18 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
         hasMore={filter.hasMore}
         filteredCount={filter.filtered.length}
         checkedIds={checkedIds}
-        uncheckedVisibleCount={uncheckedVisible.length}
         onToggleCheck={handleToggleCheck}
         onLoadMore={filter.loadMore}
-        onBulkCheck={handleBulkCheck}
       />
+      {uncheckedVisible.length > 0 && (
+        <div className="max-w-[var(--content-max)] mx-auto px-md md:px-lg pb-2xl">
+          <div className="flex justify-center">
+            <Button variant="ghost" onClick={handleBulkCheck}>
+              ここまでをまとめてチェック（{uncheckedVisible.length}件）
+            </Button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

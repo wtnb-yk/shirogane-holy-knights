@@ -5,7 +5,7 @@ type Props = {
   stream: Stream;
 };
 
-export function StreamThumb({ stream }: Props) {
+export function StreamMiniCard({ stream }: Props) {
   return (
     <a
       href={`https://www.youtube.com/watch?v=${stream.id}`}

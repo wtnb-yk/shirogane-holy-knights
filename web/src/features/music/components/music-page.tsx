@@ -8,13 +8,13 @@ import type {
   MusicStats,
 } from '@/lib/data/types';
 import { PageHeader } from '@/components/ui/page-header';
+import { ToolbarLayout } from '@/components/ui/toolbar-layout';
 import { MusicStatsDisplay } from './music-stats';
 import { LatestFeed } from './latest-feed';
-import { SourceTabs } from './source-tabs';
 import { MusicToolbar } from './music-toolbar';
 import { MusicPanels } from './music-panels';
 import { SearchResults } from './search-results';
-import { useMusicFilter } from '../hooks/use-music-filter';
+import { useMusicFilter, type SourceTab } from '../hooks/use-music-filter';
 import { usePendingPlay } from '../hooks/use-pending-play';
 import {
   getFavoritesSnapshot,
@@ -75,11 +75,11 @@ export function MusicPage({
     />
   );
 
-  const tabCounts = {
-    utawaku: utawakuStreams.length,
-    live: concertStreams.length,
-    mv: mvCards.length,
-  };
+  const musicTabs = [
+    { key: 'utawaku', label: '歌枠', count: utawakuStreams.length },
+    { key: 'live', label: 'ライブ', count: concertStreams.length },
+    { key: 'mv', label: 'MV・歌ってみた', count: mvCards.length },
+  ];
 
   return (
     <>
@@ -101,14 +101,20 @@ export function MusicPage({
       <div
         className={`max-w-[var(--content-max)] mx-auto px-md md:px-lg pb-2xl ${isSearching ? 'pt-lg' : 'pt-md'}`}
       >
-        <SourceTabs
-          activeTab={filter.activeTab}
-          counts={tabCounts}
-          onSelectTab={filter.setActiveTab}
-          search={filter.search}
-          onSearch={filter.updateSearch}
-          toolbarRight={toolbarRight}
-        />
+        <div className="border-b border-border mb-lg">
+          <ToolbarLayout
+            tabs={musicTabs}
+            activeKey={filter.activeTab}
+            onSelectTab={(key) =>
+              filter.setActiveTab((key as SourceTab) ?? 'utawaku')
+            }
+            showAllTab={false}
+            search={filter.search}
+            onSearch={filter.updateSearch}
+            searchPlaceholder="曲名・アーティスト..."
+            actions={toolbarRight}
+          />
+        </div>
         {isSearching ? (
           <SearchResults
             query={filter.search.trim()}

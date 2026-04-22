@@ -3,7 +3,7 @@ import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
 import { HubCard } from './hub-card';
 import { HubCardHeader } from './hub-card-header';
-import { StreamThumb } from './stream-thumb';
+import { StreamMiniCard } from './stream-mini-card';
 
 type Props = {
   streams: Stream[];
@@ -47,7 +47,7 @@ export function HubStreams({ streams }: Props) {
 
       <div className="flex gap-sm flex-1">
         {streams.map((stream) => (
-          <StreamThumb key={stream.id} stream={stream} />
+          <StreamMiniCard key={stream.id} stream={stream} />
         ))}
       </div>
 

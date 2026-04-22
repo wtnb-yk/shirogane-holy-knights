@@ -1,5 +1,4 @@
 import type { Stream } from '@/lib/data/types';
-import { Button } from '@/components/ui/button';
 import { LoadMore } from '@/components/ui/load-more';
 import { NoResults } from '@/components/ui/no-results';
 import { StreamCard } from './stream-card';
@@ -9,10 +8,8 @@ type Props = {
   hasMore: boolean;
   filteredCount: number;
   checkedIds: Set<string>;
-  uncheckedVisibleCount: number;
   onToggleCheck: (id: string) => void;
   onLoadMore: () => void;
-  onBulkCheck: () => void;
 };
 
 export function StreamGrid({
@@ -20,10 +17,8 @@ export function StreamGrid({
   hasMore,
   filteredCount,
   checkedIds,
-  uncheckedVisibleCount,
   onToggleCheck,
   onLoadMore,
-  onBulkCheck,
 }: Props) {
   if (visible.length === 0) {
     return (
@@ -34,7 +29,7 @@ export function StreamGrid({
   }
 
   return (
-    <div className="max-w-[var(--content-max)] mx-auto px-md md:px-lg py-md pb-2xl">
+    <div className="max-w-[var(--content-max)] mx-auto px-md md:px-lg py-md">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-sm md:gap-md">
         {visible.map((stream) => (
           <StreamCard
@@ -51,13 +46,6 @@ export function StreamGrid({
           totalCount={filteredCount}
           onLoadMore={onLoadMore}
         />
-      )}
-      {uncheckedVisibleCount > 0 && (
-        <div className={`flex justify-center ${hasMore ? 'pt-sm' : 'pt-xl'}`}>
-          <Button variant="ghost" onClick={onBulkCheck}>
-            ここまでをまとめてチェック（{uncheckedVisibleCount}件）
-          </Button>
-        </div>
       )}
     </div>
   );
