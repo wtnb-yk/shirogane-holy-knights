@@ -9,7 +9,6 @@ import { captureCardAsDataUrl, downloadImage } from '@/lib/capture';
 import { track } from '@/lib/track';
 import { useReportStats } from '../hooks/use-report-stats';
 import type { ReportStats } from '../lib/compute-stats';
-import { encodeShareParams } from '../lib/share-params';
 import { ReportCard, type ReportTheme } from './report-card';
 import { ThemeSelector } from './theme-selector';
 import { ReportEmpty } from './report-empty';
@@ -52,7 +51,7 @@ export function ReportPage({ streams }: Props) {
 
   function handleShare() {
     const text = buildShareText(stats);
-    const url = `${SITE_URL}/s/report?${encodeShareParams(stats, theme)}`;
+    const url = `${SITE_URL}/report`;
     const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
     track('share', { action: 'x', page: 'report' });
