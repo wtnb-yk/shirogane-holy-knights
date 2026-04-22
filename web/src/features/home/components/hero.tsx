@@ -30,7 +30,7 @@ export function Hero({ thumbnails }: Props) {
       </div>
 
       {/* コンテンツ */}
-      <div className="relative z-10 max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-md pb-md min-h-[var(--hero-min-h)] md:min-h-[var(--hero-min-h-md)] flex items-center">
+      <div className="relative z-10 max-w-[var(--content-max)] mx-auto px-md md:px-lg pt-md pb-sm md:pb-md min-h-[var(--hero-min-h)] md:min-h-[var(--hero-min-h-md)] flex items-center">
         <div>
           <h1 className="font-body text-2xl md:text-4xl font-bold text-heading leading-[1.1] tracking-tight mb-xs">
             だんいんログ
