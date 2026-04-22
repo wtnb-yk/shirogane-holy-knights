@@ -53,12 +53,8 @@ export function ReportPage({ streams }: Props) {
   function handleShare() {
     const text = buildShareText(stats);
     const url = `${SITE_URL}/report/s?${encodeShareParams(stats, theme)}`;
-    const tweetUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-    const a = document.createElement('a');
-    a.href = tweetUrl;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.click();
+    const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(tweetUrl, '_blank', 'noopener,noreferrer');
     track('share', { action: 'x', page: 'report' });
   }
 
