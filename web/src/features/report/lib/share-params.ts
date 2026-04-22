@@ -24,59 +24,64 @@ const THEME_KEY: Record<ReportTheme, string> = {
   gold: 'g',
 };
 
-/** ReportStats + theme をクエリパラメータ文字列にエンコード */
+/**
+ * ReportStats + theme をコンパクトなクエリパラメータ文字列にエンコード
+ *
+ * OGP の og:image URL で `&amp;` 問題を避けるため、
+ * 全データを1つの `d` パラメータに Base64 で格納する。
+ */
 export function encodeShareParams(
   stats: ReportStats,
   theme: ReportTheme,
 ): string {
-  const params = new URLSearchParams();
-  params.set('sc', String(stats.streamCount));
-  params.set('cr', String(stats.coverageRate));
-  params.set('wa', String(stats.weeklyAverage));
-  params.set('ms', String(stats.maxStreak));
-  params.set('fs', String(stats.favoriteSongCount));
+  const compact = [
+    stats.streamCount,
+    stats.coverageRate,
+    stats.weeklyAverage,
+    stats.maxStreak,
+    stats.favoriteSongCount,
+    THEME_KEY[theme],
+    ...stats.genreDistribution.map((g) => `${g.name}:${g.count}`),
+  ].join(',');
 
-  if (stats.genreDistribution.length > 0) {
-    params.set(
-      'g',
-      stats.genreDistribution.map((g) => `${g.name}:${g.count}`).join(','),
-    );
-  }
-
-  params.set('t', THEME_KEY[theme]);
-  return params.toString();
+  return `d=${btoa(encodeURIComponent(compact))}`;
 }
 
-/** クエリパラメータから ShareData をデコード。不正な場合は null */
+/** クエリパラメータの `d` から ShareData をデコード。不正な場合は null */
 export function decodeShareParams(
   params: Record<string, string | string[] | undefined>,
 ): ShareData | null {
-  const sc = Number(params.sc);
-  const cr = Number(params.cr);
-  if (!sc || Number.isNaN(sc) || Number.isNaN(cr)) return null;
+  const raw = typeof params.d === 'string' ? params.d : '';
+  if (!raw) return null;
 
-  const wa = Number(params.wa) || 0;
-  const ms = Number(params.ms) || 0;
-  const fs = Number(params.fs) || 0;
+  try {
+    const decoded = decodeURIComponent(atob(raw));
+    const parts = decoded.split(',');
+    if (parts.length < 6) return null;
 
-  const gStr = typeof params.g === 'string' ? params.g : '';
-  const genres: GenreShare[] = gStr
-    ? gStr.split(',').map((pair) => {
-        const [name, countStr] = pair.split(':');
-        return { name: name || '', count: Number(countStr) || 0 };
-      })
-    : [];
+    const sc = Number(parts[0]);
+    if (!sc || Number.isNaN(sc)) return null;
 
-  const tKey = typeof params.t === 'string' ? params.t : 'l';
-  const theme = THEME_MAP[tKey] ?? 'light';
+    const theme = THEME_MAP[parts[5]] ?? 'light';
 
-  return {
-    streamCount: sc,
-    coverageRate: cr,
-    weeklyAverage: wa,
-    maxStreak: ms,
-    favoriteSongCount: fs,
-    genres,
-    theme,
-  };
+    const genres: GenreShare[] = parts.slice(6).map((pair) => {
+      const idx = pair.lastIndexOf(':');
+      return {
+        name: pair.slice(0, idx),
+        count: Number(pair.slice(idx + 1)) || 0,
+      };
+    });
+
+    return {
+      streamCount: sc,
+      coverageRate: Number(parts[1]) || 0,
+      weeklyAverage: Number(parts[2]) || 0,
+      maxStreak: Number(parts[3]) || 0,
+      favoriteSongCount: Number(parts[4]) || 0,
+      genres,
+      theme,
+    };
+  } catch {
+    return null;
+  }
 }
