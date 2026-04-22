@@ -15,7 +15,9 @@ export function FilterPanel({ open, onClose, onClearAll, children }: Props) {
   useEffect(() => {
     if (!open) return;
     function handle(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      if (!ref.current) return;
+      if (ref.current.offsetParent === null) return;
+      if (!ref.current.contains(e.target as Node)) {
         onClose();
       }
     }

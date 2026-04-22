@@ -48,19 +48,39 @@ def get_youtube_service():
 
 # ---------- 動画リスト取得 ----------
 
-def get_tagged_video_ids(tag_name: str) -> List[Tuple[str, str]]:
-    """DB から指定タグの配信動画リストを取得。(video_id, title) のリスト。"""
+def get_tagged_video_ids(tag_name: str, junction_table: str = '') -> List[Tuple[str, str]]:
+    """DB から指定タグの配信動画リストを取得。(video_id, title) のリスト。
+
+    junction_table を指定すると、既にそのテーブルに存在する video_id をスキップする。
+    """
     conn = get_readonly_connection()
+
+    # 抽出済み video_id を取得
+    existing_ids: set[str] = set()
+    if junction_table:
+        existing_rows = conn.execute(
+            f'SELECT DISTINCT video_id FROM {junction_table}'
+        ).fetchall()
+        existing_ids = {r['video_id'] for r in existing_rows}
+
     rows = conn.execute("""
         SELECT v.id, v.title, v.published_at
         FROM videos v
         JOIN video_stream_tags vst ON v.id = vst.video_id
         JOIN stream_tags st ON vst.tag_id = st.id
         WHERE st.name = ?
+          AND v.id NOT IN (SELECT video_id FROM hidden_streams)
         ORDER BY v.published_at DESC
     """, (tag_name,)).fetchall()
     conn.close()
-    return [(r['id'], r['title']) for r in rows]
+
+    all_videos = [(r['id'], r['title']) for r in rows]
+    if not existing_ids:
+        return all_videos
+
+    new_videos = [(vid, title) for vid, title in all_videos if vid not in existing_ids]
+    print(f'タグ付き動画: {len(all_videos)}件, 抽出済み: {len(existing_ids)}件, 新規: {len(new_videos)}件')
+    return new_videos
 
 
 # ---------- YouTube コメント解析 ----------

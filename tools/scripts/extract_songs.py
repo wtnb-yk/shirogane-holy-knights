@@ -19,11 +19,11 @@ from extract_songs_common import get_youtube_service, get_tagged_video_ids, proc
 
 
 TARGETS = {
-    'stream': [('歌枠', 'extracted_songs_stream.csv')],
-    'live': [('ライブ', 'extracted_songs_live.csv')],
+    'stream': [('歌枠', 'extracted_songs_stream.csv', 'stream_songs')],
+    'live': [('ライブ', 'extracted_songs_live.csv', 'concert_songs')],
     'all': [
-        ('歌枠', 'extracted_songs_stream.csv'),
-        ('ライブ', 'extracted_songs_live.csv'),
+        ('歌枠', 'extracted_songs_stream.csv', 'stream_songs'),
+        ('ライブ', 'extracted_songs_live.csv', 'concert_songs'),
     ],
 }
 
@@ -39,9 +39,9 @@ def main():
         print(f'エラー: {e}')
         sys.exit(1)
 
-    for tag_name, filename in TARGETS[args.type]:
+    for tag_name, filename, junction_table in TARGETS[args.type]:
         print(f'\n=== {tag_name} ===')
-        videos = get_tagged_video_ids(tag_name)
+        videos = get_tagged_video_ids(tag_name, junction_table)
         print(f'{len(videos)}件の動画\n')
 
         if videos:

@@ -13,7 +13,7 @@ def main():
         sys.exit(1)
 
     print('=== 歌枠 ===')
-    videos = get_tagged_video_ids('歌枠')
+    videos = get_tagged_video_ids('歌枠', 'stream_songs')
     print(f'{len(videos)}件の動画\n')
 
     if videos:

@@ -43,7 +43,9 @@ export function useStreamFilter(
 
     if (activePanelTags.size > 0) {
       result = result.filter((s) =>
-        s.tags.some((t) => activePanelTags.has(t.id)),
+        [...activePanelTags].every((tagId) =>
+          s.tags.some((t) => t.id === tagId),
+        ),
       );
     }
 

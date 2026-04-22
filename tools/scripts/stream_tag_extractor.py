@@ -60,6 +60,7 @@ def load_stream_data(conn):
         JOIN video_types vt ON vvt.video_type_id = vt.id
         LEFT JOIN stream_details sd ON v.id = sd.video_id
         WHERE vt.type = 'stream'
+          AND v.id NOT IN (SELECT video_id FROM hidden_streams)
     """).fetchall()
 
     return {r['id']: {

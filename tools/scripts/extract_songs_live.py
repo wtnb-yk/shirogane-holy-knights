@@ -13,7 +13,7 @@ def main():
         sys.exit(1)
 
     print('=== ライブ ===')
-    videos = get_tagged_video_ids('ライブ')
+    videos = get_tagged_video_ids('ライブ', 'concert_songs')
     print(f'{len(videos)}件の動画\n')
 
     if videos:

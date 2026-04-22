@@ -105,21 +105,6 @@ export function StreamToolbar({
         >
           {filterIcon}
         </ToolbarIconButton>
-        <div className="hidden md:block">
-          <FilterPanel
-            open={panelOpen}
-            onClose={closePanel}
-            onClearAll={onClearAll}
-          >
-            <StreamFilterContent
-              panelTags={panelTags}
-              activePanelTags={activePanelTags}
-              checkFilter={checkFilter}
-              onTogglePanelTag={onTogglePanelTag}
-              onCheckFilter={onCheckFilter}
-            />
-          </FilterPanel>
-        </div>
       </div>
       <ToolbarIconButton title="並び替え" onClick={onToggleSort}>
         {sortIcon}
@@ -180,7 +165,41 @@ export function StreamToolbar({
                   activeKey={activeCategory}
                   onSelect={onSelectCategory}
                 />
-                {actionButtons(openSearch, inlineInput)}
+                <div className="flex items-center gap-2xs shrink-0">
+                  {inlineInput ?? (
+                    <ToolbarIconButton title="検索" onClick={openSearch}>
+                      {searchIcon}
+                    </ToolbarIconButton>
+                  )}
+                  <div className="relative">
+                    <ToolbarIconButton
+                      title="絞り込み"
+                      badge={filterBadgeCount}
+                      onClick={() => setPanelOpen((o) => !o)}
+                    >
+                      {filterIcon}
+                    </ToolbarIconButton>
+                    <FilterPanel
+                      open={panelOpen}
+                      onClose={closePanel}
+                      onClearAll={onClearAll}
+                    >
+                      <StreamFilterContent
+                        panelTags={panelTags}
+                        activePanelTags={activePanelTags}
+                        checkFilter={checkFilter}
+                        onTogglePanelTag={onTogglePanelTag}
+                        onCheckFilter={onCheckFilter}
+                      />
+                    </FilterPanel>
+                  </div>
+                  <ToolbarIconButton title="並び替え" onClick={onToggleSort}>
+                    {sortIcon}
+                  </ToolbarIconButton>
+                  <span className="font-mono text-3xs text-subtle whitespace-nowrap px-xs">
+                    {filteredCount.toLocaleString()}件
+                  </span>
+                </div>
               </div>
             </>
           )}
