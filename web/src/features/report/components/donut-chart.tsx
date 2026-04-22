@@ -59,15 +59,6 @@ export function DonutChart({ genres, streamCount }: Props) {
         >
           本
         </text>
-        <text
-          x={CX}
-          y={CX + 22}
-          textAnchor="middle"
-          className="font-mono text-[6.5px] tracking-[0.08em]"
-          fill="var(--rc-donut-sub)"
-        >
-          STREAMS WATCHED
-        </text>
       </svg>
       <div className="flex flex-wrap justify-center gap-x-[10px] gap-y-[3px] mt-2">
         {genres.map((g, i) => (
