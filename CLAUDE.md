@@ -31,7 +31,9 @@ web/src/
 │   ├── asmr/             # A1 今日のASMR
 │   ├── report/           # B5 団員レポート
 │   ├── footprint/        # B4a 団員のあしあと
-│   └── api/og/           # E5 OGP画像生成
+│   └── api/
+│       ├── og/           # OGP画像生成
+│       └── events/       # イベント計測（DynamoDB書き込み）
 ├── features/             # 機能単位モジュール（components/, hooks/, lib/）
 │   ├── streams/
 │   ├── music/

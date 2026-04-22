@@ -43,9 +43,6 @@ export function Hero({ thumbnails }: Props) {
             <br />
             あなたの推し活が、ここに積み重なっていく。
           </p>
-          <p className="font-mono text-3xs text-subtle tracking-normal">
-            ログイン不要 &middot; ブラウザに保存
-          </p>
         </div>
       </div>
     </section>

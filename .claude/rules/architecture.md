@@ -9,7 +9,7 @@ components/    → 共通UIコンポーネント
   ui/          → ボタン、カード等の部品
   layout/      → ヘッダー、フッター
 lib/           → 共通ユーティリティ
-  data/        → CSV読み込み・型変換（ビルド時）
+  data/        → SQLite読み込み・型変換（ビルド時）
   storage/     → localStorage抽象化
 hooks/         → 共通カスタムフック
 types/         → 共通型定義
@@ -25,6 +25,7 @@ styles/        → globals.css等
 
 - コンテンツデータ: web/data/danin-log.db（SQLite）をビルド時に lib/data/ で読み込み（better-sqlite3） → SSG
 - クライアント状態: localStorage。lib/storage/ で型安全なラッパーを共通化
+- イベント計測: navigator.sendBeacon → /api/events → DynamoDB（AWS）。分析用の行動ログ
 - web/data/ は gitignore 済み。本番データは S3 管理
 
 ## export ルール

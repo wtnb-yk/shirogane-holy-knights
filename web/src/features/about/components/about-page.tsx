@@ -76,7 +76,7 @@ export function AboutPage() {
 
       <Section label="Your Data" title="データの取り扱い">
         <p className="text-sm text-secondary leading-relaxed-plus">
-          ユーザー登録・ログインは不要です。視聴チェックなどの記録はすべてお使いのブラウザ（localStorage）に保存され、外部サーバーへ送信されることはありません。
+          ユーザー登録・ログインは不要です。視聴チェックやお気に入りなどの記録はお使いのブラウザ（localStorage）に保存されます。
         </p>
         <p className="text-xs text-muted mt-xs">
           ※
