@@ -6,6 +6,7 @@ import { ShareCardLayout } from '@/components/ui/share-card-layout';
 import { ShareActions } from '@/components/ui/share-actions';
 import { SITE_URL } from '@/lib/site';
 import { captureCardAsDataUrl, downloadImage } from '@/lib/capture';
+import { track } from '@/lib/track';
 import { useReportStats } from '../hooks/use-report-stats';
 import type { ReportStats } from '../lib/compute-stats';
 import { ReportCard, type ReportTheme } from './report-card';
@@ -42,6 +43,7 @@ export function ReportPage({ streams }: Props) {
       const dataUrl = await captureCardAsDataUrl(cardRef.current);
       const date = new Date().toISOString().slice(0, 10);
       downloadImage(dataUrl, `danin-report-${date}.png`);
+      track('download', { action: 'image', page: 'report' });
     } finally {
       setDownloading(false);
     }
@@ -52,6 +54,7 @@ export function ReportPage({ streams }: Props) {
     const url = `${SITE_URL}/report`;
     const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+    track('share', { action: 'x', page: 'report' });
   }
 
   return (

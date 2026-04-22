@@ -84,6 +84,12 @@ artists:
 migrate:
     cd tools && just migrate
 
+# ---------- イベント計測 ----------
+
+# イベント集計（DynamoDB）
+stats cmd:
+    cd tools && python scripts/event_stats.py {{cmd}}
+
 # ---------- インフラ ----------
 
 # ローカル DB を S3 にアップロード + Vercel Deploy Hook でリビルド

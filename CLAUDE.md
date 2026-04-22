@@ -7,8 +7,8 @@
 
 ## 技術スタック
 - **フロントエンド**: Next.js (SSG) / TypeScript → Vercel
-- **バックエンド**: Go → Fly.io
 - **データ**: web/data/danin-log.db（SQLite）がコンテンツマスタデータ
+- **イベント計測**: Next.js API Route → DynamoDB（AWS）
 - **クライアント保存**: localStorage（推し活記録、ログイン不要）
 
 ## リポジトリ構成

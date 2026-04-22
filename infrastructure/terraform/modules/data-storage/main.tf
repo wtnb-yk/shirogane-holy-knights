@@ -20,6 +20,24 @@ resource "aws_s3_bucket_public_access_block" "data" {
   restrict_public_buckets = true
 }
 
+# DynamoDB table for event tracking
+resource "aws_dynamodb_table" "events" {
+  name         = "${var.project_name}-events"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "pk"
+  range_key    = "sk"
+
+  attribute {
+    name = "pk"
+    type = "S"
+  }
+
+  attribute {
+    name = "sk"
+    type = "S"
+  }
+}
+
 # IAM user for Vercel prebuild (S3 read-only)
 resource "aws_iam_user" "vercel" {
   name = "${var.project_name}-vercel"
@@ -41,6 +59,15 @@ resource "aws_iam_user_policy" "vercel_s3_read" {
         Resource = [
           aws_s3_bucket.data.arn,
           "${aws_s3_bucket.data.arn}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:PutItem",
+        ]
+        Resource = [
+          aws_dynamodb_table.events.arn,
         ]
       }
     ]

@@ -1,3 +1,5 @@
+import { track } from '@/lib/track';
+
 const STORAGE_KEY = 'favorite-songs';
 
 const listeners = new Set<() => void>();
@@ -40,8 +42,10 @@ export function toggleFavorite(songId: string): void {
   const set = new Set(getFavoritesSnapshot());
   if (set.has(songId)) {
     set.delete(songId);
+    track('song_favorite', { action: 'remove', targetId: songId });
   } else {
     set.add(songId);
+    track('song_favorite', { action: 'add', targetId: songId });
   }
   writeSet(set);
 }

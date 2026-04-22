@@ -1,6 +1,7 @@
 import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
 import { ExternalLinkIcon, XIcon } from '@/components/ui/icons';
+import { track } from '@/lib/track';
 import { RetryIcon } from './icons';
 
 type Props = {
@@ -17,6 +18,7 @@ export function ResultActions({ stream, onRetry }: Props) {
       '_blank',
       'noopener,noreferrer',
     );
+    track('share', { action: 'x', page: 'asmr' });
   };
 
   return (

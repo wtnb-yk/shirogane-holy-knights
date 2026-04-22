@@ -1,3 +1,4 @@
+import { track } from '@/lib/track';
 import { logCheck, unlogCheck } from './check-log';
 
 const STORAGE_KEY = 'checked-streams';
@@ -44,6 +45,7 @@ export function bulkCheck(videoIds: string[]): void {
     if (!set.has(id)) {
       set.add(id);
       logCheck(id);
+      track('stream_check', { action: 'add', targetId: id });
     }
   }
   writeSet(set);
@@ -54,9 +56,11 @@ export function toggleChecked(videoId: string): void {
   if (set.has(videoId)) {
     set.delete(videoId);
     unlogCheck(videoId);
+    track('stream_check', { action: 'remove', targetId: videoId });
   } else {
     set.add(videoId);
     logCheck(videoId);
+    track('stream_check', { action: 'add', targetId: videoId });
   }
   writeSet(set);
 }

@@ -8,6 +8,16 @@ output "bucket_arn" {
   value       = aws_s3_bucket.data.arn
 }
 
+output "events_table_name" {
+  description = "DynamoDB events table name"
+  value       = aws_dynamodb_table.events.name
+}
+
+output "events_table_arn" {
+  description = "DynamoDB events table ARN"
+  value       = aws_dynamodb_table.events.arn
+}
+
 output "vercel_access_key_id" {
   description = "Vercel IAM user access key ID"
   value       = aws_iam_access_key.vercel.id

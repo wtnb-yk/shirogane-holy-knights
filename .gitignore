@@ -12,7 +12,7 @@ node_modules/
 .next/
 out/
 
-# Go
+# Go (legacy)
 /backend/tmp/
 
 # コンテンツマスタデータ（本番: S3 から取得 / ローカル: tools/scripts/ が生成）

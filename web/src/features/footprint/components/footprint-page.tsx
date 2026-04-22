@@ -5,6 +5,7 @@ import { ShareCardLayout } from '@/components/ui/share-card-layout';
 import { ShareActions } from '@/components/ui/share-actions';
 import { SITE_URL } from '@/lib/site';
 import { captureCardAsDataUrl, downloadImage } from '@/lib/capture';
+import { track } from '@/lib/track';
 import { useFootprintStats } from '../hooks/use-footprint-stats';
 import type { HeatmapData } from '../lib/compute-heatmap';
 import { FootprintCard } from './footprint-card';
@@ -33,6 +34,7 @@ export function FootprintPage() {
     try {
       const dataUrl = await captureCardAsDataUrl(cardRef.current);
       downloadImage(dataUrl, `danin-footprint-${data.year}.png`);
+      track('download', { action: 'image', page: 'footprint' });
     } finally {
       setDownloading(false);
     }
@@ -43,6 +45,7 @@ export function FootprintPage() {
     const url = `${SITE_URL}/footprint`;
     const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+    track('share', { action: 'x', page: 'footprint' });
   }
 
   return (
