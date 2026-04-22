@@ -90,9 +90,40 @@ just tags-verify
 # キーワード追加は tag_keywords テーブルを編集 → 再度 --verify
 ```
 
-### 3. 楽曲データ更新
+### 3. イベント集計
 
-「抽出 → 人手レビュー → インポート → アーティスト補完」の4ステップ。
+ユーザー操作イベント（チェック、お気に入り、シェア等）の集計。データは DynamoDB に保存されている。
+
+#### ローカル DynamoDB で集計
+
+```bash
+# DynamoDB Local 起動 + テーブル作成（Docker 必要）
+just dynamodb-local
+
+# 開発サーバー起動（イベントがローカル DynamoDB に記録される）
+just dev
+
+# 集計
+just stats summary        # イベント種別ごとの合計
+just stats top-streams    # チェック数 Top 20 配信
+just stats top-songs      # お気に入り数 Top 20 楽曲
+just stats shares         # シェア・DL 回数（ページ別）
+```
+
+#### 本番 DynamoDB で集計
+
+AWS 認証情報が設定済みであれば Docker 不要。
+
+```bash
+just stats-prod summary
+just stats-prod top-streams
+just stats-prod top-songs
+just stats-prod shares
+```
+
+### 4. 楽曲データ更新
+
+「抽出 → 人手レビュー → インポート → アーティスト補完」の 4 ステップ。
 
 ```bash
 # Step 1: YouTube コメントからセットリスト抽出 → 中間 CSV

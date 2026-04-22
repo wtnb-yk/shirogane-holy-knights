@@ -12,6 +12,10 @@ const TABLE_NAME = process.env.EVENTS_TABLE_NAME || 'danin-log-events';
 
 const client = new DynamoDBClient({
   region: process.env.AWS_REGION || 'ap-northeast-1',
+  ...(process.env.DYNAMODB_ENDPOINT && {
+    endpoint: process.env.DYNAMODB_ENDPOINT,
+    credentials: { accessKeyId: 'local', secretAccessKey: 'local' },
+  }),
 });
 
 type EventPayload = {
@@ -20,6 +24,8 @@ type EventPayload = {
   targetId?: string;
   page?: string;
 };
+
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   let body: EventPayload;
@@ -37,19 +43,24 @@ export async function POST(request: Request) {
   const now = new Date().toISOString();
   const id = `${now}#${crypto.randomUUID()}`;
 
-  await client.send(
-    new PutItemCommand({
-      TableName: TABLE_NAME,
-      Item: {
-        pk: { S: body.type },
-        sk: { S: id },
-        action: { S: body.action },
-        target_id: { S: body.targetId || '' },
-        page: { S: body.page || '' },
-        created_at: { S: now },
-      },
-    }),
-  );
+  try {
+    await client.send(
+      new PutItemCommand({
+        TableName: TABLE_NAME,
+        Item: {
+          pk: { S: body.type },
+          sk: { S: id },
+          action: { S: body.action },
+          target_id: { S: body.targetId || '' },
+          page: { S: body.page || '' },
+          created_at: { S: now },
+        },
+      }),
+    );
+  } catch (err) {
+    console.error('[events] DynamoDB write failed:', err);
+    return new NextResponse(null, { status: 503 });
+  }
 
   return new NextResponse(null, { status: 204 });
 }

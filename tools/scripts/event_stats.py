@@ -7,6 +7,7 @@ Usage:
     python event_stats.py shares         # シェア・DL 回数（ページ別）
 """
 
+import os
 import sys
 from collections import Counter
 
@@ -14,6 +15,7 @@ import boto3
 
 TABLE_NAME = "danin-log-events"
 REGION = "ap-northeast-1"
+ENDPOINT_URL = os.environ.get("AWS_ENDPOINT_URL")
 
 
 def scan_all(table):
@@ -76,7 +78,10 @@ def main():
         print(__doc__)
         sys.exit(1)
 
-    dynamodb = boto3.resource("dynamodb", region_name=REGION)
+    kwargs = {"region_name": REGION}
+    if ENDPOINT_URL:
+        kwargs["endpoint_url"] = ENDPOINT_URL
+    dynamodb = boto3.resource("dynamodb", **kwargs)
     table = dynamodb.Table(TABLE_NAME)
     items = scan_all(table)
 

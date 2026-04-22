@@ -17,6 +17,7 @@
     "prepare": "cd .. && husky"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1034.0",
     "better-sqlite3": "^12.9.0",
     "html-to-image": "^1.11.13",
     "next": "16.2.4",

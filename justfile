@@ -7,9 +7,9 @@ setup:
     corepack enable
     cd {{web}} && pnpm install
 
-# 開発サーバー起動
+# 開発サーバー起動（DynamoDB Local 接続）
 dev:
-    cd {{web}} && pnpm dev
+    cd {{web}} && DYNAMODB_ENDPOINT=http://localhost:8000 pnpm dev
 
 # ビルド（本番と同じフロー）
 build:
@@ -86,9 +86,19 @@ migrate:
 
 # ---------- イベント計測 ----------
 
-# イベント集計（DynamoDB）
+# DynamoDB Local 起動 + テーブル作成
+dynamodb-local:
+    docker compose up -d dynamodb-local
+    sleep 2
+    ./tools/scripts/init-dynamodb-local.sh
+
+# イベント集計（ローカル DynamoDB）
 stats cmd:
-    cd tools && python scripts/event_stats.py {{cmd}}
+    cd tools && AWS_ENDPOINT_URL=http://localhost:8000 python3 scripts/event_stats.py {{cmd}}
+
+# イベント集計（本番 DynamoDB）
+stats-prod cmd:
+    cd tools && python3 scripts/event_stats.py {{cmd}}
 
 # ---------- インフラ ----------
 
