@@ -16,9 +16,7 @@
 shirogane-holy-knights/
 ├── web/                  # Next.js アプリ（本体）
 ├── tools/                # データ処理スクリプト（Python）
-├── docs/                 # 設計ドキュメント
-├── _legacy/              # 旧コード（参照用）
-└── maintenance-site/     # メンテナンス中表示
+└── docs/                 # 設計ドキュメント
 ```
 
 ## web/ ディレクトリ構成
