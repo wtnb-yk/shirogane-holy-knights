@@ -168,7 +168,7 @@
   --slot-bg: var(--color-navy-800); /* スロット背景（テーマ不変） */
   --donut-size: 90px;              /* ドーナツチャート外径 */
   --donut-hole: 18px;              /* ドーナツチャート穴 inset */
-  --hero-min-h: 320px;             /* ヒーロー最小高（モバイル） */
+  --hero-min-h: 240px;             /* ヒーロー最小高（モバイル） */
   --hero-min-h-md: 400px;          /* ヒーロー最小高（デスクトップ） */
   --thumb-flow-w: 120px;            /* ヒーロー背景サムネ幅（モバイル） */
   --thumb-flow-w-md: 180px;         /* ヒーロー背景サムネ幅（デスクトップ） */
