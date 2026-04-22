@@ -11,7 +11,7 @@ export function Hero({ thumbnails }: Props) {
   return (
     <section className="relative overflow-hidden bg-page">
       {/* 背景: サムネイルが横に流れる（ヘッダーとの間に余白を確保） */}
-      <div className="absolute left-0 right-0 bottom-0 top-md flex flex-col justify-center gap-sm opacity-12 pointer-events-none">
+      <div className="absolute left-0 right-0 bottom-0 top-sm md:top-md flex flex-col justify-center gap-sm opacity-12 pointer-events-none">
         <ThumbRow
           thumbnails={row1}
           className="animate-feed-slide"
