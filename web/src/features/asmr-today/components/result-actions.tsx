@@ -11,7 +11,7 @@ type Props = {
 
 export function ResultActions({ stream, onRetry }: Props) {
   const handleShare = () => {
-    const text = `今日のASMRは「${stream.title}」に決まり！\n#だんいんログ #白銀ノエル`;
+    const text = `今日のASMRは「${stream.title}」に決まり！\n#だんいんログ`;
     const url = `https://www.youtube.com/watch?v=${stream.id}`;
     window.open(
       `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,

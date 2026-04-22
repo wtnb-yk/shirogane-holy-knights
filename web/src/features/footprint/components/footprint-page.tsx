@@ -16,7 +16,7 @@ function buildShareText(data: HeatmapData): string {
     `団員のあしあと ${data.year}`,
     `⚔ ${data.activeDays}日の視聴記録（最長連続${data.maxStreak}日）`,
     '',
-    '#だんいんログ #白銀ノエル',
+    '#だんいんログ',
   ];
   return lines.join('\n');
 }

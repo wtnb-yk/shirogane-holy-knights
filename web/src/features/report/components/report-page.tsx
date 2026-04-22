@@ -26,7 +26,7 @@ function buildShareText(stats: ReportStats): string {
   if (stats.genreDistribution.length > 0) {
     lines.push(`🎮 最多ジャンル: ${stats.genreDistribution[0].name}`);
   }
-  lines.push('', '#だんいんログ #白銀ノエル');
+  lines.push('', '#だんいんログ');
   return lines.join('\n');
 }
 
