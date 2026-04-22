@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import type { AggregatedSong } from '../hooks/use-music-filter';
 import { formatDate, formatTime } from '@/lib/format';
+import { useInlinePlay } from '../hooks/use-inline-play';
 import { InlinePlayer } from './inline-player';
+import { PlayToggleIcon } from './play-toggle-icon';
 
 type Props = {
   song: AggregatedSong;
 };
 
 export function AppearanceList({ song }: Props) {
-  const [playingKey, setPlayingKey] = useState<string | null>(null);
+  const { toggle, isPlaying } = useInlinePlay();
 
   return (
     <div className="px-lg py-sm pb-md flex flex-col gap-2xs">
@@ -18,15 +19,13 @@ export function AppearanceList({ song }: Props) {
         .sort((a, b) => b.date.localeCompare(a.date))
         .map((a, i) => {
           const key = `${a.videoId}-${i}`;
-          const isPlaying = playingKey === key;
+          const playing = isPlaying(key);
 
           return (
             <div key={key}>
               <div
-                onClick={() =>
-                  setPlayingKey((prev) => (prev === key ? null : key))
-                }
-                className={`flex items-center gap-sm px-2.5 py-1.5 text-xs rounded-sm cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1 ${isPlaying ? 'bg-[var(--glow-gold)]' : ''}`}
+                onClick={() => toggle(key)}
+                className={`flex items-center gap-sm px-2.5 py-1.5 text-xs rounded-sm cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1 ${playing ? 'bg-[var(--glow-gold)]' : ''}`}
               >
                 <span className="font-mono text-3xs text-subtle flex-shrink-0 w-16">
                   {formatDate(a.date)}
@@ -39,19 +38,9 @@ export function AppearanceList({ song }: Props) {
                     {formatTime(a.startSeconds)}
                   </span>
                 )}
-                <div
-                  className={`size-4.5 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity duration-250 ease-out-expo ${isPlaying ? 'opacity-100 bg-accent text-surface' : 'opacity-0 bg-[var(--glow-gold)] text-accent-label'}`}
-                >
-                  <svg
-                    className="size-2 ml-px"
-                    viewBox="0 0 12 12"
-                    fill="currentColor"
-                  >
-                    <path d="M3 1.5l7.5 4.5-7.5 4.5z" />
-                  </svg>
-                </div>
+                <PlayToggleIcon isPlaying={playing} />
               </div>
-              {isPlaying && (
+              {playing && (
                 <InlinePlayer
                   videoId={a.videoId}
                   startSeconds={a.startSeconds}

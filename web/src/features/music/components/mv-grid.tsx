@@ -1,5 +1,5 @@
 import type { MusicVideoCard } from '@/lib/data/types';
-import { PlayableMvCard } from './playable-mv-card';
+import { MvCard } from './mv-card';
 
 type Props = {
   cards: MusicVideoCard[];
@@ -12,7 +12,7 @@ export function MvGrid({ cards, favoriteIds, onToggleFavorite }: Props) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md">
       {cards.map((card) => (
-        <PlayableMvCard
+        <MvCard
           key={card.videoId}
           card={card}
           isFav={favoriteIds.has(card.songId)}

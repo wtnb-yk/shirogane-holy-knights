@@ -81,15 +81,6 @@ export function MusicPage({
     mv: mvCards.length,
   };
 
-  const panelVisibleCount =
-    filter.activeTab === 'utawaku' && filter.viewMode === 'song'
-      ? filter.visibleAggSongs.length
-      : filter.activeTab === 'utawaku'
-        ? filter.visibleUtawaku.length
-        : filter.activeTab === 'live'
-          ? filter.visibleConcerts.length
-          : filter.visibleMvCards.length;
-
   return (
     <>
       <PageHeader
@@ -141,7 +132,7 @@ export function MusicPage({
             onClearPendingVideo={clearPending}
             hasMore={filter.hasMore}
             filteredTotal={filter.filteredTotal}
-            visibleCount={panelVisibleCount}
+            visibleCount={filter.visibleItemCount}
             onLoadMore={filter.loadMore}
           />
         )}

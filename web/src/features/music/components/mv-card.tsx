@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import type { MusicVideoCard } from '@/lib/data/types';
 import { FavButton } from './fav-button';
-import { InlinePlayer } from './inline-player';
 
 const TYPE_LABELS: Record<string, string> = {
   オリジナル: 'オリジナル',
@@ -16,19 +14,15 @@ type Props = {
   onToggleFav: () => void;
 };
 
-/** MVカード + インライン再生の管理 */
-export function PlayableMvCard({ card, isFav, onToggleFav }: Props) {
-  const [isPlaying, setIsPlaying] = useState(false);
-
+/** MVカード — サムネクリックでYouTubeに遷移 */
+export function MvCard({ card, isFav, onToggleFav }: Props) {
   return (
     <div>
-      <div
-        onClick={() => setIsPlaying((prev) => !prev)}
-        className={`group bg-surface border rounded-md overflow-hidden cursor-pointer transition-all duration-300 ease-out-expo ${
-          isPlaying
-            ? 'border-accent shadow-card-active'
-            : 'border-border hover:border-border-hover hover:shadow-card-hover hover:-translate-y-0.5'
-        }`}
+      <a
+        href={`https://www.youtube.com/watch?v=${card.videoId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group bg-surface border rounded-md overflow-hidden cursor-pointer transition-all duration-300 ease-out-expo border-border hover:border-border-hover hover:shadow-card-hover hover:-translate-y-0.5 block"
       >
         <div className="relative w-full aspect-video overflow-hidden">
           {card.thumbnailUrl ? (
@@ -66,17 +60,7 @@ export function PlayableMvCard({ card, isFav, onToggleFav }: Props) {
           </div>
           <FavButton active={isFav} onClick={onToggleFav} size="sm" />
         </div>
-      </div>
-      {isPlaying && (
-        <div className="mt-sm">
-          <InlinePlayer
-            videoId={card.videoId}
-            startSeconds={0}
-            songTitle={card.songTitle}
-            artist={card.artist}
-          />
-        </div>
-      )}
+      </a>
     </div>
   );
 }

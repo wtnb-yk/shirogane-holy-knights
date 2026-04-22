@@ -15,6 +15,7 @@ export function FavButton({ active, onClick, size = 'md' }: Props) {
     <button
       onClick={(e) => {
         e.stopPropagation();
+        e.preventDefault();
         onClick();
       }}
       className={`${dim} flex items-center justify-center flex-shrink-0 rounded-full border-none p-0 cursor-pointer transition-all duration-250 ease-out-expo ${

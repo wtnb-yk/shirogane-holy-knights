@@ -198,6 +198,14 @@ export function useMusicFilter(
     return filteredMvCards.length;
   })();
 
+  const visibleItemCount = (() => {
+    if (activeTab === 'utawaku' && viewMode === 'song')
+      return visibleAggSongs.length;
+    if (activeTab === 'utawaku') return visibleUtawaku.length;
+    if (activeTab === 'live') return visibleConcerts.length;
+    return visibleMvCards.length;
+  })();
+
   const resetPage = () => setVisibleCount(PAGE_SIZE);
 
   return {
@@ -215,6 +223,7 @@ export function useMusicFilter(
     visibleAggSongs,
     hasMore,
     filteredTotal,
+    visibleItemCount,
     setActiveTab(tab: SourceTab) {
       setActiveTab(tab);
       resetPage();

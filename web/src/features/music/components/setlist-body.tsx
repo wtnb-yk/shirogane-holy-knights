@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import type { MusicStreamSong } from '@/lib/data/types';
 import { formatTime } from '@/lib/format';
+import { useInlinePlay } from '../hooks/use-inline-play';
 import { FavButton } from './fav-button';
 import { InlinePlayer } from './inline-player';
+import { PlayToggleIcon } from './play-toggle-icon';
 
 type Props = {
   videoId: string;
@@ -22,27 +23,30 @@ export function SetlistBody({
   onToggleFavorite,
   autoPlayStartSeconds,
 }: Props) {
-  const [playingIndex, setPlayingIndex] = useState<number | null>(() => {
-    if (autoPlayStartSeconds != null) {
-      const idx = songs.findIndex(
-        (s) => s.startSeconds === autoPlayStartSeconds,
-      );
-      return idx >= 0 ? idx : null;
-    }
-    return null;
-  });
+  const initialKey =
+    autoPlayStartSeconds != null
+      ? (() => {
+          const idx = songs.findIndex(
+            (s) => s.startSeconds === autoPlayStartSeconds,
+          );
+          return idx >= 0 ? `${songs[idx].songId}-${idx}` : null;
+        })()
+      : null;
+
+  const { toggle, isPlaying } = useInlinePlay(initialKey);
 
   return (
     <div className="flex flex-col gap-0.5">
       {songs.map((song, i) => {
-        const isPlaying = playingIndex === i;
+        const key = `${song.songId}-${i}`;
+        const playing = isPlaying(key);
         const timeStr = formatTime(song.startSeconds);
 
         return (
-          <div key={`${song.songId}-${i}`}>
+          <div key={key}>
             <div
-              onClick={() => setPlayingIndex((prev) => (prev === i ? null : i))}
-              className={`flex items-center gap-sm px-2.5 py-[7px] text-xs rounded-sm cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1 ${isPlaying ? 'bg-[var(--glow-gold)]' : ''}`}
+              onClick={() => toggle(key)}
+              className={`flex items-center gap-sm px-2.5 py-[7px] text-xs rounded-sm cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1 ${playing ? 'bg-[var(--glow-gold)]' : ''}`}
             >
               <span className="font-mono text-3xs text-subtle w-5 text-right flex-shrink-0">
                 {i + 1}
@@ -62,19 +66,9 @@ export function SetlistBody({
                   {timeStr}
                 </span>
               )}
-              <div
-                className={`size-4.5 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity duration-250 ease-out-expo ${isPlaying ? 'opacity-100 bg-accent text-surface' : 'opacity-0 bg-[var(--glow-gold)] text-accent-label'}`}
-              >
-                <svg
-                  className="size-2 ml-px"
-                  viewBox="0 0 12 12"
-                  fill="currentColor"
-                >
-                  <path d="M3 1.5l7.5 4.5-7.5 4.5z" />
-                </svg>
-              </div>
+              <PlayToggleIcon isPlaying={playing} />
             </div>
-            {isPlaying && (
+            {playing && (
               <InlinePlayer
                 videoId={videoId}
                 startSeconds={song.startSeconds}

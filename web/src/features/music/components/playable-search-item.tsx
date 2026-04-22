@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import type { Song } from '@/lib/data/types';
 import { formatTime } from '@/lib/format';
+import { useInlinePlay } from '../hooks/use-inline-play';
 import { InlinePlayer } from './inline-player';
+import { PlayToggleIcon } from './play-toggle-icon';
 
 const SOURCE_STYLES: Record<string, { label: string; className: string }> = {
   utawaku: {
@@ -24,9 +25,16 @@ type Props = {
   song: Song;
 };
 
+type Appearance = {
+  source: string;
+  videoId: string;
+  title: string;
+  startSeconds: number;
+};
+
 /** 検索結果1件 + インライン再生の管理 */
 export function PlayableSearchItem({ song }: Props) {
-  const [playingKey, setPlayingKey] = useState<string | null>(null);
+  const { toggle, isPlaying } = useInlinePlay();
 
   const stats: string[] = [];
   if (song.streamPerformances.length > 0)
@@ -34,13 +42,6 @@ export function PlayableSearchItem({ song }: Props) {
   if (song.concertPerformances.length > 0)
     stats.push(`ライブ${song.concertPerformances.length}回`);
   if (song.musicVideos.length > 0) stats.push('MV');
-
-  type Appearance = {
-    source: string;
-    videoId: string;
-    title: string;
-    startSeconds: number;
-  };
 
   const appearances: Appearance[] = [
     ...song.streamPerformances.map((p) => ({
@@ -79,15 +80,13 @@ export function PlayableSearchItem({ song }: Props) {
         {appearances.map((a, i) => {
           const style = SOURCE_STYLES[a.source];
           const key = `${song.id}-${a.videoId}-${i}`;
-          const isPlaying = playingKey === key;
+          const playing = isPlaying(key);
 
           return (
             <div key={key}>
               <div
-                onClick={() =>
-                  setPlayingKey((prev) => (prev === key ? null : key))
-                }
-                className={`flex items-center gap-sm px-2.5 py-1.5 rounded-sm text-xs cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1 ${isPlaying ? 'bg-[var(--glow-gold)]' : 'bg-page'}`}
+                onClick={() => toggle(key)}
+                className={`flex items-center gap-sm px-2.5 py-1.5 rounded-sm text-xs cursor-pointer transition-all duration-250 ease-out-expo hover:bg-surface-hover hover:translate-x-1 ${playing ? 'bg-[var(--glow-gold)]' : 'bg-page'}`}
               >
                 <span
                   className={`inline-block px-1.5 font-mono text-3xs rounded-xs tracking-normal leading-[1.7] flex-shrink-0 ${style.className}`}
@@ -102,19 +101,9 @@ export function PlayableSearchItem({ song }: Props) {
                     {formatTime(a.startSeconds)}
                   </span>
                 )}
-                <div
-                  className={`size-4.5 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity duration-250 ease-out-expo ${isPlaying ? 'opacity-100 bg-accent text-surface' : 'opacity-0 bg-[var(--glow-gold)] text-accent-label'}`}
-                >
-                  <svg
-                    className="size-2 ml-px"
-                    viewBox="0 0 12 12"
-                    fill="currentColor"
-                  >
-                    <path d="M3 1.5l7.5 4.5-7.5 4.5z" />
-                  </svg>
-                </div>
+                <PlayToggleIcon isPlaying={playing} />
               </div>
-              {isPlaying && (
+              {playing && (
                 <InlinePlayer
                   videoId={a.videoId}
                   startSeconds={a.startSeconds}
