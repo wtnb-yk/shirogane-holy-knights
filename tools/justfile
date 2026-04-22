@@ -64,6 +64,12 @@ songs-import-stream:
 songs-import-live:
     cd {{scripts}} && python3 songs_importer.py live
 
+# ---------- MV ----------
+
+# music_videos.csv → music_videos テーブル
+mv-import:
+    cd {{scripts}} && python3 music_videos_importer.py
+
 # ---------- アーティスト補完（Step 4） ----------
 
 # Spotify API で TODO 曲のアーティストを補完

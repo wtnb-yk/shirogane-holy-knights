@@ -76,6 +76,10 @@ songs-import-stream:
 songs-import-live:
     cd tools && just songs-import-live
 
+# MVインポート（レビュー済みCSV → music_videos）
+mv-import:
+    cd tools && just mv-import
+
 # アーティスト補完
 artists:
     cd tools && just artists
