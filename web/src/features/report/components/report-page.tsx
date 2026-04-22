@@ -52,7 +52,7 @@ export function ReportPage({ streams }: Props) {
 
   function handleShare() {
     const text = buildShareText(stats);
-    const url = `${SITE_URL}/report/s?${encodeShareParams(stats, theme)}`;
+    const url = `${SITE_URL}/s/report?${encodeShareParams(stats, theme)}`;
     const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
     track('share', { action: 'x', page: 'report' });
