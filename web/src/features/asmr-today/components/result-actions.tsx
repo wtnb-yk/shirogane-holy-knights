@@ -13,11 +13,12 @@ export function ResultActions({ stream, onRetry }: Props) {
   const handleShare = () => {
     const text = `今日のASMRは「${stream.title}」に決まり！\n#だんいんログ`;
     const url = `https://www.youtube.com/watch?v=${stream.id}`;
-    window.open(
-      `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
-      '_blank',
-      'noopener,noreferrer',
-    );
+    const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    const a = document.createElement('a');
+    a.href = shareUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.click();
     track('share', { action: 'x', page: 'asmr' });
   };
 
