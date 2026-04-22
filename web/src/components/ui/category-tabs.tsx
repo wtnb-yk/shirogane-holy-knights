@@ -1,15 +1,15 @@
 type TabItem = {
-  key: string;
+  id: number;
   label: string;
   count?: number;
 };
 
 type Props = {
   tabs: TabItem[];
-  activeKey: string | null;
-  onSelect: (key: string | null) => void;
+  activeIds: Set<number>;
+  onToggle: (id: number) => void;
+  onClearAll: () => void;
   allLabel?: string;
-  showAll?: boolean;
 };
 
 function Tab({
@@ -45,27 +45,25 @@ function Tab({
 
 export function CategoryTabs({
   tabs,
-  activeKey,
-  onSelect,
+  activeIds,
+  onToggle,
+  onClearAll,
   allLabel = 'すべて',
-  showAll = true,
 }: Props) {
   return (
     <nav className="flex">
-      {showAll && (
-        <Tab
-          label={allLabel}
-          isActive={activeKey === null}
-          onClick={() => onSelect(null)}
-        />
-      )}
+      <Tab
+        label={allLabel}
+        isActive={activeIds.size === 0}
+        onClick={onClearAll}
+      />
       {tabs.map((tab) => (
         <Tab
-          key={tab.key}
+          key={tab.id}
           label={tab.label}
           count={tab.count}
-          isActive={activeKey === tab.key}
-          onClick={() => onSelect(activeKey === tab.key ? null : tab.key)}
+          isActive={activeIds.has(tab.id)}
+          onClick={() => onToggle(tab.id)}
         />
       ))}
     </nav>

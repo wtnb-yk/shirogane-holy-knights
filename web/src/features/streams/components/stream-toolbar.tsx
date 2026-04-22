@@ -12,17 +12,15 @@ import type { SortOrder, CheckFilter } from '../hooks/use-stream-filter';
 import { StreamFilterContent } from './stream-filter-content';
 
 type Props = {
-  categoryTabs: StreamTagWithCount[];
-  activeCategory: string | null;
-  activePanelTags: Set<number>;
+  quickTags: StreamTagWithCount[];
+  allTags: StreamTagWithCount[];
+  activeTags: Set<number>;
   search: string;
   sortOrder: SortOrder;
   checkFilter: CheckFilter;
   filteredCount: number;
-  panelTags: StreamTagWithCount[];
   filterBadgeCount: number;
-  onSelectCategory: (cat: string | null) => void;
-  onTogglePanelTag: (id: number) => void;
+  onToggleTag: (id: number) => void;
   onSearch: (q: string) => void;
   onToggleSort: () => void;
   onCheckFilter: (f: CheckFilter) => void;
@@ -30,17 +28,15 @@ type Props = {
 };
 
 export function StreamToolbar({
-  categoryTabs,
-  activeCategory,
-  activePanelTags,
+  quickTags,
+  allTags,
+  activeTags,
   search,
   sortOrder,
   checkFilter,
   filteredCount,
-  panelTags,
   filterBadgeCount,
-  onSelectCategory,
-  onTogglePanelTag,
+  onToggleTag,
   onSearch,
   onToggleSort,
   onCheckFilter,
@@ -48,7 +44,12 @@ export function StreamToolbar({
 }: Props) {
   const [panelOpen, setPanelOpen] = useState(false);
   const closePanel = useCallback(() => setPanelOpen(false), []);
-  const tabs = categoryTabs.map((t) => ({ key: t.name, label: t.name }));
+
+  // モバイルChipSelect用: activeTags が quickTags に1つだけ含まれる場合にラベル表示
+  const activeQuickLabel =
+    activeTags.size === 1
+      ? (quickTags.find((t) => activeTags.has(t.id))?.name ?? null)
+      : null;
 
   const searchIcon = (
     <svg
@@ -87,25 +88,18 @@ export function StreamToolbar({
     </svg>
   );
 
-  const actionButtons = (
-    openSearch: () => void,
-    inlineInput: React.ReactNode | null = null,
-  ) => (
+  const mobileActions = (openSearch: () => void) => (
     <div className="flex items-center gap-2xs shrink-0">
-      {inlineInput ?? (
-        <ToolbarIconButton title="検索" onClick={openSearch}>
-          {searchIcon}
-        </ToolbarIconButton>
-      )}
-      <div className="relative">
-        <ToolbarIconButton
-          title="絞り込み"
-          badge={filterBadgeCount}
-          onClick={() => setPanelOpen((o) => !o)}
-        >
-          {filterIcon}
-        </ToolbarIconButton>
-      </div>
+      <ToolbarIconButton title="検索" onClick={openSearch}>
+        {searchIcon}
+      </ToolbarIconButton>
+      <ToolbarIconButton
+        title="絞り込み"
+        badge={filterBadgeCount}
+        onClick={() => setPanelOpen((o) => !o)}
+      >
+        {filterIcon}
+      </ToolbarIconButton>
       <ToolbarIconButton title="並び替え" onClick={onToggleSort}>
         {sortIcon}
       </ToolbarIconButton>
@@ -127,43 +121,54 @@ export function StreamToolbar({
             <>
               {/* モバイル */}
               <div className="flex items-center justify-between md:hidden py-xs">
-                <ChipSelect label={activeCategory ?? 'すべて'}>
+                <ChipSelect label={activeQuickLabel ?? 'すべて'}>
                   {(close) => (
                     <div className="py-xs">
-                      {[
-                        { key: null, label: 'すべて' },
-                        ...categoryTabs.map((t) => ({
-                          key: t.name,
-                          label: t.name,
-                        })),
-                      ].map((opt) => (
+                      <button
+                        onClick={() => {
+                          onClearAll();
+                          close();
+                        }}
+                        className={`w-full text-left px-md py-sm font-body text-xs cursor-pointer transition-colors duration-150 ${
+                          activeTags.size === 0
+                            ? 'text-heading font-semibold bg-surface-hover'
+                            : 'text-foreground hover:bg-surface-hover'
+                        }`}
+                      >
+                        すべて
+                      </button>
+                      {quickTags.map((tag) => (
                         <button
-                          key={opt.key ?? '__all__'}
+                          key={tag.id}
                           onClick={() => {
-                            onSelectCategory(opt.key);
+                            onToggleTag(tag.id);
                             close();
                           }}
                           className={`w-full text-left px-md py-sm font-body text-xs cursor-pointer transition-colors duration-150 ${
-                            activeCategory === opt.key
+                            activeTags.has(tag.id)
                               ? 'text-heading font-semibold bg-surface-hover'
                               : 'text-foreground hover:bg-surface-hover'
                           }`}
                         >
-                          {opt.label}
+                          {tag.name}
                         </button>
                       ))}
                     </div>
                   )}
                 </ChipSelect>
-                {actionButtons(openSearch)}
+                {mobileActions(openSearch)}
               </div>
 
               {/* デスクトップ */}
               <div className="hidden md:flex items-stretch justify-between">
                 <CategoryTabs
-                  tabs={tabs}
-                  activeKey={activeCategory}
-                  onSelect={onSelectCategory}
+                  tabs={quickTags.map((t) => ({
+                    id: t.id,
+                    label: t.name,
+                  }))}
+                  activeIds={activeTags}
+                  onToggle={onToggleTag}
+                  onClearAll={onClearAll}
                 />
                 <div className="flex items-center gap-2xs shrink-0">
                   {inlineInput ?? (
@@ -185,10 +190,10 @@ export function StreamToolbar({
                       onClearAll={onClearAll}
                     >
                       <StreamFilterContent
-                        panelTags={panelTags}
-                        activePanelTags={activePanelTags}
+                        allTags={allTags}
+                        activeTags={activeTags}
                         checkFilter={checkFilter}
-                        onTogglePanelTag={onTogglePanelTag}
+                        onToggleTag={onToggleTag}
                         onCheckFilter={onCheckFilter}
                       />
                     </FilterPanel>
@@ -222,10 +227,10 @@ export function StreamToolbar({
           }
         >
           <StreamFilterContent
-            panelTags={panelTags}
-            activePanelTags={activePanelTags}
+            allTags={allTags}
+            activeTags={activeTags}
             checkFilter={checkFilter}
-            onTogglePanelTag={onTogglePanelTag}
+            onToggleTag={onToggleTag}
             onCheckFilter={onCheckFilter}
           />
         </BottomSheet>

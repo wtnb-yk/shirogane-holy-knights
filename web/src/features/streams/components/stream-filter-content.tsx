@@ -13,18 +13,18 @@ const checkOptions: { value: CheckFilter; label: string }[] = [
 ];
 
 type Props = {
-  panelTags: StreamTagWithCount[];
-  activePanelTags: Set<number>;
+  allTags: StreamTagWithCount[];
+  activeTags: Set<number>;
   checkFilter: CheckFilter;
-  onTogglePanelTag: (id: number) => void;
+  onToggleTag: (id: number) => void;
   onCheckFilter: (f: CheckFilter) => void;
 };
 
 export function StreamFilterContent({
-  panelTags,
-  activePanelTags,
+  allTags,
+  activeTags,
   checkFilter,
-  onTogglePanelTag,
+  onToggleTag,
   onCheckFilter,
 }: Props) {
   return (
@@ -42,12 +42,12 @@ export function StreamFilterContent({
       </div>
       <FilterSection title="配信タグ">
         <div className="flex flex-wrap gap-xs">
-          {panelTags.map((tag) => (
+          {allTags.map((tag) => (
             <TagPill
               key={tag.id}
               label={tag.name}
-              active={activePanelTags.has(tag.id)}
-              onClick={() => onTogglePanelTag(tag.id)}
+              active={activeTags.has(tag.id)}
+              onClick={() => onToggleTag(tag.id)}
             />
           ))}
         </div>

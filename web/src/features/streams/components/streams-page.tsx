@@ -61,19 +61,17 @@ export function StreamsPage({ streams, tagsWithCount }: Props) {
         }
       />
       <StreamToolbar
-        categoryTabs={filter.categoryTabs}
-        activeCategory={filter.activeCategory}
-        activePanelTags={filter.activePanelTags}
+        quickTags={filter.quickTags}
+        allTags={filter.allTags}
+        activeTags={filter.activeTags}
         search={filter.search}
         sortOrder={filter.sortOrder}
         checkFilter={filter.checkFilter}
         filteredCount={filter.filtered.length}
-        panelTags={filter.panelTags}
         filterBadgeCount={
-          filter.activePanelTags.size + (filter.checkFilter !== 'all' ? 1 : 0)
+          filter.activeTags.size + (filter.checkFilter !== 'all' ? 1 : 0)
         }
-        onSelectCategory={filter.selectCategory}
-        onTogglePanelTag={filter.togglePanelTag}
+        onToggleTag={filter.toggleTag}
         onSearch={filter.updateSearch}
         onToggleSort={filter.toggleSort}
         onCheckFilter={filter.updateCheckFilter}
