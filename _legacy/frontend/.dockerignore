@@ -1,8 +1,0 @@
-node_modules
-.pnpm-store
-.next
-/dist
-.git
-.dockerignore
-Dockerfile
-README.md
