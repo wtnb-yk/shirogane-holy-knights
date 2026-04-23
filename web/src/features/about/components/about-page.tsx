@@ -74,14 +74,39 @@ export function AboutPage() {
         </ul>
       </Section>
 
-      <Section label="Your Data" title="データの取り扱い">
+      <Section label="Your Data" title="データの保存">
         <p className="text-sm text-secondary leading-relaxed-plus">
           ユーザー登録・ログインは不要です。視聴チェックやお気に入りなどの記録はお使いのブラウザ（localStorage）に保存されます。
         </p>
-        <p className="text-xs text-muted mt-xs">
-          ※
-          ブラウザのデータを消去すると記録も失われます。端末やブラウザ間での同期はできません。
+        <ul className="mt-sm space-y-xs text-sm text-secondary leading-relaxed-plus">
+          <ListItem>
+            ブラウザのデータを消去すると記録も失われます。端末やブラウザ間での同期はできません。
+          </ListItem>
+        </ul>
+      </Section>
+
+      <Section label="Analytics" title="アクセス解析">
+        <p className="text-sm text-secondary leading-relaxed-plus">
+          サービス改善のため、Google
+          Analyticsを使用してアクセス情報を収集しています。
         </p>
+        <ul className="mt-sm space-y-xs text-sm text-secondary leading-relaxed-plus">
+          <ListItem>
+            Cookieを利用したページ閲覧状況の匿名収集であり、個人を特定する情報は取得していません。
+          </ListItem>
+          <ListItem>
+            Googleによるデータの取り扱いについては
+            <a
+              href="https://policies.google.com/technologies/partner-sites"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-interactive hover:text-link-hover underline underline-offset-2"
+            >
+              こちら
+            </a>
+            をご覧ください。
+          </ListItem>
+        </ul>
       </Section>
 
       <Section label="Legal" title="権利表記">
