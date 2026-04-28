@@ -8,6 +8,7 @@ import { captureCardAsDataUrl, downloadImage } from '@/lib/capture';
 import { track } from '@/lib/track';
 import { useFootprintStats } from '../hooks/use-footprint-stats';
 import type { HeatmapData } from '../lib/compute-heatmap';
+import { encodeFootprintParams } from '../lib/share-params';
 import { FootprintCard } from './footprint-card';
 import { FootprintEmpty } from './footprint-empty';
 
@@ -42,7 +43,8 @@ export function FootprintPage() {
 
   function handleShare() {
     const text = buildShareText(data);
-    const url = `${SITE_URL}/footprint`;
+    const query = encodeFootprintParams(data);
+    const url = `${SITE_URL}/footprint/s?${query}`;
     const tweetUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(tweetUrl, '_blank', 'noopener,noreferrer');
     track('share', { action: 'x', page: 'footprint' });
