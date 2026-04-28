@@ -2,6 +2,7 @@ import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
 import { ExternalLinkIcon, XIcon } from '@/components/ui/icons';
 import { track } from '@/lib/track';
+import { bulkCheck } from '@/features/streams/lib/checked-streams';
 import { RetryIcon } from './icons';
 
 type Props = {
@@ -10,6 +11,15 @@ type Props = {
 };
 
 export function ResultActions({ stream, onRetry }: Props) {
+  const handleYoutube = () => {
+    bulkCheck([stream.id]);
+    window.open(
+      `https://www.youtube.com/watch?v=${stream.id}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+
   const handleShare = () => {
     const text = `今日のASMRは「${stream.title}」に決まり！\n#だんいんログ`;
     const url = `https://www.youtube.com/watch?v=${stream.id}`;
@@ -26,13 +36,7 @@ export function ResultActions({ stream, onRetry }: Props) {
       <div className="flex gap-sm max-md:flex-col max-md:w-full">
         <Button
           variant="primary"
-          onClick={() =>
-            window.open(
-              `https://www.youtube.com/watch?v=${stream.id}`,
-              '_blank',
-              'noopener,noreferrer',
-            )
-          }
+          onClick={handleYoutube}
           className="max-md:w-full max-md:justify-center"
         >
           <ExternalLinkIcon />
