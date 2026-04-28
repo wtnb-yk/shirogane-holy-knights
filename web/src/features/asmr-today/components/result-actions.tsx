@@ -1,16 +1,23 @@
 import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
-import { ExternalLinkIcon, XIcon } from '@/components/ui/icons';
+import { DownloadIcon, ExternalLinkIcon, XIcon } from '@/components/ui/icons';
 import { track } from '@/lib/track';
 import { bulkCheck } from '@/features/streams/lib/checked-streams';
 import { RetryIcon } from './icons';
 
 type Props = {
   stream: Stream;
+  downloading: boolean;
+  onDownload: () => void;
   onRetry: () => void;
 };
 
-export function ResultActions({ stream, onRetry }: Props) {
+export function ResultActions({
+  stream,
+  downloading,
+  onDownload,
+  onRetry,
+}: Props) {
   const handleYoutube = () => {
     bulkCheck([stream.id]);
     window.open(
@@ -51,10 +58,16 @@ export function ResultActions({ stream, onRetry }: Props) {
           Xに共有する
         </Button>
       </div>
-      <Button variant="ghost" onClick={onRetry}>
-        <RetryIcon className="w-3.5 h-3.5" />
-        もう一回
-      </Button>
+      <div className="flex gap-sm">
+        <Button variant="ghost" onClick={onDownload} disabled={downloading}>
+          <DownloadIcon className="w-3.5 h-3.5" />
+          {downloading ? '準備中...' : '画像を保存'}
+        </Button>
+        <Button variant="ghost" onClick={onRetry}>
+          <RetryIcon className="w-3.5 h-3.5" />
+          もう一回
+        </Button>
+      </div>
     </div>
   );
 }

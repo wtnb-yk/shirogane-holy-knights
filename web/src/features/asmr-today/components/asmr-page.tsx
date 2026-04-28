@@ -1,12 +1,16 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import type { Stream } from '@/lib/data/types';
 import { Button } from '@/components/ui/button';
 import { SectionHeader } from '@/components/ui/section-header';
+import { captureCardAsDataUrl, downloadImage } from '@/lib/capture';
+import { track } from '@/lib/track';
 import { useAsmrDraw } from '../hooks/use-asmr-draw';
 import { SlotReel } from './slot-reel';
 import { ResultInfo } from './result-info';
 import { ResultActions } from './result-actions';
+import { AsmrShareCard } from './asmr-share-card';
 import { RetryIcon } from './icons';
 
 type Props = {
@@ -23,6 +27,20 @@ export function AsmrPage({ streams }: Props) {
     handleDraw,
     handleRetry,
   } = useAsmrDraw(streams);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownload() {
+    if (!cardRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const dataUrl = await captureCardAsDataUrl(cardRef.current);
+      downloadImage(dataUrl, 'danin-asmr-today.png');
+      track('download', { action: 'image', page: 'asmr' });
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <div className="min-h-[calc(100dvh-var(--header-height)-var(--page-bottom-margin))] flex flex-col items-center justify-center py-xl">
@@ -76,7 +94,18 @@ export function AsmrPage({ streams }: Props) {
         )}
 
         {isResolved && result && (
-          <ResultActions stream={result} onRetry={handleRetry} />
+          <>
+            <ResultActions
+              stream={result}
+              downloading={downloading}
+              onDownload={handleDownload}
+              onRetry={handleRetry}
+            />
+            {/* 画像キャプチャ用（非表示） */}
+            <div className="absolute -left-[9999px]" aria-hidden="true">
+              <AsmrShareCard ref={cardRef} stream={result} />
+            </div>
+          </>
         )}
       </div>
     </div>
